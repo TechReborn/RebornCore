@@ -181,7 +181,7 @@ public class Mixin<T> {
 
         List<String> constructors = new ArrayList<String>();
         for (MethodNode m : traitNode.methods) {
-            MethodVisitor v = writer.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC | ACC_BRIDGE
+            MethodVisitor v = writer.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC
                     | (m.access & ~ACC_ABSTRACT & ~ACC_INTERFACE & ~ACC_PROTECTED & ~ACC_PRIVATE), m.name, m.desc, null, null);
             v.visitCode();
 
