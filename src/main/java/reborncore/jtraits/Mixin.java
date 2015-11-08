@@ -1,15 +1,26 @@
 package reborncore.jtraits;
-
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.*;
-import reborncore.jtraits.Annotation.CheckMixin;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import static org.objectweb.asm.Opcodes.*;
+
+        import java.util.ArrayList;
+        import java.util.Iterator;
+        import java.util.List;
+        import java.util.ListIterator;
+
+        import org.objectweb.asm.AnnotationVisitor;
+        import org.objectweb.asm.ClassWriter;
+        import org.objectweb.asm.FieldVisitor;
+        import org.objectweb.asm.Label;
+        import org.objectweb.asm.MethodVisitor;
+        import org.objectweb.asm.Type;
+        import org.objectweb.asm.tree.AbstractInsnNode;
+        import org.objectweb.asm.tree.AnnotationNode;
+        import org.objectweb.asm.tree.ClassNode;
+        import org.objectweb.asm.tree.FieldNode;
+        import org.objectweb.asm.tree.InsnList;
+        import org.objectweb.asm.tree.MethodInsnNode;
+        import org.objectweb.asm.tree.MethodNode;
+        import org.objectweb.asm.tree.VarInsnNode;
+
 
 public class Mixin<T> {
 
@@ -52,7 +63,7 @@ public class Mixin<T> {
 
         Class<?> c = clazz;
         do {
-            CheckMixin a = c.getAnnotation(CheckMixin.class);
+            Annotation.CheckMixin a = c.getAnnotation(Annotation.CheckMixin.class);
             if (a == null)
                 continue;
 
@@ -170,7 +181,8 @@ public class Mixin<T> {
 
         List<String> constructors = new ArrayList<String>();
         for (MethodNode m : traitNode.methods) {
-            MethodVisitor v = writer.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC, m.name, m.desc, null, null);
+            MethodVisitor v = writer.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC | ACC_BRIDGE
+                    | (m.access & ~ACC_ABSTRACT & ~ACC_INTERFACE & ~ACC_PROTECTED & ~ACC_PRIVATE), m.name, m.desc, null, null);
             v.visitCode();
 
             ASMUtils.resetCopy(m.instructions);
