@@ -1,28 +1,15 @@
 package reborncore.jtraits;
 
-import static org.objectweb.asm.Opcodes.*;
+import org.objectweb.asm.*;
+import org.objectweb.asm.tree.*;
+import reborncore.jtraits.Annotation.CheckMixin;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.AnnotationNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
-import reborncore.jtraits.Annotation.CheckMixin;
+import static org.objectweb.asm.Opcodes.*;
 
 public class Mixin<T> {
 
@@ -139,8 +126,8 @@ public class Mixin<T> {
                         try {
                             if (val instanceof Object[]
                                     && !(val instanceof byte[] || val instanceof boolean[] || val instanceof short[]
-                                            || val instanceof char[] || val instanceof int[] || val instanceof long[]
-                                            || val instanceof float[] || val instanceof double[])) {
+                                    || val instanceof char[] || val instanceof int[] || val instanceof long[]
+                                    || val instanceof float[] || val instanceof double[])) {
                                 av = av.visitArray(key);
                                 int i = 0;
                                 for (Object o : (Object[]) val) {
