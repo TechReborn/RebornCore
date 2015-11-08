@@ -1,0 +1,16 @@
+/bin
+/out
+/run
+/.gradle
+*.iml
+/.metadata
+/.settings
+./classpath
+/dep
+
+RebornCore.iws
+RebornCore.ipr
+Thumbs.db
+changelog.txt
+*.log
+.idea/*
