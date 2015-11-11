@@ -2,7 +2,7 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import techreborn.Core;
+import reborncore.RebornCore;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class OreUtil {
                 }
             }
         }
-        Core.logHelper.info("Found " + oreNames.size() + " ores");
+        RebornCore.logHelper.info("Found " + oreNames.size() + " ores");
     }
 
     public static boolean hasIngot(String name){
