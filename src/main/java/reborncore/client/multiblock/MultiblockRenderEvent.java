@@ -79,7 +79,7 @@ public class MultiblockRenderEvent {
         int y = pos.posY + anchorY;
         int z = pos.posZ + anchorZ;
 
-        if (!world.isAirBlock(x, y, z))
+        if (world.getBlock(x, y, z) == comp.getBlock() && world.getBlockMetadata(x, y, z) == comp.getMeta())
             return false;
 
         GL11.glPushMatrix();
