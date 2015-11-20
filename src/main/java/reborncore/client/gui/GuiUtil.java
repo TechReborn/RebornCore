@@ -3,6 +3,7 @@ package reborncore.client.gui;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
+import org.lwjgl.opengl.GL11;
 
 public class GuiUtil {
 
@@ -56,5 +57,32 @@ public class GuiUtil {
         public void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6) {
             super.drawGradientRect(par1, par2, par3, par4, par5, par6);
         }
+    }
+
+    public static void drawColouredBox(int colour, int alpha, double posX, double posY, double width, double height) {
+       drawColouredBox(colour, alpha, posX, posY, width, height, 0);
+    }
+
+    public static void drawColouredBox(int colour, int alpha, double posX, double posY, double width, double height, double zLevel) {
+        int r = (colour >> 16 & 0xff);
+        int g = (colour >> 8 & 0xff);
+        int b = (colour & 0xff);
+        drawColouredBox(r, g, b, alpha, posX, posY, width, height, zLevel);
+    }
+
+    public static void drawColouredBox(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel) {
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(r, g, b, alpha);
+        tessellator.addVertex(posX, posY + height, zLevel);
+        tessellator.addVertex(posX + width, posY + height, zLevel);
+        tessellator.addVertex(posX + width, posY, zLevel);
+        tessellator.addVertex(posX, posY, zLevel);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 }
