@@ -2,8 +2,11 @@ package reborncore.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
-import reborncore.api.IGuiComponent;
+import net.minecraft.util.ResourceLocation;
+import reborncore.api.gui.IGuiComponent;
+import reborncore.client.gui.componets.BaseTextures;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +19,34 @@ public class BaseGui extends GuiContainer {
 
     List<IGuiComponent> componentList;
 
+    BaseTextures baseTextures;
+
+    private static final ResourceLocation baseTexture = new ResourceLocation(
+            "reborncore", "textures/gui/base.png");
+
     public BaseGui(Container container, TileEntity tileEntity) {
         super(container);
         this.container = container;
         this.tileEntity = tileEntity;
         componentList = new ArrayList<IGuiComponent>();
         registerComponets();
+        baseTextures = new BaseTextures();
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
+        this.mc.renderEngine.bindTexture(baseTexture);
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
-        GuiUtil.drawColouredBox(198, 198, 198, 254, x, y, xSize, ySize, 0);
+
+        baseTextures.background.draw(x, y, this);
+
+        for(Object slotObj : container.inventorySlots){
+            if(slotObj instanceof Slot){
+                Slot slot = (Slot) slotObj;
+                baseTextures.slot.draw(slot.xDisplayPosition + x -1, slot.yDisplayPosition + y-1, this);
+            }
+        }
     }
 
     public Container getContainer() {

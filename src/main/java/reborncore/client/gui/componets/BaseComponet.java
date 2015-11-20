@@ -1,6 +1,6 @@
 package reborncore.client.gui.componets;
 
-import reborncore.api.IGuiComponent;
+import reborncore.api.gui.IGuiComponent;
 import reborncore.client.gui.BaseGui;
 
 public class BaseComponet implements IGuiComponent {
