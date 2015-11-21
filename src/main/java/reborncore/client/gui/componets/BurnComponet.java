@@ -22,6 +22,12 @@ public class BurnComponet extends BaseComponet {
     @Override
     public void drawGuiContainerForegroundLayer(BaseGui gui) {
         super.drawGuiContainerForegroundLayer(gui);
+
+    }
+
+    @Override
+    public void drawGuiContainerBackgroundLayer(BaseGui gui) {
+        super.drawGuiContainerBackgroundLayer(gui);
         gui.getBaseTextures().burnBase.draw(x, y, gui);
         if(isBurning){
             gui.getBaseTextures().burnOverlay.draw(x, y, gui.getBaseTextures().burnOverlay.getWidth(), burnTime, gui);

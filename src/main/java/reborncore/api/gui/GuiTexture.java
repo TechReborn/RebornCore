@@ -21,7 +21,9 @@ public class GuiTexture {
 
 
     public void draw(int x, int y, int width, int height, BaseGui baseGui){
-        baseGui.drawTexturedModalRect(x, y, sheetX, sheetY, width, height);
+        int a = (baseGui.width - baseGui.getXSize()) / 2;
+        int b = (baseGui.height - baseGui.getYSize()) / 2;
+        baseGui.drawTexturedModalRect(x + a , y + b, sheetX, sheetY, width, height);
     }
 
     public void draw(int x, int y, BaseGui baseGui){

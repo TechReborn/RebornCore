@@ -39,13 +39,17 @@ public class BaseGui extends GuiContainer {
         int x = (this.width - this.xSize) / 2;
         int y = (this.height - this.ySize) / 2;
 
-        baseTextures.background.draw(x, y, this);
+        baseTextures.background.draw(0, 0, this);
 
         for(Object slotObj : container.inventorySlots){
             if(slotObj instanceof Slot){
                 Slot slot = (Slot) slotObj;
-                baseTextures.slot.draw(slot.xDisplayPosition + x -1, slot.yDisplayPosition + y-1, this);
+                baseTextures.slot.draw(slot.xDisplayPosition  -1, slot.yDisplayPosition -1, this);
             }
+        }
+
+        for(IGuiComponent component : componentList){
+            component.drawGuiContainerBackgroundLayer(this);
         }
     }
 
@@ -111,4 +115,13 @@ public class BaseGui extends GuiContainer {
     public BaseTextures getBaseTextures() {
         return baseTextures;
     }
+
+    public int getXSize(){
+        return xSize;
+    }
+
+    public int getYSize(){
+        return ySize;
+    }
+
 }
