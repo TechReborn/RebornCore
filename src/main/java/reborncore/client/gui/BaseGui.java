@@ -107,4 +107,8 @@ public class BaseGui extends GuiContainer {
             component.updateScreen(this);
         }
     }
+
+    public BaseTextures getBaseTextures() {
+        return baseTextures;
+    }
 }
