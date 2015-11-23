@@ -1,9 +1,11 @@
 package reborncore.common.util;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -23,8 +25,7 @@ public class TorchHelper {
                 continue;
             int oldMeta = torchStack.getItemDamage();
             int oldSize = torchStack.stackSize;
-            boolean result = torchStack.canPlaceOn(player, world, x,
-                    y, z, side, xOffset, yOffset, zOffset);
+            boolean result = Blocks.torch.canPlaceBlockAt(world, new BlockPos(x, y, z));
             if (player.capabilities.isCreativeMode) {
                 torchStack.setItemDamage(oldMeta);
                 torchStack.stackSize = oldSize;

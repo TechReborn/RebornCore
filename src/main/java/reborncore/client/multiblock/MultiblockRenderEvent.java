@@ -8,14 +8,15 @@
  */
 package reborncore.client.multiblock;
 
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -31,7 +32,7 @@ import reborncore.common.multiblock.CoordTriplet;
 
 public class MultiblockRenderEvent {
 
-    private static RenderBlocks blockRender = RenderBlocks.getInstance();
+    private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
     public MultiblockSet currentMultiblock;
     public static CoordTriplet anchor;
     public Location partent;
@@ -80,7 +81,7 @@ public class MultiblockRenderEvent {
         int y = pos.y + anchorY;
         int z = pos.z + anchorZ;
 
-        if (world.getBlock(x, y, z) == comp.getBlock() && world.getBlockMetadata(x, y, z) == comp.getMeta())
+        if (world.getBlockState(new BlockPos(x, y, z)) == comp.getBlock())
             return false;
 
         GL11.glPushMatrix();
@@ -88,14 +89,13 @@ public class MultiblockRenderEvent {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glColor4f(1F, 1F, 1F, 0.4F);
-        GL11.glTranslated(x + 0.5 - RenderManager.renderPosX, y + 0.5 - RenderManager.renderPosY, z + 0.5 - RenderManager.renderPosZ);
+        //GL11.glTranslated(x + 0.5 - RenderManager.renderPosX, y + 0.5 - RenderManager.renderPosY, z + 0.5 - RenderManager.renderPosZ);
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
-        blockRender.useInventoryTint = false;
         Block block = comp.getBlock();
         if (IMultiblockRenderHook.renderHooks.containsKey(block))
             IMultiblockRenderHook.renderHooks.get(block).renderBlockForMultiblock(world, mb, block, comp.getMeta(), blockRender);
-        else blockRender.renderBlockAsItem(comp.getBlock(), comp.getMeta(), 1F);
+        else blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y, z), world, Tessellator.getInstance().getWorldRenderer());
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glPopMatrix();
         return true;
@@ -104,7 +104,7 @@ public class MultiblockRenderEvent {
     @SubscribeEvent
     public void breakBlock(BlockEvent.BreakEvent event) {
         if (partent != null) {
-            if (event.x == partent.x && event.y == partent.y && event.z == partent.z && Minecraft.getMinecraft().theWorld == partent.world) {
+            if (event.pos.getX() == partent.x && event.pos.getY() == partent.y && event.pos.getZ() == partent.z && Minecraft.getMinecraft().theWorld == partent.world) {
                 setMultiblock(null);
             }
         }

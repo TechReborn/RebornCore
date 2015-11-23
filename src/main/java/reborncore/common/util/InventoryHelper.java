@@ -159,16 +159,31 @@ public class InventoryHelper {
 	public static IInventory getInventory(World world, int x, int y, int z) {
 		BlockPos pos = new BlockPos(x,y , z);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity instanceof TileEntityChest) {
-			Block chestBlock = world.getBlockState(pos).getBlock();
-			if(world.getBlockState(new BlockPos(x - 1, y, z)).getBlock() == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(new BlockPos(x - 1, y, z), (IInventory)tileEntity);
-			if(world.getBlockState(new BlockPos(x + 1, y, z)).getBlock() == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getTileEntity(x + 1, y, z));
-			if(world.getBlockState(new BlockPos(x, y, z - 1)).getBlock() == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(x, y, z - 1), (IInventory)tileEntity);
-			if(world.getBlockState(new BlockPos(x, y, z + 1)).getBlock() == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getTileEntity(x, y, z + 1));
+		if (tileEntity instanceof TileEntityChest) {
+			TileEntityChest chest = (TileEntityChest) tileEntity;
+
+			TileEntityChest adjacent = null;
+
+			if (chest.adjacentChestXNeg != null) {
+				adjacent = chest.adjacentChestXNeg;
+			}
+
+			if (chest.adjacentChestXPos != null) {
+				adjacent = chest.adjacentChestXPos;
+			}
+
+			if (chest.adjacentChestZNeg != null) {
+				adjacent = chest.adjacentChestZNeg;
+			}
+
+			if (chest.adjacentChestZPos != null) {
+				adjacent = chest.adjacentChestZPos;
+			}
+
+			if (adjacent != null) {
+				return new InventoryLargeChest("", chest, adjacent);
+			}
+			return chest;
 		}
 		return tileEntity instanceof IInventory ? (IInventory)tileEntity : null;
 	}

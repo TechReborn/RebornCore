@@ -20,10 +20,10 @@ public class GuiHiddenButton extends GuiButton {
     @Override
     public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
         if (this.visible) {
-            FontRenderer fontrenderer = p_146112_1_.fontRenderer;
+            FontRenderer fontrenderer = p_146112_1_.fontRendererObj;
             p_146112_1_.getTextureManager().bindTexture(buttonTextures);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_146123_n = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition && p_146112_2_ < this.xPosition + this.width && p_146112_3_ < this.yPosition + this.height;
+            this.hovered = p_146112_2_ >= this.xPosition && p_146112_3_ >= this.yPosition && p_146112_2_ < this.xPosition + this.width && p_146112_3_ < this.yPosition + this.height;
             GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -34,7 +34,7 @@ public class GuiHiddenButton extends GuiButton {
                 l = packedFGColour;
             } else if (!this.enabled) {
                 l = 10526880;
-            } else if (this.field_146123_n) {
+            } else if (this.hovered) {
                 l = 16777120;
             }
 

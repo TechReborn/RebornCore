@@ -2,6 +2,7 @@ package reborncore.common.multiblock;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -525,9 +526,9 @@ public abstract class MultiblockControllerBase {
             // chunks as dirty.
             if (minimumCoord != null
                     && maximumCoord != null
-                    && this.worldObj.checkChunksExist(minimumCoord.x,
-                    minimumCoord.y, minimumCoord.z, maximumCoord.x,
-                    maximumCoord.y, maximumCoord.z)) {
+                    && this.worldObj.isAreaLoaded(new BlockPos(minimumCoord.x,
+                            minimumCoord.y, minimumCoord.z), new BlockPos(maximumCoord.x,
+                    maximumCoord.y, maximumCoord.z))) {
                 int minChunkX = minimumCoord.x >> 4;
                 int minChunkZ = minimumCoord.z >> 4;
                 int maxChunkX = maximumCoord.x >> 4;
