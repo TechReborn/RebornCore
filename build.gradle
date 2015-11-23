@@ -1,21 +1,16 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
-
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
@@ -40,7 +35,8 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-    version = "1.7.10-10.13.4.1448-1.7.10"
+    version = "1.8.8-11.14.4.1576-1.8.8"
+    mappings = 'snapshot_20151122'
     replace "@MODVERSION@", project.version
 }
 
@@ -80,10 +76,6 @@ processResources
             }
         }
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'src'
-}
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
@@ -107,7 +99,6 @@ task apiJar(type: Jar) {
 apiJar.mustRunAfter deobfJar
 
 artifacts {
-    archives sourceJar
     archives deobfJar
     archives apiJar
 }
