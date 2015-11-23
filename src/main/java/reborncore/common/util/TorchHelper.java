@@ -23,7 +23,7 @@ public class TorchHelper {
                 continue;
             int oldMeta = torchStack.getItemDamage();
             int oldSize = torchStack.stackSize;
-            boolean result = torchStack.tryPlaceItemIntoWorld(player, world, x,
+            boolean result = torchStack.canPlaceOn(player, world, x,
                     y, z, side, xOffset, yOffset, zOffset);
             if (player.capabilities.isCreativeMode) {
                 torchStack.setItemDamage(oldMeta);

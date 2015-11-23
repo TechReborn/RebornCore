@@ -1,5 +1,6 @@
 package reborncore.common.multiblock;
 
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
 /*
@@ -12,6 +13,12 @@ public class CoordTriplet implements Comparable {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public CoordTriplet(BlockPos pos){
+        this.x = pos.getX();
+        this.y = pos.getY();
+        this.z = pos.getZ();
     }
 
     public int getChunkX() {
@@ -47,6 +54,10 @@ public class CoordTriplet implements Comparable {
 
     public boolean equals(int x, int y, int z) {
         return this.x == x && this.y == y && this.z == z;
+    }
+
+    public boolean equals(BlockPos pos){
+        return equals(pos.getX(), pos.getY(), pos.getZ());
     }
 
     // Suggested implementation from NetBeans 7.1
@@ -160,5 +171,9 @@ public class CoordTriplet implements Comparable {
         } else {
             return 0;
         }
+    }
+
+    public BlockPos toBlockPos(){
+        return new BlockPos(x, y, z);
     }
 }

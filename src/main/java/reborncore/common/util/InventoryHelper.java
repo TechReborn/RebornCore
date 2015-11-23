@@ -162,7 +162,7 @@ public class InventoryHelper {
 		if(tileEntity instanceof TileEntityChest) {
 			Block chestBlock = world.getBlockState(pos).getBlock();
 			if(world.getBlockState(new BlockPos(x - 1, y, z)).getBlock() == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(x - 1, y, z), (IInventory)tileEntity);
+				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(new BlockPos(x - 1, y, z), (IInventory)tileEntity);
 			if(world.getBlockState(new BlockPos(x + 1, y, z)).getBlock() == chestBlock)
 				return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getTileEntity(x + 1, y, z));
 			if(world.getBlockState(new BlockPos(x, y, z - 1)).getBlock() == chestBlock)
