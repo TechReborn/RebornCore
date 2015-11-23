@@ -1,12 +1,16 @@
 package reborncore;
 
+import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
+import reborncore.jsonDestroyers.block.ModelGenertator;
+import reborncore.test.TestBlock;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION)
 public class RebornCore implements IModInfo {
@@ -15,6 +19,8 @@ public class RebornCore implements IModInfo {
     public static final String MOD_VERSION = "@MODVERSION@";
 
     public static LogHelper logHelper;
+
+    public static TestBlock test;
 
     public RebornCore() {
         logHelper = new LogHelper(this);
@@ -26,6 +32,10 @@ public class RebornCore implements IModInfo {
         PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(
                 MOD_ID + "_packets", new PacketHandler()));
         OreUtil.scanForOres();
+
+        test = new TestBlock();
+        GameRegistry.registerBlock(test, "TestBlockRC");
+        ModelGenertator.register();
     }
 
 
