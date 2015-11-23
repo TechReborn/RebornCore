@@ -504,8 +504,6 @@ public abstract class MultiblockControllerBase {
      * Driver for the update loop. If the machine is assembled, runs the game
      * logic update method.
      *
-     * @see MultiblockControllerBase#update()
-     * //TODO Fix this Javadoc
      */
     public final void updateMultiblockEntity() {
         if (connectedParts.isEmpty()) {
@@ -1090,8 +1088,7 @@ public abstract class MultiblockControllerBase {
         }
 
         TileEntity saveTe = worldObj.getTileEntity(referenceCoord.toBlockPos());
-        worldObj.markTileEntityChunkModified(referenceCoord.x,
-                referenceCoord.y, referenceCoord.z, saveTe);
+        worldObj.markChunkDirty(referenceCoord.toBlockPos(), saveTe);
     }
 
 }

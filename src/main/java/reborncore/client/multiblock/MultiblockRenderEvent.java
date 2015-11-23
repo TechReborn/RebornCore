@@ -27,12 +27,13 @@ import net.minecraftforge.event.world.WorldEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
 import reborncore.common.misc.Location;
+import reborncore.common.multiblock.CoordTriplet;
 
 public class MultiblockRenderEvent {
 
     private static RenderBlocks blockRender = RenderBlocks.getInstance();
     public MultiblockSet currentMultiblock;
-    public static ChunkCoordinates anchor;
+    public static CoordTriplet anchor;
     public Location partent;
     public static int angle;
 
@@ -55,7 +56,7 @@ public class MultiblockRenderEvent {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (currentMultiblock != null && anchor == null && event.action == Action.RIGHT_CLICK_BLOCK && event.entityPlayer == Minecraft.getMinecraft().thePlayer) {
-            anchor = new ChunkCoordinates(event.x, event.y, event.z);
+            anchor = new CoordTriplet(event.pos);
             angle = MathHelper.floor_double(event.entityPlayer.rotationYaw * 4.0 / 360.0 + 0.5) & 3;
             event.setCanceled(true);
         }
@@ -63,9 +64,9 @@ public class MultiblockRenderEvent {
 
     private void renderPlayerLook(EntityPlayer player, MovingObjectPosition src) {
         if (currentMultiblock != null) {
-            int anchorX = anchor != null ? anchor.posX : src.blockX;
-            int anchorY = anchor != null ? anchor.posY + 1 : src.blockY + 1;
-            int anchorZ = anchor != null ? anchor.posZ : src.blockZ;
+            int anchorX = anchor != null ? anchor.x : src.getBlockPos().getX();
+            int anchorY = anchor != null ? anchor.y + 1 : src.getBlockPos().getY() + 1;
+            int anchorZ = anchor != null ? anchor.z : src.getBlockPos().getZ();
 
             Multiblock mb = currentMultiblock.getForEntity(player);
             for (MultiblockComponent comp : mb.getComponents())
@@ -74,10 +75,10 @@ public class MultiblockRenderEvent {
     }
 
     private boolean renderComponent(World world, Multiblock mb, MultiblockComponent comp, int anchorX, int anchorY, int anchorZ) {
-        ChunkCoordinates pos = comp.getRelativePosition();
-        int x = pos.posX + anchorX;
-        int y = pos.posY + anchorY;
-        int z = pos.posZ + anchorZ;
+        CoordTriplet pos = comp.getRelativePosition();
+        int x = pos.x + anchorX;
+        int y = pos.y + anchorY;
+        int z = pos.z + anchorZ;
 
         if (world.getBlock(x, y, z) == comp.getBlock() && world.getBlockMetadata(x, y, z) == comp.getMeta())
             return false;

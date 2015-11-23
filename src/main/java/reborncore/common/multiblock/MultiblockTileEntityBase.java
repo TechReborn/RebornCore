@@ -1,5 +1,6 @@
 package reborncore.common.multiblock;
 
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -17,7 +18,7 @@ import java.util.Set;
  * machines should derive from this and implement their game logic in certain
  * abstract methods.
  */
-public abstract class MultiblockTileEntityBase extends IMultiblockPart {
+public abstract class MultiblockTileEntityBase extends IMultiblockPart implements ITickable {
     private MultiblockControllerBase controller;
     private boolean visited;
 
@@ -108,19 +109,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
             this.controller.writeToNBT(multiblockData);
             data.setTag("multiblockData", multiblockData);
         }
-    }
-
-    /**
-     * Generally, TileEntities that are part of a multiblock should not
-     * subscribe to updates from the main game loop. Instead, you should have
-     * lists of TileEntities which need to be notified during an update() in
-     * your Controller and perform callbacks from there.
-     *
-     * @see net.minecraft.tileentity.TileEntity#canUpdate()
-     */
-    @Override
-    public boolean canUpdate() {
-        return false;
     }
 
     /**
@@ -351,7 +339,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
     public void onOrphaned(MultiblockControllerBase controller, int oldSize,
                            int newSize) {
         this.markDirty();
-        worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this);
+        worldObj.markChunkDirty(getPos(), this);
     }
 
     // // Helper functions for notifying neighboring blocks
