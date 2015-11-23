@@ -29,9 +29,9 @@ configurations {
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
-    version = "1.0.0." + "${System.getenv().BUILD_NUMBER}"
+    version = "1.8.8-1.0.0." + "${System.getenv().BUILD_NUMBER}"
 } else {
-    version = "1.0.0.BUILD"
+    version = "1.8.8-1.0.0.BUILD"
 }
 
 minecraft {
@@ -41,28 +41,6 @@ minecraft {
 }
 
 group = 'RebornCore'
-
-task deleteOldArtifacts(type: Delete) {
-    delete 'build/libs'
-}
-
-classes.dependsOn deleteOldArtifacts
-
-def grabDep(name, url) {
-    ant.get(src: url, dest: 'dep')
-    file("dep/" + url.substring(url.lastIndexOf("/"))).renameTo(file("dep/" + name + ".jar"))
-}
-
-dependencies {
-    def f = new File('dep/')
-    if (!f.exists()) {
-        f.mkdirs()
-    }
-    if (!f.exists()) {
-        f.mkdir()
-    }
-
-}
 
 processResources
         {
