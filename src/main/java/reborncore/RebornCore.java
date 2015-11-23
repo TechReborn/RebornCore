@@ -1,8 +1,8 @@
 package reborncore;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.Mod;
 import reborncore.common.IModInfo;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;

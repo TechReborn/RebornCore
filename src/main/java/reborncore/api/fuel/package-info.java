@@ -1,4 +1,4 @@
 @API(apiVersion = "@MODVERSION@", owner = "reborncore", provides = "reborncoreAPI") package reborncore.api.fuel;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;
 
