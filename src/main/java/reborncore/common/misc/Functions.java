@@ -1,9 +1,10 @@
 package reborncore.common.misc;
 
-import net.minecraftforge.common.util.ForgeDirection;
+
+import net.minecraft.util.EnumFacing;
 
 public class Functions {
-    public static int getIntDirFromDirection(ForgeDirection dir) {
+    public static int getIntDirFromDirection(EnumFacing dir) {
         switch (dir) {
             case DOWN:
                 return 0;
@@ -13,8 +14,6 @@ public class Functions {
                 return 2;
             case SOUTH:
                 return 3;
-            case UNKNOWN:
-                return 0;
             case UP:
                 return 1;
             case WEST:
@@ -24,7 +23,7 @@ public class Functions {
         }
     }
 
-    public static ForgeDirection getDirectionFromInt(int dir) {
+    public static EnumFacing getDirectionFromInt(int dir) {
         int metaDataToSet = 0;
         switch (dir) {
             case 0:
@@ -40,6 +39,6 @@ public class Functions {
                 metaDataToSet = 5;
                 break;
         }
-        return ForgeDirection.getOrientation(metaDataToSet);
+        return EnumFacing.getFront(metaDataToSet); //TODO 1.8 check this line
     }
 }

@@ -1,6 +1,6 @@
 package reborncore.common.multiblock.rectangular;
 
-import net.minecraftforge.common.util.ForgeDirection;
+
 import reborncore.common.multiblock.CoordTriplet;
 import reborncore.common.multiblock.MultiblockControllerBase;
 import reborncore.common.multiblock.MultiblockTileEntityBase;
