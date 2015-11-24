@@ -23,7 +23,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     public PropertyInteger METADATA;
 
-    int maxMetdata = 3;
+    static final int maxMetdata = 3;
 
     public TestBlock() {
         super(Material.cake);
@@ -38,7 +38,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     @Override
     public int amoutOfVariants() {
-        return maxMetdata -1;
+        return maxMetdata;
     }
 
     @Override

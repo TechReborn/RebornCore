@@ -2,7 +2,6 @@ package reborncore.jsonDestroyers.block;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -10,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -78,19 +76,9 @@ public class ModelGenertator {
                         }
                     }
 
-
-                    /// * Block model *
-                    // get the model registries entry for the current  block state
-                    ModelResourceLocation modelResourceLocation = ModelBuilder.getModelResourceLocation(block.getStateFromMeta(i));
-
-
+                    ModelResourceLocation modelResourceLocation = TextureRegistry.getModelResourceLocation(block.getStateFromMeta(i));
 
                     event.modelRegistry.putObject(modelResourceLocation, new BlockModel(textureMap, block.getStateFromMeta(i)));
-
-                    System.out.println(modelResourceLocation);
-
-
-
 
                     baseBlock.invmodels[i] = new BlockModel(textureMap, block.getStateFromMeta(i + 1));
 
