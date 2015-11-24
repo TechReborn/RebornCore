@@ -46,7 +46,7 @@ public class VersionChecker {
     }
 
     public void checkVersionThreaded() {
-        class VersionCheckerThread extends Thread {
+        new Thread(new Runnable() {
             public void run() {
                 try {
                     checkVersion();
@@ -54,9 +54,7 @@ public class VersionChecker {
                     e.printStackTrace();
                 }
             }
-        }
-        VersionCheckerThread thread = new VersionCheckerThread();
-        thread.start();
+        }).start();
     }
 
     public boolean isLatestVersion() {
