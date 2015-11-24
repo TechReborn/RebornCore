@@ -19,7 +19,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
 import reborncore.api.IBlockTextureProvider;
-import reborncore.api.IItemTexture;
 import reborncore.api.TextureRegistry;
 import reborncore.common.BaseBlock;
 
@@ -31,8 +30,6 @@ public class ModelGenertator {
     public static ModelGenertator INSTANCE = new ModelGenertator();
     public static HashMap<BlockIconInfo, TextureAtlasSprite> icons = new HashMap<BlockIconInfo, TextureAtlasSprite>();
     public static ArrayList<BlockIconInfo> blockIconInfoList = new ArrayList<BlockIconInfo>();
-    public static HashMap<Item, HashMap<Integer, TextureAtlasSprite>> itemTextures = new HashMap<Item, HashMap<Integer, TextureAtlasSprite>>();
-
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(INSTANCE);
@@ -59,14 +56,7 @@ public class ModelGenertator {
                 }
             }
         }
-        for (Item item : TextureRegistry.items){
-            if(item instanceof IItemTexture){
-                IItemTexture texture = (IItemTexture) item;
-                if(item.getHasSubtypes()){
-                   // for(item.getsub)
-                }
-            }
-        }
+
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -88,27 +78,21 @@ public class ModelGenertator {
                         }
                     }
 
-                    TextureAtlasSprite sprite = textureMap.get(EnumFacing.DOWN);
 
                     /// * Block model *
-                    // get the model registries entry for the current Dense Ore block state
+                    // get the model registries entry for the current  block state
                     ModelResourceLocation modelResourceLocation = ModelBuilder.getModelResourceLocation(block.getStateFromMeta(i));
 
-                    // get the baked model for the base block state
-                    IBakedModel baseModel = event.modelManager.getBlockModelShapes().getModelForState(block.getStateFromMeta(i));
-
-                    // generate the new dense ores baked model
-                    baseBlock.models[i] = ModelBuilder.changeIcon(baseModel, sprite);
-
-                    // add to the registry
-                    event.modelRegistry.putObject(modelResourceLocation, baseBlock.models[i]);
-
-                    System.out.println(textureMap.get(modelResourceLocation));
 
 
-                    IBakedModel itemModel = itemModelMesher.getItemModel(new ItemStack(baseBlock, 1, i));
+                    event.modelRegistry.putObject(modelResourceLocation, new BlockModel(textureMap, block.getStateFromMeta(i)));
 
-                    baseBlock.invmodels[i] = ModelBuilder.changeIcon(itemModel, textureMap.get(EnumFacing.DOWN));
+                    System.out.println(modelResourceLocation);
+
+
+
+
+                    baseBlock.invmodels[i] = new BlockModel(textureMap, block.getStateFromMeta(i + 1));
 
                     ModelResourceLocation inventory = new ModelResourceLocation(modelResourceLocation, "inventory");
 

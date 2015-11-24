@@ -12,4 +12,8 @@ public abstract class BaseBlock extends BlockContainer {
     public BaseBlock(Material materialIn) {
         super(materialIn);
     }
+
+    public int getRenderType() {
+        return 3;
+    }
 }

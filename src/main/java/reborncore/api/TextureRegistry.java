@@ -17,6 +17,9 @@ public class TextureRegistry {
     public static ArrayList<Item> items = new ArrayList<Item>();
 
     public static void registerItem(Item item){
+        if(!(item instanceof IItemTexture)){
+            return;
+        }
         items.add(item);
     }
 

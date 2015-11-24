@@ -30,38 +30,41 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
         setUnlocalizedName("testBlock");
         setCreativeTab(CreativeTabs.tabBlock);
 
-     //   this.setDefaultState(this.blockState.getBaseState().withProperty(METADATA, 0));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(METADATA, 0));
     }
 
-//    @Override
-//    public int amoutOfVariants() {
-//        return maxMetdata;
-//    }
-//
-//    @Override
-//    public IBlockState getStateFromMeta(int meta) {
-//        return this.getDefaultState().withProperty(METADATA, meta);
-//    }
-//
-//    @Override
-//    public int getMetaFromState(IBlockState state) {
-//        return (Integer) state.getValue(METADATA);
-//    }
-//
-//    protected BlockState createBlockState() {
-//
-//        METADATA = PropertyInteger.create("Type", 0, maxMetdata);
-//        return new BlockState(this, METADATA);
-//    }
+    public static final String[] types = new String[]
+            {"one", "two", "three"};
 
-//    @SuppressWarnings("unchecked")
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-//        for (int i = 0; i < maxMetdata; i++)
-//                list.add(new ItemStack(item, 1, i));
-//
-//    }
+    @Override
+    public int amoutOfVariants() {
+        return maxMetdata -1;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(METADATA, meta);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return (Integer) state.getValue(METADATA);
+    }
+
+    protected BlockState createBlockState() {
+
+        METADATA = PropertyInteger.create("Type", 0, maxMetdata);
+        return new BlockState(this, METADATA);
+    }
+
+    @SuppressWarnings("unchecked")
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+        for (int i = 0; i < maxMetdata; i++)
+                list.add(new ItemStack(item, 1, i));
+
+    }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
@@ -70,14 +73,14 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     @Override
     public String getTextureName(IBlockState blockState, EnumFacing facing) {
-        return "test";
+        if(facing == EnumFacing.UP){
+            return "test2";
+        }
+        return types[getMetaFromState(blockState)];
     }
-
 
     @Override
-    public int amoutOfVariants() {
-        return 3 ;
+    public Block setUnlocalizedName(String name) {
+        return super.setUnlocalizedName(name);
     }
-
-
 }
