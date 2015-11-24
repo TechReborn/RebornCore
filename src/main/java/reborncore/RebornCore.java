@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import reborncore.api.TextureRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
@@ -35,6 +36,7 @@ public class RebornCore implements IModInfo {
 
         test = new TestBlock();
         GameRegistry.registerBlock(test, "TestBlockRC");
+        TextureRegistry.registerBlock(test);
         ModelGenertator.register();
     }
 

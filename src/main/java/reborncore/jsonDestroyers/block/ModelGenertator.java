@@ -1,6 +1,8 @@
 package reborncore.jsonDestroyers.block;
 
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -9,17 +11,27 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
+import reborncore.api.IBlockTextureProvider;
+import reborncore.api.IItemTexture;
+import reborncore.api.TextureRegistry;
+import reborncore.common.BaseBlock;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ModelGenertator {
 
     public static ModelGenertator INSTANCE = new ModelGenertator();
-    public static TextureAtlasSprite icon;
+    public static HashMap<BlockIconInfo, TextureAtlasSprite> icons = new HashMap<BlockIconInfo, TextureAtlasSprite>();
+    public static ArrayList<BlockIconInfo> blockIconInfoList = new ArrayList<BlockIconInfo>();
+    public static HashMap<Item, HashMap<Integer, TextureAtlasSprite>> itemTextures = new HashMap<Item, HashMap<Integer, TextureAtlasSprite>>();
 
 
     public static void register() {
@@ -29,27 +41,85 @@ public class ModelGenertator {
     @SubscribeEvent
     public void textureStitch(TextureStitchEvent.Pre event) {
         TextureMap textureMap = event.map;
-        String name = "reborncore:blocks/test";
-        TextureAtlasSprite texture = textureMap.getTextureExtry(name);
-        if (texture == null) {
-            texture = new CustomTexture(name);
-            textureMap.setTextureEntry(name, texture);
+        for (Block block : TextureRegistry.blocks) {
+            if (block instanceof IBlockTextureProvider) {
+                IBlockTextureProvider blockTextureProvider = (IBlockTextureProvider) block;
+                for (int i = 0; i < blockTextureProvider.amoutOfVariants(); i++) {
+                    for (EnumFacing side : EnumFacing.values()) {
+                        String name = CustomTexture.getDerivedName(blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side));
+                        TextureAtlasSprite texture = textureMap.getTextureExtry(name);
+                        if (texture == null) {
+                            texture = new CustomTexture(name);
+                            textureMap.setTextureEntry(name, texture);
+                        }
+                        BlockIconInfo iconInfo = new BlockIconInfo(block, i, side);
+                        icons.put(iconInfo, texture);
+                        blockIconInfoList.add(iconInfo);
+                    }
+                }
+            }
         }
-        icon = textureMap.getTextureExtry(name);
+        for (Item item : TextureRegistry.items){
+            if(item instanceof IItemTexture){
+                IItemTexture texture = (IItemTexture) item;
+                if(item.getHasSubtypes()){
+                   // for(item.getsub)
+                }
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void bakeModels(ModelBakeEvent event) {
         ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        ModelResourceLocation modelResourceLocation = ModelBuilder.getModelResourceLocation(RebornCore.test.getDefaultState());
-        IBakedModel baseModel = event.modelManager.getBlockModelShapes().getModelForState(RebornCore.test.getDefaultState());
-        RebornCore.test.model = ModelBuilder.changeIcon(baseModel, icon);
-        event.modelRegistry.putObject(modelResourceLocation, RebornCore.test.model);
-        IBakedModel itemModel = itemModelMesher.getItemModel(new ItemStack(RebornCore.test));
-        RebornCore.test.invmodel = ModelBuilder.changeIcon(itemModel, icon);
-        ModelResourceLocation inventory = new ModelResourceLocation(modelResourceLocation, "inventory");
-        event.modelRegistry.putObject(inventory, RebornCore.test.invmodel);
-        itemModelMesher.register(Item.getItemFromBlock(RebornCore.test), 0, inventory);
+        for (Block block : TextureRegistry.blocks) {
+            if (block instanceof BaseBlock && block instanceof IBlockTextureProvider) {
+                BaseBlock baseBlock = (BaseBlock) block;
+                IBlockTextureProvider textureProvdier = (IBlockTextureProvider) block;
+                baseBlock.models = new IBakedModel[textureProvdier.amoutOfVariants()];
+                baseBlock.invmodels = new IBakedModel[textureProvdier.amoutOfVariants()];
+                for (int i = 0; i < textureProvdier.amoutOfVariants(); i++) {
+                    HashMap<EnumFacing, TextureAtlasSprite> textureMap = new HashMap<EnumFacing, TextureAtlasSprite>();
+                    for (EnumFacing side : EnumFacing.VALUES) {
+                        for (BlockIconInfo iconInfo : blockIconInfoList) {
+                            if (iconInfo.getBlock() == block && iconInfo.getMeta() == i && iconInfo.getSide() == side) {
+                                textureMap.put(side, icons.get(iconInfo));
+                            }
+                        }
+                    }
 
+                    TextureAtlasSprite sprite = textureMap.get(EnumFacing.DOWN);
+
+                    /// * Block model *
+                    // get the model registries entry for the current Dense Ore block state
+                    ModelResourceLocation modelResourceLocation = ModelBuilder.getModelResourceLocation(block.getStateFromMeta(i));
+
+                    // get the baked model for the base block state
+                    IBakedModel baseModel = event.modelManager.getBlockModelShapes().getModelForState(block.getStateFromMeta(i));
+
+                    // generate the new dense ores baked model
+                    baseBlock.models[i] = ModelBuilder.changeIcon(baseModel, sprite);
+
+                    // add to the registry
+                    event.modelRegistry.putObject(modelResourceLocation, baseBlock.models[i]);
+
+                    System.out.println(textureMap.get(modelResourceLocation));
+
+
+                    IBakedModel itemModel = itemModelMesher.getItemModel(new ItemStack(baseBlock, 1, i));
+
+                    baseBlock.invmodels[i] = ModelBuilder.changeIcon(itemModel, textureMap.get(EnumFacing.DOWN));
+
+                    ModelResourceLocation inventory = new ModelResourceLocation(modelResourceLocation, "inventory");
+
+                    event.modelRegistry.putObject(inventory, baseBlock.invmodels[i]);
+
+                    itemModelMesher.register(Item.getItemFromBlock(block), i, inventory);
+                }
+
+            } else {
+                RebornCore.logHelper.debug("Block does not extend blockBase!");
+            }
+        }
     }
 }

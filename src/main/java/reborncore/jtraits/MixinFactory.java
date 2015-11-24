@@ -10,7 +10,7 @@ public class MixinFactory {
      * Makes a mixin with the specified class, and a set of traits.
      */
     @SuppressWarnings("unchecked")
-    @SafeVarargs
+   // @SafeVarargs
     public static <T> Class<? extends T> mixin(Class<T> clazz, Class<?>... traits) {
 
         Class<?> cl = clazz;
