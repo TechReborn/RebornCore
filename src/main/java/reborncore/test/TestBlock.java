@@ -67,11 +67,6 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return null;
-    }
-
-    @Override
     public String getTextureName(IBlockState blockState, EnumFacing facing) {
         if(facing == EnumFacing.UP){
             return "test2";

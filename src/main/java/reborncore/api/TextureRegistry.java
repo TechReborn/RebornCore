@@ -15,6 +15,9 @@ public class TextureRegistry {
     public static ArrayList<Block> blocks = new ArrayList<Block>();
 
     public static void registerBlock(Block block){
+        if(!(block instanceof IBlockTextureProvider)){
+            return;
+        }
         blocks.add(block);
     }
 

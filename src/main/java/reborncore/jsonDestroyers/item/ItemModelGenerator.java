@@ -55,10 +55,8 @@ public class ItemModelGenerator {
     public void bakeModels(ModelBakeEvent event) {
         ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         for (Item item : TextureRegistry.items) {
-            if (item instanceof IItemTexture && item instanceof BaseItem) {
+            if (item instanceof IItemTexture) {
                 IItemTexture textureProvdier = (IItemTexture) item;
-                BaseItem baseItem = (BaseItem) item;
-                baseItem.invmodels = new IBakedModel[textureProvdier.getMaxMeta()];
                 for (int i = 0; i < textureProvdier.getMaxMeta(); i++) {
                     TextureAtlasSprite texture = null;
                     for (ItemIconInfo info : icons) {
@@ -71,8 +69,9 @@ public class ItemModelGenerator {
                         break;
                     }
                     ModelResourceLocation inventory = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName(new ItemStack(item, 1, i)).substring(5), "inventory");
-                    event.modelRegistry.putObject(inventory, new ItemModel(texture));
-                    itemModelMesher.register(baseItem, i, inventory);
+                    IBakedModel model = new ItemModel(texture);
+                    event.modelRegistry.putObject(inventory, model);
+                    itemModelMesher.register(item, i, inventory);
                 }
 
             }

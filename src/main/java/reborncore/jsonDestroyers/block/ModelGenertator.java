@@ -41,7 +41,7 @@ public class ModelGenertator {
                 IBlockTextureProvider blockTextureProvider = (IBlockTextureProvider) block;
                 for (int i = 0; i < blockTextureProvider.amoutOfVariants(); i++) {
                     for (EnumFacing side : EnumFacing.values()) {
-                        String name = CustomTexture.getDerivedName(blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side));
+                        String name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side);
                         TextureAtlasSprite texture = textureMap.getTextureExtry(name);
                         if (texture == null) {
                             texture = new CustomTexture(name);
@@ -61,11 +61,8 @@ public class ModelGenertator {
     public void bakeModels(ModelBakeEvent event) {
         ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         for (Block block : TextureRegistry.blocks) {
-            if (block instanceof BaseBlock && block instanceof IBlockTextureProvider) {
-                BaseBlock baseBlock = (BaseBlock) block;
+            if ( block instanceof IBlockTextureProvider) {
                 IBlockTextureProvider textureProvdier = (IBlockTextureProvider) block;
-                baseBlock.models = new IBakedModel[textureProvdier.amoutOfVariants()];
-                baseBlock.invmodels = new IBakedModel[textureProvdier.amoutOfVariants()];
                 for (int i = 0; i < textureProvdier.amoutOfVariants(); i++) {
                     HashMap<EnumFacing, TextureAtlasSprite> textureMap = new HashMap<EnumFacing, TextureAtlasSprite>();
                     for (EnumFacing side : EnumFacing.VALUES) {
@@ -80,11 +77,9 @@ public class ModelGenertator {
 
                     event.modelRegistry.putObject(modelResourceLocation, new BlockModel(textureMap, block.getStateFromMeta(i)));
 
-                    baseBlock.invmodels[i] = new BlockModel(textureMap, block.getStateFromMeta(i + 1));
-
                     ModelResourceLocation inventory = new ModelResourceLocation(modelResourceLocation, "inventory");
 
-                    event.modelRegistry.putObject(inventory, baseBlock.invmodels[i]);
+                    event.modelRegistry.putObject(inventory, new BlockModel(textureMap, block.getStateFromMeta(i + 1)));
 
                     itemModelMesher.register(Item.getItemFromBlock(block), i, inventory);
                 }
