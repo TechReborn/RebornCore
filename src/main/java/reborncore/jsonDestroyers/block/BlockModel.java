@@ -6,15 +6,19 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class BlockModel implements IBakedModel {
+public class BlockModel implements IBakedModel, IPerspectiveAwareModel {
     HashMap<EnumFacing, TextureAtlasSprite> textureAtlasSpriteHashMap;
     IBlockState state;
 
@@ -76,6 +80,17 @@ public class BlockModel implements IBakedModel {
     public ItemCameraTransforms getItemCameraTransforms() {
         return ItemCameraTransforms.DEFAULT;
     }
+
+
+    @Override
+    public Pair<IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        if (cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON)
+            return Pair.of(IBakedModel.class.cast(this), ThirdPerson);
+
+        return Pair.of(IBakedModel.class.cast(this), null);
+    }
+
+    public static final Matrix4f ThirdPerson = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(3.3F, 1, -0.3F), new Vector3f(0F, 0.1F, -0.15F), new Vector3f(0.35F, 0.35F, 0.35F)));
 
 
 }
