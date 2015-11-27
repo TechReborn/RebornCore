@@ -1,6 +1,7 @@
 package reborncore;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -10,6 +11,7 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
 import reborncore.jsonDestroyers.block.ModelGenertator;
+import reborncore.jsonDestroyers.fluid.FluidModelGenerator;
 import reborncore.jsonDestroyers.item.ItemModelGenerator;
 import reborncore.test.ItemBlockTest;
 import reborncore.test.TestBlock;
@@ -43,7 +45,10 @@ public class RebornCore implements IModInfo {
     }
 
 
-    @Override
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event){
+
+    }
     public String MOD_NAME() {
         return MOD_NAME;
     }
