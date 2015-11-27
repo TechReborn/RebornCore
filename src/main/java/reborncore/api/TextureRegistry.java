@@ -18,6 +18,9 @@ public class TextureRegistry {
         if(!(block instanceof IBlockTextureProvider)){
             return;
         }
+        if(blocks.contains(block)){
+            return;
+        }
         blocks.add(block);
     }
 
@@ -25,6 +28,9 @@ public class TextureRegistry {
 
     public static void registerItem(Item item){
         if(!(item instanceof IItemTexture)){
+            return;
+        }
+        if(items.contains(item)){
             return;
         }
         items.add(item);
