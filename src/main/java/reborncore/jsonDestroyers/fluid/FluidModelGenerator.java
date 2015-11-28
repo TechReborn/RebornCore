@@ -8,14 +8,14 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import reborncore.api.TextureRegistry;
-import techreborn.blocks.fluid.BlockFluidBase;
 
 public class FluidModelGenerator {
 
 
     public static void postInit(){
-        for(BlockFluidBase fluid : TextureRegistry.fluids){
+        for(BlockFluidClassic fluid : TextureRegistry.fluids){
             final ModelResourceLocation fluidLocation = new ModelResourceLocation(fluid.getFluid().getFlowing(), "fluid");
             Item fluidItem = Item.getItemFromBlock(fluid);
             ModelBakery.addVariantName(fluidItem);

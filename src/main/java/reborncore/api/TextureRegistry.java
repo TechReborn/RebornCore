@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import techreborn.blocks.fluid.BlockFluidBase;
+import net.minecraftforge.fluids.BlockFluidClassic;
 
 import java.util.ArrayList;
 
@@ -37,9 +37,9 @@ public class TextureRegistry {
         items.add(item);
     }
 
-    public static ArrayList<BlockFluidBase> fluids = new ArrayList<BlockFluidBase>();
+    public static ArrayList<BlockFluidClassic> fluids = new ArrayList<BlockFluidClassic>();
 
-    public static void registerFluid(BlockFluidBase fluid){
+    public static void registerFluid(BlockFluidClassic fluid){
         if(fluids.contains(fluid)){
             return;
         }
