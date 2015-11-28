@@ -1,8 +1,8 @@
 package reborncore.common.multiblock;
 
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraftforge.common.util.ForgeDirection;
-
 /*
  * Simple wrapper class for XYZ coordinates.
  */
@@ -13,6 +13,12 @@ public class CoordTriplet implements Comparable {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public CoordTriplet(BlockPos pos){
+        this.x = pos.getX();
+        this.y = pos.getY();
+        this.z = pos.getZ();
     }
 
     public int getChunkX() {
@@ -40,14 +46,18 @@ public class CoordTriplet implements Comparable {
         }
     }
 
-    public void translate(ForgeDirection dir) {
-        this.x += dir.offsetX;
-        this.y += dir.offsetY;
-        this.z += dir.offsetZ;
+    public void translate(EnumFacing dir) {
+        this.x += dir.getFrontOffsetX();
+        this.y += dir.getFrontOffsetY();
+        this.z += dir.getFrontOffsetZ();
     }
 
     public boolean equals(int x, int y, int z) {
         return this.x == x && this.y == y && this.z == z;
+    }
+
+    public boolean equals(BlockPos pos){
+        return equals(pos.getX(), pos.getY(), pos.getZ());
     }
 
     // Suggested implementation from NetBeans 7.1
@@ -103,40 +113,40 @@ public class CoordTriplet implements Comparable {
 
     // /// Really confusing code that should be cleaned up
 
-    public ForgeDirection getDirectionFromSourceCoords(int x, int y, int z) {
+    public EnumFacing getDirectionFromSourceCoords(int x, int y, int z) {
         if (this.x < x) {
-            return ForgeDirection.WEST;
+            return EnumFacing.WEST;
         } else if (this.x > x) {
-            return ForgeDirection.EAST;
+            return EnumFacing.EAST;
         } else if (this.y < y) {
-            return ForgeDirection.DOWN;
+            return EnumFacing.DOWN;
         } else if (this.y > y) {
-            return ForgeDirection.UP;
+            return EnumFacing.UP;
         } else if (this.z < z) {
-            return ForgeDirection.SOUTH;
+            return EnumFacing.SOUTH;
         } else if (this.z > z) {
-            return ForgeDirection.NORTH;
+            return EnumFacing.NORTH;
         } else {
-            return ForgeDirection.UNKNOWN;
+            return null;
         }
     }
 
-    public ForgeDirection getOppositeDirectionFromSourceCoords(int x, int y,
+    public EnumFacing getOppositeDirectionFromSourceCoords(int x, int y,
                                                                int z) {
         if (this.x < x) {
-            return ForgeDirection.EAST;
+            return EnumFacing.EAST;
         } else if (this.x > x) {
-            return ForgeDirection.WEST;
+            return EnumFacing.WEST;
         } else if (this.y < y) {
-            return ForgeDirection.UP;
+            return EnumFacing.UP;
         } else if (this.y > y) {
-            return ForgeDirection.DOWN;
+            return EnumFacing.DOWN;
         } else if (this.z < z) {
-            return ForgeDirection.NORTH;
+            return EnumFacing.NORTH;
         } else if (this.z > z) {
-            return ForgeDirection.SOUTH;
+            return EnumFacing.SOUTH;
         } else {
-            return ForgeDirection.UNKNOWN;
+            return null;
         }
     }
 
@@ -161,5 +171,9 @@ public class CoordTriplet implements Comparable {
         } else {
             return 0;
         }
+    }
+
+    public BlockPos toBlockPos(){
+        return new BlockPos(x, y, z);
     }
 }

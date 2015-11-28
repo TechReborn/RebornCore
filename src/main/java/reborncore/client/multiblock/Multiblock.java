@@ -10,8 +10,8 @@ package reborncore.client.multiblock;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
 import reborncore.client.multiblock.component.MultiblockComponent;
+import reborncore.common.multiblock.CoordTriplet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class Multiblock {
      */
     public void addComponent(MultiblockComponent component) {
         components.add(component);
-        changeAxisForNewComponent(component.relPos.posX, component.relPos.posY, component.relPos.posZ);
+        changeAxisForNewComponent(component.relPos.x, component.relPos.y, component.relPos.z);
         calculateCostForNewComponent(component);
     }
 
@@ -43,7 +43,7 @@ public class Multiblock {
      * coords should be pivoted to the center of the structure.
      */
     public void addComponent(int x, int y, int z, Block block, int meta) {
-        addComponent(new MultiblockComponent(new ChunkCoordinates(x, y, z), block, meta));
+        addComponent(new MultiblockComponent(new CoordTriplet(x, y, z), block, meta));
     }
 
     private void changeAxisForNewComponent(int x, int y, int z) {

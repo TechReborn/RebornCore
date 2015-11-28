@@ -1,11 +1,12 @@
 package reborncore.common.misc;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+
 
 public class Location implements Comparable<Location> {
     public int x;
@@ -42,10 +43,10 @@ public class Location implements Comparable<Location> {
         this.world = world;
     }
 
-    public Location(int xCoord, int yCoord, int zCoord, ForgeDirection dir) {
-        this.x = xCoord + dir.offsetX;
-        this.y = yCoord + dir.offsetY;
-        this.z = zCoord + dir.offsetZ;
+    public Location(int xCoord, int yCoord, int zCoord, EnumFacing dir) {
+        this.x = xCoord + dir.getFrontOffsetX();
+        this.y = yCoord + dir.getFrontOffsetY();
+        this.z = zCoord + dir.getFrontOffsetZ();
     }
 
     public Location(int[] coords) {
@@ -56,26 +57,26 @@ public class Location implements Comparable<Location> {
         }
     }
 
-    public Location(ChunkPosition pos) {
+    public Location(BlockPos pos) {
         if (pos != null) {
-            this.x = pos.chunkPosX;
-            this.y = pos.chunkPosY;
-            this.z = pos.chunkPosZ;
+            this.x = pos.getX();
+            this.y = pos.getZ();
+            this.z = pos.getY();
         }
     }
 
     public Location(MovingObjectPosition blockLookedAt) {
         if (blockLookedAt != null) {
-            this.x = blockLookedAt.blockX;
-            this.y = blockLookedAt.blockY;
-            this.z = blockLookedAt.blockZ;
+            this.x = blockLookedAt.getBlockPos().getX();
+            this.y = blockLookedAt.getBlockPos().getY();
+            this.z = blockLookedAt.getBlockPos().getZ();
         }
     }
 
     public Location(TileEntity par1) {
-        this.x = par1.xCoord;
-        this.y = par1.yCoord;
-        this.z = par1.zCoord;
+        this.x = par1.getPos().getX();
+        this.y = par1.getPos().getY();
+        this.z = par1.getPos().getZ();
     }
 
     public boolean equals(Location toTest) {
@@ -147,11 +148,11 @@ public class Location implements Comparable<Location> {
         return (this.x == x && this.y == y && this.z == z);
     }
 
-    public Location getLocation(ForgeDirection dir) {
-        return new Location(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
+    public Location getLocation(EnumFacing dir) {
+        return new Location(x + dir.getFrontOffsetX(), y + dir.getFrontOffsetY(), z + dir.getFrontOffsetZ());
     }
 
-    public Location modifyPositionFromSide(ForgeDirection side, int amount) {
+    public Location modifyPositionFromSide(EnumFacing side, int amount) {
         switch (side.ordinal()) {
             case 0:
                 this.y -= amount;
@@ -175,7 +176,7 @@ public class Location implements Comparable<Location> {
         return this;
     }
 
-    public Location modifyPositionFromSide(ForgeDirection side) {
+    public Location modifyPositionFromSide(EnumFacing side) {
         return this.modifyPositionFromSide(side, 1);
     }
 
@@ -183,7 +184,7 @@ public class Location implements Comparable<Location> {
      * This will load the chunk.
      */
     public TileEntity getTileEntity(IBlockAccess world) {
-        return world.getTileEntity(this.x, this.y, this.z);
+        return world.getTileEntity(new BlockPos(this.x, this.y, this.z));
     }
 
     public final Location clone() {
@@ -193,7 +194,7 @@ public class Location implements Comparable<Location> {
     /**
      * No chunk load: returns null if chunk to side is unloaded
      */
-    public TileEntity getTileEntityOnSide(World world, ForgeDirection side) {
+    public TileEntity getTileEntityOnSide(World world, EnumFacing side) {
         int x = this.x;
         int y = this.y;
         int z = this.z;
@@ -219,11 +220,15 @@ public class Location implements Comparable<Location> {
             default:
                 return null;
         }
-        if (world.blockExists(x, y, z)) {
-            return world.getTileEntity(x, y, z);
+        if (world.isBlockLoaded(getBlockPos())) {
+            return world.getTileEntity(getBlockPos());
         } else {
             return null;
         }
+    }
+
+    public BlockPos getBlockPos(){
+        return new BlockPos(x, y, z);
     }
 
     /**
@@ -255,8 +260,8 @@ public class Location implements Comparable<Location> {
             default:
                 return null;
         }
-        if (world.blockExists(x, y, z)) {
-            return world.getTileEntity(x, y, z);
+        if (world.isBlockLoaded(getBlockPos())) {
+            return world.getTileEntity(getBlockPos());
         } else {
             return null;
         }

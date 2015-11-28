@@ -1,12 +1,20 @@
 package reborncore;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import reborncore.api.TextureRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
+import reborncore.jsonDestroyers.block.ModelGenertator;
+import reborncore.jsonDestroyers.fluid.FluidModelGenerator;
+import reborncore.jsonDestroyers.item.ItemModelGenerator;
+import reborncore.test.ItemBlockTest;
+import reborncore.test.TestBlock;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION)
 public class RebornCore implements IModInfo {
@@ -15,6 +23,8 @@ public class RebornCore implements IModInfo {
     public static final String MOD_VERSION = "@MODVERSION@";
 
     public static LogHelper logHelper;
+
+    public static TestBlock test;
 
     public RebornCore() {
         logHelper = new LogHelper(this);
@@ -26,10 +36,19 @@ public class RebornCore implements IModInfo {
         PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(
                 MOD_ID + "_packets", new PacketHandler()));
         OreUtil.scanForOres();
+
+        test = new TestBlock();
+        GameRegistry.registerBlock(test, ItemBlockTest.class,  "TestBlockRC");
+        TextureRegistry.registerBlock(test);
+        ModelGenertator.register();
+        ItemModelGenerator.register();
     }
 
 
-    @Override
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event){
+
+    }
     public String MOD_NAME() {
         return MOD_NAME;
     }

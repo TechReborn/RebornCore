@@ -19,14 +19,14 @@ public class ItemBlockBase extends ItemMultiTexture implements IPickupAchievemen
     @Override
     public Achievement getAchievementOnCraft(ItemStack stack,
                                              EntityPlayer player, IInventory matrix) {
-        return field_150939_a instanceof ICraftAchievement ? ((ICraftAchievement) field_150939_a)
+        return theBlock instanceof ICraftAchievement ? ((ICraftAchievement) theBlock)
                 .getAchievementOnCraft(stack, player, matrix) : null;
     }
 
     @Override
     public Achievement getAchievementOnPickup(ItemStack stack,
                                               EntityPlayer player, EntityItem item) {
-        return field_150939_a instanceof IPickupAchievement ? ((IPickupAchievement) field_150939_a)
+        return theBlock instanceof IPickupAchievement ? ((IPickupAchievement) theBlock)
                 .getAchievementOnPickup(stack, player, item) : null;
     }
 

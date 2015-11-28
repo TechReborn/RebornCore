@@ -1,5 +1,6 @@
 package reborncore.common.multiblock;
 
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -17,7 +18,7 @@ import java.util.Set;
  * machines should derive from this and implement their game logic in certain
  * abstract methods.
  */
-public abstract class MultiblockTileEntityBase extends IMultiblockPart {
+public abstract class MultiblockTileEntityBase extends IMultiblockPart implements ITickable {
     private MultiblockControllerBase controller;
     private boolean visited;
 
@@ -79,7 +80,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
         if (this.controller != null) {
             BeefCoreLog
                     .info("[assert] Part @ (%d, %d, %d) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.",
-                            xCoord, yCoord, zCoord);
+                            getPos().getX(), getPos().getY(), getPos().getZ());
             this.controller = null;
         }
     }
@@ -108,19 +109,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
             this.controller.writeToNBT(multiblockData);
             data.setTag("multiblockData", multiblockData);
         }
-    }
-
-    /**
-     * Generally, TileEntities that are part of a multiblock should not
-     * subscribe to updates from the main game loop. Instead, you should have
-     * lists of TileEntities which need to be notified during an update() in
-     * your Controller and perform callbacks from there.
-     *
-     * @see net.minecraft.tileentity.TileEntity#canUpdate()
-     */
-    @Override
-    public boolean canUpdate() {
-        return false;
     }
 
     /**
@@ -171,14 +159,14 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
     public Packet getDescriptionPacket() {
         NBTTagCompound packetData = new NBTTagCompound();
         encodeDescriptionPacket(packetData);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0,
+        return new S35PacketUpdateTileEntity(getPos(), 0,
                 packetData);
     }
 
     @Override
     public void onDataPacket(NetworkManager network,
                              S35PacketUpdateTileEntity packet) {
-        decodeDescriptionPacket(packet.func_148857_g());
+        decodeDescriptionPacket(packet.getNbtCompound());
     }
 
     // /// Things to override in most implementations (IMultiblockPart)
@@ -265,7 +253,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
 
     @Override
     public CoordTriplet getWorldLocation() {
-        return new CoordTriplet(this.xCoord, this.yCoord, this.zCoord);
+        return new CoordTriplet(this.getPos());
     }
 
     @Override
@@ -320,12 +308,12 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
     @Override
     public IMultiblockPart[] getNeighboringParts() {
         CoordTriplet[] neighbors = new CoordTriplet[]
-                {new CoordTriplet(this.xCoord - 1, this.yCoord, this.zCoord),
-                        new CoordTriplet(this.xCoord, this.yCoord - 1, this.zCoord),
-                        new CoordTriplet(this.xCoord, this.yCoord, this.zCoord - 1),
-                        new CoordTriplet(this.xCoord, this.yCoord, this.zCoord + 1),
-                        new CoordTriplet(this.xCoord, this.yCoord + 1, this.zCoord),
-                        new CoordTriplet(this.xCoord + 1, this.yCoord, this.zCoord)};
+                {new CoordTriplet(this.getPos().getX() - 1, this.getPos().getY(), this.getPos().getZ()),
+                        new CoordTriplet(this.getPos().getX(), this.getPos().getY() - 1, this.getPos().getZ()),
+                        new CoordTriplet(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() - 1),
+                        new CoordTriplet(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() + 1),
+                        new CoordTriplet(this.getPos().getX(), this.getPos().getY() + 1, this.getPos().getZ()),
+                        new CoordTriplet(this.getPos().getX() + 1, this.getPos().getY(), this.getPos().getZ())};
 
         TileEntity te;
         List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
@@ -338,7 +326,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
             }
 
             te = this.worldObj
-                    .getTileEntity(neighbor.x, neighbor.y, neighbor.z);
+                    .getTileEntity(neighbor.toBlockPos());
             if (te instanceof IMultiblockPart) {
                 neighborParts.add((IMultiblockPart) te);
             }
@@ -351,17 +339,17 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart {
     public void onOrphaned(MultiblockControllerBase controller, int oldSize,
                            int newSize) {
         this.markDirty();
-        worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this);
+        worldObj.markChunkDirty(getPos(), this);
     }
 
     // // Helper functions for notifying neighboring blocks
     protected void notifyNeighborsOfBlockChange() {
-        worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord,
+        worldObj.notifyBlockOfStateChange(getPos(),
                 getBlockType());
     }
 
     protected void notifyNeighborsOfTileChange() {
-        worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+        worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
     }
 
     // /// Private/Protected Logic Helpers

@@ -2,7 +2,8 @@ package reborncore.common.util;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,9 +20,9 @@ public class FluidUtils {
             FluidStack fluidInContainer = getFluidStackInContainer(input);
             ItemStack emptyItem = input.getItem().getContainerItem(input);
             if (fluidInContainer != null && (emptyItem == null || output == null || (output.stackSize < output.getMaxStackSize() && ItemUtils.isItemEqual(output, emptyItem, true, true)))) {
-                int used = fluidHandler.fill(ForgeDirection.UNKNOWN, fluidInContainer, false);
-                if (used >= fluidInContainer.amount && fluidHandler.canFill(ForgeDirection.UP, fluidInContainer.getFluid())) {
-                    fluidHandler.fill(ForgeDirection.UNKNOWN, fluidInContainer,
+                int used = fluidHandler.fill(null, fluidInContainer, false);
+                if (used >= fluidInContainer.amount && fluidHandler.canFill(EnumFacing.UP, fluidInContainer.getFluid())) {
+                    fluidHandler.fill(null, fluidInContainer,
                             true);
                     if (emptyItem != null)
                         if (output == null)
@@ -43,10 +44,10 @@ public class FluidUtils {
         ItemStack filled = getFilledContainer(fluidToFill, input);
         if (filled != null && (output == null || (output.stackSize < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true)))) {
             FluidStack fluidInContainer = getFluidStackInContainer(filled);
-            FluidStack drain = fluidHandler.drain(ForgeDirection.UNKNOWN,
+            FluidStack drain = fluidHandler.drain(null,
                     fluidInContainer, false);
             if (drain != null && drain.amount == fluidInContainer.amount) {
-                fluidHandler.drain(ForgeDirection.UNKNOWN, fluidInContainer,
+                fluidHandler.drain(null, fluidInContainer,
                         true);
                 if (output == null)
                     inv.setInventorySlotContents(outputSlot, filled);

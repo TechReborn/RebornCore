@@ -16,8 +16,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+
 
 //From OpenBlocksLib: https://github.com/OpenMods/OpenModsLib
 public class InventoryHelper {
@@ -52,18 +55,18 @@ public class InventoryHelper {
 	}
 
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack) {
-		insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN, -1);
+		insertItemIntoInventory(inventory, stack, null, -1);
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, ForgeDirection side, int intoSlot) {
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot) {
 		insertItemIntoInventory(inventory, stack, side, intoSlot, true);
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, ForgeDirection side, int intoSlot, boolean doMove) {
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot, boolean doMove) {
 		insertItemIntoInventory(inventory, stack, side, intoSlot, doMove, true);
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, ForgeDirection side, int intoSlot, boolean doMove, boolean canStack) {
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot, boolean doMove, boolean canStack) {
 		if(stack == null) return;
 
 		IInventory targetInventory = inventory;
@@ -76,8 +79,8 @@ public class InventoryHelper {
 		int i = 0;
 		int[] attemptSlots = new int[0];
 
-		if(inventory instanceof ISidedInventory && side != ForgeDirection.UNKNOWN) {
-			attemptSlots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side.ordinal());
+		if(inventory instanceof ISidedInventory && side != null) {
+			attemptSlots = ((ISidedInventory)inventory).getSlotsForFace(side);
 			if(attemptSlots == null)
 				attemptSlots = new int[0];
 		} else {
@@ -95,8 +98,8 @@ public class InventoryHelper {
 			else attemptSlots = new int[0];
 		}
 		while(stack.stackSize > 0 && i < attemptSlots.length) {
-			if(side != ForgeDirection.UNKNOWN && inventory instanceof ISidedInventory)
-				if(!((ISidedInventory)inventory).canInsertItem(attemptSlots[i], stack, side.ordinal())) {
+			if(side != null && inventory instanceof ISidedInventory)
+				if(!((ISidedInventory)inventory).canInsertItem(attemptSlots[i], stack, side.getOpposite())) {
 					i++;
 					continue;
 				}
@@ -106,7 +109,7 @@ public class InventoryHelper {
 		}
 	}
 
-	public static int testInventoryInsertion(IInventory inventory, ItemStack item, ForgeDirection side) {
+	public static int testInventoryInsertion(IInventory inventory, ItemStack item, EnumFacing side) {
 		if(item == null || item.stackSize == 0)
 			return 0;
 		item = item.copy();
@@ -120,7 +123,7 @@ public class InventoryHelper {
 		int[] availableSlots = new int[0];
 
 		if(inventory instanceof ISidedInventory)
-			availableSlots = ((ISidedInventory) inventory).getAccessibleSlotsFromSide(side.ordinal());
+			availableSlots = ((ISidedInventory) inventory).getSlotsForFace(side);
 		else {
 			availableSlots = buildSlotsForLinearInventory(inventory);
 		}
@@ -132,8 +135,8 @@ public class InventoryHelper {
 			if (!inventory.isItemValidForSlot(i, item))
 				continue;
 
-			if(side != ForgeDirection.UNKNOWN && inventory instanceof ISidedInventory)
-				if(!((ISidedInventory)inventory).canInsertItem(i, item, side.ordinal()))
+			if(side != null && inventory instanceof ISidedInventory)
+				if(!((ISidedInventory)inventory).canInsertItem(i, item, side.getOpposite()))
 					continue;
 
 			ItemStack inventorySlot = inventory.getStackInSlot(i);
@@ -154,26 +157,42 @@ public class InventoryHelper {
 	}
 
 	public static IInventory getInventory(World world, int x, int y, int z) {
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-		if(tileEntity instanceof TileEntityChest) {
-			Block chestBlock = world.getBlock(x, y, z);
-			if(world.getBlock(x - 1, y, z) == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(x - 1, y, z), (IInventory)tileEntity);
-			if(world.getBlock(x + 1, y, z) == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getTileEntity(x + 1, y, z));
-			if(world.getBlock(x, y, z - 1) == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)world.getTileEntity(x, y, z - 1), (IInventory)tileEntity);
-			if(world.getBlock(x, y, z + 1) == chestBlock)
-				return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getTileEntity(x, y, z + 1));
+		BlockPos pos = new BlockPos(x,y , z);
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if (tileEntity instanceof TileEntityChest) {
+			TileEntityChest chest = (TileEntityChest) tileEntity;
+
+			TileEntityChest adjacent = null;
+
+			if (chest.adjacentChestXNeg != null) {
+				adjacent = chest.adjacentChestXNeg;
+			}
+
+			if (chest.adjacentChestXPos != null) {
+				adjacent = chest.adjacentChestXPos;
+			}
+
+			if (chest.adjacentChestZNeg != null) {
+				adjacent = chest.adjacentChestZNeg;
+			}
+
+			if (chest.adjacentChestZPos != null) {
+				adjacent = chest.adjacentChestZPos;
+			}
+
+			if (adjacent != null) {
+				return new InventoryLargeChest("", chest, adjacent);
+			}
+			return chest;
 		}
 		return tileEntity instanceof IInventory ? (IInventory)tileEntity : null;
 	}
 
-	public static IInventory getInventory(World world, int x, int y, int z, ForgeDirection direction) {
-		if(direction != null && direction != ForgeDirection.UNKNOWN) {
-			x += direction.offsetX;
-			y += direction.offsetY;
-			z += direction.offsetZ;
+	public static IInventory getInventory(World world, int x, int y, int z, EnumFacing direction) {
+		if(direction != null && direction != null) {
+			x += direction.getFrontOffsetX();
+			y += direction.getFrontOffsetY();
+			z += direction.getFrontOffsetZ();
 		}
 		return getInventory(world, x, y, z);
 
@@ -182,7 +201,7 @@ public class InventoryHelper {
 	public static IInventory getInventory(IInventory inventory) {
 		if(inventory instanceof TileEntityChest) {
 			TileEntity te = (TileEntity)inventory;
-			return getInventory(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+			return getInventory(te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 		}
 		return inventory;
 	}
@@ -272,8 +291,38 @@ public class InventoryHelper {
 		}
 
 		@Override
+		public int getField(int id) {
+			return 0;
+		}
+
+		@Override
+		public void setField(int id, int value) {
+
+		}
+
+		@Override
+		public int getFieldCount() {
+			return 0;
+		}
+
+		@Override
+		public void clear() {
+
+		}
+
+		@Override
 		public boolean isUseableByPlayer(EntityPlayer entityplayer) {
 			return true;
+		}
+
+		@Override
+		public void openInventory(EntityPlayer player) {
+
+		}
+
+		@Override
+		public void closeInventory(EntityPlayer player) {
+
 		}
 
 		public void clearAndSetSlotCount(int amount) {
@@ -331,23 +380,23 @@ public class InventoryHelper {
 			return Arrays.asList(inventoryContents);
 		}
 
-		@Override
-		public String getInventoryName() {
-			return null;
-		}
-
-		@Override
-		public boolean hasCustomInventoryName() {
-			return false;
-		}
 
 		@Override
 		public void markDirty() { }
 
 		@Override
-		public void openInventory() { }
+		public String getCommandSenderName() {
+			return null;
+		}
 
 		@Override
-		public void closeInventory() { }
+		public boolean hasCustomName() {
+			return false;
+		}
+
+		@Override
+		public IChatComponent getDisplayName() {
+			return null;
+		}
 	}
 }
