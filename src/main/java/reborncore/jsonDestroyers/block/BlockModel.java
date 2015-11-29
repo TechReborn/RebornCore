@@ -72,7 +72,7 @@ public class BlockModel implements IBakedModel, IPerspectiveAwareModel {
     }
 
     @Override
-    public TextureAtlasSprite getTexture() {
+    public TextureAtlasSprite getParticleTexture() {
         return textureAtlasSpriteHashMap.get(EnumFacing.DOWN);
     }
 

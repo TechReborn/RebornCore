@@ -51,7 +51,7 @@ public class MultiTexturedBasedModel implements IBakedModel {
         return false;
     }
 
-    public TextureAtlasSprite getTexture() {
+    public TextureAtlasSprite getParticleTexture() {
         return texture.get(EnumFacing.DOWN);
     }
 

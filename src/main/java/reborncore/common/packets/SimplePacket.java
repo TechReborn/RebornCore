@@ -62,7 +62,7 @@ public abstract class SimplePacket {
         }
         out.writeBoolean(true);
         writeWorld(player.worldObj, out);
-        writeString(player.getCommandSenderName(), out);
+        writeString(player.getName(), out);
     }
 
     public static TileEntity readTileEntity(ByteBuf in) throws IOException {

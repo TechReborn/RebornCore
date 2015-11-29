@@ -268,7 +268,7 @@ public class InventoryHelper {
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing(int i) {
+		public ItemStack removeStackFromSlot(int i) {
 			if(i >= inventoryContents.length)
 				return null;
 
@@ -385,7 +385,7 @@ public class InventoryHelper {
 		public void markDirty() { }
 
 		@Override
-		public String getCommandSenderName() {
+		public String getName() {
 			return null;
 		}
 

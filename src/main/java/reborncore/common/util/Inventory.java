@@ -134,7 +134,7 @@ public class Inventory implements IInventory {
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotId) {
+    public ItemStack removeStackFromSlot(int slotId) {
         if (this.contents[slotId] == null) {
             return null;
         }
@@ -181,7 +181,7 @@ public class Inventory implements IInventory {
     }
 
     @Override
-    public String getCommandSenderName() {
+    public String getName() {
         return name;
     }
 

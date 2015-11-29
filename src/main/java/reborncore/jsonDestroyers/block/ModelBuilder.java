@@ -119,7 +119,7 @@ public class ModelBuilder {
         if (models.length == 0) throw new IllegalArgumentException("Number of models must be > 0");
 
         IBakedModel m = models[0];
-        SimpleBakedModel simpleBakedModel = new SimpleBakedModel(new LinkedList(), newBlankFacingLists(), m.isGui3d(), m.isAmbientOcclusion(), m.getTexture(), m.getItemCameraTransforms());
+        SimpleBakedModel simpleBakedModel = new SimpleBakedModel(new LinkedList(), newBlankFacingLists(), m.isGui3d(), m.isAmbientOcclusion(), m.getParticleTexture(), m.getItemCameraTransforms());
 
         for (IBakedModel model : models) {
             simpleBakedModel.getGeneralQuads().addAll(model.getGeneralQuads());
