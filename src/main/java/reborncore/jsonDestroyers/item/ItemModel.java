@@ -61,7 +61,7 @@ public class ItemModel implements IBakedModel, IPerspectiveAwareModel {
     }
 
     @Override
-    public TextureAtlasSprite getTexture() {
+    public TextureAtlasSprite getParticleTexture() {
         return textureAtlas;
     }
 
