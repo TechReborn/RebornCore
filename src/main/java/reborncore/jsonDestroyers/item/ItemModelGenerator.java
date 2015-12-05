@@ -1,15 +1,20 @@
 package reborncore.jsonDestroyers.item;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,7 +49,7 @@ public class ItemModelGenerator {
                         texture = new CustomTexture(name);
                         textureMap.setTextureEntry(name, texture);
                     }
-                    ItemIconInfo info = new ItemIconInfo(item, i, texture);
+                    ItemIconInfo info = new ItemIconInfo(item, i, texture, name);
                     icons.add(info);
                 }
             }
@@ -59,9 +64,11 @@ public class ItemModelGenerator {
                 IItemTexture textureProvdier = (IItemTexture) item;
                 for (int i = 0; i < textureProvdier.getMaxMeta(); i++) {
                     TextureAtlasSprite texture = null;
+                    ItemIconInfo itemIconInfo = null;
                     for (ItemIconInfo info : icons) {
                         if (info.damage == i && info.getItem() == item) {
                             texture = info.getSprite();
+                            itemIconInfo = info;
                             break;
                         }
                     }
@@ -69,11 +76,24 @@ public class ItemModelGenerator {
                         break;
                     }
                     ModelResourceLocation inventory = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName(new ItemStack(item, 1, i)).substring(5), "inventory");
-                    IBakedModel model = new ItemModel(texture);
-                    event.modelRegistry.putObject(inventory, model);
-                    itemModelMesher.register(item, i, inventory);
-                }
+                    ModelResourceLocation inventory2 = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName().substring(5).replace("techreborn.", ""), "inventory");
 
+                    final TextureAtlasSprite finalTexture = texture;
+                    Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
+                        public TextureAtlasSprite apply(ResourceLocation location) {
+                            return finalTexture;
+                        }
+                    };
+                    ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
+                    builder.add(new ResourceLocation(itemIconInfo.textureName));
+                    ItemLayerModel itemLayerModel = new ItemLayerModel(builder.build());
+                    IBakedModel model = itemLayerModel.bake(ItemLayerModel.instance.getDefaultState(), DefaultVertexFormats.ITEM, textureGetter);
+                    event.modelRegistry.putObject(inventory, model);
+                    event.modelRegistry.putObject(inventory2, model);
+                    itemModelMesher.register(item, i, inventory);
+                    itemModelMesher.register(item, i, inventory2);
+
+                }
             }
         }
     }

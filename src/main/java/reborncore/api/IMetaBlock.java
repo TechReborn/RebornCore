@@ -5,7 +5,7 @@ import net.minecraft.block.state.IBlockState;
 
 public interface IMetaBlock {
 
-    int amoutOfVariants();
+    int amountOfVariants();
 
     IBlockState getStateFromMeta(int meta);
 }

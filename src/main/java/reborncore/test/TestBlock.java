@@ -35,7 +35,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
             {"one", "two", "three"};
 
     @Override
-    public int amoutOfVariants() {
+    public int amountOfVariants() {
         return types.length;
     }
 

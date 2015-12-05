@@ -9,12 +9,7 @@ public class ItemIconInfo {
     Item item;
     int damage;
     TextureAtlasSprite sprite;
-
-    public ItemIconInfo(Item item, int damage, TextureAtlasSprite sprite) {
-        this.item = item;
-        this.damage = damage;
-        this.sprite = sprite;
-    }
+    String textureName;
 
     public Item getItem() {
         return item;
@@ -26,5 +21,16 @@ public class ItemIconInfo {
 
     public TextureAtlasSprite getSprite() {
         return sprite;
+    }
+
+    public ItemIconInfo(Item item, int damage, TextureAtlasSprite sprite, String textureName) {
+        this.item = item;
+        this.damage = damage;
+        this.sprite = sprite;
+        this.textureName = textureName;
+    }
+
+    public String getTextureName() {
+        return textureName;
     }
 }

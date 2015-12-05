@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumFacing;
@@ -18,7 +17,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
 import reborncore.api.IBlockTextureProvider;
 import reborncore.api.TextureRegistry;
-import reborncore.common.BaseBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +37,7 @@ public class ModelGenertator {
         for (Block block : TextureRegistry.blocks) {
             if (block instanceof IBlockTextureProvider) {
                 IBlockTextureProvider blockTextureProvider = (IBlockTextureProvider) block;
-                for (int i = 0; i < blockTextureProvider.amoutOfVariants(); i++) {
+                for (int i = 0; i < blockTextureProvider.amountOfVariants(); i++) {
                     for (EnumFacing side : EnumFacing.values()) {
                         String name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side);
                         TextureAtlasSprite texture = textureMap.getTextureExtry(name);
@@ -63,7 +61,7 @@ public class ModelGenertator {
         for (Block block : TextureRegistry.blocks) {
             if ( block instanceof IBlockTextureProvider) {
                 IBlockTextureProvider textureProvdier = (IBlockTextureProvider) block;
-                for (int i = 0; i < textureProvdier.amoutOfVariants(); i++) {
+                for (int i = 0; i < textureProvdier.amountOfVariants(); i++) {
                     HashMap<EnumFacing, TextureAtlasSprite> textureMap = new HashMap<EnumFacing, TextureAtlasSprite>();
                     for (EnumFacing side : EnumFacing.VALUES) {
                         for (BlockIconInfo iconInfo : blockIconInfoList) {

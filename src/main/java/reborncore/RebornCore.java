@@ -42,6 +42,7 @@ public class RebornCore implements IModInfo {
         TextureRegistry.registerBlock(test);
         ModelGenertator.register();
         ItemModelGenerator.register();
+        FluidModelGenerator.register();
     }
 
 
