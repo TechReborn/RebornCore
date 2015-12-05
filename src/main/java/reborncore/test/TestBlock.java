@@ -23,8 +23,6 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     public PropertyInteger METADATA;
 
-    static final int maxMetdata = 3;
-
     public TestBlock() {
         super(Material.cake);
         setUnlocalizedName("testBlock");
@@ -38,7 +36,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     @Override
     public int amoutOfVariants() {
-        return maxMetdata;
+        return types.length;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
 
     protected BlockState createBlockState() {
 
-        METADATA = PropertyInteger.create("Type", 0, maxMetdata);
+        METADATA = PropertyInteger.create("Type", 0, types.length -1);
         return new BlockState(this, METADATA);
     }
 
@@ -61,7 +59,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
     @SideOnly(Side.CLIENT)
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < maxMetdata; i++)
+        for (int i = 0; i < types.length; i++)
                 list.add(new ItemStack(item, 1, i));
 
     }
@@ -69,9 +67,9 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
     @Override
     public String getTextureName(IBlockState blockState, EnumFacing facing) {
         if(facing == EnumFacing.UP){
-            return "test2";
+            return "reborncore:blocks/test";
         }
-        return types[getMetaFromState(blockState)];
+        return "reborncore:blocks/" + types[getMetaFromState(blockState)];
     }
 
     @Override

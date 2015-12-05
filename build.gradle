@@ -41,6 +41,7 @@ minecraft {
     version = "1.8.8-11.15.0.1595-1.8.8"
     mappings = 'snapshot_20151129'
     replace "@MODVERSION@", project.version
+	runDir = "run"
 }
 
 group = 'RebornCore'

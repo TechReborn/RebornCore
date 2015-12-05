@@ -73,15 +73,18 @@ public class ModelGenertator {
                         }
                     }
 
+                    BlockModel model = new BlockModel(textureMap, block.getStateFromMeta(i));
+
                     ModelResourceLocation modelResourceLocation = TextureRegistry.getModelResourceLocation(block.getStateFromMeta(i));
 
-                    event.modelRegistry.putObject(modelResourceLocation, new BlockModel(textureMap, block.getStateFromMeta(i)));
+                    event.modelRegistry.putObject(modelResourceLocation, model);
 
-                    ModelResourceLocation inventory = new ModelResourceLocation(modelResourceLocation, "inventory");
-
-                    event.modelRegistry.putObject(inventory, new BlockModel(textureMap, block.getStateFromMeta(i + 1)));
-
+                    ModelResourceLocation inventory = TextureRegistry.getBlockinventoryResourceLocation(block);
+                    event.modelRegistry.putObject(inventory, model);
                     itemModelMesher.register(Item.getItemFromBlock(block), i, inventory);
+
+                    event.modelRegistry.putObject(modelResourceLocation, model);
+                    itemModelMesher.register(Item.getItemFromBlock(block), i, modelResourceLocation);
                 }
 
             } else {

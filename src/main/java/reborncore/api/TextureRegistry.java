@@ -51,4 +51,8 @@ public class TextureRegistry {
         return new ModelResourceLocation((ResourceLocation) Block.blockRegistry.getNameForObject(state.getBlock()), (new DefaultStateMapper()).getPropertyString(state.getProperties()));
     }
 
+    public static ModelResourceLocation getBlockinventoryResourceLocation(Block block) {
+        return new ModelResourceLocation(Block.blockRegistry.getNameForObject(block), "inventory");
+    }
+
 }
