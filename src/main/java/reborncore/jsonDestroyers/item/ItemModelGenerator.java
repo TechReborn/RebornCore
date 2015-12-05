@@ -90,8 +90,8 @@ public class ItemModelGenerator {
                     IBakedModel model = itemLayerModel.bake(ItemLayerModel.instance.getDefaultState(), DefaultVertexFormats.ITEM, textureGetter);
                     event.modelRegistry.putObject(inventory, model);
                     event.modelRegistry.putObject(inventory2, model);
-                    itemModelMesher.register(item, i, inventory);
                     itemModelMesher.register(item, i, inventory2);
+                    itemModelMesher.register(item, i, inventory);
 
                 }
             }
