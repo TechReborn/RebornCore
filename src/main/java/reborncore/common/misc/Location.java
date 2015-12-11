@@ -227,7 +227,7 @@ public class Location implements Comparable<Location> {
         }
     }
 
-    public BlockPos getBlockPos(){
+    public BlockPos getBlockPos() {
         return new BlockPos(x, y, z);
     }
 

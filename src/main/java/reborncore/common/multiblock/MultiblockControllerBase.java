@@ -15,7 +15,7 @@ import java.util.Set;
  * This class contains the base logic for "multiblock controllers".
  * Conceptually, they are meta-TileEntities. They govern the logic for an
  * associated group of TileEntities.
- * <p/>
+ * <p>
  * Subordinate TileEntities implement the IMultiblockPart class and, generally,
  * should not have an update() loop.
  */
@@ -504,7 +504,6 @@ public abstract class MultiblockControllerBase {
     /**
      * Driver for the update loop. If the machine is assembled, runs the game
      * logic update method.
-     *
      */
     public final void updateMultiblockEntity() {
         if (connectedParts.isEmpty()) {
@@ -527,7 +526,7 @@ public abstract class MultiblockControllerBase {
             if (minimumCoord != null
                     && maximumCoord != null
                     && this.worldObj.isAreaLoaded(new BlockPos(minimumCoord.x,
-                            minimumCoord.y, minimumCoord.z), new BlockPos(maximumCoord.x,
+                    minimumCoord.y, minimumCoord.z), new BlockPos(maximumCoord.x,
                     maximumCoord.y, maximumCoord.z))) {
                 int minChunkX = minimumCoord.x >> 4;
                 int minChunkZ = minimumCoord.z >> 4;
@@ -1052,12 +1051,12 @@ public abstract class MultiblockControllerBase {
 
     /**
      * Marks the reference coord dirty & updateable.
-     * <p/>
+     * <p>
      * On the server, this will mark the for a data-update, so that nearby
      * clients will receive an updated description packet from the server after
      * a short time. The block's chunk will also be marked dirty and the block's
      * chunk will be saved to disk the next time chunks are saved.
-     * <p/>
+     * <p>
      * On the client, this will mark the block for a rendering update.
      */
     protected void markReferenceCoordForUpdate() {
@@ -1069,11 +1068,11 @@ public abstract class MultiblockControllerBase {
 
     /**
      * Marks the reference coord dirty.
-     * <p/>
+     * <p>
      * On the server, this marks the reference coord's chunk as dirty; the block
      * (and chunk) will be saved to disk the next time chunks are saved. This
      * does NOT mark it dirty for a description-packet update.
-     * <p/>
+     * <p>
      * On the client, does nothing.
      *
      * @see MultiblockControllerBase#markReferenceCoordForUpdate()

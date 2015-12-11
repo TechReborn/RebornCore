@@ -143,7 +143,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
      * attempts to read data about the world can cause infinite loops - if you
      * call getTileEntity on this TileEntity's coordinate from within
      * validate(), you will blow your call stack.
-     * <p/>
+     * <p>
      * TL;DR: Here there be dragons.
      *
      * @see net.minecraft.tileentity.TileEntity#validate()
@@ -354,7 +354,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
     // /// Private/Protected Logic Helpers
     /*
-	 * Detaches this block from its controller. Calls detachBlock() and clears
+     * Detaches this block from its controller. Calls detachBlock() and clears
 	 * the controller member.
 	 */
     protected void detachSelf(boolean chunkUnloading) {

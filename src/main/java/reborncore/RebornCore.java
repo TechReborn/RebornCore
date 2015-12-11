@@ -1,18 +1,16 @@
 package reborncore;
 
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.api.TextureRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
-import reborncore.jsonDestroyers.block.ModelGenertator;
-import reborncore.jsonDestroyers.fluid.FluidModelGenerator;
-import reborncore.jsonDestroyers.item.ItemModelGenerator;
 import reborncore.test.ItemBlockTest;
 import reborncore.test.TestBlock;
 
@@ -30,6 +28,9 @@ public class RebornCore implements IModInfo {
         logHelper = new LogHelper(this);
     }
 
+    @SidedProxy(clientSide = "reborncore.CommonProxy", serverSide = "reborncore.ClientProxy")
+    public static CommonProxy proxy;
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         // packets
@@ -38,18 +39,17 @@ public class RebornCore implements IModInfo {
         OreUtil.scanForOres();
 
         test = new TestBlock();
-        GameRegistry.registerBlock(test, ItemBlockTest.class,  "TestBlockRC");
+        GameRegistry.registerBlock(test, ItemBlockTest.class, "TestBlockRC");
         TextureRegistry.registerBlock(test);
-        ModelGenertator.register();
-        ItemModelGenerator.register();
-        FluidModelGenerator.register();
+        proxy.init(event);
     }
 
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event){
+    public void postInit(FMLPostInitializationEvent event) {
 
     }
+
     public String MOD_NAME() {
         return MOD_NAME;
     }

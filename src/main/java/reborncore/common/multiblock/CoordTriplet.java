@@ -3,6 +3,7 @@ package reborncore.common.multiblock;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
+
 /*
  * Simple wrapper class for XYZ coordinates.
  */
@@ -15,7 +16,7 @@ public class CoordTriplet implements Comparable {
         this.z = z;
     }
 
-    public CoordTriplet(BlockPos pos){
+    public CoordTriplet(BlockPos pos) {
         this.x = pos.getX();
         this.y = pos.getY();
         this.z = pos.getZ();
@@ -56,7 +57,7 @@ public class CoordTriplet implements Comparable {
         return this.x == x && this.y == y && this.z == z;
     }
 
-    public boolean equals(BlockPos pos){
+    public boolean equals(BlockPos pos) {
         return equals(pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -132,7 +133,7 @@ public class CoordTriplet implements Comparable {
     }
 
     public EnumFacing getOppositeDirectionFromSourceCoords(int x, int y,
-                                                               int z) {
+                                                           int z) {
         if (this.x < x) {
             return EnumFacing.EAST;
         } else if (this.x > x) {
@@ -173,7 +174,7 @@ public class CoordTriplet implements Comparable {
         }
     }
 
-    public BlockPos toBlockPos(){
+    public BlockPos toBlockPos() {
         return new BlockPos(x, y, z);
     }
 }

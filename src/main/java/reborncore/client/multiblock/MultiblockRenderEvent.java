@@ -2,21 +2,19 @@
  * This class was created by <Vazkii>. It's distributed as
  * part of the Botania Mod. Get the Source Code in github:
  * https://github.com/Vazkii/Botania
- * <p/>
+ * <p>
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
 package reborncore.client.multiblock;
 
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -25,6 +23,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
 import reborncore.common.misc.Location;
@@ -95,7 +94,8 @@ public class MultiblockRenderEvent {
         Block block = comp.getBlock();
         if (IMultiblockRenderHook.renderHooks.containsKey(block))
             IMultiblockRenderHook.renderHooks.get(block).renderBlockForMultiblock(world, mb, block, comp.getMeta(), blockRender);
-        else blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y, z), world, Tessellator.getInstance().getWorldRenderer());
+        else
+            blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y, z), world, Tessellator.getInstance().getWorldRenderer());
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glPopMatrix();
         return true;

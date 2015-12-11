@@ -59,10 +59,10 @@ public abstract class RectangularMultiblockTileEntityBase extends
         position = PartPosition.Unknown;
 
         int facesMatching = 0;
-        if (maxCoord.x == this.getPos().getX() || minCoord.x == this.getPos().getX() ) {
+        if (maxCoord.x == this.getPos().getX() || minCoord.x == this.getPos().getX()) {
             facesMatching++;
         }
-        if (maxCoord.y == this.getPos().getY()  || minCoord.y == this.getPos().getY()) {
+        if (maxCoord.y == this.getPos().getY() || minCoord.y == this.getPos().getY()) {
             facesMatching++;
         }
         if (maxCoord.z == this.getPos().getZ() || minCoord.z == this.getPos().getZ()) {
@@ -77,10 +77,10 @@ public abstract class RectangularMultiblockTileEntityBase extends
             position = PartPosition.Frame;
         } else {
             // 1 face matches
-            if (maxCoord.x == this.getPos().getX() ) {
+            if (maxCoord.x == this.getPos().getX()) {
                 position = PartPosition.EastFace;
                 outwards = EnumFacing.EAST;
-            } else if (minCoord.x == this.getPos().getX() ) {
+            } else if (minCoord.x == this.getPos().getX()) {
                 position = PartPosition.WestFace;
                 outwards = EnumFacing.WEST;
             } else if (maxCoord.z == this.getPos().getZ()) {

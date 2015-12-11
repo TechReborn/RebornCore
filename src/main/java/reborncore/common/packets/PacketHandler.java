@@ -1,9 +1,5 @@
 package reborncore.common.packets;
 
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLIndexedMessageToMessageCodec;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +7,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLIndexedMessageToMessageCodec;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.IOException;
 import java.util.EnumMap;

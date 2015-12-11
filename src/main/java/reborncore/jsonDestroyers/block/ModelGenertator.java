@@ -40,19 +40,15 @@ public class ModelGenertator {
                 for (int i = 0; i < blockTextureProvider.amountOfVariants(); i++) {
                     for (EnumFacing side : EnumFacing.values()) {
                         String name;
-                        try{
-                            name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMetaValue(i), side);
-                            TextureAtlasSprite texture = textureMap.getTextureExtry(name);
-                            if (texture == null) {
-                                texture = new CustomTexture(name);
-                                textureMap.setTextureEntry(name, texture);
-                            }
-                            BlockIconInfo iconInfo = new BlockIconInfo(block, i, side);
-                            icons.put(iconInfo, texture);
-                            blockIconInfoList.add(iconInfo);
-                        }catch (Exception e){
-                            RebornCore.logHelper.error("Failed to load texture for " + block.getLocalizedName());
+                        name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMetaValue(i), side);
+                        TextureAtlasSprite texture = textureMap.getTextureExtry(name);
+                        if (texture == null) {
+                            texture = new CustomTexture(name);
+                            textureMap.setTextureEntry(name, texture);
                         }
+                        BlockIconInfo iconInfo = new BlockIconInfo(block, i, side);
+                        icons.put(iconInfo, texture);
+                        blockIconInfoList.add(iconInfo);
                     }
                 }
             }
@@ -64,19 +60,19 @@ public class ModelGenertator {
     public void bakeModels(ModelBakeEvent event) {
         ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         for (Block block : TextureRegistry.blocks) {
-            if ( block instanceof IBlockTextureProvider) {
+            if (block instanceof IBlockTextureProvider) {
                 IBlockTextureProvider textureProvdier = (IBlockTextureProvider) block;
                 for (int i = 0; i < textureProvdier.amountOfVariants(); i++) {
                     HashMap<EnumFacing, TextureAtlasSprite> textureMap = new HashMap<EnumFacing, TextureAtlasSprite>();
                     for (EnumFacing side : EnumFacing.VALUES) {
                         for (BlockIconInfo iconInfo : blockIconInfoList) {
                             if (iconInfo.getBlock() == block && iconInfo.getMeta() == i && iconInfo.getSide() == side) {
-                                if(icons.containsKey(iconInfo))
+                                if (icons.containsKey(iconInfo))
                                     textureMap.put(side, icons.get(iconInfo));
                             }
                         }
                     }
-                    if(textureMap.isEmpty()){
+                    if (textureMap.isEmpty()) {
                         return;
                     }
 

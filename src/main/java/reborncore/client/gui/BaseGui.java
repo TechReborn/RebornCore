@@ -41,14 +41,14 @@ public class BaseGui extends GuiContainer {
 
         baseTextures.background.draw(0, 0, this);
 
-        for(Object slotObj : container.inventorySlots){
-            if(slotObj instanceof Slot){
+        for (Object slotObj : container.inventorySlots) {
+            if (slotObj instanceof Slot) {
                 Slot slot = (Slot) slotObj;
-                baseTextures.slot.draw(slot.xDisplayPosition  -1, slot.yDisplayPosition -1, this);
+                baseTextures.slot.draw(slot.xDisplayPosition - 1, slot.yDisplayPosition - 1, this);
             }
         }
 
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.drawGuiContainerBackgroundLayer(this);
         }
     }
@@ -64,18 +64,18 @@ public class BaseGui extends GuiContainer {
     /**
      * Override this and add components in here.
      */
-    public void registerComponets(){
+    public void registerComponets() {
 
     }
 
-    public void registerComponet(IGuiComponent component){
+    public void registerComponet(IGuiComponent component) {
         componentList.add(component);
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.initGui(this);
         }
     }
@@ -83,7 +83,7 @@ public class BaseGui extends GuiContainer {
     @Override
     public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
         super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.drawScreen(this);
         }
     }
@@ -91,7 +91,7 @@ public class BaseGui extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
         super.drawGuiContainerForegroundLayer(p_146979_1_, p_146979_2_);
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.drawGuiContainerBackgroundLayer(this);
         }
     }
@@ -99,7 +99,7 @@ public class BaseGui extends GuiContainer {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.onGuiClosed(this);
         }
     }
@@ -107,7 +107,7 @@ public class BaseGui extends GuiContainer {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        for(IGuiComponent component : componentList){
+        for (IGuiComponent component : componentList) {
             component.updateScreen(this);
         }
     }
@@ -116,11 +116,11 @@ public class BaseGui extends GuiContainer {
         return baseTextures;
     }
 
-    public int getXSize(){
+    public int getXSize() {
         return xSize;
     }
 
-    public int getYSize(){
+    public int getYSize() {
         return ySize;
     }
 

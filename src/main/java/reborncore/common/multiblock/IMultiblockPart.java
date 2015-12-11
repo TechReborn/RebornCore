@@ -10,7 +10,7 @@ import java.util.Set;
  * class as we need the basic functionality of a TileEntity as well. Preferably,
  * you should derive from MultiblockTileEntityBase, which does all the hard work
  * for you.
- * <p/>
+ * <p>
  * {@link MultiblockTileEntityBase}
  */
 public abstract class IMultiblockPart extends TileEntity {
@@ -143,7 +143,7 @@ public abstract class IMultiblockPart extends TileEntity {
      * tile entities. Primarily a utility method. Only works after tileentity
      * construction, so it cannot be used in
      * MultiblockControllerBase::attachBlock.
-     * <p/>
+     * <p>
      * This method is chunk-safe on the server; it will not query for parts in
      * chunks that are unloaded. Note that no method is chunk-safe on the
      * client, because ChunkProviderClient is stupid.

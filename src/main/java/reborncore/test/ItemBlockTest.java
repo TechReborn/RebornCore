@@ -1,10 +1,7 @@
 package reborncore.test;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemMultiTexture;
-
-import java.util.List;
 
 public class ItemBlockTest extends ItemMultiTexture {
     public ItemBlockTest(Block block) {

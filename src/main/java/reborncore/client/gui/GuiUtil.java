@@ -1,7 +1,6 @@
 package reborncore.client.gui;
 
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.Tessellator;
 
 
 public class GuiUtil {
@@ -60,7 +59,7 @@ public class GuiUtil {
     }
 
     public static void drawColouredBox(int colour, int alpha, double posX, double posY, double width, double height) {
-       drawColouredBox(colour, alpha, posX, posY, width, height, 0);
+        drawColouredBox(colour, alpha, posX, posY, width, height, 0);
     }
 
     public static void drawColouredBox(int colour, int alpha, double posX, double posY, double width, double height, double zLevel) {

@@ -29,7 +29,7 @@ public class BurnComponet extends BaseComponet {
     public void drawGuiContainerBackgroundLayer(BaseGui gui) {
         super.drawGuiContainerBackgroundLayer(gui);
         gui.getBaseTextures().burnBase.draw(x, y, gui);
-        if(isBurning){
+        if (isBurning) {
             gui.getBaseTextures().burnOverlay.draw(x, y, gui.getBaseTextures().burnOverlay.getWidth(), burnTime, gui);
         }
     }
