@@ -40,8 +40,13 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
+    public IBlockState getStateFromMetaValue(int meta) {
         return this.getDefaultState().withProperty(METADATA, meta);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getStateFromMetaValue(meta);
     }
 
     @Override

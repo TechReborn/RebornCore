@@ -7,5 +7,5 @@ public interface IMetaBlock {
 
     int amountOfVariants();
 
-    IBlockState getStateFromMeta(int meta);
+    IBlockState getStateFromMetaValue(int meta);
 }
