@@ -39,15 +39,20 @@ public class ModelGenertator {
                 IBlockTextureProvider blockTextureProvider = (IBlockTextureProvider) block;
                 for (int i = 0; i < blockTextureProvider.amountOfVariants(); i++) {
                     for (EnumFacing side : EnumFacing.values()) {
-                        String name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side);
-                        TextureAtlasSprite texture = textureMap.getTextureExtry(name);
-                        if (texture == null) {
-                            texture = new CustomTexture(name);
-                            textureMap.setTextureEntry(name, texture);
+                        String name;
+                        try{
+                            name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMeta(i), side);
+                            TextureAtlasSprite texture = textureMap.getTextureExtry(name);
+                            if (texture == null) {
+                                texture = new CustomTexture(name);
+                                textureMap.setTextureEntry(name, texture);
+                            }
+                            BlockIconInfo iconInfo = new BlockIconInfo(block, i, side);
+                            icons.put(iconInfo, texture);
+                            blockIconInfoList.add(iconInfo);
+                        }catch (Exception e){
+                            RebornCore.logHelper.error("Failed to load texture for " + block.getLocalizedName());
                         }
-                        BlockIconInfo iconInfo = new BlockIconInfo(block, i, side);
-                        icons.put(iconInfo, texture);
-                        blockIconInfoList.add(iconInfo);
                     }
                 }
             }
@@ -66,9 +71,13 @@ public class ModelGenertator {
                     for (EnumFacing side : EnumFacing.VALUES) {
                         for (BlockIconInfo iconInfo : blockIconInfoList) {
                             if (iconInfo.getBlock() == block && iconInfo.getMeta() == i && iconInfo.getSide() == side) {
-                                textureMap.put(side, icons.get(iconInfo));
+                                if(icons.containsKey(iconInfo))
+                                    textureMap.put(side, icons.get(iconInfo));
                             }
                         }
+                    }
+                    if(textureMap.isEmpty()){
+                        return;
                     }
 
                     BlockModel model = new BlockModel(textureMap, block.getStateFromMeta(i));
