@@ -28,7 +28,7 @@ public class RebornCore implements IModInfo {
         logHelper = new LogHelper(this);
     }
 
-    @SidedProxy(clientSide = "reborncore.CommonProxy", serverSide = "reborncore.ClientProxy")
+    @SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler

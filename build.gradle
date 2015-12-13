@@ -32,13 +32,13 @@ configurations {
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
-    version = "1.2.0." + "${System.getenv().BUILD_NUMBER}"
+    version = "1.2.1." + "${System.getenv().BUILD_NUMBER}"
 } else {
-    version = "1.2.0.BUILD"
+    version = "1.2.1.BUILD"
 }
 
 minecraft {
-    version = "1.8.8-11.15.0.1595-1.8.8"
+    version = "1.8.8-11.15.0.1625-1.8.8"
     mappings = 'snapshot_20151129'
     replace "@MODVERSION@", project.version
 	runDir = "run"
