@@ -14,7 +14,7 @@ import reborncore.common.util.OreUtil;
 import reborncore.test.ItemBlockTest;
 import reborncore.test.TestBlock;
 
-@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION)
+@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.8.8,1.8.9]")
 public class RebornCore implements IModInfo {
     public static final String MOD_NAME = "RebornCore";
     public static final String MOD_ID = "reborncore";
