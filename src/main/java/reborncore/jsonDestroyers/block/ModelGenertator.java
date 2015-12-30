@@ -40,7 +40,7 @@ public class ModelGenertator {
                 for (int i = 0; i < blockTextureProvider.amountOfVariants(); i++) {
                     for (EnumFacing side : EnumFacing.values()) {
                         String name;
-                        name = blockTextureProvider.getTextureName(blockTextureProvider.getStateFromMetaValue(i), side);
+                        name = blockTextureProvider.getTextureName(block.getStateFromMeta(i), side);
                         TextureAtlasSprite texture = textureMap.getTextureExtry(name);
                         if (texture == null) {
                             texture = new CustomTexture(name);

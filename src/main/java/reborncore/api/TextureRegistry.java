@@ -70,6 +70,11 @@ public class TextureRegistry {
     }
 
     @SideOnly(Side.CLIENT)
+    public static ModelResourceLocation getItemInventoryResourceLocation(Item block) {
+        return new ModelResourceLocation(Item.itemRegistry.getNameForObject(block), "inventory");
+    }
+
+    @SideOnly(Side.CLIENT)
     public static ResourceLocation getBlockResourceLocation(Block block) {
         return Block.blockRegistry.getNameForObject(block);
     }

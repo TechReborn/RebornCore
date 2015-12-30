@@ -75,8 +75,12 @@ public class ItemModelGenerator {
                     if (texture == null) {
                         break;
                     }
-                    ModelResourceLocation inventory = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName(new ItemStack(item, 1, i)).substring(5), "inventory");
-                    ModelResourceLocation inventory2 = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName().substring(5).replace("techreborn.", ""), "inventory");
+                    ModelResourceLocation inventory;
+                    if(textureProvdier.getMaxMeta() == 1){
+                        inventory = TextureRegistry.getItemInventoryResourceLocation(item);
+                    } else {
+                        inventory = new ModelResourceLocation(textureProvdier.getModID() + ":" + item.getUnlocalizedName(new ItemStack(item, 1, i)).substring(5), "inventory");
+                    }
 
                     final TextureAtlasSprite finalTexture = texture;
                     Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
@@ -89,8 +93,6 @@ public class ItemModelGenerator {
                     ItemLayerModel itemLayerModel = new ItemLayerModel(builder.build());
                     IBakedModel model = itemLayerModel.bake(ItemLayerModel.instance.getDefaultState(), DefaultVertexFormats.ITEM, textureGetter);
                     event.modelRegistry.putObject(inventory, model);
-                    event.modelRegistry.putObject(inventory2, model);
-                    itemModelMesher.register(item, i, inventory2);
                     itemModelMesher.register(item, i, inventory);
 
                 }
