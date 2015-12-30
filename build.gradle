@@ -38,8 +38,8 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-    version = "1.8.8-11.15.0.1625-1.8.8"
-    mappings = 'snapshot_20151129'
+    version = "1.8.9-11.15.0.1658"
+    mappings = 'snapshot_20151230'
     replace "@MODVERSION@", project.version
 	runDir = "run"
 }

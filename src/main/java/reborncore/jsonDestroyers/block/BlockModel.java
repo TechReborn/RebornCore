@@ -3,10 +3,13 @@ package reborncore.jsonDestroyers.block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.Attributes;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.vector.Vector3f;
@@ -18,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class BlockModel implements IBakedModel, IPerspectiveAwareModel {
+public class BlockModel implements IFlexibleBakedModel, IPerspectiveAwareModel {
     HashMap<EnumFacing, TextureAtlasSprite> textureAtlasSpriteHashMap;
     IBlockState state;
 
@@ -83,14 +86,18 @@ public class BlockModel implements IBakedModel, IPerspectiveAwareModel {
 
 
     @Override
-    public Pair<IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+    public Pair<? extends IFlexibleBakedModel, Matrix4f>  handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
         if (cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON)
-            return Pair.of(IBakedModel.class.cast(this), ThirdPerson);
+            return Pair.of(IFlexibleBakedModel.class.cast(this), ThirdPerson);
 
-        return Pair.of(IBakedModel.class.cast(this), null);
+        return Pair.of(IFlexibleBakedModel.class.cast(this), null);
     }
 
     public static final Matrix4f ThirdPerson = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(3.3F, 1, -0.3F), new Vector3f(0F, 0.1F, -0.15F), new Vector3f(0.35F, 0.35F, 0.35F)));
 
 
+    @Override
+    public VertexFormat getFormat() {
+        return Attributes.DEFAULT_BAKED_FORMAT;
+    }
 }
