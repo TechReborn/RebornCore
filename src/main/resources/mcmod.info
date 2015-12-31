@@ -3,8 +3,8 @@
   "modid": "reborncore",
   "name": "RebornCore",
   "description": "RebornCore, A core set of classes.",
-  "version": "$version",
-  "mcversion": "$mcversion",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
   "url": "https://github.com/TechReborn/RebornCore",
   "updateUrl": "",
   "authorList": [
