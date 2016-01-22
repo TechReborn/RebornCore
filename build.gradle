@@ -25,12 +25,20 @@ repositories {
     }
 }
 
+
+repositories {
+    maven {
+        name = "Modmuss50"
+        url = "http://maven.modmuss50.me/"
+    }
+}
+
 configurations {
     shade
     compile.extendsFrom shade
 }
 
-version = "1.3.1"
+version = "1.4.0"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -45,6 +53,12 @@ minecraft {
 }
 
 group = 'RebornCore'
+
+
+dependencies {
+    //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
+    shade 'JSON-Destoyer:JSON-Destoyer:+.+.+:dev'
+}
 
 processResources
         {
@@ -68,6 +82,11 @@ task deobfJar(type: Jar) {
 jar {
     exclude "**/*.psd"
     classifier = 'universal'
+        configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            include 'me/modmuss50/jsonDestoryer/'
+        }
+    }
 }
 
 task apiJar(type: Jar) {

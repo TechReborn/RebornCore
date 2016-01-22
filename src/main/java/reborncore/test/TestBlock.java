@@ -1,5 +1,6 @@
 package reborncore.test;
 
+import me.modmuss50.jsonDestoryer.api.ITexturedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -11,12 +12,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import reborncore.api.IBlockTextureProvider;
 import reborncore.common.BaseBlock;
 
 import java.util.List;
 
-public class TestBlock extends BaseBlock implements IBlockTextureProvider {
+public class TestBlock extends BaseBlock implements ITexturedBlock {
 
     public PropertyInteger METADATA;
 
@@ -32,7 +32,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
             {"one", "two", "three"};
 
     @Override
-    public int amountOfVariants() {
+    public int amountOfSates() {
         return types.length;
     }
 
@@ -62,7 +62,7 @@ public class TestBlock extends BaseBlock implements IBlockTextureProvider {
     }
 
     @Override
-    public String getTextureName(IBlockState blockState, EnumFacing facing) {
+    public String getTextureNameFromState(IBlockState blockState, EnumFacing facing) {
         if (facing == EnumFacing.UP) {
             return "reborncore:blocks/test";
         }
