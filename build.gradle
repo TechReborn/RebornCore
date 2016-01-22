@@ -57,7 +57,7 @@ group = 'RebornCore'
 
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destoyer:JSON-Destoyer:+.+.+:dev'
+    shade 'JSON-Destoyer:JSON-Destoyer:0.0.+:dev'
 }
 
 processResources
