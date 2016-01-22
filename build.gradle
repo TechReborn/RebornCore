@@ -57,7 +57,7 @@ group = 'RebornCore'
 
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destoyer:JSON-Destoyer:0.0.+:dev'
+    shade 'JSON-Destroyer:JSON-Destroyer:0.0.+:dev'
 }
 
 processResources
@@ -84,7 +84,7 @@ jar {
     classifier = 'universal'
         configurations.shade.each { dep ->
         from(project.zipTree(dep)){
-            include 'me/modmuss50/jsonDestoryer/'
+            include 'me/modmuss50/jsonDestroyer/'
         }
     }
 }

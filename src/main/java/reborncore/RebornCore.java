@@ -1,10 +1,9 @@
 package reborncore;
 
-import me.modmuss50.jsonDestoryer.JsonDestroyer;
+import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.common.IModInfo;

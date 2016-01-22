@@ -1,6 +1,6 @@
 package reborncore.test;
 
-import me.modmuss50.jsonDestoryer.api.ITexturedBlock;
+import me.modmuss50.jsonDestroyer.api.ITexturedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
