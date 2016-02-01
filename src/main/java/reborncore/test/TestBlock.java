@@ -32,7 +32,7 @@ public class TestBlock extends BaseBlock implements ITexturedBlock {
             {"one", "two", "three"};
 
     @Override
-    public int amountOfSates() {
+    public int amountOfStates() {
         return types.length;
     }
 
