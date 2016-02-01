@@ -77,6 +77,11 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     exclude "**/*.psd"
     classifier = 'dev'
+	configurations.shade.each { dep ->
+        from(project.zipTree(dep)){
+            include 'me/modmuss50/jsonDestroyer/'
+        }
+    }
 }
 
 jar {
