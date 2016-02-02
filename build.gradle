@@ -38,7 +38,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "1.4.0"
+version = "1.4.1"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -57,7 +57,7 @@ group = 'RebornCore'
 
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destroyer:JSON-Destroyer:0.1.+:dev'
+    shade 'JSON-Destroyer:JSON-Destroyer:0.2.+:dev'
 }
 
 processResources
