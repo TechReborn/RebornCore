@@ -4,9 +4,11 @@ import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.common.IModInfo;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
@@ -30,8 +32,15 @@ public class RebornCore implements IModInfo {
 
     public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
 
+    public static RebornCoreConfig config;
+
     @SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
     public static CommonProxy proxy;
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event){
+        config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+    }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
