@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.jtraits.JTrait;
-import techreborn.config.ConfigTechReborn;
 
 
 public class RFItemPowerTrait extends JTrait<IEnergyInterfaceItem> implements IEnergyContainerItem {
