@@ -1,7 +1,7 @@
 package reborncore.common.powerSystem.traits;
 
 
-import ic2.api.item.IElectricItem;
+import api.item.IElectricItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import reborncore.api.power.IEnergyInterfaceItem;
