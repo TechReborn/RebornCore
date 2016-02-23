@@ -112,7 +112,20 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file:///var/www/maven/")
+		//This is used when the build is done on a slave jenkins
+		if (project.hasProperty('mavenPass'))
+        {
+            repository(url: "http://modmuss50.me/maven/") {
+                authentication(userName: "buildslave", password: project.getProperty('mavenPass')) // the elvis operator. look it up.
+            }
+        }
+        else
+        { 
+           repository(url: "file:///var/www/maven/")
+        }
+		
+		
+            
             pom {
                 groupId = "RebornCore"
                 version = project.version
