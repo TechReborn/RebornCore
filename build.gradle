@@ -116,7 +116,7 @@ uploadArchives {
 		if (project.hasProperty('mavenPass'))
         {
 			println 'Uploading to remote Maven Repo'
-            repository(url: "http://maven.modmuss50.me/") {
+            repository(url: "http://mavenupload.modmuss50.me/") {
                 authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
             }
         }
