@@ -112,15 +112,17 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-		//This is used when the build is done on a slave jenkins
-		if (project.hasProperty('mavenPass'))
+		//This is used when the build is done on a slave node
+		if (ENV.mavenPass)
         {
+			println 'Uploading to Maven Repo'
             repository(url: "http://modmuss50.me/maven/") {
-                authentication(userName: "buildslave", password: project.getProperty('mavenPass')) // the elvis operator. look it up.
+                authentication(userName: "buildslave", password: ENV.mavenPass) // the elvis operator. look it up.
             }
         }
         else
         { 
+			//this is when the build is executed on the master node
            repository(url: "file:///var/www/maven/")
         }
 		
