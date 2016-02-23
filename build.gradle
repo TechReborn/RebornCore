@@ -113,16 +113,17 @@ uploadArchives {
     repositories {
         mavenDeployer {
 		//This is used when the build is done on a slave node
-		if (ENV.mavenPass)
+		if (project.hasProperty('mavenPass'))
         {
-			println 'Uploading to Maven Repo'
-            repository(url: "http://modmuss50.me/maven/") {
-                authentication(userName: "buildslave", password: ENV.mavenPass) // the elvis operator. look it up.
+			println 'Uploading to remote Maven Repo'
+            repository(url: "http://maven.modmuss50.me/") {
+                authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
             }
         }
         else
         { 
 			//this is when the build is executed on the master node
+			println 'Uploading to local Maven Repo'
            repository(url: "file:///var/www/maven/")
         }
 		
