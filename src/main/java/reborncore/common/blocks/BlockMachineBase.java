@@ -14,6 +14,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
+import reborncore.common.util.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,9 +127,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        dropInventory(worldIn, pos);
         super.breakBlock(worldIn, pos, state);
         breakBlock(worldIn, pos.getX(), pos.getY(), pos.getZ(), state.getBlock(), 0);
-        dropInventory(worldIn, pos);
     }
 
     protected void dropInventory(World world, BlockPos pos) {
@@ -139,15 +141,26 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
         IInventory inventory = (IInventory) tileEntity;
 
+        List<ItemStack> items = new ArrayList<ItemStack>();
+
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
 
+            if(itemStack == null){
+                return;
+            }
             if (itemStack != null && itemStack.stackSize > 0) {
                 if (itemStack.getItem() instanceof ItemBlock) {
                     if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
                         return;
                     }
                 }
+            }
+            items.add(itemStack.copy());
+        }
+        items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
+
+        for (ItemStack itemStack : items){
                 Random rand = new Random();
 
                 float dX = rand.nextFloat() * 0.8F + 0.1F;
@@ -166,21 +179,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
                 entityItem.motionZ = rand.nextGaussian() * factor;
                 world.spawnEntityInWorld(entityItem);
                 itemStack.stackSize = 0;
-            }
         }
     }
 
-    @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-//        if (Loader.isModLoaded("IC2")) {
-//            ItemStack stack = IC2Items.getItem(isAdvanced() ? "advancedMachine" : "machine").copy();
-//            stack.stackSize = 1;
-//            items.add(stack);
-//        } //TODO ic2
-        items.add(isAdvanced() ? advancedMachineStack : machineStack);
-        return items;
-    }
 
     public boolean isAdvanced() {
         return false;
@@ -387,7 +388,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
 
     public void setActive(Boolean active, World world, BlockPos pos){
-        world.setBlockState(pos, world.getBlockState(pos).withProperty(ACTIVE, active));
+        EnumFacing facing = world.getBlockState(pos).getValue(FACING);
+        IBlockState state = getDefaultState().withProperty(ACTIVE, active).withProperty(FACING, facing);
+        world.setBlockState(pos, state, 2);
     }
 
     @Override
