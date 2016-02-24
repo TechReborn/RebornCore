@@ -1,11 +1,16 @@
 package reborncore.common;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 import reborncore.RebornCore;
 
 
-public abstract class BaseTileBlock extends BlockContainer {
+public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
     protected BaseTileBlock(Material materialIn) {
         super(materialIn);
         RebornCore.jsonDestroyer.registerObject(this);
@@ -13,5 +18,11 @@ public abstract class BaseTileBlock extends BlockContainer {
 
     public int getRenderType() {
         return 3;
+    }
+
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        super.breakBlock(worldIn, pos, state);
+        worldIn.removeTileEntity(pos);
     }
 }

@@ -147,19 +147,21 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
             ItemStack itemStack = inventory.getStackInSlot(i);
 
             if(itemStack == null){
-                return;
+                continue;
             }
             if (itemStack != null && itemStack.stackSize > 0) {
                 if (itemStack.getItem() instanceof ItemBlock) {
                     if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
-                        return;
+                        continue;
                     }
                 }
             }
             items.add(itemStack.copy());
         }
+
         items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
 
+        System.out.println(items.size());
         for (ItemStack itemStack : items){
                 Random rand = new Random();
 
@@ -358,7 +360,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     @Override
     public int getMetaFromState(IBlockState state) {
         int facingInt = getSideFromEnum(state.getValue(FACING));
-        int activeInt = state.getValue(ACTIVE) ? 0 : 3;
+        int activeInt = state.getValue(ACTIVE) ? 0 : 4;
         return facingInt + activeInt;
     }
 
@@ -366,9 +368,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     public IBlockState getStateFromMeta(int meta) {
         boolean active = false;
         int facingInt = meta;
-        if(facingInt > 3){
+        if(facingInt > 4){
             active = true;
-            facingInt = facingInt - 3;
+            facingInt = facingInt - 4;
         }
         EnumFacing facing = getSideFromint(facingInt);
         return this.getDefaultState().withProperty(FACING, facing).withProperty(ACTIVE, active);
@@ -389,8 +391,8 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
     public void setActive(Boolean active, World world, BlockPos pos){
         EnumFacing facing = world.getBlockState(pos).getValue(FACING);
-        IBlockState state = getDefaultState().withProperty(ACTIVE, active).withProperty(FACING, facing);
-        world.setBlockState(pos, state, 2);
+        IBlockState state = world.getBlockState(pos).withProperty(ACTIVE, active).withProperty(FACING, facing);
+        world.setBlockState(pos, state, 3);
     }
 
     @Override
