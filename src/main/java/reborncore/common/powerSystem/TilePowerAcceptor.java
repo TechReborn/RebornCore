@@ -267,28 +267,16 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
 
     @Override
     public void addInfo(List<String> info, boolean isRealTile) {
-        info.add(ChatFormatting.LIGHT_PURPLE + "Energy buffer Size " + ChatFormatting.GREEN + getEUString(getMaxPower()));
+        info.add(ChatFormatting.LIGHT_PURPLE + "Energy buffer Size " + ChatFormatting.GREEN + PowerSystem.getLocaliszedPower(getMaxPower()));
         if (getMaxInput() != 0) {
-            info.add(ChatFormatting.LIGHT_PURPLE + "Max Input " + ChatFormatting.GREEN + getEUString(getMaxInput()));
+            info.add(ChatFormatting.LIGHT_PURPLE + "Max Input " + ChatFormatting.GREEN + PowerSystem.getLocaliszedPower(getMaxInput()));
         }
         if (getMaxOutput() != 0) {
-            info.add(ChatFormatting.LIGHT_PURPLE + "Max Output " + ChatFormatting.GREEN + getEUString(getMaxOutput()));
+            info.add(ChatFormatting.LIGHT_PURPLE + "Max Output " + ChatFormatting.GREEN + PowerSystem.getLocaliszedPower(getMaxOutput()));
         }
 //        if(isRealTile){ //TODO sync to client
 //            info.add(ChatFormatting.LIGHT_PURPLE + "Stored energy " + ChatFormatting.GREEN + getEUString(energy));
 //        }
-    }
-
-    private String getEUString(double euValue) {
-        if (euValue >= 1000000) {
-            double tenX = Math.round(euValue / 100000);
-            return Double.toString(tenX / 10.0).concat(" m EU");
-        } else if (euValue >= 1000) {
-            double tenX = Math.round(euValue / 100);
-            return Double.toString(tenX / 10.0).concat(" k EU");
-        } else {
-            return Double.toString(Math.floor(euValue)).concat(" EU");
-        }
     }
 
     public double getFreeSpace() {
