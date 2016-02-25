@@ -13,7 +13,7 @@ public class PowerSystem {
 
 
     public static String getLocaliszedPower(double eu){
-        return getLocaliszedPower(eu);
+        return getLocaliszedPower((int)eu);
     }
 
     public static String getLocaliszedPower(int eu){
