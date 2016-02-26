@@ -132,6 +132,11 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
         breakBlock(worldIn, pos.getX(), pos.getY(), pos.getZ(), state.getBlock(), 0);
     }
 
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return null;
+    }
+
     protected void dropInventory(World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
