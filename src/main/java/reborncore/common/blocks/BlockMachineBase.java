@@ -140,6 +140,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     protected void dropInventory(World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
+        if(tileEntity == null){
+            return;
+        }
         if (!(tileEntity instanceof IInventory)) {
             return;
         }
@@ -166,7 +169,6 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
         items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
 
-        System.out.println(items.size());
         for (ItemStack itemStack : items){
                 Random rand = new Random();
 
