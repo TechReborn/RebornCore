@@ -137,30 +137,24 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
-        if(tileEntity == null){
-            return Collections.emptyList();
-        }
-        if (!(tileEntity instanceof IInventory)) {
-            return Collections.emptyList();
-        }
-
-        IInventory inventory = (IInventory) tileEntity;
-
         List<ItemStack> items = new ArrayList<ItemStack>();
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack itemStack = inventory.getStackInSlot(i);
 
-            if(itemStack == null){
-                continue;
-            }
-            if (itemStack != null && itemStack.stackSize > 0) {
-                if (itemStack.getItem() instanceof ItemBlock) {
-                    if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
-                        continue;
+        if(tileEntity instanceof IInventory){
+            IInventory inventory = (IInventory) tileEntity;
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                ItemStack itemStack = inventory.getStackInSlot(i);
+                if(itemStack == null){
+                    continue;
+                }
+                if (itemStack != null && itemStack.stackSize > 0) {
+                    if (itemStack.getItem() instanceof ItemBlock) {
+                        if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
+                            continue;
+                        }
                     }
                 }
+                items.add(itemStack.copy());
             }
-            items.add(itemStack.copy());
         }
 
         items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
