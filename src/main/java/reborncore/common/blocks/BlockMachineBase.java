@@ -128,35 +128,67 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        dropInventory(worldIn, pos);
         super.breakBlock(worldIn, pos, state);
         breakBlock(worldIn, pos.getX(), pos.getY(), pos.getZ(), state.getBlock(), 0);
+    }
+
+    protected void dropInventory(World world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+
+        if(tileEntity == null){
+            return;
+        }
+        if (!(tileEntity instanceof IInventory)) {
+            return;
+        }
+
+        IInventory inventory = (IInventory) tileEntity;
+
+        List<ItemStack> items = new ArrayList<ItemStack>();
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack itemStack = inventory.getStackInSlot(i);
+
+            if(itemStack == null){
+                continue;
+            }
+            if (itemStack != null && itemStack.stackSize > 0) {
+                if (itemStack.getItem() instanceof ItemBlock) {
+                    if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
+                        continue;
+                    }
+                }
+            }
+            items.add(itemStack.copy());
+        }
+
+        for (ItemStack itemStack : items){
+            Random rand = new Random();
+
+            float dX = rand.nextFloat() * 0.8F + 0.1F;
+            float dY = rand.nextFloat() * 0.8F + 0.1F;
+            float dZ = rand.nextFloat() * 0.8F + 0.1F;
+
+            EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ, itemStack.copy());
+
+            if (itemStack.hasTagCompound()) {
+                entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
+            }
+
+            float factor = 0.05F;
+            entityItem.motionX = rand.nextGaussian() * factor;
+            entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+            entityItem.motionZ = rand.nextGaussian() * factor;
+            world.spawnEntityInWorld(entityItem);
+            itemStack.stackSize = 0;
+        }
     }
 
 
     @Override
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        TileEntity tileEntity = world.getTileEntity(pos);
-
         List<ItemStack> items = new ArrayList<ItemStack>();
-
-        if(tileEntity instanceof IInventory){
-            IInventory inventory = (IInventory) tileEntity;
-            for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                ItemStack itemStack = inventory.getStackInSlot(i);
-                if(itemStack == null){
-                    continue;
-                }
-                if (itemStack != null && itemStack.stackSize > 0) {
-                    if (itemStack.getItem() instanceof ItemBlock) {
-                        if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase || ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid || ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
-                            continue;
-                        }
-                    }
-                }
-                items.add(itemStack.copy());
-            }
-        }
-
         items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
         return items;
     }
