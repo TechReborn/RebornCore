@@ -14,8 +14,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 repositories {
@@ -30,6 +30,10 @@ repositories {
     maven {
         name = "Modmuss50"
         url = "http://maven.modmuss50.me/"
+    }
+	maven{
+        name "tterrag Repo"
+        url "http://maven.tterrag.com/"
     }
 }
 
@@ -91,6 +95,9 @@ jar {
         from(project.zipTree(dep)){
             include 'me/modmuss50/jsonDestroyer/'
         }
+    }
+	manifest{
+        attributes 'TweakClass': 'chylex.reborncore.javacheck.Java8Checker'
     }
 }
 
