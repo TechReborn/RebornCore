@@ -405,7 +405,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
 
     @Override
     public int amountOfStates() {
-        return 8; //0-3 off nsew, 4-8 on nsew
+        return 9; //0-3 off nsew, 4-8 on nsew
     }
 
     public EnumFacing getSideFromint(int i){
