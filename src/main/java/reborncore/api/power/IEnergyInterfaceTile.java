@@ -98,4 +98,12 @@ public interface IEnergyInterfaceTile {
      */
     public double getMaxInput();
 
+    /**
+     *
+     * Gets the teir, used for machine explosions
+     *
+     * @return the teir
+     */
+    public EnumPowerTier getTier();
+
 }
