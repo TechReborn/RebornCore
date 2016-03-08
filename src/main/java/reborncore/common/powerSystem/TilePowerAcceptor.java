@@ -275,6 +275,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
         if (getMaxOutput() != 0) {
             info.add(ChatFormatting.LIGHT_PURPLE + "Max Output " + ChatFormatting.GREEN + PowerSystem.getLocaliszedPower(getMaxOutput()));
         }
+        info.add(ChatFormatting.LIGHT_PURPLE + "Tier " + ChatFormatting.GREEN + getTier());
 //        if(isRealTile){ //TODO sync to client
 //            info.add(ChatFormatting.LIGHT_PURPLE + "Stored energy " + ChatFormatting.GREEN + getEUString(energy));
 //        }
