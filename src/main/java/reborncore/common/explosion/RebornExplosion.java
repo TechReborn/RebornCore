@@ -6,7 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.time.StopWatch;
-import techreborn.Core;
+//import techreborn.Core;
 
 /**
  * Created by modmuss50 on 12/03/2016.
@@ -42,6 +42,6 @@ public class RebornExplosion {
                 }
             }
         }
-        Core.logHelper.info("The explosion took" + watch + " to explode");
+        //Core.logHelper.info("The explosion took" + watch + " to explode");
     }
 }
