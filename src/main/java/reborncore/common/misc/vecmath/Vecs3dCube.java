@@ -88,7 +88,7 @@ public class Vecs3dCube {
 
     public AxisAlignedBB toAABB() {
 
-        return AxisAlignedBB.fromBounds(getMinX(), getMinY(), getMinZ(),
+        return new AxisAlignedBB(getMinX(), getMinY(), getMinZ(),
                 getMaxX(), getMaxY(), getMaxZ());
     }
 

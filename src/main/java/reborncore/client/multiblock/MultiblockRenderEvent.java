@@ -76,29 +76,29 @@ public class MultiblockRenderEvent {
     }
 
     private boolean renderComponent(World world, Multiblock mb, MultiblockComponent comp, int anchorX, int anchorY, int anchorZ) {
-        CoordTriplet pos = comp.getRelativePosition();
-        int x = pos.x + anchorX;
-        int y = pos.y + anchorY;
-        int z = pos.z + anchorZ;
-
-        if (world.getBlockState(new BlockPos(x, y, z)) == comp.getBlock())
-            return false;
-
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1F, 1F, 1F, 0.4F);
-        //GL11.glTranslated(x + 0.5 - RenderManager.renderPosX, y + 0.5 - RenderManager.renderPosY, z + 0.5 - RenderManager.renderPosZ);
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-
-        Block block = comp.getBlock();
-        if (IMultiblockRenderHook.renderHooks.containsKey(block))
-            IMultiblockRenderHook.renderHooks.get(block).renderBlockForMultiblock(world, mb, block, comp.getMeta(), blockRender);
-        else
-            blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y, z), world, Tessellator.getInstance().getWorldRenderer());
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glPopMatrix();
+//        CoordTriplet pos = comp.getRelativePosition();
+//        int x = pos.x + anchorX;
+//        int y = pos.y + anchorY;
+//        int z = pos.z + anchorZ;
+//
+//        if (world.getBlockState(new BlockPos(x, y, z)) == comp.getBlock())
+//            return false;
+//
+//        GL11.glPushMatrix();
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//        GL11.glDisable(GL11.GL_DEPTH_TEST);
+//        GL11.glColor4f(1F, 1F, 1F, 0.4F);
+//        //GL11.glTranslated(x + 0.5 - RenderManager.renderPosX, y + 0.5 - RenderManager.renderPosY, z + 0.5 - RenderManager.renderPosZ);
+//        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+//
+//        Block block = comp.getBlock();
+//        if (IMultiblockRenderHook.renderHooks.containsKey(block))
+//            IMultiblockRenderHook.renderHooks.get(block).renderBlockForMultiblock(world, mb, block, comp.getMeta(), blockRender);
+//        else
+//            blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y, z), world, Tessellator.getInstance().getWorldRenderer());
+//        GL11.glEnable(GL11.GL_DEPTH_TEST);
+//        GL11.glPopMatrix();
         return true;
     }
 

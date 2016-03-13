@@ -395,12 +395,13 @@ public class Vecs3d {
                     int world = Integer.parseInt(t.split("=")[1]);
                     if (FMLCommonHandler.instance().getEffectiveSide()
                             .isServer()) {
-                        for (World wo : MinecraftServer.getServer().worldServers) {
-                            if (wo.provider.getDimension() == world) {
-                                w = wo;
-                                break;
-                            }
-                        }
+                        //TODO 1.9
+//                        for (World wo : MinecraftServer.getServer().worldServers) {
+//                            if (wo.provider.getDimension() == world) {
+//                                w = wo;
+//                                break;
+//                            }
+//                        }
                     } else {
                         w = getClientWorld(world);
                     }

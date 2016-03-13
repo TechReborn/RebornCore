@@ -34,7 +34,7 @@ public class TorchHelper
             } 
             else if (torchStack.stackSize <= 0) 
             {
-                ForgeEventFactory.onPlayerDestroyItem(player, torchStack);
+                ForgeEventFactory.onPlayerDestroyItem(player, torchStack, hand);
                 player.inventory.mainInventory[i] = null;
             }
             if (result == EnumActionResult.SUCCESS)

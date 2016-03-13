@@ -3,7 +3,7 @@ package reborncore.common.multiblock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -159,13 +159,13 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
     public Packet getDescriptionPacket() {
         NBTTagCompound packetData = new NBTTagCompound();
         encodeDescriptionPacket(packetData);
-        return new S35PacketUpdateTileEntity(getPos(), 0,
+        return new SPacketUpdateTileEntity(getPos(), 0,
                 packetData);
     }
 
     @Override
     public void onDataPacket(NetworkManager network,
-                             S35PacketUpdateTileEntity packet) {
+                             SPacketUpdateTileEntity packet) {
         decodeDescriptionPacket(packet.getNbtCompound());
     }
 
@@ -319,8 +319,8 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
         List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
         IChunkProvider chunkProvider = worldObj.getChunkProvider();
         for (CoordTriplet neighbor : neighbors) {
-            if (!chunkProvider.chunkExists(neighbor.getChunkX(),
-                    neighbor.getChunkZ())) {
+            if (chunkProvider.getLoadedChunk(neighbor.getChunkX(),
+                    neighbor.getChunkZ()) == null) {
                 // Chunk not loaded, skip it.
                 continue;
             }

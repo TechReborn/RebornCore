@@ -33,7 +33,7 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
     }
 
     public boolean exists(World world) {
-        return world.getChunkProvider().chunkExists(data.getLeft(), data.getRight());
+        return world.getChunkProvider().getLoadedChunk(data.getLeft(), data.getRight()) != null;
     }
 
     public boolean containsWorldCoord(BlockPos coord) {

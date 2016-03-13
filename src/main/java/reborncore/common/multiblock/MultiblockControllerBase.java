@@ -471,8 +471,8 @@ public abstract class MultiblockControllerBase {
      */
     private void _onAssimilated(MultiblockControllerBase otherController) {
         if (referenceCoord != null) {
-            if (worldObj.getChunkProvider().chunkExists(
-                    referenceCoord.getChunkX(), referenceCoord.getChunkZ())) {
+            if (worldObj.getChunkProvider().getLoadedChunk(
+                    referenceCoord.getChunkX(), referenceCoord.getChunkZ()) != null) {
                 TileEntity te = this.worldObj.getTileEntity(referenceCoord.toBlockPos());
                 if (te instanceof IMultiblockPart) {
                     ((IMultiblockPart) te).forfeitMultiblockSaveDelegate();
@@ -895,7 +895,7 @@ public abstract class MultiblockControllerBase {
 
         for (IMultiblockPart part : connectedParts) {
             // This happens during chunk unload.
-            if (!chunkProvider.chunkExists(part.getPos().getX() >> 4, part.getPos().getZ() >> 4)
+            if (chunkProvider.getLoadedChunk(part.getPos().getX() >> 4, part.getPos().getZ() >> 4) != null
                     || part.isInvalid()) {
                 deadParts.add(part);
                 onDetachBlock(part);
@@ -1004,7 +1004,7 @@ public abstract class MultiblockControllerBase {
 
         IChunkProvider chunkProvider = worldObj.getChunkProvider();
         for (IMultiblockPart part : connectedParts) {
-            if (chunkProvider.chunkExists(part.getPos().getX() >> 4, part.getPos().getZ() >> 4)) {
+            if (chunkProvider.getLoadedChunk(part.getPos().getX() >> 4, part.getPos().getZ() >> 4) != null) {
                 onDetachBlock(part);
             }
         }
@@ -1029,8 +1029,8 @@ public abstract class MultiblockControllerBase {
 
         for (IMultiblockPart part : connectedParts) {
             if (part.isInvalid()
-                    || !chunkProvider.chunkExists(part.getPos().getX() >> 4,
-                    part.getPos().getZ() >> 4)) {
+                    || chunkProvider.getLoadedChunk(part.getPos().getX() >> 4,
+                    part.getPos().getZ() >> 4) != null) {
                 // Chunk is unloading, skip this coord to prevent chunk
                 // thrashing
                 continue;
@@ -1062,7 +1062,8 @@ public abstract class MultiblockControllerBase {
     protected void markReferenceCoordForUpdate() {
         CoordTriplet rc = getReferenceCoord();
         if (worldObj != null && rc != null) {
-            worldObj.markBlockForUpdate(rc.toBlockPos());
+            //TODO 1.9
+           // worldObj.markBlockForUpdate(rc.toBlockPos());
         }
     }
 
