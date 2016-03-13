@@ -65,7 +65,7 @@ public class RebornCore implements IModInfo {
     }
 
     @Override
-    public String MOD_DEPENDENCUIES() {
+    public String MOD_DEPENDENCIES() {
         return "";
     }
 }

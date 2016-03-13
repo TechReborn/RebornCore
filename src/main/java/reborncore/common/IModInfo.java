@@ -7,5 +7,5 @@ public interface IModInfo {
 
     String MOD_VERSION();
 
-    String MOD_DEPENDENCUIES();
+    String MOD_DEPENDENCIES();
 }
