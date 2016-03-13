@@ -2,13 +2,14 @@ package reborncore.common.misc.vecmath;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,14 +39,14 @@ public class Vecs3d {
         this(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ(), te.getWorld());
     }
 
-    public Vecs3d(Vec3 vec) {
+    public Vecs3d(Vec3i vec) {
 
-        this(vec.xCoord, vec.yCoord, vec.zCoord);
+        this(vec.getX(), vec.getY(), vec.getZ());
     }
 
-    public Vecs3d(Vec3 vec, World w) {
+    public Vecs3d(Vec3i vec, World w) {
 
-        this(vec.xCoord, vec.yCoord, vec.zCoord);
+        this(vec.getX(), vec.getY(), vec.getZ());
         this.w = w;
     }
 
@@ -227,13 +228,14 @@ public class Vecs3d {
     public boolean isBlock(Block b, boolean checkAir) {
 
         if (hasWorld()) {
-            Block bl = w.getBlockState(getBlockPos()).getBlock();
+            IBlockState state = w.getBlockState(getBlockPos());
+            Block bl = state.getBlock();
 
             if (b == null && bl == Blocks.air)
                 return true;
-            if (b == null && checkAir && bl.getMaterial() == Material.air)
+            if (b == null && checkAir && bl.getMaterial(state) == Material.air)
                 return true;
-            if (b == null && checkAir && bl.isAir(w, getBlockPos()))
+            if (b == null && checkAir && bl.isAir(state, w, getBlockPos()))
                 return true;
 
             return bl.getClass().isInstance(b);
@@ -344,9 +346,9 @@ public class Vecs3d {
                 z).hashCode() << 16;
     }
 
-    public Vec3 toVec3() {
+    public Vec3i toVec3() {
 
-        return new Vec3(x, y, z);
+        return new Vec3i(x, y, z);
     }
 
     @Override
@@ -354,7 +356,7 @@ public class Vecs3d {
 
         String s = "Vector3{";
         if (hasWorld())
-            s += "w=" + w.provider.getDimensionId() + ";";
+            s += "w=" + w.provider.getDimension() + ";";
         s += "x=" + x + ";y=" + y + ";z=" + z + "}";
         return s;
     }
@@ -394,7 +396,7 @@ public class Vecs3d {
                     if (FMLCommonHandler.instance().getEffectiveSide()
                             .isServer()) {
                         for (World wo : MinecraftServer.getServer().worldServers) {
-                            if (wo.provider.getDimensionId() == world) {
+                            if (wo.provider.getDimension() == world) {
                                 w = wo;
                                 break;
                             }
@@ -424,7 +426,7 @@ public class Vecs3d {
     @SideOnly(Side.CLIENT)
     private static World getClientWorld(int world) {
 
-        if (Minecraft.getMinecraft().theWorld.provider.getDimensionId() != world)
+        if (Minecraft.getMinecraft().theWorld.provider.getDimension() != world)
             return null;
         return Minecraft.getMinecraft().theWorld;
     }

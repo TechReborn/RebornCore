@@ -1,8 +1,8 @@
 package ic2.api;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public enum Direction
@@ -42,7 +42,7 @@ public enum Direction
                 return world.getTileEntity(pos2);
             }
             catch (Exception e) {
-                throw new RuntimeException("error getting TileEntity at dim " + world.provider.getDimensionId() + " " + pos2.toString());
+                throw new RuntimeException("error getting TileEntity at dim " + world.provider.getDimension() + " " + pos2.toString());
             }
         }
         return null;

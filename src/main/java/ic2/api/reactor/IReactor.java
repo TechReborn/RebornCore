@@ -1,6 +1,6 @@
 package ic2.api.reactor;
 
-import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.item.*;
 

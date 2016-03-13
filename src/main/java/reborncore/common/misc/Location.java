@@ -1,9 +1,9 @@
 package reborncore.common.misc;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -65,7 +65,7 @@ public class Location implements Comparable<Location> {
         }
     }
 
-    public Location(MovingObjectPosition blockLookedAt) {
+    public Location(RayTraceResult blockLookedAt) {
         if (blockLookedAt != null) {
             this.x = blockLookedAt.getBlockPos().getX();
             this.y = blockLookedAt.getBlockPos().getY();

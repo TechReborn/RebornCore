@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.Fluid;
@@ -44,7 +44,7 @@ public abstract class SimplePacket {
     }
 
     public static void writeWorld(World world, ByteBuf out) throws IOException {
-        out.writeInt(world.provider.getDimensionId());
+        out.writeInt(world.provider.getDimension());
     }
 
     public static EntityPlayer readPlayer(ByteBuf in) throws IOException {

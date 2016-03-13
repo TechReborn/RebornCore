@@ -1,7 +1,7 @@
 package reborncore.common.misc;
 
 import com.google.common.base.Objects;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;

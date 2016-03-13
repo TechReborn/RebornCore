@@ -14,9 +14,10 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -48,7 +49,7 @@ public class MultiblockRenderEvent {
     public void onWorldRenderLast(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.thePlayer != null && mc.objectMouseOver != null && !mc.thePlayer.isSneaking()) {
-            mc.thePlayer.getCurrentEquippedItem();
+            mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND);
             renderPlayerLook(mc.thePlayer, mc.objectMouseOver);
         }
     }
@@ -62,7 +63,7 @@ public class MultiblockRenderEvent {
         }
     }
 
-    private void renderPlayerLook(EntityPlayer player, MovingObjectPosition src) {
+    private void renderPlayerLook(EntityPlayer player, RayTraceResult src) {
         if (currentMultiblock != null) {
             int anchorX = anchor != null ? anchor.x : src.getBlockPos().getX();
             int anchorY = anchor != null ? anchor.y + 1 : src.getBlockPos().getY() + 1;

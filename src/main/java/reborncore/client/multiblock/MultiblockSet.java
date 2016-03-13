@@ -9,7 +9,7 @@
 package reborncore.client.multiblock;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * A set of Multiblock objects for various rotations.

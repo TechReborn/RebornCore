@@ -1,6 +1,6 @@
 package ic2.api.item;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
 
 public interface ITerraformingBP

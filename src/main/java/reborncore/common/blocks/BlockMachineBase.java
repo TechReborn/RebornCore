@@ -7,7 +7,7 @@ import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
@@ -19,8 +19,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.*;
@@ -44,15 +45,15 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     public BlockMachineBase() {
         super(Material.rock);
         setHardness(2f);
-        setStepSound(soundTypeMetal);
+        //setStepSound(soundTypeMetal); //TODO 1.9
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
     }
 
-    protected BlockState createBlockState() {
+    protected BlockStateContainer createBlockState() {
 
         FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
         ACTIVE = PropertyBool.create("active");
-        return new BlockState(this, FACING, ACTIVE);
+        return new BlockStateContainer(this, FACING, ACTIVE);
     }
 
     @Override
@@ -75,25 +76,29 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
     {
         if (!worldIn.isRemote)
         {
-            Block block = worldIn.getBlockState(pos.north()).getBlock();
-            Block block1 = worldIn.getBlockState(pos.south()).getBlock();
-            Block block2 = worldIn.getBlockState(pos.west()).getBlock();
-            Block block3 = worldIn.getBlockState(pos.east()).getBlock();
+            IBlockState sate = worldIn.getBlockState(pos.north());
+            Block block = sate.getBlock();
+            IBlockState state1 = worldIn.getBlockState(pos.south());
+            Block block1 = state1.getBlock();
+            IBlockState state2 = worldIn.getBlockState(pos.west());
+            Block block2 = state2.getBlock();
+            IBlockState state3 = worldIn.getBlockState(pos.east());
+            Block block3 = state3.getBlock();
             EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
 
-            if (enumfacing == EnumFacing.NORTH && block.isFullBlock() && !block1.isFullBlock())
+            if (enumfacing == EnumFacing.NORTH && block.isFullBlock(state) && !block1.isFullBlock(state1))
             {
                 enumfacing = EnumFacing.SOUTH;
             }
-            else if (enumfacing == EnumFacing.SOUTH && block1.isFullBlock() && !block.isFullBlock())
+            else if (enumfacing == EnumFacing.SOUTH && block1.isFullBlock(state1) && !block.isFullBlock(state))
             {
                 enumfacing = EnumFacing.NORTH;
             }
-            else if (enumfacing == EnumFacing.WEST && block2.isFullBlock() && !block3.isFullBlock())
+            else if (enumfacing == EnumFacing.WEST && block2.isFullBlock(state2) && !block3.isFullBlock(state2))
             {
                 enumfacing = EnumFacing.EAST;
             }
-            else if (enumfacing == EnumFacing.EAST && block3.isFullBlock() && !block2.isFullBlock())
+            else if (enumfacing == EnumFacing.EAST && block3.isFullBlock(state3) && !block2.isFullBlock(state2))
             {
                 enumfacing = EnumFacing.WEST;
             }
@@ -213,16 +218,15 @@ public abstract class BlockMachineBase extends BaseTileBlock implements ITexture
         }
     }
 
-
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if(fillBlockWithFluid(worldIn, pos, playerIn)){
             return true;
         }
         if(onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ)){
             return true;
         }
-        return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
     }
 
     @Deprecated

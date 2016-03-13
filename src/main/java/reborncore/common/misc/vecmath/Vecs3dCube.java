@@ -1,6 +1,6 @@
 package reborncore.common.misc.vecmath;
 
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package ic2.api.event;
 
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
