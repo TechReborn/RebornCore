@@ -40,8 +40,7 @@ public class RebornCore implements IModInfo {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        //TODO when I can build things
-//        jsonDestroyer.load();
+        jsonDestroyer.load();
         // packets
         PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(
                 MOD_ID + "_packets", new PacketHandler()));
