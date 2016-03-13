@@ -14,7 +14,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class TorchHelper 
 {
-    public static boolean placeTorch(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOffset, float yOffset, float zOffset, EnumHand hand)
+    public static EnumActionResult placeTorch(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float xOffset, float yOffset, float zOffset, EnumHand hand)
     {
         for (int i = 0; i < player.inventory.mainInventory.length; i++) 
         {
@@ -39,9 +39,9 @@ public class TorchHelper
             }
             if (result == EnumActionResult.SUCCESS)
             {
-                return true;
+                return EnumActionResult.SUCCESS;
             }
         }
-        return false;
+        return EnumActionResult.FAIL;
     }
 }
