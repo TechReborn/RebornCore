@@ -32,7 +32,7 @@ public class EUItemPowerTrait extends JTrait<IEnergyInterfaceItem> implements IE
 
     @Override
     public int getTier(ItemStack itemStack) {
-        return _self.getStackTeir(itemStack);
+        return _self.getStackTier(itemStack);
     }
 
     @Override
