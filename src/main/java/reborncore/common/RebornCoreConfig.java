@@ -48,12 +48,13 @@ public class RebornCoreConfig {
 
     public static void Configs() {
         enableRF = config
-                .get(CATEGORY_POWER, "Allow RF", !Loader.isModLoaded("IC2"), "Allow machines to be powered with RF")
+                .get(CATEGORY_POWER, "Allow RF", false, "Allow machines to be powered with RF")
                 .getBoolean();
 
-        enableEU = config
-                .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
-                .getBoolean();
+//        enableEU = config
+//                .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
+//                .getBoolean();
+        enableEU = true;
 
         euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
     }
