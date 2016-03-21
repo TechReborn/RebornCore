@@ -19,6 +19,7 @@ import reborncore.shields.client.ClientHooks;
 public class RebornClassTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
+        //This replaces the item registry to inject new items
         if(name.equals("net.minecraft.item.Item")){
             FMLLog.log("RebornCore", Level.INFO, String.valueOf("Patching Items"));
             boolean isObfuscated = !name.equals(transformedName);
