@@ -11,6 +11,7 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
+import reborncore.shields.RebornCoreShields;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.9]")
 public class RebornCore implements IModInfo {
@@ -36,6 +37,12 @@ public class RebornCore implements IModInfo {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
         config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+        try {
+            RebornCoreShields.preInit();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            //Bad things happened
+            e.printStackTrace();
+        }
     }
 
     @Mod.EventHandler

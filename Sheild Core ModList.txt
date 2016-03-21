@@ -1,0 +1,7 @@
+net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer, need to add custom rendering for it here to allow us to have custom textures
+net.minecraft.entity.monster.EntityMob:133, Need to change to check for any sheild not just the vanilla one
+net.minecraft.entity.player.EntityPlayer:1440, need to check for any shield
+net.minecraft.entity.player.EntityPlayer:1451, needs fixes 
+net.minecraft.entity.player.EntityPlayer:1099, needs overriding
+
+net.minecraft.client.renderer.RenderItem:1003, need to be register, can be done without core mod
