@@ -5,6 +5,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.util.ItemNBTHelper;
 
 import java.util.List;
@@ -17,8 +19,10 @@ public class CustomShield extends ItemShield {
     public CustomShield() {
         super();
         setHasSubtypes(true);
+        setUnlocalizedName("shield");
     }
 
+    @SideOnly(Side.CLIENT)
     public ResourceLocation getShieldTexture(ItemStack stack){
         if(ItemNBTHelper.verifyExistance(stack, "vanilla")){
             return SheildTextures.vanillaShield;

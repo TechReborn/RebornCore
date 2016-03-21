@@ -37,12 +37,6 @@ public class RebornCore implements IModInfo {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
         config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
-        try {
-            RebornCoreShields.preInit();
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            //Bad things happened
-            e.printStackTrace();
-        }
     }
 
     @Mod.EventHandler
