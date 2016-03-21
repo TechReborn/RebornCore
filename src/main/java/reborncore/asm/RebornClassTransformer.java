@@ -1,6 +1,5 @@
 package reborncore.asm;
 
-import akka.event.Logging;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
@@ -20,8 +19,8 @@ public class RebornClassTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         //This replaces the item registry to inject new items
-        if(name.equals("net.minecraft.item.Item")){
-            FMLLog.log("RebornCore", Level.INFO, String.valueOf("Patching Items"));
+        if(name.equals("net.minecraft.item.Item") || name.equals("ado")){
+            FMLLog.log("RebornCore", Level.INFO, String.valueOf("Found item class"));
             boolean isObfuscated = !name.equals(transformedName);
             ClassNode classNode = readClassFromBytes(bytes);
             MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "registerItem", isObfuscated ? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V");
@@ -37,7 +36,7 @@ public class RebornClassTransformer implements IClassTransformer {
 
             return writeClassToBytes(classNode);
         }
-        if(name.equals("net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer")){
+        if(name.equals("net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer") || name.equals("bne")){
             RebornCore.logHelper.info("Patching TileEntityItemStackRenderer");
             boolean isObfuscated = !name.equals(transformedName);
             ClassNode classNode = readClassFromBytes(bytes);

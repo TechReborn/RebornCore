@@ -1,6 +1,9 @@
 package reborncore.asm;
 
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import org.apache.logging.log4j.Level;
 import reborncore.shields.RebornCoreShields;
 
 import java.util.Map;
@@ -9,12 +12,17 @@ import java.util.Map;
  * Created by Mark on 21/03/2016.
  */
 //-Dfml.coreMods.load=reborncore.asm.RebornASM
-@IFMLLoadingPlugin.MCVersion("1.9")
-public class RebornASM implements IFMLLoadingPlugin {
+@IFMLLoadingPlugin.Name(value = "Reborn Core ASM")
+public class RebornASM implements IFMLLoadingPlugin, IFMLCallHook {
+
+
+    public RebornASM() {
+        FMLLog.log("RebornCore", Level.INFO, String.valueOf("Loading RebornCore ASM"));
+    }
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[]{"reborncore.asm.RebornClassTransformer"};
+        return new String[]{RebornClassTransformer.class.getName()};
     }
 
     @Override
@@ -34,6 +42,11 @@ public class RebornASM implements IFMLLoadingPlugin {
 
     @Override
     public String getAccessTransformerClass() {
+        return null;
+    }
+
+    @Override
+    public Void call() throws Exception {
         return null;
     }
 }

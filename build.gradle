@@ -97,8 +97,9 @@ jar {
         }
     }
 	manifest{
-        attributes 'TweakClass': 'chylex.reborncore.javacheck.Java8Checker'
         attributes 'FMLCorePlugin': 'reborncore.asm.RebornASM'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+        //attributes 'TweakClass': 'chylex.reborncore.javacheck.Java8Checker'
     }
 }
 
