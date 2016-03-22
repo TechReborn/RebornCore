@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import reborncore.common.util.ItemNBTHelper;
+import reborncore.shields.api.Shield;
 import reborncore.shields.api.ShieldRegistry;
 
 /**
@@ -20,15 +21,18 @@ public class RebornCoreShields {
         ShieldRegistry.registerShield(new FaceShield("AKTheKnight"));
         ShieldRegistry.registerShield(new FaceShield("ProfProspector"));
         ShieldRegistry.registerShield(new FaceShield("nexans"));
+        ShieldRegistry.registerShield(new FaceShield("themattabase"));
 
         MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
     }
 
     @SubscribeEvent
     public void craft(PlayerEvent.ItemCraftedEvent event){
-        if(ShieldRegistry.shieldHashMap.containsKey(event.player.getName())){
-            ItemNBTHelper.setString(event.crafting, "type", event.player.getName());
-            ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+        for(Shield shield : ShieldRegistry.shieldList){
+            if(shield.name.equalsIgnoreCase(event.player.getName())) {
+                ItemNBTHelper.setString(event.crafting, "type", shield.name);
+                ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+            }
         }
     }
 
