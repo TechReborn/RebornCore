@@ -1,6 +1,7 @@
 package reborncore.shields;
 
 
+import net.minecraft.init.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -28,10 +29,12 @@ public class RebornCoreShields {
 
     @SubscribeEvent
     public void craft(PlayerEvent.ItemCraftedEvent event){
-        for(Shield shield : ShieldRegistry.shieldList){
-            if(shield.name.equalsIgnoreCase(event.player.getName())) {
-                ItemNBTHelper.setString(event.crafting, "type", shield.name);
-                ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+        if(event.crafting.getItem() == Items.shield){
+            for(Shield shield : ShieldRegistry.shieldList){
+                if(shield.name.equalsIgnoreCase(event.player.getName())) {
+                    ItemNBTHelper.setString(event.crafting, "type", shield.name);
+                    ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+                }
             }
         }
     }
