@@ -42,7 +42,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "2.0.0"
+version = "2.0.1"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -50,7 +50,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1766-1.9"
+    version = "1.9-12.16.0.1786-1.9"
     mappings = "snapshot_20160316"
     replace "@MODVERSION@", project.version
 	runDir = "run"
