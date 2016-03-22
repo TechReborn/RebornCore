@@ -35,6 +35,10 @@ repositories {
         name "tterrag Repo"
         url "http://maven.tterrag.com/"
     }
+    maven {
+        name "TiC"
+        url "http://dvs1.progwml6.com/files/maven"
+    }
 }
 
 configurations {
@@ -62,6 +66,7 @@ group = 'RebornCore'
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
     shade 'JSON-Destroyer:JSON-Destroyer-1.9:2.0.+:dev'
+    deobfCompile "mezz.jei:jei_1.9:3.0.+"
 }
 
 processResources
