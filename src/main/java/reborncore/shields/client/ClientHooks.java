@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelShield;
+import net.minecraft.client.renderer.BannerTextures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
@@ -37,6 +38,10 @@ public class ClientHooks {
     public static void renderByItem(ItemStack itemStackIn) {
         if (itemStackIn.getItem() == Items.shield) {
             CustomShield sheild = (CustomShield) itemStackIn.getItem();
+            if (itemStackIn.getSubCompound("BlockEntityTag", false) != null) {
+                banner.setItemValues(itemStackIn);
+                Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(banner.getPatternResourceLocation(), banner.getPatternList(), banner.getColorList()));
+            }
             Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
             GlStateManager.pushMatrix();
             GlStateManager.scale(1.0F, -1.0F, -1.0F);

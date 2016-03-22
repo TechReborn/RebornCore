@@ -47,6 +47,8 @@ public class RebornCore implements IModInfo {
                 MOD_ID + "_packets", new PacketHandler()));
         OreUtil.scanForOres();
 
+        RebornCoreShields.init();
+
         proxy.init(event);
     }
 
