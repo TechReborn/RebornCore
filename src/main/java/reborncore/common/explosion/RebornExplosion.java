@@ -36,7 +36,7 @@ public class RebornExplosion extends Explosion {
     EntityLivingBase livingBase;
 
     public RebornExplosion(@Nonnull BlockPos center, @Nonnull World world, @Nonnull int radius) {
-        super(world, null, center.getX(), center.getY(), center.getZ(), radius, new ArrayList<BlockPos>());
+        super(world, null, center.getX(), center.getY(), center.getZ(), radius, false, true);
         this.center = center;
         this.world = world;
         this.radius = radius;
