@@ -14,7 +14,6 @@ public abstract class Shield {
         this.name = name;
     }
 
-    @SideOnly(Side.CLIENT)
     public ResourceLocation getShieldTexture(){
         return new ResourceLocation("null");
     }
