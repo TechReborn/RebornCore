@@ -41,8 +41,9 @@ public class ClientHooks {
             if (itemStackIn.getSubCompound("BlockEntityTag", false) != null) {
                 banner.setItemValues(itemStackIn);
                 Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(banner.getPatternResourceLocation(), banner.getPatternList(), banner.getColorList()));
+            } else {
+                Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
             }
-            Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
             GlStateManager.pushMatrix();
             GlStateManager.scale(1.0F, -1.0F, -1.0F);
             modelShield.render();

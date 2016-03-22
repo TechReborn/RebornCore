@@ -15,4 +15,9 @@ public class FaceShield extends Shield {
     public ResourceLocation getShieldTexture() {
         return new ResourceLocation("reborncore:textures/shields/people/" + name + ".png");
     }
+
+    @Override
+    public boolean showInItemLists() {
+        return false;
+    }
 }

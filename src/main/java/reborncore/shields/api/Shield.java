@@ -18,4 +18,8 @@ public abstract class Shield {
         return new ResourceLocation("null");
     }
 
+    public boolean showInItemLists(){
+        return true;
+    }
+
 }

@@ -46,17 +46,34 @@ public class CustomShield extends ItemShield {
         ItemNBTHelper.setBoolean(newStack, "vanilla", true);
         subItems.add(newStack); //adds vanilla
         for(Shield shield : ShieldRegistry.shieldList){
-            newStack = new ItemStack(this);
-            ItemNBTHelper.setString(newStack, "type", shield.name);
-            ItemNBTHelper.setBoolean(newStack, "vanilla", false);
-            subItems.add(newStack);
+            if(shield.showInItemLists()){
+                newStack = new ItemStack(this);
+                ItemNBTHelper.setString(newStack, "type", shield.name);
+                ItemNBTHelper.setBoolean(newStack, "vanilla", false);
+                subItems.add(newStack);
+            }
         }
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add(TextFormatting.BLUE + "Type: " + TextFormatting.GREEN + ItemNBTHelper.getString(stack, "type", "Vanilla"));
-        tooltip.add(TextFormatting.GREEN + "Item replaced by RebornCore");
+        if(!ItemNBTHelper.getBoolean(stack, "vanilla", true)){
+            tooltip.add(TextFormatting.BLUE + "Type: " + TextFormatting.GREEN + ItemNBTHelper.getString(stack, "type", "Vanilla"));
+        }
     }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        if(ItemNBTHelper.getBoolean(stack, "vanilla", true)){
+            return super.getUnlocalizedName(stack);
+        } else {
+            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
+            if(ShieldRegistry.shieldHashMap.containsKey(str)){
+                return "shield." + ShieldRegistry.shieldHashMap.get(str).name + ".name";
+            }
+        }
+        return super.getUnlocalizedName(stack);
+    }
+
 }
