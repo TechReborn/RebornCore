@@ -22,18 +22,22 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
     @Override
     public void renderByItem(ItemStack itemStackIn) {
         if (itemStackIn.getItem() == Items.shield) {
-            CustomShield sheild = (CustomShield) itemStackIn.getItem();
-            if (itemStackIn.getSubCompound("BlockEntityTag", false) != null) {
-                banner.setItemValues(itemStackIn);
-                Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(banner.getPatternResourceLocation(), banner.getPatternList(), banner.getColorList()));
+            if(Items.shield instanceof CustomShield){
+                CustomShield sheild = (CustomShield) itemStackIn.getItem();
+                if (itemStackIn.getSubCompound("BlockEntityTag", false) != null) {
+                    banner.setItemValues(itemStackIn);
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(banner.getPatternResourceLocation(), banner.getPatternList(), banner.getColorList()));
+                } else {
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
+                }
+                GlStateManager.pushMatrix();
+                GlStateManager.scale(1.0F, -1.0F, -1.0F);
+                modelShield.render();
+                GlStateManager.popMatrix();
+                return;
             } else {
-                Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
+                super.renderByItem(itemStackIn);
             }
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(1.0F, -1.0F, -1.0F);
-            modelShield.render();
-            GlStateManager.popMatrix();
-            return;
         } else {
             super.renderByItem(itemStackIn);
         }
