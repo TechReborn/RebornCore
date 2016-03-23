@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import reborncore.common.IModInfo;
+import reborncore.common.RebornCoreConfig;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,6 +32,9 @@ public class VersionChecker {
     }
 
     public void checkVersion() throws IOException {
+        if(!RebornCoreConfig.versionCheck){
+            return;
+        }
         isChecking = true;
         URL url = new URL(apiAddress + "?project=" + projectName);
         URLConnection con = url.openConnection();

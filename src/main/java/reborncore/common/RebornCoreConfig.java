@@ -14,10 +14,13 @@ public class RebornCoreConfig {
 
     private static RebornCoreConfig instance = null;
     public static String CATEGORY_POWER = "power";
+    public static String CATEGORY_MISC = "misc";
 
     public static boolean enableRF;
     public static boolean enableEU;
     public static int euPerRF;
+
+    public static boolean versionCheck;
 
     public RebornCoreConfig(File configFile) {
         config = new Configuration(configFile);
@@ -57,5 +60,9 @@ public class RebornCoreConfig {
         enableEU = true;
 
         euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
+
+        versionCheck = config
+                .get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker")
+                .getBoolean();
     }
 }
