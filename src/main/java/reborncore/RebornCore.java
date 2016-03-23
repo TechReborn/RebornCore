@@ -4,6 +4,7 @@ import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
@@ -50,6 +51,11 @@ public class RebornCore implements IModInfo {
         RebornCoreShields.init();
 
         proxy.init(event);
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event){
+        proxy.postInit(event);
     }
 
     public String MOD_NAME() {

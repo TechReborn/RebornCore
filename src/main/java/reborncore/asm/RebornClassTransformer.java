@@ -8,9 +8,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-import reborncore.RebornCore;
 import reborncore.shields.ShieldHooks;
-import reborncore.shields.client.ClientHooks;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -30,22 +28,6 @@ public class RebornClassTransformer implements IClassTransformer {
             toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
             toInject.add(new VarInsnNode(Opcodes.ALOAD, 2));
             toInject.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(ShieldHooks.class), "registerItem", isObfuscated ? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V", false));
-            toInject.add(new InsnNode(Opcodes.RETURN));
-
-            method.instructions.insertBefore(findFirstInstruction(method), toInject);
-
-            return writeClassToBytes(classNode);
-        }
-        if(name.equals("net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer") || name.equals("bne")){
-            RebornCore.logHelper.info("Patching TileEntityItemStackRenderer");
-            boolean isObfuscated = !name.equals(transformedName);
-            ClassNode classNode = readClassFromBytes(bytes);
-            MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "renderByItem", isObfuscated ? "(Ladq;)V" : "(Lnet/minecraft/item/ItemStack;)V");
-
-            InsnList toInject = new InsnList();
-            toInject.add(new VarInsnNode(Opcodes.ALOAD, 0));
-            toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
-            toInject.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(ClientHooks.class), "renderByItem", isObfuscated ? "(Ladq;)V" : "(Lnet/minecraft/item/ItemStack;)V", false));
             toInject.add(new InsnNode(Opcodes.RETURN));
 
             method.instructions.insertBefore(findFirstInstruction(method), toInject);
