@@ -1,12 +1,5 @@
 package reborncore.common.util;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.io.IOUtils;
-import reborncore.common.IModInfo;
-import reborncore.common.RebornCoreConfig;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,122 +8,155 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class VersionChecker {
+import org.apache.commons.io.IOUtils;
 
-    public static final String apiAddress = "http://modmuss50.me/api/v1/version.php";
+import reborncore.common.IModInfo;
+import reborncore.common.RebornCoreConfig;
 
-    public String projectName;
-    public IModInfo modInfo;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-    ArrayList<ModifacationVersionInfo> versions;
+public class VersionChecker
+{
 
-    public boolean isChecking;
+	public static final String apiAddress = "http://modmuss50.me/api/v1/version.php";
 
-    public VersionChecker(String projectName, IModInfo modInfo) {
-        this.projectName = projectName;
-        this.modInfo = modInfo;
-    }
+	public String projectName;
+	public IModInfo modInfo;
 
-    public void checkVersion() throws IOException {
-        if(!RebornCoreConfig.versionCheck){
-            return;
-        }
-        isChecking = true;
-        URL url = new URL(apiAddress + "?project=" + projectName);
-        URLConnection con = url.openConnection();
-        InputStream in = con.getInputStream();
-        String encoding = con.getContentEncoding();
-        encoding = encoding == null ? "UTF-8" : encoding;
-        String body = IOUtils.toString(in, encoding).replaceAll("<br />", "");
+	ArrayList<ModifacationVersionInfo> versions;
 
-        Gson gson = new Gson();
-        versions = gson.fromJson(body, new TypeToken<ArrayList<ModifacationVersionInfo>>() {
-        }.getType());
-        isChecking = false;
-    }
+	public boolean isChecking;
 
-    public void checkVersionThreaded() {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    checkVersion();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
+	public VersionChecker(String projectName, IModInfo modInfo)
+	{
+		this.projectName = projectName;
+		this.modInfo = modInfo;
+	}
 
-    public boolean isLatestVersion() {
-        if (versions == null || versions.isEmpty()) {
-            return true;
-        }
-        return versions.get(0).version.equals(modInfo.MOD_VERSION());
-    }
+	public void checkVersion() throws IOException
+	{
+		if (!RebornCoreConfig.versionCheck)
+		{
+			return;
+		}
+		isChecking = true;
+		URL url = new URL(apiAddress + "?project=" + projectName);
+		URLConnection con = url.openConnection();
+		InputStream in = con.getInputStream();
+		String encoding = con.getContentEncoding();
+		encoding = encoding == null ? "UTF-8" : encoding;
+		String body = IOUtils.toString(in, encoding).replaceAll("<br />", "");
 
-    public ModifacationVersionInfo getLatestVersion() {
-        if (versions == null || versions.isEmpty()) {
-            return null;
-        }
-        return versions.get(0);
-    }
+		Gson gson = new Gson();
+		versions = gson.fromJson(body, new TypeToken<ArrayList<ModifacationVersionInfo>>()
+		{
+		}.getType());
+		isChecking = false;
+	}
 
-    public ArrayList<String> getChangeLogSinceCurrentVersion() {
-        ArrayList<String> log = new ArrayList<String>();
-        if (!isLatestVersion()) {
-            for (ModifacationVersionInfo version : versions) {
-                if (version.version.equals(modInfo.MOD_VERSION())) {
-                    break;
-                }
-                log.addAll(version.changeLog);
-            }
-        }
-        return log;
-    }
+	public void checkVersionThreaded()
+	{
+		new Thread(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					checkVersion();
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
 
-    static class ModifacationVersionInfo {
-        public String version;
+	public boolean isLatestVersion()
+	{
+		if (versions == null || versions.isEmpty())
+		{
+			return true;
+		}
+		return versions.get(0).version.equals(modInfo.MOD_VERSION());
+	}
 
-        public String minecraftVersion;
+	public ModifacationVersionInfo getLatestVersion()
+	{
+		if (versions == null || versions.isEmpty())
+		{
+			return null;
+		}
+		return versions.get(0);
+	}
 
-        public ArrayList<String> changeLog;
+	public ArrayList<String> getChangeLogSinceCurrentVersion()
+	{
+		ArrayList<String> log = new ArrayList<String>();
+		if (!isLatestVersion())
+		{
+			for (ModifacationVersionInfo version : versions)
+			{
+				if (version.version.equals(modInfo.MOD_VERSION()))
+				{
+					break;
+				}
+				log.addAll(version.changeLog);
+			}
+		}
+		return log;
+	}
 
-        public String releaseDate;
+	static class ModifacationVersionInfo
+	{
+		public String version;
 
-        public boolean recommended;
+		public String minecraftVersion;
 
-        public ModifacationVersionInfo(String version, String minecraftVersion, ArrayList<String> changeLog, String releaseDate, boolean recommended) {
-            this.version = version;
-            this.minecraftVersion = minecraftVersion;
-            this.changeLog = changeLog;
-            this.releaseDate = releaseDate;
-            this.recommended = recommended;
-        }
+		public ArrayList<String> changeLog;
 
-        public ModifacationVersionInfo() {
-        }
-    }
+		public String releaseDate;
 
-    //use this to make an example json file
-    public static void main(String[] args) throws IOException {
-        System.out.println("Generating example json file");
-        ArrayList<ModifacationVersionInfo> infos = new ArrayList<ModifacationVersionInfo>();
-        ArrayList<String> changelog = new ArrayList<String>();
-        changelog.add("A change");
-        changelog.add("Another change");
+		public boolean recommended;
 
+		public ModifacationVersionInfo(String version, String minecraftVersion, ArrayList<String> changeLog,
+				String releaseDate, boolean recommended)
+		{
+			this.version = version;
+			this.minecraftVersion = minecraftVersion;
+			this.changeLog = changeLog;
+			this.releaseDate = releaseDate;
+			this.recommended = recommended;
+		}
 
-        infos.add(new ModifacationVersionInfo("1.1.1", "1.7.10", changelog, "12th July", true));
-        infos.add(new ModifacationVersionInfo("1.2.0", "1.7.10", changelog, "28th July", true));
+		public ModifacationVersionInfo()
+		{
+		}
+	}
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(infos);
-        try {
-            FileWriter writer = new FileWriter(new File("master.json"));
-            writer.write(json);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	// use this to make an example json file
+	public static void main(String[] args) throws IOException
+	{
+		System.out.println("Generating example json file");
+		ArrayList<ModifacationVersionInfo> infos = new ArrayList<ModifacationVersionInfo>();
+		ArrayList<String> changelog = new ArrayList<String>();
+		changelog.add("A change");
+		changelog.add("Another change");
+
+		infos.add(new ModifacationVersionInfo("1.1.1", "1.7.10", changelog, "12th July", true));
+		infos.add(new ModifacationVersionInfo("1.2.0", "1.7.10", changelog, "28th July", true));
+
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(infos);
+		try
+		{
+			FileWriter writer = new FileWriter(new File("master.json"));
+			writer.write(json);
+			writer.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

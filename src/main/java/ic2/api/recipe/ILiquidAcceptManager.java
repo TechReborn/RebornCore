@@ -1,11 +1,12 @@
 package ic2.api.recipe;
 
-import net.minecraftforge.fluids.*;
-import java.util.*;
+import java.util.Set;
+
+import net.minecraftforge.fluids.Fluid;
 
 public interface ILiquidAcceptManager
 {
-    boolean acceptsFluid(Fluid p0);
-    
-    Set<Fluid> getAcceptedFluids();
+	boolean acceptsFluid(Fluid p0);
+
+	Set<Fluid> getAcceptedFluids();
 }

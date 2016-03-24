@@ -7,11 +7,11 @@ import net.minecraft.world.World;
 
 public interface IScannerItem extends IElectricItem
 {
-    int startLayerScan(ItemStack p0);
-    
-    boolean isValuableOre(ItemStack p0, IBlockState state);
-    
-    int getOreValue(ItemStack p0, IBlockState state);
-    
-    int getOreValueOfArea(ItemStack p0, World p1, BlockPos pos);
+	int startLayerScan(ItemStack p0);
+
+	boolean isValuableOre(ItemStack p0, IBlockState state);
+
+	int getOreValue(ItemStack p0, IBlockState state);
+
+	int getOreValueOfArea(ItemStack p0, World p1, BlockPos pos);
 }

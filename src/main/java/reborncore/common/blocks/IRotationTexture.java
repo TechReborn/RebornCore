@@ -1,14 +1,15 @@
 package reborncore.common.blocks;
 
-public interface IRotationTexture {
+public interface IRotationTexture
+{
 
-    String getFrontOff();
+	String getFrontOff();
 
-    String getFrontOn();
+	String getFrontOn();
 
-    String getSide();
+	String getSide();
 
-    String getTop();
+	String getTop();
 
-    String getBottom();
+	String getBottom();
 }

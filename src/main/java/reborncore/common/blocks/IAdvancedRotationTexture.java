@@ -1,13 +1,13 @@
 package reborncore.common.blocks;
 
+public interface IAdvancedRotationTexture
+{
 
-public interface IAdvancedRotationTexture {
+	String getFront(boolean isActive);
 
-    String getFront(boolean isActive);
+	String getSide(boolean isActive);
 
-    String getSide(boolean isActive);
+	String getTop(boolean isActive);
 
-    String getTop(boolean isActive);
-
-    String getBottom(boolean isActive);
+	String getBottom(boolean isActive);
 }

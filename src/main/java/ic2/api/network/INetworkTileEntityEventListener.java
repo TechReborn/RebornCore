@@ -2,5 +2,5 @@ package ic2.api.network;
 
 public interface INetworkTileEntityEventListener
 {
-    void onNetworkEvent(int p0);
+	void onNetworkEvent(int p0);
 }

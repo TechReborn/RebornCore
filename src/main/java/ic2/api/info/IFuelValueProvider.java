@@ -1,8 +1,8 @@
 package ic2.api.info;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public interface IFuelValueProvider
 {
-    int getFuelValue(ItemStack p0, boolean p1);
+	int getFuelValue(ItemStack p0, boolean p1);
 }

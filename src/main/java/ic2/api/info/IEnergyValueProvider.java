@@ -1,8 +1,8 @@
 package ic2.api.info;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
 
 public interface IEnergyValueProvider
 {
-    double getEnergyValue(ItemStack p0);
+	double getEnergyValue(ItemStack p0);
 }

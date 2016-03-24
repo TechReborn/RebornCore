@@ -5,5 +5,5 @@ import net.minecraft.util.EnumFacing;
 
 public interface IEnergyAcceptor extends IEnergyTile
 {
-    boolean acceptsEnergyFrom(TileEntity p0, EnumFacing p1);
+	boolean acceptsEnergyFrom(TileEntity p0, EnumFacing p1);
 }

@@ -1,9 +1,10 @@
 package ic2.api.item;
 
-import net.minecraft.item.*;
-import java.util.*;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
 
 public interface IItemHudInfo
 {
-    List<String> getHudInfo(ItemStack p0);
+	List<String> getHudInfo(ItemStack p0);
 }

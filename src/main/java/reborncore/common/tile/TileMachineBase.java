@@ -14,69 +14,82 @@ import net.minecraft.world.World;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.packets.PacketHandler;
 
-public class TileMachineBase extends TileEntity implements ITickable {
+public class TileMachineBase extends TileEntity implements ITickable
+{
 
-    public void syncWithAll() {
-        if (!worldObj.isRemote) {
-            PacketHandler.sendPacketToAllPlayers(getDescriptionPacket(),
-                    worldObj);
-        }
-    }
+	public void syncWithAll()
+	{
+		if (!worldObj.isRemote)
+		{
+			PacketHandler.sendPacketToAllPlayers(getDescriptionPacket(), worldObj);
+		}
+	}
 
-    public Packet getDescriptionPacket() {
-        NBTTagCompound nbtTag = new NBTTagCompound();
-        writeToNBT(nbtTag);
-        return new SPacketUpdateTileEntity(this.getPos(), 1, nbtTag);
-    }
+	public Packet getDescriptionPacket()
+	{
+		NBTTagCompound nbtTag = new NBTTagCompound();
+		writeToNBT(nbtTag);
+		return new SPacketUpdateTileEntity(this.getPos(), 1, nbtTag);
+	}
 
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-        worldObj.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX(),
-                getPos().getY(), getPos().getZ());
-        readFromNBT(packet.getNbtCompound());
-    }
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet)
+	{
+		worldObj.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX(),
+				getPos().getY(), getPos().getZ());
+		readFromNBT(packet.getNbtCompound());
+	}
 
-    @Override
-    public void update() {
-        updateEntity();
-    }
+	@Override
+	public void update()
+	{
+		updateEntity();
+	}
 
-    @Deprecated
-    public void updateEntity() {
+	@Deprecated
+	public void updateEntity()
+	{
 
-    }
+	}
 
-    public int getFacingInt() {
-        Block block = worldObj.getBlockState(pos).getBlock();
-        if(block instanceof BlockMachineBase){
-            return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos)).getIndex();
-        }
-        return 0;
-    }
+	public int getFacingInt()
+	{
+		Block block = worldObj.getBlockState(pos).getBlock();
+		if (block instanceof BlockMachineBase)
+		{
+			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos)).getIndex();
+		}
+		return 0;
+	}
 
-    public EnumFacing getFacingEnum() {
-        Block block = worldObj.getBlockState(pos).getBlock();
-        if(block instanceof BlockMachineBase){
-            return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos));
-        }
-        return null;
-    }
+	public EnumFacing getFacingEnum()
+	{
+		Block block = worldObj.getBlockState(pos).getBlock();
+		if (block instanceof BlockMachineBase)
+		{
+			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos));
+		}
+		return null;
+	}
 
+	public void setFacing(EnumFacing enumFacing)
+	{
+		Block block = worldObj.getBlockState(pos).getBlock();
+		if (block instanceof BlockMachineBase)
+		{
+			((BlockMachineBase) block).setFacing(enumFacing, worldObj, pos);
+		}
+	}
 
-    public void setFacing(EnumFacing enumFacing) {
-        Block block = worldObj.getBlockState(pos).getBlock();
-        if(block instanceof BlockMachineBase){
-            ((BlockMachineBase) block).setFacing(enumFacing, worldObj, pos);
-        }
-    }
-
-
-    //This stops the tile from getting cleared when the state is updated(rotation and on/off)
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        if(oldState.getBlock() != newSate.getBlock()){
-            return true;
-        }
-        return false;
-    }
+	// This stops the tile from getting cleared when the state is
+	// updated(rotation and on/off)
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+	{
+		if (oldState.getBlock() != newSate.getBlock())
+		{
+			return true;
+		}
+		return false;
+	}
 }

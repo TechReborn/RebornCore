@@ -7,10 +7,12 @@ import net.minecraft.world.World;
 /**
  * Created by Mark on 13/03/2016.
  */
-public class WorldUtils {
+public class WorldUtils
+{
 
-    public static void updateBlock(World world, BlockPos pos){
-        IBlockState state = world.getBlockState(pos);
-        world.notifyBlockUpdate(pos, state, state, 3);
-    }
+	public static void updateBlock(World world, BlockPos pos)
+	{
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 3);
+	}
 }
