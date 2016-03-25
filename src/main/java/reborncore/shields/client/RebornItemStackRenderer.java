@@ -11,6 +11,9 @@ import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
 import reborncore.shields.CustomShield;
 
+import java.io.File;
+import java.util.HashMap;
+
 /**
  * Created by Mark on 21/03/2016.
  */
@@ -19,6 +22,8 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 
 	private TileEntityBanner banner = new TileEntityBanner();
 	private ModelShield modelShield = new ModelShield();
+
+	private HashMap<String, FileSystemTexture> customTextureMap = new HashMap<>();
 
 	@Override
 	public void renderByItem(ItemStack itemStackIn)
@@ -38,8 +43,29 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 									banner.getColorList()));
 				} else if (location.getResourceDomain().equals("lookup"))
 				{
-					GlStateManager.bindTexture(new FileSystemTexture(ShieldTextureLoader.instance.validFiles
-							.get(location.getResourcePath().replace("LOOKUP", "") + ".png")).getGlTextureId());
+					FileSystemTexture texture = null;
+					if (customTextureMap.containsKey(location.getResourcePath()))
+					{
+						texture = customTextureMap.get(location.getResourcePath());
+					} else
+					{
+						File file = null;
+						for (File f : ShieldTextureLoader.instance.validFiles)
+						{
+							if (f.getName().replace(".png", "").equalsIgnoreCase(location.getResourcePath()))
+							{
+								file = f;
+							}
+						}
+						if(file != null){
+							texture = new FileSystemTexture(file);
+							customTextureMap.put(location.getResourcePath(), texture);
+						}
+					}
+					if(texture != null){
+						Minecraft.getMinecraft().getTextureManager().loadTexture(location, texture);
+						GlStateManager.bindTexture(texture.getGlTextureId());
+					}
 				} else
 				{
 					Minecraft.getMinecraft().getTextureManager().bindTexture(location);

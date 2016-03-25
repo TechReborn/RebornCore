@@ -1,21 +1,19 @@
 package reborncore.shields.client;
 
-import static org.lwjgl.opengl.GL11.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import org.lwjgl.opengl.GL11;
-
 import reborncore.RebornCore;
 import reborncore.shields.json.ShieldJsonLoader;
 import reborncore.shields.json.ShieldUser;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Mark on 25/03/2016.
@@ -27,7 +25,7 @@ public class ShieldTextureLoader
 	public int step = 0;
 	public int steps = 1;
 	public boolean showBar = false;
-	public HashMap<String, File> validFiles = new HashMap<>();
+	public ArrayList<File> validFiles = new ArrayList<>();
 	boolean hasStarted = false;
 	File mcDir;
 
@@ -70,7 +68,7 @@ public class ShieldTextureLoader
 						RebornCore.logHelper.info(user.username + " texture failed to download");
 					} else
 					{
-						validFiles.put(user.username, file);
+						validFiles.add(file);
 					}
 				}
 

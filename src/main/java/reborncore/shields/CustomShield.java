@@ -1,7 +1,5 @@
 package reborncore.shields;
 
-import java.util.List;
-
 import net.minecraft.client.renderer.BannerTextures;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +14,9 @@ import reborncore.common.util.ItemNBTHelper;
 import reborncore.shields.api.Shield;
 import reborncore.shields.api.ShieldRegistry;
 import reborncore.shields.client.ShieldTextureLoader;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -39,10 +40,12 @@ public class CustomShield extends ItemShield
 		} else
 		{
 			String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-			if (ShieldTextureLoader.instance.validFiles.containsKey(str))
-			{
-				return new ResourceLocation("LOOKUP:" + str);
-			} else if (ShieldRegistry.shieldHashMap.containsKey(str))
+			for(File file : ShieldTextureLoader.instance.validFiles){
+				if(file.getName().replace(".png", "").equalsIgnoreCase(str)){
+					return new ResourceLocation("LOOKUP:" + str);
+				}
+			}
+			if (ShieldRegistry.shieldHashMap.containsKey(str))
 			{
 				return ShieldRegistry.shieldTextureHashMap.get(ShieldRegistry.shieldHashMap.get(str));
 			}

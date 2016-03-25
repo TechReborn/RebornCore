@@ -1,22 +1,21 @@
 package reborncore.shields.client;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.IMetadataSection;
 import net.minecraft.util.ResourceLocation;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by Mark on 25/03/2016.
@@ -51,13 +50,15 @@ public class FileSystemTexture extends AbstractTexture
 				@Override
 				public InputStream getInputStream()
 				{
-					try
-					{
-						stream = new FileInputStream(textureLocation);
-					} catch (FileNotFoundException e)
-					{
-						e.printStackTrace();
-					}
+                    if(stream == null){
+                        try
+                        {
+                            stream = new FileInputStream(textureLocation);
+                        } catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
 					return stream;
 				}
 
@@ -82,7 +83,9 @@ public class FileSystemTexture extends AbstractTexture
 				@Override
 				public void close() throws IOException
 				{
-					stream.close();
+                    if(stream != null){
+                        stream.close();
+                    }
 				}
 			};
 			BufferedImage bufferedimage = TextureUtil.readBufferedImage(iresource.getInputStream());
