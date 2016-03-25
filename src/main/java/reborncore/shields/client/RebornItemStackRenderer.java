@@ -25,6 +25,12 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 
 	private HashMap<String, FileSystemTexture> customTextureMap = new HashMap<>();
 
+	TileEntityItemStackRenderer renderer;
+
+	public RebornItemStackRenderer(TileEntityItemStackRenderer renderer) {
+		this.renderer = renderer;
+	}
+
 	@Override
 	public void renderByItem(ItemStack itemStackIn)
 	{
@@ -77,11 +83,11 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 				return;
 			} else
 			{
-				super.renderByItem(itemStackIn);
+				renderer.renderByItem(itemStackIn);
 			}
 		} else
 		{
-			super.renderByItem(itemStackIn);
+			renderer.renderByItem(itemStackIn);
 		}
 	}
 }

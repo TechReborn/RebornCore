@@ -28,6 +28,6 @@ public class ClientProxy extends CommonProxy
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		super.postInit(event);
-		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer();
+		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
 	}
 }
