@@ -18,13 +18,6 @@ public class RebornCoreShields
 
 	public static void init()
 	{
-		ShieldRegistry.registerShield(new FaceShield("modmuss50"));
-		ShieldRegistry.registerShield(new FaceShield("gigabit101"));
-		ShieldRegistry.registerShield(new FaceShield("AKTheKnight"));
-		ShieldRegistry.registerShield(new FaceShield("ProfProspector"));
-		ShieldRegistry.registerShield(new FaceShield("nexans"));
-		ShieldRegistry.registerShield(new FaceShield("themattabase"));
-
 		MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
 	}
 

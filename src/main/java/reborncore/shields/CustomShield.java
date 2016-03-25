@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.util.ItemNBTHelper;
 import reborncore.shields.api.Shield;
 import reborncore.shields.api.ShieldRegistry;
+import reborncore.shields.client.ShieldTextureLoader;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -38,7 +39,10 @@ public class CustomShield extends ItemShield
 		} else
 		{
 			String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-			if (ShieldRegistry.shieldHashMap.containsKey(str))
+			if (ShieldTextureLoader.instance.validFiles.containsKey(str))
+			{
+				return new ResourceLocation("LOOKUP:" + str);
+			} else if (ShieldRegistry.shieldHashMap.containsKey(str))
 			{
 				return ShieldRegistry.shieldTextureHashMap.get(ShieldRegistry.shieldHashMap.get(str));
 			}

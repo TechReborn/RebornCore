@@ -13,6 +13,9 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
 import reborncore.shields.RebornCoreShields;
+import reborncore.shields.json.ShieldJsonLoader;
+
+import java.io.IOException;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.9]")
 public class RebornCore implements IModInfo
@@ -23,23 +26,31 @@ public class RebornCore implements IModInfo
 	public static final String MOD_VERSION = "@MODVERSION@";
 
 	public static LogHelper logHelper;
+	public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
+	public static RebornCoreConfig config;
+	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
+	public static CommonProxy proxy;
 
 	public RebornCore()
 	{
 		logHelper = new LogHelper(this);
 	}
 
-	public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
-
-	public static RebornCoreConfig config;
-
-	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
-	public static CommonProxy proxy;
-
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+		proxy.preInit(event);
+		new Thread(() ->
+		{
+			try
+			{
+				ShieldJsonLoader.load(event);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 	@Mod.EventHandler

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBanner;
+import net.minecraft.util.ResourceLocation;
 import reborncore.shields.CustomShield;
 
 /**
@@ -27,6 +28,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 			if (Items.shield instanceof CustomShield)
 			{
 				CustomShield sheild = (CustomShield) itemStackIn.getItem();
+				ResourceLocation location = sheild.getShieldTexture(itemStackIn);
 				if (itemStackIn.getSubCompound("BlockEntityTag", false) != null)
 				{
 					banner.setItemValues(itemStackIn);
@@ -34,9 +36,13 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 							.bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(
 									banner.getPatternResourceLocation(), banner.getPatternList(),
 									banner.getColorList()));
+				} else if (location.getResourceDomain().equals("lookup"))
+				{
+					GlStateManager.bindTexture(new FileSystemTexture(ShieldTextureLoader.instance.validFiles
+							.get(location.getResourcePath().replace("LOOKUP", "") + ".png")).getGlTextureId());
 				} else
 				{
-					Minecraft.getMinecraft().getTextureManager().bindTexture(sheild.getShieldTexture(itemStackIn));
+					Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 				}
 				GlStateManager.pushMatrix();
 				GlStateManager.scale(1.0F, -1.0F, -1.0F);
