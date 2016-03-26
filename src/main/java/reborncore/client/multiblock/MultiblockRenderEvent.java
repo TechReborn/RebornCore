@@ -56,11 +56,11 @@ public class MultiblockRenderEvent
 	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (currentMultiblock != null && anchor == null && event.action == Action.RIGHT_CLICK_BLOCK
-				&& event.entityPlayer == Minecraft.getMinecraft().thePlayer)
+		if (currentMultiblock != null && anchor == null && event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer)
 		{
-			anchor = new CoordTriplet(event.pos);
-			angle = MathHelper.floor_double(event.entityPlayer.rotationYaw * 4.0 / 360.0 + 0.5) & 3;
+			anchor = new CoordTriplet(event.getPos());
+			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
 			event.setCanceled(true);
 		}
 	}
@@ -116,7 +116,7 @@ public class MultiblockRenderEvent
 	{
 		if (partent != null)
 		{
-			if (event.pos.getX() == partent.x && event.pos.getY() == partent.y && event.pos.getZ() == partent.z
+			if (event.getPos().getX() == partent.x && event.getPos().getY() == partent.y && event.getPos().getZ() == partent.z
 					&& Minecraft.getMinecraft().theWorld == partent.world)
 			{
 				setMultiblock(null);
