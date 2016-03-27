@@ -1,8 +1,5 @@
 package reborncore.common.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,6 +8,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BucketHandler
 {
@@ -36,16 +36,18 @@ public class BucketHandler
 
 	private ItemStack fillCustomBucket(World world, RayTraceResult pos)
 	{
-		IBlockState state = world.getBlockState(pos.getBlockPos());
+		if(world.getBlockState(pos.getBlockPos()) != null) {
+			IBlockState state = world.getBlockState(pos.getBlockPos());
 
-		Item bucket = buckets.get(state);
+			Item bucket = buckets.get(state);
 
-		if (bucket != null)
-		{
-			world.setBlockToAir(pos.getBlockPos());
-			return new ItemStack(bucket);
-		} else
-		{
+			if (bucket != null) {
+				world.setBlockToAir(pos.getBlockPos());
+				return new ItemStack(bucket);
+			} else {
+				return null;
+			}
+		}else{
 			return null;
 		}
 	}
