@@ -14,6 +14,7 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 	{
 		super(materialIn);
 		RebornCore.jsonDestroyer.registerObject(this);
+		setHardness(1F);
 	}
 
 	public int getRenderType()
