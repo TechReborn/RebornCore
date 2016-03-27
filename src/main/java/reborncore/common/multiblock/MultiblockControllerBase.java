@@ -416,7 +416,6 @@ public abstract class MultiblockControllerBase
 			isWhole = true;
 		} catch (MultiblockValidationException e)
 		{
-			System.out.println(e.getLocalizedMessage());
 			lastValidationException = e;
 			isWhole = false;
 		}
@@ -522,8 +521,7 @@ public abstract class MultiblockControllerBase
 	{
 		if (referenceCoord != null)
 		{
-			if (WorldUtils.chunkExists(worldObj,
-					referenceCoord.getChunkX(), referenceCoord.getChunkZ()))
+			if (WorldUtils.chunkExists(worldObj, referenceCoord.getChunkX(), referenceCoord.getChunkZ()))
 			{
 				TileEntity te = this.worldObj.getTileEntity(referenceCoord.toBlockPos());
 				if (te instanceof IMultiblockPart)
@@ -785,13 +783,13 @@ public abstract class MultiblockControllerBase
 			{
 				maximumCoord.y = part.getPos().getY();
 			}
-			if (part.getPos().getY() < minimumCoord.z)
+			if (part.getPos().getZ() < minimumCoord.z)
 			{
-				minimumCoord.z = part.getPos().getY();
+				minimumCoord.z = part.getPos().getZ();
 			}
-			if (part.getPos().getY() > maximumCoord.z)
+			if (part.getPos().getZ() > maximumCoord.z)
 			{
-				maximumCoord.z = part.getPos().getY();
+				maximumCoord.z = part.getPos().getZ();
 			}
 		}
 	}
@@ -1151,8 +1149,7 @@ public abstract class MultiblockControllerBase
 		for (IMultiblockPart part : connectedParts)
 		{
 			if (part.isInvalid()
-					|| !WorldUtils.chunkExists(worldObj, part.getPos().getX() >> 4,
-					part.getPos().getZ() >> 4))
+					|| !WorldUtils.chunkExists(worldObj, part.getPos().getX() >> 4, part.getPos().getZ() >> 4))
 			{
 				// Chunk is unloading, skip this coord to prevent chunk
 				// thrashing
@@ -1188,8 +1185,7 @@ public abstract class MultiblockControllerBase
 		CoordTriplet rc = getReferenceCoord();
 		if (worldObj != null && rc != null)
 		{
-			// TODO 1.9
-			// worldObj.markBlockForUpdate(rc.toBlockPos());
+			WorldUtils.updateBlock(worldObj, rc.toBlockPos());
 		}
 	}
 
