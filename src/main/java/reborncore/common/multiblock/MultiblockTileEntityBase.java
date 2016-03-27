@@ -12,6 +12,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.chunk.IChunkProvider;
+import reborncore.common.util.WorldUtils;
 
 /**
  * Base logic class for Multiblock-connected tile entities. Most multiblock
@@ -358,7 +359,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		IChunkProvider chunkProvider = worldObj.getChunkProvider();
 		for (CoordTriplet neighbor : neighbors)
 		{
-			if (chunkProvider.getLoadedChunk(neighbor.getChunkX(), neighbor.getChunkZ()) == null)
+			if (!WorldUtils.chunkExists(worldObj, neighbor.getChunkX(), neighbor.getChunkZ()))
 			{
 				// Chunk not loaded, skip it.
 				continue;

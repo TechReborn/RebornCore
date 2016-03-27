@@ -11,6 +11,7 @@ import java.util.Set;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import reborncore.common.util.WorldUtils;
 
 /**
  * This class manages all the multiblock controllers that exist in a given
@@ -135,7 +136,7 @@ public class MultiblockWorldRegistry
 				for (IMultiblockPart orphan : orphansToProcess)
 				{
 					coord = orphan.getWorldLocation();
-					if (chunkProvider.getLoadedChunk(coord.getChunkX(), coord.getChunkZ()) == null)
+					if (!WorldUtils.chunkExists(worldObj, coord.getChunkX(), coord.getChunkZ()))
 					{
 						continue;
 					}
@@ -344,7 +345,7 @@ public class MultiblockWorldRegistry
 	{
 		CoordTriplet worldLocation = part.getWorldLocation();
 
-		if (worldObj.getChunkProvider().getLoadedChunk(worldLocation.getChunkX(), worldLocation.getChunkZ()) == null)
+		if (!WorldUtils.chunkExists(part.getWorld(), worldLocation.getChunkX(), worldLocation.getChunkZ()))
 		{
 			// Part goes into the waiting-for-chunk-load list
 			Set<IMultiblockPart> partSet;

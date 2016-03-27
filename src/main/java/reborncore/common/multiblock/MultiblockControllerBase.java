@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
+import reborncore.common.util.WorldUtils;
 
 /**
  * This class contains the base logic for "multiblock controllers".
@@ -415,6 +416,7 @@ public abstract class MultiblockControllerBase
 			isWhole = true;
 		} catch (MultiblockValidationException e)
 		{
+			System.out.println(e.getLocalizedMessage());
 			lastValidationException = e;
 			isWhole = false;
 		}
@@ -520,8 +522,8 @@ public abstract class MultiblockControllerBase
 	{
 		if (referenceCoord != null)
 		{
-			if (worldObj.getChunkProvider().getLoadedChunk(referenceCoord.getChunkX(),
-					referenceCoord.getChunkZ()) != null)
+			if (WorldUtils.chunkExists(worldObj,
+					referenceCoord.getChunkX(), referenceCoord.getChunkZ()))
 			{
 				TileEntity te = this.worldObj.getTileEntity(referenceCoord.toBlockPos());
 				if (te instanceof IMultiblockPart)
@@ -995,7 +997,7 @@ public abstract class MultiblockControllerBase
 		for (IMultiblockPart part : connectedParts)
 		{
 			// This happens during chunk unload.
-			if (chunkProvider.getLoadedChunk(part.getPos().getX() >> 4, part.getPos().getZ() >> 4) != null
+			if (!WorldUtils.chunkExists(worldObj, part.getPos().getX() >> 4, part.getPos().getZ() >> 4)
 					|| part.isInvalid())
 			{
 				deadParts.add(part);
@@ -1120,7 +1122,7 @@ public abstract class MultiblockControllerBase
 		IChunkProvider chunkProvider = worldObj.getChunkProvider();
 		for (IMultiblockPart part : connectedParts)
 		{
-			if (chunkProvider.getLoadedChunk(part.getPos().getX() >> 4, part.getPos().getZ() >> 4) != null)
+			if (WorldUtils.chunkExists(worldObj, part.getPos().getX() >> 4, part.getPos().getZ() >> 4))
 			{
 				onDetachBlock(part);
 			}
@@ -1149,7 +1151,8 @@ public abstract class MultiblockControllerBase
 		for (IMultiblockPart part : connectedParts)
 		{
 			if (part.isInvalid()
-					|| chunkProvider.getLoadedChunk(part.getPos().getX() >> 4, part.getPos().getZ() >> 4) != null)
+					|| !WorldUtils.chunkExists(worldObj, part.getPos().getX() >> 4,
+					part.getPos().getZ() >> 4))
 			{
 				// Chunk is unloading, skip this coord to prevent chunk
 				// thrashing

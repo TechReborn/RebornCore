@@ -7,6 +7,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.google.common.base.Objects;
+import reborncore.common.util.WorldUtils;
 
 /**
  * Based off https://github.com/SteamNSteel/SteamNSteel
@@ -42,7 +43,7 @@ public class ChunkCoord implements Comparable<ChunkCoord>
 
 	public boolean exists(World world)
 	{
-		return world.getChunkProvider().getLoadedChunk(data.getLeft(), data.getRight()) != null;
+		return WorldUtils.chunkExists(world, data.getLeft(), data.getRight());
 	}
 
 	public boolean containsWorldCoord(BlockPos coord)

@@ -1,8 +1,11 @@
 package reborncore.common.util;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkProviderServer;
 
 /**
  * Created by Mark on 13/03/2016.
@@ -14,5 +17,9 @@ public class WorldUtils
 	{
 		IBlockState state = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, state, state, 3);
+	}
+
+	public static boolean chunkExists(World world, int x, int z){
+		return world.isBlockLoaded(new BlockPos(x << 4, 64, z << 4));
 	}
 }
