@@ -46,7 +46,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "2.0.3"
+version = "2.0.4"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -65,7 +65,7 @@ group = 'RebornCore'
 
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destroyer:JSON-Destroyer-1.9:2.0.+:dev'
+    shade 'JSON-Destroyer:JSON-Destroyer-1.9:2.1.+:dev'
     deobfCompile "mezz.jei:jei_1.9:3.1.+"
 }
 
