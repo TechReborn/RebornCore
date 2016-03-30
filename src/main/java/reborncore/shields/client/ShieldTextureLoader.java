@@ -60,15 +60,19 @@ public class ShieldTextureLoader
 				{
 					TextureDownloadUtils utils = new TextureDownloadUtils(this);
 					File file = new File(mcDir, "reborncore/shieldTextures/" + user.username + ".png");
-					utils.downloadFile("http://modmuss50.me/reborncore/textures/" + user.username + ".png",
-							new File(mcDir, "reborncore/shieldTextures"), user.username + ".png");
-
-					if (!file.exists() || !user.textureMd5.equals(ShieldJsonLoader.getMD5(file)))
-					{
-						RebornCore.logHelper.info(user.username + " texture failed to download");
-					} else
-					{
+					if(file.exists() && user.textureMd5.equals(ShieldJsonLoader.getMD5(file))){
 						validFiles.add(file);
+					} else {
+						utils.downloadFile("http://modmuss50.me/reborncore/textures/" + user.username + ".png",
+								new File(mcDir, "reborncore/shieldTextures"), user.username + ".png");
+
+						if (!file.exists() || !user.textureMd5.equals(ShieldJsonLoader.getMD5(file)))
+						{
+							RebornCore.logHelper.info(user.username + " texture failed to download");
+						} else
+						{
+							validFiles.add(file);
+						}
 					}
 				}
 

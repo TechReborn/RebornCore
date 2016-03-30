@@ -44,7 +44,6 @@ public class ShieldJsonLoader
 		ShieldJsonFile jsonFile = new ShieldJsonFile();
 		jsonFile.userList = new ArrayList<>();
 		File folder = new File("src/main/resources/assets/reborncore/textures/shields/people/");
-		System.out.println(folder.getAbsolutePath());
 		for (File person : folder.listFiles())
 		{
 			jsonFile.userList.add(new ShieldUser(person.getName().replace(".png", ""), getMD5(person)));
