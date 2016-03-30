@@ -54,6 +54,7 @@ public class ShieldTextureLoader
 		showBar = true;
 		new Thread(() ->
 		{
+			int downloadedTexures = 0;
 			try
 			{
 				for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList)
@@ -65,13 +66,13 @@ public class ShieldTextureLoader
 					} else {
 						utils.downloadFile("http://modmuss50.me/reborncore/textures/" + user.username + ".png",
 								new File(mcDir, "reborncore/shieldTextures"), user.username + ".png");
-
 						if (!file.exists() || !user.textureMd5.equals(ShieldJsonLoader.getMD5(file)))
 						{
-							RebornCore.logHelper.info(user.username + " texture failed to download");
+							RebornCore.logHelper.info(user.username + " file failed to download");
 						} else
 						{
 							validFiles.add(file);
+							downloadedTexures ++;
 						}
 					}
 				}
@@ -81,8 +82,9 @@ public class ShieldTextureLoader
 				e.printStackTrace();
 				showBar = false;
 			}
+			showBar = false;
+			RebornCore.logHelper.info("Downlaoded " + downloadedTexures + " files out of " + validFiles.size() + " loaded files");
 		}).start();
-		RebornCore.logHelper.info("Downlaoded " + validFiles.size() + " textures");
 	}
 
 	private void drawBar()
