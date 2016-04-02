@@ -16,16 +16,6 @@ public class EUItemPowerTrait extends JTrait<IEnergyInterfaceItem> implements IE
     }
 
     @Override
-    public Item getChargedItem(ItemStack itemStack) {
-        return (Item) _self;
-    }
-
-    @Override
-    public Item getEmptyItem(ItemStack itemStack) {
-        return (Item) _self;
-    }
-
-    @Override
     public double getMaxCharge(ItemStack itemStack) {
         return _self.getMaxPower(itemStack);
     }

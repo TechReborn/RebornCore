@@ -35,6 +35,10 @@ repositories {
         name "tterrag Repo"
         url "http://maven.tterrag.com/"
     }
+    maven {
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
 }
 
 configurations {
@@ -42,7 +46,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "1.4.5"
+version = "1.5.0"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -62,6 +66,7 @@ group = 'RebornCore'
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
     shade 'JSON-Destroyer:JSON-Destroyer:0.4.+:dev'
+    shade 'net.industrial-craft:industrialcraft-2:2.3.131-ex18:api'
 }
 
 processResources

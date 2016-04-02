@@ -1,7 +1,10 @@
 package reborncore.common.tile;
 
+import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -14,7 +17,10 @@ import net.minecraft.world.World;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.packets.PacketHandler;
 
-public class TileMachineBase extends TileEntity implements ITickable {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TileMachineBase extends TileEntity implements ITickable, IWrenchable {
 
     public void syncWithAll() {
         if (!worldObj.isRemote) {
@@ -78,5 +84,40 @@ public class TileMachineBase extends TileEntity implements ITickable {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public EnumFacing getFacing(World world, BlockPos pos) {
+        return getFacingEnum();
+    }
+
+    @Override
+    public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
+        setFacing(newDirection);
+        return true;
+    }
+
+    @Override
+    public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
+        return player.isSneaking();
+    }
+
+    @Override
+    public double getWrenchSuccessRate(World world, BlockPos pos) {
+        return 1F;
+    }
+
+    @Override
+    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, List<ItemStack> originalDrops) {
+        ItemStack oldDrop = getWrenchDrop(player);
+        List<ItemStack> list = new ArrayList<>();
+        if(oldDrop != null){
+            list.add(oldDrop);
+        }
+        return list;
+    }
+
+    public ItemStack getWrenchDrop(EntityPlayer entityPlayer){
+        return null;
     }
 }

@@ -4,13 +4,13 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyAcceptor;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergySourceInfo;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.Info;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
@@ -28,8 +28,7 @@ import java.util.List;
 public abstract class TilePowerAcceptor extends RFProviderTile implements
         IEnergyReceiver, IEnergyProvider,           //Cofh
         IEnergyInterfaceTile, IListInfoProvider,     //TechReborn
-        IEnergyTile, IEnergySink, IEnergySource,    //Ic2
-        IEnergySourceInfo                           //IC2 Classic //TODO ic2
+        IEnergyTile, IEnergySink, IEnergySource    //Ic2
 {
     public int tier;
     private double energy;
@@ -96,17 +95,17 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
     }
 
     @Override
-    public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction) {
+    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
         if (!PowerSystem.EUPOWENET)
             return false;
         return canAcceptEnergy(direction);
     }
 
     @Override
-    public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction) {
+    public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing side) {
         if (!PowerSystem.EUPOWENET)
             return false;
-        return canProvideEnergy(direction);
+        return canProvideEnergy(side);
     }
 
     @Override
@@ -285,15 +284,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
         return getMaxPower() - energy;
     }
 
-    //IC2 Classic
-
-
-    @Override
-    public int getMaxEnergyAmount() {
-        return (int) getMaxOutput();
-    }
-
-
     public void charge(int slot)
     {
         //TODO rewrite to use built in power system
@@ -315,6 +305,8 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
 //            }
 //        }
     }
+
+
 
     public int getEnergyScaled(int scale) {
         return (int) ((energy * scale / getMaxPower()));
