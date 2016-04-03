@@ -111,7 +111,7 @@ jar {
 task apiJar(type: Jar) {
     from sourceSets.main.allSource
     from sourceSets.main.output
-        include 'techreborn/api/**/*'
+        include 'reborncore/api/**/*'
 
     classifier = "api"
 }

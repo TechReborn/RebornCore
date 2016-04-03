@@ -1,4 +1,4 @@
-package reborncore.api.gui;
+package reborncore.client.gui;
 
 import reborncore.client.gui.BaseGui;
 

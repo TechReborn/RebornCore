@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import reborncore.api.power.IEnergyInterfaceTile;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.tile.TileMachineBase;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyHandler;
@@ -35,7 +36,7 @@ public abstract class RFProviderTile extends TileMachineBase
 
 	public void sendPower()
 	{
-		if (!PowerSystem.RFPOWENET)
+		if (!RebornCoreConfig.getRebornPower().rf())
 		{
 			return;
 		}

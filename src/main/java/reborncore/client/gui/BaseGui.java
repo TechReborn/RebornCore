@@ -8,7 +8,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import reborncore.api.gui.IGuiComponent;
 import reborncore.client.gui.componets.BaseTextures;
 
 public class BaseGui extends GuiContainer

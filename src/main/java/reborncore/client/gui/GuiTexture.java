@@ -1,4 +1,4 @@
-package reborncore.api.gui;
+package reborncore.client.gui;
 
 import net.minecraft.util.ResourceLocation;
 import reborncore.client.gui.BaseGui;

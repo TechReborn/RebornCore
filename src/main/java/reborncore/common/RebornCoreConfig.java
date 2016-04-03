@@ -3,6 +3,7 @@ package reborncore.common;
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
+import reborncore.api.power.IPowerConfig;
 
 /**
  * Created by Mark on 20/02/2016.
@@ -16,8 +17,8 @@ public class RebornCoreConfig
 	public static String CATEGORY_POWER = "power";
 	public static String CATEGORY_MISC = "misc";
 
-	public static boolean enableRF;
-	public static boolean enableEU;
+	protected static boolean enableRF;
+	protected static boolean enableEU;
 	public static int euPerRF;
 
 	public static boolean versionCheck;
@@ -66,5 +67,32 @@ public class RebornCoreConfig
 		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
+
+		//resets this when the config is reloaded
+		powerConfig = null;
+	}
+
+	private static IPowerConfig powerConfig = null;
+
+	public static IPowerConfig getRebornPower(){
+		if(powerConfig == null){
+			powerConfig = new IPowerConfig() {
+				@Override
+				public boolean eu() {
+					return enableEU;
+				}
+
+				@Override
+				public boolean rf() {
+					return enableRF;
+				}
+
+				@Override
+				public boolean internal() {
+					return true;
+				}
+			};
+		}
+		return powerConfig;
 	}
 }

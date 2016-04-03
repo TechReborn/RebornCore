@@ -1,16 +1,10 @@
 package reborncore.common.powerSystem;
 
+import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 
 public class PowerSystem
 {
-
-	public static boolean RFPOWENET = RebornCoreConfig.enableRF;
-
-	public static boolean EUPOWENET = RebornCoreConfig.enableEU;
-
-	public static int euPerRF = RebornCoreConfig.euPerRF;
-
 	public static String getLocaliszedPower(double eu)
 	{
 		return getLocaliszedPower((int) eu);
@@ -18,12 +12,12 @@ public class PowerSystem
 
 	public static String getLocaliszedPower(int eu)
 	{
-		if (EUPOWENET)
+		if (RebornCoreConfig.getRebornPower().eu())
 		{
 			return getRoundedString(eu, "EU");
 		} else
 		{
-			return getRoundedString(eu / euPerRF, "RF");
+			return getRoundedString(eu / RebornCoreConfig.euPerRF, "RF");
 		}
 	}
 
