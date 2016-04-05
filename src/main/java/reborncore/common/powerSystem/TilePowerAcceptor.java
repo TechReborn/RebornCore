@@ -3,6 +3,7 @@ package reborncore.common.powerSystem;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -13,6 +14,7 @@ import ic2.api.info.Info;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.IEnergyInterfaceTile;
@@ -47,15 +49,15 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements
        // onLoaded();
     }
 
-//    public void onLoaded() {
-//        if (PowerSystem.EUPOWENET && !addedToEnet &&
-//                !FMLCommonHandler.instance().getEffectiveSide().isClient() &&
-//                Info.isIc2Available()) {
-//            MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-//
-//            addedToEnet = true;
-//        }
-//    }
+    public void onLoaded() {
+        if (PowerSystem.EUPOWENET && !addedToEnet &&
+                !FMLCommonHandler.instance().getEffectiveSide().isClient() &&
+                Info.isIc2Available()) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+
+            addedToEnet = true;
+        }
+    }
 
     @Override
     public void invalidate() {
