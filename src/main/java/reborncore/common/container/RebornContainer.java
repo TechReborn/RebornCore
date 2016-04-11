@@ -4,10 +4,45 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import reborncore.client.gui.BaseSlot;
 import reborncore.client.gui.SlotFake;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class RebornContainer extends Container
 {
+
+	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
+
+	@Override
+	protected Slot addSlotToContainer(Slot slotIn) {
+		Slot slot = super.addSlotToContainer(slotIn);
+		if(slot instanceof BaseSlot){
+			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
+		}
+		return slot;
+	}
+
+	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
+
+	public static @Nullable RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz){
+		if(containerMap.containsKey(clazz.getCanonicalName())){
+			return containerMap.get(clazz.getCanonicalName());
+		} else {
+			try {
+				RebornContainer container = clazz.newInstance();
+				containerMap.put(clazz.getCanonicalName(), container);
+				return container;
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)

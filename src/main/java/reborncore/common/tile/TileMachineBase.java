@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -15,16 +17,22 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
+import reborncore.client.gui.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.container.RebornContainer;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
+import scala.xml.dtd.impl.Base;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
-public class TileMachineBase extends TileEntity implements ITickable, IInventory
+public class TileMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory
 {
 
 	public void syncWithAll()
@@ -125,6 +133,18 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 				return Optional.empty();
 			}
 			return Optional.of(crafterProvider.getRecipeCrafter());
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	protected Optional<RebornContainer> getContainerForTile(){
+		if(this instanceof IContainerProvider){
+			IContainerProvider containerProvider = (IContainerProvider) this;
+			if(containerProvider.getContainer() == null){
+				return Optional.empty();
+			}
+			return Optional.of(containerProvider.getContainer());
 		} else {
 			return Optional.empty();
 		}
@@ -284,6 +304,48 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 			return getInventoryForTile().get().getDisplayName();
 		}
 		return null;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side) {
+		if(getContainerForTile().isPresent()){
+			RebornContainer container = getContainerForTile().get();
+			ArrayList<Integer> intList = new ArrayList<>();
+			for (int i = 0; i < container.slotMap.size(); i++) {
+				intList.add(i);
+			}
+			int[] intArr = ArrayUtils.toPrimitive(intList.toArray(new Integer[intList.size()]));
+			return intArr;
+		}
+		return new int[0];
+	}
+
+	@Override
+	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+		if(getContainerForTile().isPresent()){
+			RebornContainer container = getContainerForTile().get();
+			if(container.slotMap.containsKey(index)){
+				Slot slot = container.slotMap.get(index);
+				if(slot.isItemValid(itemStackIn)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+		if(getContainerForTile().isPresent()){
+			RebornContainer container = getContainerForTile().get();
+			if(container.slotMap.containsKey(index)){
+				BaseSlot slot = container.slotMap.get(index);
+				if(slot.canWorldBlockRemove()){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	//Inventory end
 }

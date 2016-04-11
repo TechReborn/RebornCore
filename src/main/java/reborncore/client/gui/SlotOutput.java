@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotOutput extends Slot
+public class SlotOutput extends BaseSlot
 {
 
 	public SlotOutput(IInventory par1iInventory, int par2, int par3, int par4)
@@ -21,5 +21,10 @@ public class SlotOutput extends Slot
 	public int getSlotStackLimit()
 	{
 		return 64;
+	}
+
+	@Override
+	public boolean canWorldBlockRemove() {
+		return true;
 	}
 }

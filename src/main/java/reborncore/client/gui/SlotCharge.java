@@ -8,7 +8,7 @@ import reborncore.api.power.IEnergyItemInfo;
 /**
  * Created by Rushmead
  */
-public class SlotCharge extends Slot
+public class SlotCharge extends BaseSlot
 {
 	public SlotCharge(IInventory inventoryIn, int index, int xPosition, int yPosition)
 	{
@@ -22,5 +22,10 @@ public class SlotCharge extends Slot
 		}else{
 			return false;
 		}
+	}
+
+	@Override
+	public boolean canWorldBlockRemove() {
+		return false;
 	}
 }

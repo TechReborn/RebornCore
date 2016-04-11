@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotFake extends Slot
+public class SlotFake extends BaseSlot
 {
 
 	public boolean mCanInsertItem;
@@ -38,5 +38,10 @@ public class SlotFake extends Slot
 	public ItemStack decrStackSize(int par1)
 	{
 		return !this.mCanStackItem ? null : super.decrStackSize(par1);
+	}
+
+	@Override
+	public boolean canWorldBlockRemove() {
+		return false;
 	}
 }

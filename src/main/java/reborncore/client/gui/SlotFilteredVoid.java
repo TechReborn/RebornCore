@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotFilteredVoid extends Slot
+public class SlotFilteredVoid extends BaseSlot
 {
 
 	private List<ItemStack> filter = new ArrayList<ItemStack>();

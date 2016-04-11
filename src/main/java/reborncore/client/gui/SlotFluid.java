@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
-public class SlotFluid extends Slot
+public class SlotFluid extends BaseSlot
 {
 	public SlotFluid(IInventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_)
 	{
