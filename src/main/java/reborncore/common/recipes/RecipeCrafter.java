@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
+import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.Inventory;
@@ -110,6 +112,9 @@ public class RecipeCrafter
 		this.inventory = inventory;
 		this.inputSlots = inputSlots;
 		this.outputSlots = outputSlots;
+		if(!(parentTile instanceof IRecipeCrafterProvider)){
+			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
+		}
 	}
 
 	/**
