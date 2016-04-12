@@ -4,6 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import reborncore.api.tile.IContainerLayout;
 import reborncore.client.gui.BaseSlot;
 import reborncore.client.gui.SlotFake;
 
@@ -20,6 +22,7 @@ public abstract class RebornContainer extends Container
 	protected Slot addSlotToContainer(Slot slotIn) {
 		Slot slot = super.addSlotToContainer(slotIn);
 		if(slot instanceof BaseSlot){
+			//TODO remove player slots
 			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
 		}
 		return slot;
@@ -27,12 +30,17 @@ public abstract class RebornContainer extends Container
 
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 
-	public static @Nullable RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz){
+	public static @Nullable RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, TileEntity tileEntity){
 		if(containerMap.containsKey(clazz.getCanonicalName())){
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
 			try {
+				//TODO think hard about how to fix this one
 				RebornContainer container = clazz.newInstance();
+				if(container instanceof IContainerLayout){
+					((IContainerLayout) container).setTile(tileEntity);
+					((IContainerLayout) container).addInventorySlots();
+				}
 				containerMap.put(clazz.getCanonicalName(), container);
 				return container;
 			} catch (InstantiationException e) {
@@ -40,6 +48,24 @@ public abstract class RebornContainer extends Container
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
+		}
+		return null;
+	}
+
+	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tile, EntityPlayer player){
+		try {
+			RebornContainer container = clazz.newInstance();
+			if(container instanceof IContainerLayout){
+				((IContainerLayout) container).setPlayer(player);
+				((IContainerLayout) container).setTile(tile);
+				((IContainerLayout) container).addInventorySlots();
+				((IContainerLayout) container).addPlayerSlots();
+			}
+			return container;
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

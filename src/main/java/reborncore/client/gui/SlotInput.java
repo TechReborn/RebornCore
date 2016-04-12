@@ -14,7 +14,7 @@ public class SlotInput extends BaseSlot
 
 	public boolean isItemValid(ItemStack par1ItemStack)
 	{
-		return false;
+		return true;
 	}
 
 	public int getSlotStackLimit()
