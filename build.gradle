@@ -54,7 +54,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1811-1.9"
+    version = "1.9-12.16.0.1863-1.9"
     mappings = "snapshot_20160316"
     replace "@MODVERSION@", project.version
 	runDir = "run"
@@ -66,7 +66,7 @@ group = 'RebornCore'
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
     shade 'JSON-Destroyer:JSON-Destroyer-1.9:2.1.+:dev'
-    deobfCompile "mezz.jei:jei_1.9:3.1.+"
+    deobfCompile "mezz.jei:jei_1.9:3.2.10.+"
 }
 
 processResources
