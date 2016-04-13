@@ -17,7 +17,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -56,13 +55,13 @@ public class MultiblockRenderEvent
 	@SubscribeEvent
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (currentMultiblock != null && anchor == null && event.getAction() == Action.RIGHT_CLICK_BLOCK
-				&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer)
-		{
-			anchor = new CoordTriplet(event.getPos());
-			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
-			event.setCanceled(true);
-		}
+//		if (currentMultiblock != null && anchor == null && event.getAction() == Action.RIGHT_CLICK_BLOCK
+//				&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer)
+//		{
+//			anchor = new CoordTriplet(event.getPos());
+//			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
+//			event.setCanceled(true);
+//		}
 	}
 
 	private void renderPlayerLook(EntityPlayer player, RayTraceResult src)
