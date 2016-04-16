@@ -90,6 +90,7 @@ task deobfJar(type: Jar) {
 	configurations.shade.each { dep ->
         from(project.zipTree(dep)){
             include 'me/modmuss50/jsonDestroyer/'
+            include 'org/hjson/'
         }
     }
 }
@@ -100,6 +101,7 @@ jar {
         configurations.shade.each { dep ->
         from(project.zipTree(dep)){
             include 'me/modmuss50/jsonDestroyer/'
+            include 'org/hjson/'
         }
     }
 	manifest{
