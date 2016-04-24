@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import me.modmuss50.jsonDestroyer.api.IFakeTexturedBlock;
 import me.modmuss50.jsonDestroyer.api.ITexturedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
@@ -35,7 +36,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 
-public abstract class BlockMachineBase extends BaseTileBlock implements ITexturedBlock
+public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock
 {
 
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
