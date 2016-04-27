@@ -14,8 +14,6 @@ import reborncore.shields.api.ShieldRegistry;
 public class RebornCoreShields
 {
 
-	public static CustomShield shield = new CustomShield();
-
 	public static void init()
 	{
 		MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
