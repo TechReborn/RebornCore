@@ -33,7 +33,7 @@ public abstract class Shield
 	}
 
 	public void getSubTypes(Shield shield, CreativeTabs tab, List<ItemStack> subItems){
-		ItemStack newStack = new ItemStack(Items.shield);
+		ItemStack newStack = new ItemStack(Items.SHIELD);
 		ItemNBTHelper.setString(newStack, "type", shield.name);
 		ItemNBTHelper.setBoolean(newStack, "vanilla", false);
 		subItems.add(newStack);

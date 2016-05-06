@@ -47,7 +47,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	public BlockMachineBase()
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		setHardness(2f);
 		// setStepSound(soundTypeMetal); //TODO 1.9
 		this.setDefaultState(
@@ -296,7 +296,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 								if (!entityplayer.inventory
 										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
 								{
-									entityplayer.dropPlayerItemWithRandomChoice(
+									entityplayer.dropItem(
 											FluidContainerRegistry.drainFluidContainer(current), false);
 								}
 

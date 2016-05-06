@@ -267,9 +267,9 @@ public class Vecs3d
 			IBlockState state = w.getBlockState(getBlockPos());
 			Block bl = state.getBlock();
 
-			if (b == null && bl == Blocks.air)
+			if (b == null && bl == Blocks.AIR)
 				return true;
-			if (b == null && checkAir && bl.getMaterial(state) == Material.air)
+			if (b == null && checkAir && bl.getMaterial(state) == Material.AIR)
 				return true;
 			if (b == null && checkAir && bl.isAir(state, w, getBlockPos()))
 				return true;

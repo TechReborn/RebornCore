@@ -34,9 +34,9 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 	@Override
 	public void renderByItem(ItemStack itemStackIn)
 	{
-		if (itemStackIn.getItem() == Items.shield)
+		if (itemStackIn.getItem() == Items.SHIELD)
 		{
-			if (Items.shield instanceof CustomShield)
+			if (Items.SHIELD instanceof CustomShield)
 			{
 				CustomShield sheild = (CustomShield) itemStackIn.getItem();
 				ResourceLocation location = sheild.getShieldTexture(itemStackIn);

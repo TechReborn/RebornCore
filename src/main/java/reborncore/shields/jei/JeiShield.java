@@ -18,6 +18,6 @@ public class JeiShield extends BlankModPlugin
 	public void register(@Nonnull IModRegistry registry)
 	{
 		super.register(registry);
-		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Items.shield, "type", "vanilla");
+		registry.getJeiHelpers().getNbtIgnoreList().ignoreNbtTagNames(Items.SHIELD, "type", "vanilla");
 	}
 }

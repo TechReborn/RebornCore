@@ -69,10 +69,10 @@ public class RebornExplosion extends Explosion
 						BlockPos pos = center.add(tx, ty, tz);
 						IBlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						if (block != Blocks.bedrock && block != Blocks.air)
+						if (block != Blocks.BEDROCK && block != Blocks.AIR)
 						{
 							block.onBlockDestroyedByExplosion(world, pos, this);
-							world.setBlockState(pos, Blocks.air.getDefaultState(), 3);
+							world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 						}
 					}
 				}
@@ -114,7 +114,7 @@ public class RebornExplosion extends Explosion
 						BlockPos pos = center.add(tx, ty, tz);
 						IBlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						if (block != Blocks.bedrock && block != Blocks.air)
+						if (block != Blocks.BEDROCK && block != Blocks.AIR)
 						{
 							poses.add(pos);
 						}

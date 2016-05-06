@@ -29,6 +29,6 @@ public class ShieldHooks
 				itemIn = new CustomShield();
 			}
 		}
-		Item.itemRegistry.register(id, textualID, itemIn);
+		Item.REGISTRY.register(id, textualID, itemIn);
 	}
 }

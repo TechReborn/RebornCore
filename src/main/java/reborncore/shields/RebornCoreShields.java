@@ -22,7 +22,7 @@ public class RebornCoreShields
 	@SubscribeEvent
 	public void craft(PlayerEvent.ItemCraftedEvent event)
 	{
-		if (event.crafting.getItem() == Items.shield)
+		if (event.crafting.getItem() == Items.SHIELD)
 		{
 			for (Shield shield : ShieldRegistry.shieldList)
 			{
