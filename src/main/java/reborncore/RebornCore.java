@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.packets.PacketHandler;
+import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
 import reborncore.shields.RebornCoreShields;
@@ -57,6 +58,7 @@ public class RebornCore implements IModInfo
 	public void init(FMLInitializationEvent event)
 	{
 		jsonDestroyer.load();
+		TeslaManager.load();
 		// packets
 		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
 		OreUtil.scanForOres();

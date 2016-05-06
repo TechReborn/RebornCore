@@ -6,6 +6,8 @@ public interface IPowerConfig {
 
     boolean rf();
 
+    boolean tesla();
+
     boolean internal();
 
 }

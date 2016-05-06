@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
@@ -23,6 +24,7 @@ import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.Info;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.tesla.TeslaManager;
 
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
 		@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -38,6 +40,9 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	public TilePowerAcceptor(int tier)
 	{
 		this.tier = tier;
+		if(TeslaManager.isTeslaEnabled()){
+			TeslaManager.manager.created(this);
+		}
 	}
 
 	// IC2
@@ -48,6 +53,9 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	public void updateEntity()
 	{
 		super.updateEntity();
+		if(TeslaManager.isTeslaEnabled()){
+			TeslaManager.manager.update(this);
+		}
 		// onLoaded();
 	}
 
@@ -285,6 +293,9 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		super.readFromNBT(tag);
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
 		energy = data.getDouble("energy");
+		if(TeslaManager.isTeslaEnabled()){
+			TeslaManager.manager.readFromNBT(tag, this);
+		}
 	}
 
 	@Override
@@ -294,6 +305,9 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", energy);
 		tag.setTag("TilePowerAcceptor", data);
+		if(TeslaManager.isTeslaEnabled()){
+			TeslaManager.manager.writeToNBT(tag, this);
+		}
 	}
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag)
@@ -376,4 +390,26 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		return RebornCoreConfig.getRebornPower();
 	}
 
+
+	//Tesla
+
+	@Override
+	public boolean hasCapability (Capability<?> capability, EnumFacing facing){
+		if(TeslaManager.isTeslaEnabled()){
+			return TeslaManager.manager.hasCapability(capability, facing, this);
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getCapability (Capability<T> capability, EnumFacing facing) {
+		if(TeslaManager.isTeslaEnabled()){
+			return TeslaManager.manager.getCapability(capability, facing, this);
+		}
+		return super.getCapability(capability, facing);
+	}
+
+
+	//End Tesla
 }
