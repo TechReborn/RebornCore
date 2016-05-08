@@ -21,4 +21,6 @@ public interface ITeslaPowerManager {
     void update(TilePowerAcceptor acceptor);
 
     void created(TilePowerAcceptor acceptor);
+
+    String getDisplayableTeslaCount (long tesla);
 }

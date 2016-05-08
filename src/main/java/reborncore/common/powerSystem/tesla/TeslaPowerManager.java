@@ -5,6 +5,7 @@ import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 
 /**
@@ -49,6 +50,11 @@ public class TeslaPowerManager implements ITeslaPowerManager {
     @Override
     public void created(TilePowerAcceptor powerAcceptor) {
         this.container = new AdvancedTeslaContainer(powerAcceptor);
+    }
+
+    @Override
+    public String getDisplayableTeslaCount(long tesla) {
+        return TeslaUtils.getDisplayableTeslaCount(tesla / RebornCoreConfig.euPerRF);
     }
 
     public static ITeslaPowerManager getPowerManager(){

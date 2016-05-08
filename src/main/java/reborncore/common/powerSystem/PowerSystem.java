@@ -1,7 +1,7 @@
 package reborncore.common.powerSystem;
 
-import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.tesla.TeslaManager;
 
 public class PowerSystem
 {
@@ -15,7 +15,10 @@ public class PowerSystem
 		if (RebornCoreConfig.getRebornPower().eu())
 		{
 			return getRoundedString(eu, "EU");
-		} else
+		} else if (TeslaManager.isTeslaEnabled())
+		{
+			return TeslaManager.manager.getDisplayableTeslaCount(eu);
+		}else
 		{
 			return getRoundedString(eu / RebornCoreConfig.euPerRF, "RF");
 		}
