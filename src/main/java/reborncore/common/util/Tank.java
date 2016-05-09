@@ -45,6 +45,12 @@ public class Tank extends FluidTank
 		return nbt;
 	}
 
+	public void setFluidAmount(int amount){
+		if(fluid != null){
+			fluid.amount = amount;
+		}
+	}
+
 	@Override
 	public final FluidTank readFromNBT(NBTTagCompound nbt)
 	{
