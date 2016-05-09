@@ -61,7 +61,7 @@ public class Tank extends FluidTank
 
 	public void compareAndUpdate()
 	{
-		if (tile.getWorld().isRemote)
+		if (tile == null || tile.getWorld().isRemote)
 		{
 			return;
 		}
