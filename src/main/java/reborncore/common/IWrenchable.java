@@ -1,4 +1,4 @@
-package ic2.api.tile;
+package reborncore.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

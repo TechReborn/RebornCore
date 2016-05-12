@@ -16,12 +16,6 @@ import cofh.api.energy.IEnergyReceiver;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergySourceInfo;
-import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.info.Info;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
@@ -30,9 +24,9 @@ import reborncore.common.powerSystem.tesla.TeslaManager;
 		@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
 public abstract class TilePowerAcceptor extends RFProviderTile implements IEnergyReceiver, IEnergyProvider, // Cofh
-		IEnergyInterfaceTile, IListInfoProvider, // TechReborn
-		IEnergyTile, IEnergySink, IEnergySource, // Ic2
-		IEnergySourceInfo // IC2 Classic //TODO ic2
+		IEnergyInterfaceTile, IListInfoProvider // TechReborn
+//		IEnergyTile, IEnergySink, IEnergySource, // Ic2
+//		IEnergySourceInfo // IC2 Classic //TODO ic2
 {
 	public int tier;
 	private double energy;
@@ -82,71 +76,71 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		super.onChunkUnload();
 		if (RebornCoreConfig.getRebornPower().eu())
 		{
-			if (addedToEnet && Info.isIc2Available())
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-
-				addedToEnet = false;
-			}
+//			if (addedToEnet && Info.isIc2Available())
+//			{
+//				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+//
+//				addedToEnet = false;
+//			}
 		}
 	}
 
-	@Override
-	public double getDemandedEnergy()
-	{
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return 0;
-		return Math.min(getMaxPower() - getEnergy(), getMaxInput());
-	}
-
-	@Override
-	public int getSinkTier()
-	{
-		return tier;
-	}
-
-	@Override
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
-	{
-		setEnergy(getEnergy() + amount);
-		return 0;
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
-	{
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return false;
-		return canAcceptEnergy(direction);
-	}
-
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
-	{
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return false;
-		return canProvideEnergy(direction);
-	}
-
-	@Override
-	public double getOfferedEnergy()
-	{
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return 0;
-		return Math.min(getEnergy(), getMaxOutput());
-	}
-
-	@Override
-	public void drawEnergy(double amount)
-	{
-		useEnergy((int) amount);
-	}
-
-	@Override
-	public int getSourceTier()
-	{
-		return tier;
-	}
+//	@Override
+//	public double getDemandedEnergy()
+//	{
+//		if (!RebornCoreConfig.getRebornPower().eu())
+//			return 0;
+//		return Math.min(getMaxPower() - getEnergy(), getMaxInput());
+//	}
+//
+//	@Override
+//	public int getSinkTier()
+//	{
+//		return tier;
+//	}
+//
+//	@Override
+//	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
+//	{
+//		setEnergy(getEnergy() + amount);
+//		return 0;
+//	}
+//
+//	@Override
+//	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
+//	{
+//		if (!RebornCoreConfig.getRebornPower().eu())
+//			return false;
+//		return canAcceptEnergy(direction);
+//	}
+//
+//	@Override
+//	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
+//	{
+//		if (!RebornCoreConfig.getRebornPower().eu())
+//			return false;
+//		return canProvideEnergy(direction);
+//	}
+//
+//	@Override
+//	public double getOfferedEnergy()
+//	{
+//		if (!RebornCoreConfig.getRebornPower().eu())
+//			return 0;
+//		return Math.min(getEnergy(), getMaxOutput());
+//	}
+//
+//	@Override
+//	public void drawEnergy(double amount)
+//	{
+//		useEnergy((int) amount);
+//	}
+//
+//	@Override
+//	public int getSourceTier()
+//	{
+//		return tier;
+//	}
 	// END IC2
 
 	// COFH
@@ -352,11 +346,11 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 
 	// IC2 Classic
 
-	@Override
-	public int getMaxEnergyAmount()
-	{
-		return (int) getMaxOutput();
-	}
+//	@Override
+//	public int getMaxEnergyAmount()
+//	{
+//		return (int) getMaxOutput();
+//	}
 
 	public void charge(int slot)
 	{
