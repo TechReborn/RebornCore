@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
@@ -13,8 +14,6 @@ import reborncore.api.IListInfoProvider;
 import reborncore.api.power.IEnergyInterfaceTile;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-
-import com.mojang.realmsclient.gui.ChatFormatting;
 
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
@@ -320,22 +319,22 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile)
 	{
-		info.add(ChatFormatting.LIGHT_PURPLE + "Energy buffer Size " + ChatFormatting.GREEN
+		info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
 				+ PowerSystem.getLocaliszedPower(getMaxPower()));
 		if (getMaxInput() != 0)
 		{
-			info.add(ChatFormatting.LIGHT_PURPLE + "Max Input " + ChatFormatting.GREEN
+			info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
 					+ PowerSystem.getLocaliszedPower(getMaxInput()));
 		}
 		if (getMaxOutput() != 0)
 		{
-			info.add(ChatFormatting.LIGHT_PURPLE + "Max Output " + ChatFormatting.GREEN
+			info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
 					+ PowerSystem.getLocaliszedPower(getMaxOutput()));
 		}
-		info.add(ChatFormatting.LIGHT_PURPLE + "Tier " + ChatFormatting.GREEN + getTier());
+		info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
 		// if(isRealTile){ //TODO sync to client
-		// info.add(ChatFormatting.LIGHT_PURPLE + "Stored energy " +
-		// ChatFormatting.GREEN + getEUString(energy));
+		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
+		// TextFormatting.GREEN + getEUString(energy));
 		// }
 	}
 
