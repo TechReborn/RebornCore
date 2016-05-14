@@ -24,6 +24,7 @@ public class FileSystemTexture extends AbstractTexture
 {
 	private static final Logger logger = LogManager.getLogger();
 	protected final File textureLocation;
+	BufferedImage image;
 
 	public FileSystemTexture(File textureResourceLocation)
 	{
@@ -33,67 +34,68 @@ public class FileSystemTexture extends AbstractTexture
 	public void loadTexture(IResourceManager resourceManager) throws IOException
 	{
 		this.deleteGlTexture();
-		IResource iresource = null;
-		try
-		{
-			iresource = new IResource()
+		if(image == null){
+			IResource iresource = null;
+			try
 			{
-
-				FileInputStream stream;
-
-				@Override
-				public ResourceLocation getResourceLocation()
+				iresource = new IResource()
 				{
-					return new ResourceLocation("reborncore:loaded/" + textureLocation.getName());
-				}
 
-				@Override
-				public InputStream getInputStream()
-				{
-                    if(stream == null){
-                        try
-                        {
-                            stream = new FileInputStream(textureLocation);
-                        } catch (FileNotFoundException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-					return stream;
-				}
+					FileInputStream stream;
 
-				@Override
-				public boolean hasMetadata()
-				{
-					return false;
-				}
+					@Override
+					public ResourceLocation getResourceLocation()
+					{
+						return new ResourceLocation("reborncore:loaded/" + textureLocation.getName());
+					}
 
-				@Override
-				public <T extends IMetadataSection> T getMetadata(String sectionName)
-				{
-					return null;
-				}
+					@Override
+					public InputStream getInputStream()
+					{
+						if(stream == null){
+							try
+							{
+								stream = new FileInputStream(textureLocation);
+							} catch (FileNotFoundException e)
+							{
+								e.printStackTrace();
+							}
+						}
+						return stream;
+					}
 
-				@Override
-				public String getResourcePackName()
-				{
-					return "reborncore";
-				}
+					@Override
+					public boolean hasMetadata()
+					{
+						return false;
+					}
 
-				@Override
-				public void close() throws IOException
-				{
-                    if(stream != null){
-                        stream.close();
-                    }
-				}
-			};
-			BufferedImage bufferedimage = TextureUtil.readBufferedImage(iresource.getInputStream());
+					@Override
+					public <T extends IMetadataSection> T getMetadata(String sectionName)
+					{
+						return null;
+					}
 
-			TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), bufferedimage, false, false);
-		} finally
-		{
-			IOUtils.closeQuietly(iresource);
+					@Override
+					public String getResourcePackName()
+					{
+						return "reborncore";
+					}
+
+					@Override
+					public void close() throws IOException
+					{
+						if(stream != null){
+							stream.close();
+						}
+					}
+				};
+				image= TextureUtil.readBufferedImage(iresource.getInputStream());
+			} finally
+			{
+				IOUtils.closeQuietly(iresource);
+			}
 		}
+		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
 	}
 }

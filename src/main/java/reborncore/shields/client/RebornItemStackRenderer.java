@@ -66,12 +66,10 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 						if(file != null){
 							texture = new FileSystemTexture(file);
 							customTextureMap.put(location.getResourcePath(), texture);
+							Minecraft.getMinecraft().getTextureManager().loadTexture(location, texture);
 						}
 					}
-					if(texture != null){
-						Minecraft.getMinecraft().getTextureManager().loadTexture(location, texture);
-						GlStateManager.bindTexture(texture.getGlTextureId());
-					}
+					Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 				} else
 				{
 					Minecraft.getMinecraft().getTextureManager().bindTexture(location);
