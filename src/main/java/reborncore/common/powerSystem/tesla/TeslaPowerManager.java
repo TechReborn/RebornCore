@@ -17,12 +17,20 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 
     @Override
     public void readFromNBT(NBTTagCompound compound, TilePowerAcceptor powerAcceptor) {
+<<<<<<< HEAD
         this.container = new AdvancedTeslaContainer(compound.getTag("TeslaContainer"), powerAcceptor);
+=======
+  //      this.container = new AdvancedTeslaContainer(null, compound.getTag("TeslaContainer"), powerAcceptor);
+>>>>>>> 3c29dcea60170b0e39b4100bca41dd68122e9112
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound, TilePowerAcceptor powerAcceptor) {
+<<<<<<< HEAD
         compound.setTag("TeslaContainer", this.container.writeNBT());
+=======
+      //  compound.setTag("TeslaContainer", this.container.writeNBT(null));
+>>>>>>> 3c29dcea60170b0e39b4100bca41dd68122e9112
     }
 
     @Override
