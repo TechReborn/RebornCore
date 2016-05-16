@@ -17,7 +17,7 @@ public class BakedModelUtils {
                                      ModelRotation modelRotation, TextureAtlasSprite cubeTexture, EnumFacing dir, FaceBakery faceBakery)
     {
         BlockFaceUV uv = new BlockFaceUV(new float[] { (float) cube.getMinX(), (float) cube.getMinY(),
-                (float) cube.getMaxX(), (float) cube.getMaxY() }, 90);
+                (float) cube.getMaxX(), (float) cube.getMaxY() }, 0);
         face = new BlockPartFace(dir, 0, "", uv);
         list.add(faceBakery.makeBakedQuad(
                 new Vector3f((float) cube.getMinX(), (float) cube.getMinY(), (float) cube.getMinZ()),
