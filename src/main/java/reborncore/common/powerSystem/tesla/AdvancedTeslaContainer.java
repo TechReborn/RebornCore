@@ -12,7 +12,7 @@ import reborncore.common.powerSystem.TilePowerAcceptor;
  */
 public class AdvancedTeslaContainer implements ITeslaConsumer, ITeslaHolder, ITeslaProducer {
 
-    TilePowerAcceptor tile;
+    public TilePowerAcceptor tile;
 
     public AdvancedTeslaContainer(TilePowerAcceptor tile) {
         this.tile = tile;
@@ -27,26 +27,18 @@ public class AdvancedTeslaContainer implements ITeslaConsumer, ITeslaHolder, ITe
         return (long)tile.getEnergy() / RebornCoreConfig.euPerRF;
     }
 
+    //Receive
     public long givePower(long tesla, boolean simulated) {
-        long acceptedTesla = Math.min(getCapacity() - getStoredPower(), Math.min(getInputRate(), tesla));
-        if(!simulated) {
-            tile.setEnergy((long)tile.getEnergy() + (acceptedTesla * RebornCoreConfig.euPerRF));
-        }
-
-        return acceptedTesla;
+        return (long) (tile.addEnergy(tesla / RebornCoreConfig.euPerRF) * RebornCoreConfig.euPerRF);
     }
 
+    //Take power out
     public long takePower(long tesla,boolean simulated) {
-        long removedPower = Math.min((long)tile.getEnergy(), Math.min(getOutputRate(), tesla));
-        if(!simulated) {
-            tile.setEnergy((long)tile.getEnergy() - (removedPower * RebornCoreConfig.euPerRF));
-        }
-
-        return removedPower;
+        return (int)(tile.useEnergy(tesla / RebornCoreConfig.euPerRF) * RebornCoreConfig.euPerRF);
     }
 
     public long getCapacity() {
-        return (long)tile.getMaxPower()/ RebornCoreConfig.euPerRF;
+        return (long)tile.getMaxPower() / RebornCoreConfig.euPerRF;
     }
 
     public long getInputRate() {

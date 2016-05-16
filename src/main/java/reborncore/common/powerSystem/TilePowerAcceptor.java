@@ -238,7 +238,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public double addEnergy(double energy, boolean simulate)
 	{
-		double energyReceived = Math.min(getMaxPower() - energy, Math.min(this.getMaxPower(), energy));
+		double energyReceived = Math.min(getMaxPower(), Math.min(this.getMaxPower(), energy));
 
 		if (!simulate)
 		{
@@ -264,7 +264,9 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	{
 		if (extract > energy)
 		{
-			return 0;
+			double tempEnergy = energy;
+			setEnergy(0);
+			return tempEnergy;
 		}
 		if (!simulate)
 		{

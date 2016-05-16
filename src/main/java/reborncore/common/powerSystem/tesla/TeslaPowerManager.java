@@ -27,15 +27,28 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
-        if (capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_PRODUCER)
+        if(capability == TeslaCapabilities.CAPABILITY_CONSUMER && powerAcceptor.canAcceptEnergy(facing)){
+            this.container.tile = powerAcceptor;
             return (T) this.container;
-
+        } else if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && powerAcceptor.canProvideEnergy(facing)){
+            this.container.tile = powerAcceptor;
+            return (T) this.container;
+        }
+        if (capability == TeslaCapabilities.CAPABILITY_HOLDER){
+            this.container.tile = powerAcceptor;
+            return (T) this.container;
+        }
         return null;
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
-        if (capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_PRODUCER)
+        if(capability == TeslaCapabilities.CAPABILITY_CONSUMER && powerAcceptor.canAcceptEnergy(facing)){
+            return true;
+        } else if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && powerAcceptor.canProvideEnergy(facing)){
+            return true;
+        }
+        if (capability == TeslaCapabilities.CAPABILITY_HOLDER)
             return true;
         return false;
     }
