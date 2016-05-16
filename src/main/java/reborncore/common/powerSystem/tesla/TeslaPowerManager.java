@@ -1,6 +1,6 @@
 package reborncore.common.powerSystem.tesla;
 
-import net.darkhax.tesla.capability.TeslaStorage;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +27,7 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
-        if (capability == TeslaStorage.TESLA_HANDLER_CAPABILITY)
+        if (capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_PRODUCER)
             return (T) this.container;
 
         return null;
@@ -35,14 +35,14 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
-        if (capability == TeslaStorage.TESLA_HANDLER_CAPABILITY)
+        if (capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_HOLDER || capability == TeslaCapabilities.CAPABILITY_PRODUCER)
             return true;
         return false;
     }
 
     @Override
     public void update(TilePowerAcceptor powerAcceptor) {
-        if(powerAcceptor.canProvideEnergy(null)){
+        if (powerAcceptor.canProvideEnergy(null)) {
             TeslaUtils.distributePowerEqually(powerAcceptor.getWorld(), powerAcceptor.getPos(), (long) powerAcceptor.getMaxOutput(), false);
         }
     }
@@ -57,7 +57,7 @@ public class TeslaPowerManager implements ITeslaPowerManager {
         return TeslaUtils.getDisplayableTeslaCount(tesla / RebornCoreConfig.euPerRF);
     }
 
-    public static ITeslaPowerManager getPowerManager(){
+    public static ITeslaPowerManager getPowerManager() {
         return new TeslaPowerManager();
     }
 }
