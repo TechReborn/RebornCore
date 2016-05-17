@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 
-public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock
+public abstract class 	BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock
 {
 
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -44,14 +44,24 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	public static ItemStack machineStack;
 	public static ItemStack advancedMachineStack;
+	boolean hasCustomStaes;
 
 	public BlockMachineBase()
+	{
+		this(false);
+	}
+
+
+	public BlockMachineBase(boolean hasCustomStates)
 	{
 		super(Material.ROCK);
 		setHardness(2f);
 		// setStepSound(soundTypeMetal); //TODO 1.9
-		this.setDefaultState(
-				this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+		this.hasCustomStaes = hasCustomStates;
+		if(!hasCustomStates){
+			this.setDefaultState(
+					this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+		}
 	}
 
 	protected BlockStateContainer createBlockState()
@@ -83,6 +93,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	private void setDefaultFacing(World worldIn, BlockPos pos, IBlockState state)
 	{
+		if(hasCustomStaes){
+			return;
+		}
 		if (!worldIn.isRemote)
 		{
 			IBlockState sate = worldIn.getBlockState(pos.north());
@@ -483,11 +496,17 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	public void setFacing(EnumFacing facing, World world, BlockPos pos)
 	{
+		if(hasCustomStaes){
+			return;
+		}
 		world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, facing));
 	}
 
 	public void setActive(Boolean active, World world, BlockPos pos)
 	{
+		if(hasCustomStaes){
+			return;
+		}
 		EnumFacing facing = world.getBlockState(pos).getValue(FACING);
 		IBlockState state = world.getBlockState(pos).withProperty(ACTIVE, active).withProperty(FACING, facing);
 		world.setBlockState(pos, state, 3);
