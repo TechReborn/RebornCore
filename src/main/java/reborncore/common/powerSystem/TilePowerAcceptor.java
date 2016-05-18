@@ -312,11 +312,12 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		energy = data.getDouble("energy");
 	}
 
-	public void writeToNBTWithoutCoords(NBTTagCompound tag)
+	public NBTTagCompound writeToNBTWithoutCoords(NBTTagCompound tag)
 	{
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", energy);
 		tag.setTag("TilePowerAcceptor", data);
+		return tag;
 	}
 
 	@Override
