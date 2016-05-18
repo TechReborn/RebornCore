@@ -112,7 +112,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound data)
+	public NBTTagCompound writeToNBT(NBTTagCompound data)
 	{
 		super.writeToNBT(data);
 
@@ -122,6 +122,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 			this.controller.writeToNBT(multiblockData);
 			data.setTag("multiblockData", multiblockData);
 		}
+		return data;
 	}
 
 	/**
@@ -172,7 +173,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	// Network Communication
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		NBTTagCompound packetData = new NBTTagCompound();
 		encodeDescriptionPacket(packetData);

@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import reborncore.common.util.WorldUtils;
@@ -452,7 +452,7 @@ public class MultiblockWorldRegistry
 	 */
 	public void onChunkLoaded(int chunkX, int chunkZ)
 	{
-		long chunkHash = ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
+		long chunkHash = ChunkPos.chunkXZ2Int(chunkX, chunkZ);
 		if (partsAwaitingChunkLoad.containsKey(chunkHash))
 		{
 			synchronized (partsAwaitingChunkLoadMutex)

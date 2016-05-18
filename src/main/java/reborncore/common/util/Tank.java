@@ -78,22 +78,22 @@ public class Tank extends FluidTank
 			{
 				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500)
 				{
-					PacketHandler.sendPacketToAllPlayers(tile.getDescriptionPacket(), tile.getWorld());
+					PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
 					lastBeforeUpdate = current.copy();
 				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity()
 						|| lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity())
 				{
-					PacketHandler.sendPacketToAllPlayers(tile.getDescriptionPacket(), tile.getWorld());
+					PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
 					lastBeforeUpdate = current.copy();
 				}
 			} else
 			{
-				PacketHandler.sendPacketToAllPlayers(tile.getDescriptionPacket(), tile.getWorld());
+				PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
 				lastBeforeUpdate = current.copy();
 			}
 		} else if (lastBeforeUpdate != null)
 		{
-			PacketHandler.sendPacketToAllPlayers(tile.getDescriptionPacket(), tile.getWorld());
+			PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
 			lastBeforeUpdate = null;
 		}
 	}

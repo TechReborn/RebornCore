@@ -163,7 +163,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
+	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
 	{
 		super.writeToNBT(tagCompound);
 		if(getInventoryForTile().isPresent()){
@@ -172,6 +172,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 		if(getCrafterForTile().isPresent()){
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
+		return tagCompound;
 	}
 
 	//Inventory Start

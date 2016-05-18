@@ -64,7 +64,7 @@ public class PacketHandler extends FMLIndexedMessageToMessageCodec<SimplePacket>
 		{
 			if (player instanceof EntityPlayerMP)
 				if (player != null)
-					((EntityPlayerMP) player).playerNetServerHandler.sendPacket(packet);
+					((EntityPlayerMP) player).connection.sendPacket(packet);
 		}
 	}
 

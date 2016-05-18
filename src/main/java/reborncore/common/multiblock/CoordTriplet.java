@@ -2,7 +2,7 @@ package reborncore.common.multiblock;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 
 /*
  * Simple wrapper class for XYZ coordinates.
@@ -37,7 +37,7 @@ public class CoordTriplet implements Comparable
 
 	public long getChunkXZHash()
 	{
-		return ChunkCoordIntPair.chunkXZ2Int(x >> 4, z >> 4);
+		return ChunkPos.chunkXZ2Int(x >> 4, z >> 4);
 	}
 
 	@Override

@@ -1,11 +1,8 @@
 package reborncore.common.util;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.ChunkProviderServer;
 
 /**
  * Created by Mark on 13/03/2016.
