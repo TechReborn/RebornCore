@@ -294,7 +294,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT(tag);
 		NBTTagCompound data = new NBTTagCompound();
@@ -303,6 +303,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		if(TeslaManager.isTeslaEnabled()){
 			TeslaManager.manager.writeToNBT(tag, this);
 		}
+		return tag;
 	}
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag)
