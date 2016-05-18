@@ -27,28 +27,28 @@ public class RebornClassTransformer implements IClassTransformer
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
 		// This replaces the item registry to inject new items
-		if (name.equals("net.minecraft.item.Item") || name.equals("ado"))
-		{
-			FMLLog.log("RebornCore", Level.INFO, String.valueOf("Found item class"));
-			boolean isObfuscated = !name.equals(transformedName);
-			ClassNode classNode = readClassFromBytes(bytes);
-			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "registerItem", isObfuscated
-					? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V");
-
-			InsnList toInject = new InsnList();
-			toInject.add(new VarInsnNode(Opcodes.ILOAD, 0));
-			toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
-			toInject.add(new VarInsnNode(Opcodes.ALOAD, 2));
-			toInject.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC, Type.getInternalName(ShieldHooks.class), "registerItem", isObfuscated
-							? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V",
-					false));
-			toInject.add(new InsnNode(Opcodes.RETURN));
-
-			method.instructions.insertBefore(findFirstInstruction(method), toInject);
-
-			return writeClassToBytes(classNode);
-		}
+//		if (name.equals("net.minecraft.item.Item") || name.equals("ado"))
+//		{
+//			FMLLog.log("RebornCore", Level.INFO, String.valueOf("Found item class"));
+//			boolean isObfuscated = !name.equals(transformedName);
+//			ClassNode classNode = readClassFromBytes(bytes);
+//			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "registerItem", isObfuscated
+//					? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V");
+//
+//			InsnList toInject = new InsnList();
+//			toInject.add(new VarInsnNode(Opcodes.ILOAD, 0));
+//			toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
+//			toInject.add(new VarInsnNode(Opcodes.ALOAD, 2));
+//			toInject.add(new MethodInsnNode(
+//					Opcodes.INVOKESTATIC, Type.getInternalName(ShieldHooks.class), "registerItem", isObfuscated
+//							? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V",
+//					false));
+//			toInject.add(new InsnNode(Opcodes.RETURN));
+//
+//			method.instructions.insertBefore(findFirstInstruction(method), toInject);
+//
+//			return writeClassToBytes(classNode);
+//		}
 		return bytes;
 	}
 
