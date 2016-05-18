@@ -68,7 +68,7 @@ group = 'RebornCore'
 
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destroyer:JSON-Destroyer-1.9:2.2.+:dev'
+    shade 'JSON-Destroyer:JSON-Destroyer-1.9.4:2.2.+:dev'
 	shade 'org.hjson:hjson:1.1.3'
     deobfCompile "mezz.jei:jei_1.9:3.2.10.+"
 	compile "net.darkhax.tesla:Tesla:1.9-1.0.2.23:deobf"
