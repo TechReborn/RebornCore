@@ -31,7 +31,7 @@ repositories {
         name = "Modmuss50"
         url = "http://maven.modmuss50.me/"
     }
-	maven{
+    maven {
         name "tterrag Repo"
         url "http://maven.tterrag.com/"
     }
@@ -39,7 +39,7 @@ repositories {
         name "TiC"
         url "http://dvs1.progwml6.com/files/maven"
     }
-	maven {
+    maven {
         url 'http://maven.rubbix.net'
     }
 }
@@ -60,7 +60,7 @@ minecraft {
     version = "1.9.4-12.17.0.1909-1.9.4"
     mappings = "snapshot_20160518"
     replace "@MODVERSION@", project.version
-	runDir = "run"
+    runDir = "run"
 }
 
 group = 'RebornCore'
@@ -69,17 +69,15 @@ group = 'RebornCore'
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
     shade 'JSON-Destroyer:Json-Destroyer-1.9.4:2.2.1:dev'
-	shade 'org.hjson:hjson:1.1.3'
-    compile ("net.darkhax.tesla:Tesla:1.9-1.0.2.23:deobf"){
-        transitive = true
-    }
+    shade 'org.hjson:hjson:1.1.3'
+    compile "net.darkhax.tesla:Tesla:1.9-1.0.2.23:deobf"
 }
 
 processResources
         {
             from(sourceSets.main.resources.srcDirs) {
                 include 'mcmod.info'
-                expand 'version':project.version, 'mcversion':project.minecraft.version
+                expand 'version': project.version, 'mcversion': project.minecraft.version
             }
 
             from(sourceSets.main.resources.srcDirs) {
@@ -92,8 +90,8 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     exclude "**/*.psd"
     classifier = 'dev'
-	configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
             include 'me/modmuss50/jsonDestroyer/'
             include 'org/hjson/'
         }
@@ -103,13 +101,13 @@ task deobfJar(type: Jar) {
 jar {
     exclude "**/*.psd"
     classifier = 'universal'
-        configurations.shade.each { dep ->
-        from(project.zipTree(dep)){
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
             include 'me/modmuss50/jsonDestroyer/'
             include 'org/hjson/'
         }
     }
-	manifest{
+    manifest {
         attributes 'FMLCorePlugin': 'reborncore.asm.RebornASM'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
@@ -118,7 +116,7 @@ jar {
 task apiJar(type: Jar) {
     from sourceSets.main.allSource
     from sourceSets.main.output
-        include 'reborncore/api/**/*'
+    include 'reborncore/api/**/*'
 
     classifier = "api"
 }
@@ -133,22 +131,24 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-		//This is used when the build is done on a slave node
-		if (project.hasProperty('mavenPass'))
-        {
-			println 'Uploading to remote Maven Repo'
-            repository(url: "http://mavenupload.modmuss50.me/") {
-                authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
+            //This is used when the build is done on a slave node
+            if (project.hasProperty('mavenPass')) {
+                println 'Uploading to remote Maven Repo'
+                repository(url: "http://mavenupload.modmuss50.me/") {
+                    authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
+                }
+            } else {
+                //this is when the build is executed on the master node
+                println 'Uploading to local Maven Repo'
+                repository(url: "file:///var/www/maven/")
             }
-        }
-        else
-        { 
-			//this is when the build is executed on the master node
-			println 'Uploading to local Maven Repo'
-           repository(url: "file:///var/www/maven/")
-        }
-		
-		
+
+            pom.whenConfigured {
+                p ->
+                    p.dependencies = p.dependencies.findAll {
+                        dep -> dep.artifactId != "Tesla"
+                    }
+            }
             
             pom {
                 groupId = "RebornCore"
@@ -208,11 +208,11 @@ task updateMappings(dependsOn: sourceJar) {
     doLast {
 
         Map<String, String> map = new HashMap<>()
-        methods.eachLine {line ->
+        methods.eachLine { line ->
             String[] pts = line.split(",")
             map.put(pts[0], pts[1])
         }
-        fields.eachLine {line ->
+        fields.eachLine { line ->
             String[] pts = line.split(",")
             map.put(pts[0], pts[1])
         }
