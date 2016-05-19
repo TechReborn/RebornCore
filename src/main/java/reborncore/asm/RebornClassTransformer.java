@@ -23,32 +23,39 @@ import reborncore.shields.ShieldHooks;
  */
 public class RebornClassTransformer implements IClassTransformer
 {
+	String className = "net.minecraft.item.Item";
+	String obofClassName = "ado";
+	String descriptor = "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V";
+	String obofDescriptor = "(ILkl;Lado;)V";
+	String methordName = "registerItem";
+	String obofMethordName = "a";
+
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes)
 	{
 		// This replaces the item registry to inject new items
-//		if (name.equals("net.minecraft.item.Item") || name.equals("ado"))
-//		{
-//			FMLLog.log("RebornCore", Level.INFO, String.valueOf("Found item class"));
-//			boolean isObfuscated = !name.equals(transformedName);
-//			ClassNode classNode = readClassFromBytes(bytes);
-//			MethodNode method = findMethodNodeOfClass(classNode, isObfuscated ? "a" : "registerItem", isObfuscated
-//					? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V");
-//
-//			InsnList toInject = new InsnList();
-//			toInject.add(new VarInsnNode(Opcodes.ILOAD, 0));
-//			toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
-//			toInject.add(new VarInsnNode(Opcodes.ALOAD, 2));
-//			toInject.add(new MethodInsnNode(
-//					Opcodes.INVOKESTATIC, Type.getInternalName(ShieldHooks.class), "registerItem", isObfuscated
-//							? "(ILkk;Lado;)V" : "(ILnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V",
-//					false));
-//			toInject.add(new InsnNode(Opcodes.RETURN));
-//
-//			method.instructions.insertBefore(findFirstInstruction(method), toInject);
-//
-//			return writeClassToBytes(classNode);
-//		}
+		if (name.equals(className) || name.equals("ado"))
+		{
+
+			FMLLog.log("RebornCore", Level.INFO, String.valueOf("Found item class"));
+			ClassNode classNode = readClassFromBytes(bytes);
+			MethodNode method = findMethodNodeOfClass(classNode, RebornASM.deobfuscatedEnvironment ? methordName : obofMethordName, RebornASM.deobfuscatedEnvironment
+					? descriptor : obofDescriptor);
+
+			InsnList toInject = new InsnList();
+			toInject.add(new VarInsnNode(Opcodes.ILOAD, 0));
+			toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
+			toInject.add(new VarInsnNode(Opcodes.ALOAD, 2));
+			toInject.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC, Type.getInternalName(ShieldHooks.class), methordName, RebornASM.deobfuscatedEnvironment
+							? descriptor : obofDescriptor,
+					false));
+			toInject.add(new InsnNode(Opcodes.RETURN));
+
+			method.instructions.insertBefore(findFirstInstruction(method), toInject);
+
+			return writeClassToBytes(classNode);
+		}
 		return bytes;
 	}
 

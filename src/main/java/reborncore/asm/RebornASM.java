@@ -13,8 +13,11 @@ import org.apache.logging.log4j.Level;
  */
 // -Dfml.coreMods.load=reborncore.asm.RebornASM
 @IFMLLoadingPlugin.Name(value = "Reborn Core ASM")
+@IFMLLoadingPlugin.MCVersion(value = "1.9.4")
 public class RebornASM implements IFMLLoadingPlugin, IFMLCallHook
 {
+
+	public static boolean deobfuscatedEnvironment = false;
 
 	public RebornASM()
 	{
@@ -42,7 +45,7 @@ public class RebornASM implements IFMLLoadingPlugin, IFMLCallHook
 	@Override
 	public void injectData(Map<String, Object> data)
 	{
-
+		deobfuscatedEnvironment = !((Boolean)data.get("runtimeDeobfuscationEnabled")).booleanValue();
 	}
 
 	@Override
