@@ -29,6 +29,7 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 import scala.xml.dtd.impl.Base;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -39,22 +40,26 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 	{
 		if (!worldObj.isRemote)
 		{
-			PacketHandler.sendPacketToAllPlayers(getDescriptionPacket(), worldObj);
+			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), worldObj);
 		}
 	}
 
-	public Packet getDescriptionPacket()
-	{
-		NBTTagCompound nbtTag = new NBTTagCompound();
-		writeToNBT(nbtTag);
-		return new SPacketUpdateTileEntity(this.getPos(), 1, nbtTag);
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), writeToNBT(new NBTTagCompound()));
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
+		writeToNBT(compound);
+		return compound;
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet)
 	{
-		worldObj.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX(),
-				getPos().getY(), getPos().getZ());
 		readFromNBT(packet.getNbtCompound());
 	}
 

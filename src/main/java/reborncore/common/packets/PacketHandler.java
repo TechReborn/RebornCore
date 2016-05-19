@@ -60,6 +60,9 @@ public class PacketHandler extends FMLIndexedMessageToMessageCodec<SimplePacket>
 
 	public static void sendPacketToAllPlayers(Packet packet, World world)
 	{
+		if(packet == null){
+			return;
+		}
 		for (Object player : world.playerEntities)
 		{
 			if (player instanceof EntityPlayerMP)
