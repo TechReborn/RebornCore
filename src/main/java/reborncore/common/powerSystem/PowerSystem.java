@@ -15,7 +15,7 @@ public class PowerSystem
 		if (RebornCoreConfig.getRebornPower().eu())
 		{
 			return getRoundedString(eu, "EU");
-		} else if (TeslaManager.isTeslaEnabled())
+		} else if (TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
 		{
 			return TeslaManager.manager.getDisplayableTeslaCount(eu);
 		}else
