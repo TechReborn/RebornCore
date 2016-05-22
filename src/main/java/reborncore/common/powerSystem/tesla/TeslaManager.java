@@ -1,6 +1,7 @@
 package reborncore.common.powerSystem.tesla;
 
 import net.minecraftforge.fml.common.Loader;
+import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 
 /**
@@ -19,8 +20,8 @@ public class TeslaManager {
         }
     }
 
-    public static boolean isTeslaEnabled(){
-        return isTeslaEnabled && RebornCoreConfig.getRebornPower().tesla() && manager != null;
+    public static boolean isTeslaEnabled(IPowerConfig config){
+        return isTeslaEnabled && config.tesla() && manager != null;
     }
 
 }

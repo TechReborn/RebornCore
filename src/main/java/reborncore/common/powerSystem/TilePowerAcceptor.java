@@ -33,7 +33,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	public TilePowerAcceptor(int tier)
 	{
 		this.tier = tier;
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			TeslaManager.manager.created(this);
 		}
 	}
@@ -46,7 +46,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			TeslaManager.manager.update(this);
 		}
 		// onLoaded();
@@ -73,7 +73,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		if (RebornCoreConfig.getRebornPower().eu())
+		if (getPowerConfig().eu())
 		{
 //			if (addedToEnet && Info.isIc2Available())
 //			{
@@ -146,7 +146,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
-		if (!RebornCoreConfig.getRebornPower().rf())
+		if (!getPowerConfig().rf())
 			return false;
 		return canAcceptEnergy(from) || canProvideEnergy(from);
 	}
@@ -154,7 +154,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if (!RebornCoreConfig.getRebornPower().rf())
+		if (!getPowerConfig().rf())
 			return 0;
 		if (!canAcceptEnergy(from))
 		{
@@ -174,7 +174,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		if (!RebornCoreConfig.getRebornPower().rf())
+		if (!getPowerConfig().rf())
 			return 0;
 		return ((int) getEnergy() / RebornCoreConfig.euPerRF);
 	}
@@ -182,7 +182,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		if (!RebornCoreConfig.getRebornPower().rf())
+		if (!getPowerConfig().rf())
 			return 0;
 		return ((int) getMaxPower() / RebornCoreConfig.euPerRF);
 	}
@@ -190,7 +190,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if (!RebornCoreConfig.getRebornPower().rf())
+		if (!getPowerConfig().rf())
 			return 0;
 		if (!canProvideEnergy(from))
 		{
@@ -288,7 +288,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		super.readFromNBT(tag);
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
 		energy = data.getDouble("energy");
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			TeslaManager.manager.readFromNBT(tag, this);
 		}
 	}
@@ -300,7 +300,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", energy);
 		tag.setTag("TilePowerAcceptor", data);
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			TeslaManager.manager.writeToNBT(tag, this);
 		}
 		return tag;
@@ -392,7 +392,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 
 	@Override
 	public boolean hasCapability (Capability<?> capability, EnumFacing facing){
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			return TeslaManager.manager.hasCapability(capability, facing, this);
 		}
 		return super.hasCapability(capability, facing);
@@ -401,7 +401,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability (Capability<T> capability, EnumFacing facing) {
-		if(TeslaManager.isTeslaEnabled()){
+		if(TeslaManager.isTeslaEnabled(getPowerConfig())){
 			return TeslaManager.manager.getCapability(capability, facing, this);
 		}
 		return super.getCapability(capability, facing);
