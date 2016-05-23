@@ -4,11 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelShield;
 import net.minecraft.client.renderer.BannerTextures;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
+import reborncore.client.texture.FileSystemTexture;
+import reborncore.client.texture.InputStreamTexture;
 import reborncore.shields.CustomShield;
 
 import java.io.File;
@@ -23,7 +26,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 	private TileEntityBanner banner = new TileEntityBanner();
 	private ModelShield modelShield = new ModelShield();
 
-	private HashMap<String, FileSystemTexture> customTextureMap = new HashMap<>();
+	private HashMap<String, AbstractTexture> customTextureMap = new HashMap<>();
 
 	TileEntityItemStackRenderer renderer;
 
@@ -49,27 +52,20 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer
 									banner.getColorList()));
 				} else if (location.getResourceDomain().equals("lookup"))
 				{
-					FileSystemTexture texture = null;
-					if (customTextureMap.containsKey(location.getResourcePath()))
-					{
-						texture = customTextureMap.get(location.getResourcePath());
-					} else
-					{
-						File file = null;
-						for (File f : ShieldTextureLoader.instance.validFiles)
-						{
-							if (f.getName().replace(".png", "").equalsIgnoreCase(location.getResourcePath()))
-							{
-								file = f;
-							}
-						}
-						if(file != null){
-							texture = new FileSystemTexture(file);
+					ShieldTexture shieldTexture = ShieldTextureStore.getTexture(location);
+					if(shieldTexture.getState() == DownloadState.DOWNLOADED){
+						AbstractTexture texture = null;
+						if(customTextureMap.containsKey(location.getResourcePath())){
+							texture = customTextureMap.get(location.getResourcePath());
+						} else {
+							texture = shieldTexture.getTexture();
 							customTextureMap.put(location.getResourcePath(), texture);
 							Minecraft.getMinecraft().getTextureManager().loadTexture(location, texture);
 						}
+						Minecraft.getMinecraft().getTextureManager().bindTexture(location);
+					} else {
+						Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
 					}
-					Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 				} else
 				{
 					Minecraft.getMinecraft().getTextureManager().bindTexture(location);

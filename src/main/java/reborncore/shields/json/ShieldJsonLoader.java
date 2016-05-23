@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import org.apache.commons.io.FileUtils;
 
+import reborncore.RebornCore;
 import reborncore.shields.FaceShield;
 import reborncore.shields.api.ShieldRegistry;
 
@@ -64,27 +65,37 @@ public class ShieldJsonLoader
 		}
 	}
 
-	public static void load(FMLPreInitializationEvent event) throws IOException
+	public static void load(FMLPreInitializationEvent event)
 	{
-		File file = new File(event.getModConfigurationDirectory(), "reborncore/shields.json");
-		FileUtils.copyURLToFile(new URL("http://modmuss50.me/reborncore/shields.json"), file);
-		if (file.exists())
+		new Thread(() ->
 		{
-			Gson gson = new Gson();
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			Type typeOfHashMap = new TypeToken<ShieldJsonFile>()
-			{
-			}.getType();
-			shieldJsonFile = gson.fromJson(reader, typeOfHashMap);
-			hasValidJsonFile = true;
-		}
-		if (shieldJsonFile != null)
-		{
-			for (ShieldUser user : shieldJsonFile.userList)
-			{
-				ShieldRegistry.registerShield(new FaceShield(user.username));
+			try{
+				File file = new File(event.getModConfigurationDirectory(), "reborncore/shields.json");
+				FileUtils.copyURLToFile(new URL("http://modmuss50.me/reborncore/shields.json"), file);
+				if (file.exists())
+				{
+					Gson gson = new Gson();
+					BufferedReader reader = new BufferedReader(new FileReader(file));
+					Type typeOfHashMap = new TypeToken<ShieldJsonFile>()
+					{
+					}.getType();
+					shieldJsonFile = gson.fromJson(reader, typeOfHashMap);
+					hasValidJsonFile = true;
+				}
+				if (shieldJsonFile != null)
+				{
+					for (ShieldUser user : shieldJsonFile.userList)
+					{
+						ShieldRegistry.registerShield(new FaceShield(user.username));
+					}
+					RebornCore.proxy.loadShieldTextures();
+				}
+			} catch (Exception e){
+				e.printStackTrace();
 			}
-		}
+
+		}).start();
+
 	}
 
 	public static String getMD5(File file) throws IOException

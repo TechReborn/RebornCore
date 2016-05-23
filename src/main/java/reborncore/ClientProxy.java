@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import reborncore.shields.client.RebornItemStackRenderer;
-import reborncore.shields.client.ShieldTextureLoader;
+import reborncore.shields.client.ShieldTextureStore;
 
 public class ClientProxy extends CommonProxy
 {
@@ -14,8 +14,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
-		ShieldTextureLoader.instance = new ShieldTextureLoader(event.getModConfigurationDirectory());
-		MinecraftForge.EVENT_BUS.register(ShieldTextureLoader.instance);
 	}
 
 	@Override
@@ -29,5 +27,11 @@ public class ClientProxy extends CommonProxy
 	{
 		super.postInit(event);
 		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
+	}
+
+	@Override
+	public void loadShieldTextures() {
+		super.loadShieldTextures();
+		ShieldTextureStore.load();
 	}
 }

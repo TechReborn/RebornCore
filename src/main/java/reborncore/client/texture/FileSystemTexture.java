@@ -1,4 +1,4 @@
-package reborncore.shields.client;
+package reborncore.client.texture;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;

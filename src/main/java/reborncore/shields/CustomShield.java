@@ -14,7 +14,8 @@ import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.util.ItemNBTHelper;
 import reborncore.shields.api.Shield;
 import reborncore.shields.api.ShieldRegistry;
-import reborncore.shields.client.ShieldTextureLoader;
+import reborncore.shields.json.ShieldJsonLoader;
+import reborncore.shields.json.ShieldUser;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -43,8 +44,8 @@ public class CustomShield extends ItemShield implements IEnergyItemInfo
 		} else
 		{
 			String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-			for(File file : ShieldTextureLoader.instance.validFiles){
-				if(file.getName().replace(".png", "").equalsIgnoreCase(str)){
+			for(ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList){
+				if(user.username.equalsIgnoreCase(str)){
 					return new ResourceLocation("LOOKUP:" + str);
 				}
 			}

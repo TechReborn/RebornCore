@@ -42,16 +42,7 @@ public class RebornCore implements IModInfo
 	{
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		proxy.preInit(event);
-		new Thread(() ->
-		{
-			try
-			{
-				ShieldJsonLoader.load(event);
-			} catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}).start();
+		ShieldJsonLoader.load(event);
 	}
 
 	@Mod.EventHandler
