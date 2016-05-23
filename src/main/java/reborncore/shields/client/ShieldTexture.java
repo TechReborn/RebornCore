@@ -24,8 +24,8 @@ public class ShieldTexture {
         this.url = url;
     }
 
-    public void download(){
-        if(state != DownloadState.AVAILABLE){
+    public void download() {
+        if (state != DownloadState.AVAILABLE) {
             return;
         }
         state = DownloadState.DOWNLOADING;
@@ -33,7 +33,7 @@ public class ShieldTexture {
         new Thread(() ->
         {
             try {
-                InputStream inputStream =  new URL(url).openStream();
+                InputStream inputStream = new URL(url).openStream();
                 texture = new InputStreamTexture(inputStream, url);
                 state = DownloadState.DOWNLOADED;
             } catch (IOException e) {

@@ -1,22 +1,22 @@
 package reborncore.shields.json;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Mark on 25/03/2016.
  */
-public class ShieldUser
-{
+public class ShieldUser {
 
-	public String username;
-	public String textureMd5;
+    public String username;
+    public
+    @Nullable
+    String textureName;
 
-	public ShieldUser(String username, String textureMd5)
-	{
-		this.username = username;
-		this.textureMd5 = textureMd5;
-	}
+    public ShieldUser(String username) {
+        this.username = username;
+    }
 
-	public ShieldUser()
-	{
-	}
+    public ShieldUser() {
+    }
 
 }
