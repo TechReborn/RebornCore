@@ -46,7 +46,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "1.5.1"
+version = "1.6.0"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -66,7 +66,8 @@ group = 'RebornCore'
 dependencies {
     //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
     shade 'JSON-Destroyer:JSON-Destroyer:0.4.+:dev'
-    shade 'net.industrial-craft:industrialcraft-2:2.3.131-ex18:api'
+    shade 'net.industrial-craft:industrialcraft-2:2.3.249-ex18:api'
+    shade 'net.industrial-craft:industrialcraft-2:2.3.249-ex18:api'
 }
 
 processResources
@@ -89,6 +90,8 @@ task deobfJar(type: Jar) {
 	configurations.shade.each { dep ->
         from(project.zipTree(dep)){
             include 'me/modmuss50/jsonDestroyer/'
+            include 'ic2/api/'
+            exclude 'META-INF', 'META-INF/**', '**/*.java'
         }
     }
 }
@@ -99,6 +102,8 @@ jar {
         configurations.shade.each { dep ->
         from(project.zipTree(dep)){
             include 'me/modmuss50/jsonDestroyer/'
+            include 'ic2/api/'
+            exclude 'META-INF', 'META-INF/**', '**/*.java'
         }
     }
 	manifest{

@@ -103,19 +103,29 @@ public class TileMachineBase extends TileEntity implements ITickable, IWrenchabl
     }
 
     @Override
-    public double getWrenchSuccessRate(World world, BlockPos pos) {
-        return 1F;
-    }
-
-    @Override
-    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, List<ItemStack> originalDrops) {
-        ItemStack oldDrop = getWrenchDrop(player);
+    public List<ItemStack> getWrenchDrops(World world, BlockPos blockPos, IBlockState iBlockState, TileEntity tileEntity, EntityPlayer entityPlayer, int i) {
+        ItemStack oldDrop = getWrenchDrop(entityPlayer);
         List<ItemStack> list = new ArrayList<>();
         if(oldDrop != null){
             list.add(oldDrop);
         }
         return list;
     }
+
+//    @Override
+//    public double getWrenchSuccessRate(World world, BlockPos pos) {
+//        return 1F;
+//    }
+//
+//    @Override
+//    public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, List<ItemStack> originalDrops) {
+//        ItemStack oldDrop = getWrenchDrop(player);
+//        List<ItemStack> list = new ArrayList<>();
+//        if(oldDrop != null){
+//            list.add(oldDrop);
+//        }
+//        return list;
+//    }
 
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer){
         return null;
