@@ -58,7 +58,7 @@ public class ShieldJsonLoader {
         {
             try {
                 File file = new File(event.getModConfigurationDirectory(), "reborncore/shields.json");
-                FileUtils.copyURLToFile(new URL("http://modmuss50.me/reborncore/shields2.json"), file);
+                FileUtils.copyURLToFile(new URL(RebornCore.WEB_URL + "reborncore/shields2.json"), file);
                 if (file.exists()) {
                     Gson gson = new Gson();
                     BufferedReader reader = new BufferedReader(new FileReader(file));

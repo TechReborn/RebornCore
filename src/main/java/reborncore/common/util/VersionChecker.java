@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
 
+import reborncore.RebornCore;
 import reborncore.common.IModInfo;
 import reborncore.common.RebornCoreConfig;
 
@@ -20,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 public class VersionChecker
 {
 
-	public static final String apiAddress = "http://modmuss50.me/api/v1/version.php";
+	public static final String apiAddress = RebornCore.WEB_URL + "api/v1/version.php";
 
 	public String projectName;
 	public IModInfo modInfo;

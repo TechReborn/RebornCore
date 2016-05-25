@@ -1,6 +1,7 @@
 package reborncore.shields.client;
 
 import net.minecraft.util.ResourceLocation;
+import reborncore.RebornCore;
 import reborncore.shields.json.ShieldJsonFile;
 import reborncore.shields.json.ShieldJsonLoader;
 import reborncore.shields.json.ShieldUser;
@@ -31,12 +32,12 @@ public class ShieldTextureStore {
                     if (customTextures.containsKey(name)) {
                         texture = customTextures.get(name);
                     } else {
-                        texture = new ShieldTexture("http://modmuss50.me/reborncore/textures/" + name + ".png");
+                        texture = new ShieldTexture(RebornCore.WEB_URL + "reborncore/textures/" + name + ".png");
                         customTextures.put(name, texture);
                     }
                     textures.put(user.username, texture);
                 } else {
-                    textures.put(user.username, new ShieldTexture("http://modmuss50.me/reborncore/textures/" + user.username + ".png"));
+                    textures.put(user.username, new ShieldTexture(RebornCore.WEB_URL + "reborncore/textures/" + user.username + ".png"));
                 }
             }
         }

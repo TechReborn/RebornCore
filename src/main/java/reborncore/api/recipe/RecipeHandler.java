@@ -1,5 +1,8 @@
 package reborncore.api.recipe;
 
+import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.Validate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +14,6 @@ public class RecipeHandler {
      */
     public static final ArrayList<IBaseRecipeType> recipeList = new ArrayList<>();
 
-    public static HashMap<IBaseRecipeType, String> stackMap = new HashMap<>();
     /**
      * This is a list of all the registered machine names.
      */
@@ -57,14 +59,17 @@ public class RecipeHandler {
         // if (!RecipeConfigManager.canLoadRecipe(recipe)) {
         // return;
         // }
+        for(ItemStack input : recipe.getInputs()){
+            Validate.notNull(input);
+            Validate.notNull(input.getItem());
+        }
+        for(ItemStack output : recipe.getOutputs()){
+            Validate.notNull(output);
+            Validate.notNull(output.getItem());
+        }
         if (!machineNames.contains(recipe.getRecipeName())) {
             machineNames.add(recipe.getRecipeName());
         }
         recipeList.add(recipe);
-        StringBuilder buffer = new StringBuilder();
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            buffer.append(ste);
-        }
-        stackMap.put(recipe, buffer.toString());
     }
 }
