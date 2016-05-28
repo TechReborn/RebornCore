@@ -3,10 +3,7 @@ package reborncore.common.util;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 
 public class FluidUtils
 {
@@ -20,6 +17,9 @@ public class FluidUtils
 		{
 			FluidStack fluidInContainer = getFluidStackInContainer(input);
 			ItemStack emptyItem = input.getItem().getContainerItem(input);
+			if(input.getItem() instanceof UniversalBucket){
+				emptyItem = ((UniversalBucket) input.getItem()).getEmpty();
+			}
 			if (fluidInContainer != null
 					&& (emptyItem == null || output == null || (output.stackSize < output.getMaxStackSize()
 							&& ItemUtils.isItemEqual(output, emptyItem, true, true))))
@@ -68,6 +68,9 @@ public class FluidUtils
 
 	public static FluidStack getFluidStackInContainer(ItemStack stack)
 	{
+		if(stack.getItem() instanceof IFluidContainerItem){
+			return  ((IFluidContainerItem) stack.getItem()).getFluid(stack);
+		}
 		return FluidContainerRegistry.getFluidForFilledItem(stack);
 	}
 
