@@ -53,7 +53,6 @@ public class CustomShield extends ItemShield implements IEnergyItemInfo {
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
         ItemStack newStack = new ItemStack(this);
-        ItemNBTHelper.setBoolean(newStack, "vanilla", true);
         subItems.add(newStack); // adds vanilla
         for (Shield shield : ShieldRegistry.shieldList) {
             if (shield.showInItemLists()) {
