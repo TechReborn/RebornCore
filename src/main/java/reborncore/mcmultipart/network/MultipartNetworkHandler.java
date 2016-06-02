@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class MultipartNetworkHandler {
 
-    public static final SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MCMultiPartMod.MODID);
+    public static final SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel("rc-mp");
 
     public static void init() {
 
