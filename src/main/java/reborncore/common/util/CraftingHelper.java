@@ -14,57 +14,67 @@ import org.apache.commons.lang3.Validate;
 public class CraftingHelper
 {
 
+	static boolean validateRecipes = false;
+
 	public static void addShapedOreRecipe(ItemStack outputItemStack, Object... objectInputs)
 	{
-		Validate.notNull(outputItemStack);
-		Validate.notNull(outputItemStack.getItem());
-		if(objectInputs.length == 0){
-			Validate.notNull(null); //Quick way to crash
-		}
 		ShapedOreRecipe recipe = new ShapedOreRecipe(outputItemStack, objectInputs);
-		if(recipe.getInput().length == 0){
-			Validate.notNull(null);
+		if(validateRecipes){
+			Validate.notNull(outputItemStack);
+			Validate.notNull(outputItemStack.getItem());
+			if(objectInputs.length == 0){
+				Validate.notNull(null); //Quick way to crash
+			}
+			if(recipe.getInput().length == 0){
+				Validate.notNull(null);
+			}
 		}
 		CraftingManager.getInstance().getRecipeList().add(recipe);
 	}
 
 	public static void addShapelessOreRecipe(ItemStack outputItemStack, Object... objectInputs)
 	{
-		Validate.notNull(outputItemStack);
-		Validate.notNull(outputItemStack.getItem());
-		if(objectInputs.length == 0){
-			Validate.notNull(null); //Quick way to crash
+		if(validateRecipes){
+			Validate.notNull(outputItemStack);
+			Validate.notNull(outputItemStack.getItem());
+			if(objectInputs.length == 0){
+				Validate.notNull(null); //Quick way to crash
+			}
 		}
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(outputItemStack, objectInputs));
 	}
 
 	public static void addShapelessRecipe(ItemStack output, Object... params){
-		Validate.notNull(output);
-		Validate.notNull(output.getItem());
-		if(params.length == 0){
-			Validate.notNull(null); //Quick way to crash
-		}
-		for(Object obj : params){
-			if(obj instanceof ItemStack){
-				ItemStack stack = (ItemStack) obj;
-				Validate.notNull(stack);
-				Validate.notNull(stack.getItem());
+		if(validateRecipes){
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+			if(params.length == 0){
+				Validate.notNull(null); //Quick way to crash
+			}
+			for(Object obj : params){
+				if(obj instanceof ItemStack){
+					ItemStack stack = (ItemStack) obj;
+					Validate.notNull(stack);
+					Validate.notNull(stack.getItem());
+				}
 			}
 		}
 		GameRegistry.addShapelessRecipe(output, params);
 	}
 
 	public static IRecipe addShapedRecipe(ItemStack output, Object... params){
-		Validate.notNull(output);
-		Validate.notNull(output.getItem());
-		if(params.length == 0){
-			Validate.notNull(null); //Quick way to crash
-		}
-		for(Object obj : params){
-			if(obj instanceof ItemStack){
-				ItemStack stack = (ItemStack) obj;
-				Validate.notNull(stack);
-				Validate.notNull(stack.getItem());
+		if(validateRecipes){
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+			if(params.length == 0){
+				Validate.notNull(null); //Quick way to crash
+			}
+			for(Object obj : params){
+				if(obj instanceof ItemStack){
+					ItemStack stack = (ItemStack) obj;
+					Validate.notNull(stack);
+					Validate.notNull(stack.getItem());
+				}
 			}
 		}
 		return GameRegistry.addShapedRecipe(output, params);
@@ -72,26 +82,32 @@ public class CraftingHelper
 
 	public static void addSmelting(Block input, ItemStack output, float xp)
 	{
-		Validate.notNull(input);
-		Validate.notNull(output);
-		Validate.notNull(output.getItem());
+		if(validateRecipes){
+			Validate.notNull(input);
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+		}
 		GameRegistry.addSmelting(input, output, xp);
 	}
 
 	public static void addSmelting(Item input, ItemStack output, float xp)
 	{
-		Validate.notNull(input);
-		Validate.notNull(output);
-		Validate.notNull(output.getItem());
+		if(validateRecipes){
+			Validate.notNull(input);
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+		}
 		GameRegistry.addSmelting(input, output, xp);
 	}
 
 	public static void addSmelting(ItemStack input, ItemStack output, float xp)
 	{
-		Validate.notNull(input);
-		Validate.notNull(input.getItem());
-		Validate.notNull(output);
-		Validate.notNull(output.getItem());
+		if(validateRecipes){
+			Validate.notNull(input);
+			Validate.notNull(input.getItem());
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+		}
 		GameRegistry.addSmelting(input, output, xp);
 	}
 }
