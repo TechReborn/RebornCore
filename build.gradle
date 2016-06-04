@@ -48,6 +48,10 @@ repositories {
     maven {
         url 'http://maven.epoxide.xyz'
     }
+    maven {
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
 }
 
 configurations {
@@ -77,6 +81,7 @@ dependencies {
     shade 'JSON-Destroyer:Json-Destroyer-1.9.4:2.2.1:dev'
     shade 'org.hjson:hjson:1.1.4'
     compile "net.darkhax.tesla:Tesla:1.9.4-1.1.0.24:deobf"
+    shade 'net.industrial-craft:industrialcraft-2:2.5.1-ex19:api'
 }
 
 processResources
@@ -100,6 +105,7 @@ task deobfJar(type: Jar) {
         from(project.zipTree(dep)) {
             include 'me/modmuss50/jsonDestroyer/'
             include 'org/hjson/'
+            include 'ic2/api/'
         }
     }
 }

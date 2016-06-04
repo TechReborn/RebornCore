@@ -3,6 +3,7 @@ package reborncore.common;
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IPowerConfig;
 
 /**
@@ -61,11 +62,9 @@ public class RebornCoreConfig
 
 		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla").getBoolean();
 
-		// enableEU = config
-		// .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow
-		// machines to be powered with EU")
-		// .getBoolean();
-		enableEU = true;
+		 enableEU = config
+		 .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
+		 .getBoolean();
 
 		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
 
