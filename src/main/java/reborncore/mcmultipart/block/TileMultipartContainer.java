@@ -133,7 +133,7 @@ public class TileMultipartContainer extends TileEntity implements IMultipartCont
 
         if (getWorld() != null && part instanceof ITickable && !(this instanceof ITickable)) {
             getWorld().setBlockState(getPos(),
-                    MCMultiPartMod.multipart.getDefaultState().withProperty(BlockMultipartContainer.PROPERTY_TICKING, true));
+                    MCMultiPartMod.multipart.getDefaultState());
             TileEntity te = getWorld().getTileEntity(getPos());
             if (te != null && te instanceof TileMultipartContainer) {
                 ((TileMultipartContainer) te).container = container;
@@ -162,7 +162,7 @@ public class TileMultipartContainer extends TileEntity implements IMultipartCont
             }
             if (!shouldTick) {
                 getWorld().setBlockState(getPos(),
-                        MCMultiPartMod.multipart.getDefaultState().withProperty(BlockMultipartContainer.PROPERTY_TICKING, false));
+                        MCMultiPartMod.multipart.getDefaultState());
                 TileEntity te = getWorld().getTileEntity(getPos());
                 if (te != null && te instanceof TileMultipartContainer) {
                     ((TileMultipartContainer) te).container = container;

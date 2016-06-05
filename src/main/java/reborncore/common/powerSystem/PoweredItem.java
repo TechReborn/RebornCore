@@ -2,6 +2,7 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.powerSystem.traits.BasePowerTrait;
 import reborncore.common.powerSystem.traits.EUItemPowerTrait;
@@ -13,8 +14,12 @@ public abstract class PoweredItem
 
 	public static Item createItem(Class itemClass) throws IllegalAccessException, InstantiationException
 	{
+		if(Loader.isModLoaded("IC2")){
+			return (Item) MixinFactory
+					.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class, EUItemPowerTrait.class).newInstance();
+		}
 		return (Item) MixinFactory
-				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class, EUItemPowerTrait.class).newInstance();
+				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class).newInstance();
 	}
 
 	public static boolean canUseEnergy(double energy, ItemStack stack)

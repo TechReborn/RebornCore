@@ -46,6 +46,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     protected boolean addedToEnet;
 
     @Override
+    @Optional.Method(modid = "IC2")
     public void update() {
         super.update();
         if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
@@ -54,6 +55,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
         onLoaded();
     }
 
+    @Optional.Method(modid = "IC2")
     public void onLoaded() {
         if (getPowerConfig().eu() && !addedToEnet &&
                 !FMLCommonHandler.instance().getEffectiveSide().isClient() &&
@@ -71,6 +73,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public void onChunkUnload() {
         super.onChunkUnload();
         if (getPowerConfig().eu()) {
@@ -83,6 +86,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public double getDemandedEnergy() {
         if (!RebornCoreConfig.getRebornPower().eu())
             return 0;
@@ -90,17 +94,20 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public int getSinkTier() {
         return tier;
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
         setEnergy(getEnergy() + amount);
         return 0;
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public boolean acceptsEnergyFrom(IEnergyEmitter iEnergyEmitter, EnumFacing enumFacing) {
         if (!RebornCoreConfig.getRebornPower().eu())
             return false;
@@ -108,6 +115,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public boolean emitsEnergyTo(IEnergyAcceptor iEnergyAcceptor, EnumFacing enumFacing) {
         if (!RebornCoreConfig.getRebornPower().eu())
             return false;
@@ -115,6 +123,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public double getOfferedEnergy() {
         if (!RebornCoreConfig.getRebornPower().eu())
             return 0;
@@ -122,11 +131,13 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public void drawEnergy(double amount) {
         useEnergy((int) amount);
     }
 
     @Override
+    @Optional.Method(modid = "IC2")
     public int getSourceTier() {
         return tier;
     }

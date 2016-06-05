@@ -71,7 +71,6 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
 
         super(Material.GROUND);
         MinecraftForge.EVENT_BUS.register(this);
-        setDefaultState(getDefaultState().withProperty(PROPERTY_TICKING, true));
     }
 
     private TileMultipartContainer getMultipartTile(IBlockAccess world, BlockPos pos) {
@@ -386,12 +385,10 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
 
         return false;
     }
-
-    public static final IProperty<Boolean> PROPERTY_TICKING = PropertyBool.create("ticking");
     public static final IUnlistedProperty<List<PartState>> PROPERTY_MULTIPART_CONTAINER = new PropertyMultipartStates(
             "multipart_container");
 
-    static final IProperty<?>[] PROPERTIES = new IProperty[] { PROPERTY_TICKING };
+    static final IProperty<?>[] PROPERTIES = new IProperty[] { };
     static final IUnlistedProperty<?>[] UNLISTED_PROPERTIES = new IUnlistedProperty[] { PROPERTY_MULTIPART_CONTAINER };
 
     @Override
@@ -404,14 +401,13 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
 
     @Override
     public int getMetaFromState(IBlockState state) {
-
-        return state.getValue(PROPERTY_TICKING) ? 0 : 1;
+        return 0;
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
 
-        return getDefaultState().withProperty(PROPERTY_TICKING, meta == 0);
+        return getDefaultState();
     }
 
     @Override
