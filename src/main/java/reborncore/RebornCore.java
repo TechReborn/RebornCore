@@ -1,6 +1,7 @@
 package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -13,6 +14,7 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
+import reborncore.common.util.inventory.InventoryCapabilityAttacher;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
@@ -56,6 +58,7 @@ public class RebornCore implements IModInfo
 		OreUtil.scanForOres();
 
 		RebornCoreShields.init();
+		MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 
 		proxy.init(event);
 	}

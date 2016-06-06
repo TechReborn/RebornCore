@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.Constants;
 public class Inventory implements IInventory
 {
 
-	private final ItemStack[] contents;
+	public final ItemStack[] contents;
 	private final String name;
 	private final int stackLimit;
 	private TileEntity tile;
