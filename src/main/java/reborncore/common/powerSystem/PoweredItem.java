@@ -22,6 +22,16 @@ public abstract class PoweredItem
 				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class).newInstance();
 	}
 
+	public static Item createItem(Class itemClass, boolean ic2) throws IllegalAccessException, InstantiationException
+	{
+		if(ic2){
+			return (Item) MixinFactory
+					.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class, EUItemPowerTrait.class).newInstance();
+		}
+		return (Item) MixinFactory
+				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class).newInstance();
+	}
+
 	public static boolean canUseEnergy(double energy, ItemStack stack)
 	{
 		if (stack.getItem() instanceof IEnergyInterfaceItem)

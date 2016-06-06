@@ -16,7 +16,7 @@ public class ShieldHooks {
         if (itemIn.getClass().getCanonicalName().equals(ItemShield.class.getCanonicalName())) {
             FMLLog.log("RebornCore", Level.INFO, String.valueOf("Replacing the vanilla shield!"));
             try {
-                itemIn = PoweredItem.createItem(CustomShield.class);
+                itemIn = PoweredItem.createItem(CustomShield.class, false);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 itemIn = new CustomShield();
