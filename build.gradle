@@ -141,8 +141,10 @@ artifacts {
 }
 
 modsIO {
+    if (project.hasProperty('modsioTRKey'))
+    {
         key = project.getProperty('modsioTRKey')
-
+    }
         project {
             artifact = jar.archivePath
             modid = "1181"
