@@ -1,10 +1,9 @@
-package reborncore.client.gui;
+package reborncore.client.gui.slots;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotFilteredVoid extends BaseSlot
