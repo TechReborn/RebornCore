@@ -26,6 +26,9 @@ public class InventoryCapabilityProvider implements ICapabilityProvider {
         this.inventory = inventory;
         if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY != null)
         {
+            if(inventory == null){
+                return;
+            }
             handler = new InventoryStackHandler(inventory);
         }
     }
