@@ -119,10 +119,6 @@ jar {
             include 'org/hjson/'
         }
     }
-    manifest {
-        attributes 'FMLCorePlugin': 'reborncore.asm.RebornASM'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
 }
 
 task apiJar(type: Jar) {
