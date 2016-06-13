@@ -19,10 +19,10 @@ public class InventoryCapabilityAttacher {
 
     @SubscribeEvent
     public void onTELoad(AttachCapabilitiesEvent.TileEntity entity){
-        TileEntity tileEntity = entity.getTileEntity();
-        if(tileEntity instanceof IInventoryProvider){
-            entity.addCapability(new ResourceLocation("reborncore:invhax"), new InventoryCapabilityProvider(tileEntity, ((IInventoryProvider) tileEntity).getInventory()));
-        }
+//        TileEntity tileEntity = entity.getTileEntity();
+//        if(tileEntity instanceof IInventoryProvider){
+//            entity.addCapability(new ResourceLocation("reborncore:invhax"), new InventoryCapabilityProvider(tileEntity, ((IInventoryProvider) tileEntity).getInventory()));
+//        }
     }
 
 }
