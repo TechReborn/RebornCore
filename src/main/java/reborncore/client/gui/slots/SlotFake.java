@@ -1,7 +1,6 @@
-package reborncore.client.gui;
+package reborncore.client.gui.slots;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotFake extends BaseSlot

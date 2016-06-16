@@ -24,167 +24,166 @@ import java.util.List;
 /**
  * Created by Mark on 21/03/2016.
  */
-//@Deprecated
-//public class CustomShield extends ItemShield implements IEnergyItemInfo {
-//
-//    public CustomShield() {
-//        super();
-//        setHasSubtypes(true);
-//        setUnlocalizedName("shield");
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    public ResourceLocation getShieldTexture(ItemStack stack) {
-//        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
-//            return BannerTextures.SHIELD_BASE_TEXTURE;
-//        } else {
-//            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-//            for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
-//                if (user.username.equalsIgnoreCase(str)) {
-//                    return new ResourceLocation("LOOKUP:" + str);
-//                }
-//            }
-//            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
-//                return ShieldRegistry.shieldTextureHashMap.get(ShieldRegistry.shieldHashMap.get(str));
-//            }
-//            return new ResourceLocation("null");
-//        }
-//    }
-//
-//    @Override
-//    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-//        ItemStack newStack = new ItemStack(this);
-//        subItems.add(newStack); // adds vanilla
-//        for (Shield shield : ShieldRegistry.shieldList) {
-//            if (shield.showInItemLists()) {
-//                List<ItemStack> list = new ArrayList<>();
-//                shield.getSubTypes(shield, tab, list);
-//                subItems.addAll(list);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-//        super.addInformation(stack, playerIn, tooltip, advanced);
-//        if (!ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
-//            tooltip.add(TextFormatting.BLUE + "Type: " + TextFormatting.GREEN
-//                    + ItemNBTHelper.getString(stack, "type", "Vanilla"));
-//        }
-//    }
-//
-//    @Override
-//    public String getUnlocalizedName(ItemStack stack) {
-//        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
-//            return super.getUnlocalizedName(stack);
-//        } else {
-//            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-//            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
-//                return "shield." + ShieldRegistry.shieldHashMap.get(str).name + ".name";
-//            }
-//        }
-//        return super.getUnlocalizedName(stack);
-//    }
-//
-//    public
-//    @Nullable
-//    Shield getShieldFromStack(ItemStack stack) {
-//        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
-//            return null;
-//        } else {
-//            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
-//            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
-//                return ShieldRegistry.shieldHashMap.get(str);
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public
-//    @Nullable
-//    IEnergyItemInfo getEnergyInfoFromShield(ItemStack stack) {
-//        Shield shield = getShieldFromStack(stack);
-//        if (shield != null) {
-//            if (shield instanceof IEnergyItemInfo) {
-//                return (IEnergyItemInfo) shield;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public IEnergyItemInfo getSafeEnergyFromShield(ItemStack stack) {
-//        IEnergyItemInfo energyItemInfo = getEnergyInfoFromShield(stack);
-//        if (energyItemInfo == null) {
-//            return new IEnergyItemInfo() {
-//                @Override
-//                public double getMaxPower(ItemStack stack) {
-//                    return 0;
-//                }
-//
-//                @Override
-//                public boolean canAcceptEnergy(ItemStack stack) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean canProvideEnergy(ItemStack stack) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public double getMaxTransfer(ItemStack stack) {
-//                    return 0;
-//                }
-//
-//                @Override
-//                public int getStackTier(ItemStack stack) {
-//                    return 0;
-//                }
-//            };
-//        }
-//        return energyItemInfo;
-//    }
-//
-//    @Override
-//    public double getMaxPower(ItemStack stack) {
-//        return getSafeEnergyFromShield(stack).getMaxPower(stack);
-//    }
-//
-//    @Override
-//    public boolean canAcceptEnergy(ItemStack stack) {
-//        return getSafeEnergyFromShield(stack).canAcceptEnergy(stack);
-//    }
-//
-//    @Override
-//    public boolean canProvideEnergy(ItemStack stack) {
-//        return getSafeEnergyFromShield(stack).canProvideEnergy(stack);
-//    }
-//
-//    @Override
-//    public double getMaxTransfer(ItemStack stack) {
-//        return getSafeEnergyFromShield(stack).getMaxTransfer(stack);
-//    }
-//
-//    @Override
-//    public int getStackTier(ItemStack stack) {
-//        return getSafeEnergyFromShield(stack).getStackTier(stack);
-//    }
-//
-//    @Override
-//    public boolean showDurabilityBar(ItemStack stack) {
-//        Shield shield = getShieldFromStack(stack);
-//        if (shield != null) {
-//            return shield.showDurabilityBar(stack);
-//        }
-//        return super.showDurabilityBar(stack);
-//    }
-//
-//    @Override
-//    public double getDurabilityForDisplay(ItemStack stack) {
-//        Shield shield = getShieldFromStack(stack);
-//        if (shield != null) {
-//            return shield.getDurabilityForDisplay(stack);
-//        }
-//        return super.getDurabilityForDisplay(stack);
-//    }
-//}
+public class CustomShield extends ItemShield implements IEnergyItemInfo {
+
+    public CustomShield() {
+        super();
+        setHasSubtypes(true);
+        setUnlocalizedName("shield");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public ResourceLocation getShieldTexture(ItemStack stack) {
+        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
+            return BannerTextures.SHIELD_BASE_TEXTURE;
+        } else {
+            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
+            for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
+                if (user.username.equalsIgnoreCase(str)) {
+                    return new ResourceLocation("LOOKUP:" + str);
+                }
+            }
+            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
+                return ShieldRegistry.shieldTextureHashMap.get(ShieldRegistry.shieldHashMap.get(str));
+            }
+            return new ResourceLocation("null");
+        }
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        ItemStack newStack = new ItemStack(this);
+        subItems.add(newStack); // adds vanilla
+        for (Shield shield : ShieldRegistry.shieldList) {
+            if (shield.showInItemLists()) {
+                List<ItemStack> list = new ArrayList<>();
+                shield.getSubTypes(shield, tab, list);
+                subItems.addAll(list);
+            }
+        }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        if (!ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
+            tooltip.add(TextFormatting.BLUE + "Type: " + TextFormatting.GREEN
+                    + ItemNBTHelper.getString(stack, "type", "Vanilla"));
+        }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
+            return super.getUnlocalizedName(stack);
+        } else {
+            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
+            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
+                return "shield." + ShieldRegistry.shieldHashMap.get(str).name + ".name";
+            }
+        }
+        return super.getUnlocalizedName(stack);
+    }
+
+    public
+    @Nullable
+    Shield getShieldFromStack(ItemStack stack) {
+        if (ItemNBTHelper.getBoolean(stack, "vanilla", true)) {
+            return null;
+        } else {
+            String str = ItemNBTHelper.getString(stack, "type", "vanilla");
+            if (ShieldRegistry.shieldHashMap.containsKey(str)) {
+                return ShieldRegistry.shieldHashMap.get(str);
+            }
+        }
+        return null;
+    }
+
+    public
+    @Nullable
+    IEnergyItemInfo getEnergyInfoFromShield(ItemStack stack) {
+        Shield shield = getShieldFromStack(stack);
+        if (shield != null) {
+            if (shield instanceof IEnergyItemInfo) {
+                return (IEnergyItemInfo) shield;
+            }
+        }
+        return null;
+    }
+
+    public IEnergyItemInfo getSafeEnergyFromShield(ItemStack stack) {
+        IEnergyItemInfo energyItemInfo = getEnergyInfoFromShield(stack);
+        if (energyItemInfo == null) {
+            return new IEnergyItemInfo() {
+                @Override
+                public double getMaxPower(ItemStack stack) {
+                    return 0;
+                }
+
+                @Override
+                public boolean canAcceptEnergy(ItemStack stack) {
+                    return false;
+                }
+
+                @Override
+                public boolean canProvideEnergy(ItemStack stack) {
+                    return false;
+                }
+
+                @Override
+                public double getMaxTransfer(ItemStack stack) {
+                    return 0;
+                }
+
+                @Override
+                public int getStackTier(ItemStack stack) {
+                    return 0;
+                }
+            };
+        }
+        return energyItemInfo;
+    }
+
+    @Override
+    public double getMaxPower(ItemStack stack) {
+        return getSafeEnergyFromShield(stack).getMaxPower(stack);
+    }
+
+    @Override
+    public boolean canAcceptEnergy(ItemStack stack) {
+        return getSafeEnergyFromShield(stack).canAcceptEnergy(stack);
+    }
+
+    @Override
+    public boolean canProvideEnergy(ItemStack stack) {
+        return getSafeEnergyFromShield(stack).canProvideEnergy(stack);
+    }
+
+    @Override
+    public double getMaxTransfer(ItemStack stack) {
+        return getSafeEnergyFromShield(stack).getMaxTransfer(stack);
+    }
+
+    @Override
+    public int getStackTier(ItemStack stack) {
+        return getSafeEnergyFromShield(stack).getStackTier(stack);
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        Shield shield = getShieldFromStack(stack);
+        if (shield != null) {
+            return shield.showDurabilityBar(stack);
+        }
+        return super.showDurabilityBar(stack);
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        Shield shield = getShieldFromStack(stack);
+        if (shield != null) {
+            return shield.getDurabilityForDisplay(stack);
+        }
+        return super.getDurabilityForDisplay(stack);
+    }
+}

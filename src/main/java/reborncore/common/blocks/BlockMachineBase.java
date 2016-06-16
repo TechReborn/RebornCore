@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 
-public abstract class 	BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock
+public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock
 {
 
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -75,7 +75,8 @@ public abstract class 	BlockMachineBase extends BaseTileBlock implements IFakeTe
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{
-		return new TileMachineBase();
+		//return new TileEnergyMachine();
+		return null;
 	}
 
 	@Deprecated

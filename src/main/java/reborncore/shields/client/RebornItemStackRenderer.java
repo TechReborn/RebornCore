@@ -10,9 +10,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
-import reborncore.common.util.ItemNBTHelper;
-import reborncore.shields.json.ShieldJsonLoader;
-import reborncore.shields.json.ShieldUser;
+import reborncore.shields.CustomShield;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -40,49 +38,47 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
     @Override
     public void renderByItem(ItemStack itemStackIn) {
         if (itemStackIn.getItem() == Items.SHIELD) {
-            boolean isCustom = !ItemNBTHelper.getBoolean(itemStackIn, "vanilla", false);
-             if (isCustom) {
-                ResourceLocation location = null;
-                String str = ItemNBTHelper.getString(itemStackIn, "type", "vanilla");
-                for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
-                    if (user.username.equalsIgnoreCase(str)) {
-                        location = new ResourceLocation("LOOKUP:" + str);
-                    }
-                }
-                 if(location == null){
-                     renderer.renderByItem(itemStackIn);
-                     return;
-                 }
-                ShieldTexture shieldTexture = ShieldTextureStore.getTexture(location);
-                if (shieldTexture != null) {
-                    if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
-                        if (customTextureMap.containsKey(location.getResourcePath())) {
-                            Minecraft.getMinecraft().getTextureManager().bindTexture(location);
+            if (Items.SHIELD instanceof CustomShield) {
+                CustomShield sheild = (CustomShield) itemStackIn.getItem();
+                ResourceLocation location = sheild.getShieldTexture(itemStackIn);
+                if (itemStackIn.getSubCompound("BlockEntityTag", false) != null) {
+                    banner.setItemValues(itemStackIn);
+                    Minecraft.getMinecraft().getTextureManager()
+                            .bindTexture(BannerTextures.SHIELD_DESIGNS.getResourceLocation(
+                                    banner.getPatternResourceLocation(), banner.getPatternList(),
+                                    banner.getColorList()));
+                } else if (location.getResourceDomain().equals("lookup")) {
+                    ShieldTexture shieldTexture = ShieldTextureStore.getTexture(location);
+                    if (shieldTexture != null) {
+                        if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
+                            if (customTextureMap.containsKey(location.getResourcePath())) {
+                                Minecraft.getMinecraft().getTextureManager().bindTexture(location);
+                            } else {
+                                AbstractTexture texture = shieldTexture.getTexture();
+                                customTextureMap.put(location.getResourcePath(), texture);
+                                //TODO make this even more threaded to stop the game stalling
+                                THREAD_POOL.submit((Runnable) () -> Minecraft.getMinecraft().addScheduledTask((Runnable) () -> Minecraft.getMinecraft().getTextureManager().loadTexture(location, texture)));
+                                Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
+                            }
                         } else {
-                            AbstractTexture texture = shieldTexture.getTexture();
-                            customTextureMap.put(location.getResourcePath(), texture);
-                            //TODO make this even more threaded to stop the game stalling
-                            final ResourceLocation resourceLocation = location;
-                            THREAD_POOL.submit((Runnable) () -> Minecraft.getMinecraft().addScheduledTask((Runnable) () -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, texture)));
                             Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
                         }
                     } else {
                         Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
                     }
                 } else {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(location);
                 }
+                GlStateManager.pushMatrix();
+                GlStateManager.scale(1.0F, -1.0F, -1.0F);
+                modelShield.render();
+                GlStateManager.popMatrix();
+                return;
             } else {
-                 renderer.renderByItem(itemStackIn);
-                 return;
-             }
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(1.0F, -1.0F, -1.0F);
-            modelShield.render();
-            GlStateManager.popMatrix();
-            return;
+                renderer.renderByItem(itemStackIn);
+            }
+        } else {
+            renderer.renderByItem(itemStackIn);
         }
-        renderer.renderByItem(itemStackIn);
-
     }
 }

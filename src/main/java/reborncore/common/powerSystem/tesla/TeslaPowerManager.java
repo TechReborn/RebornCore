@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.powerSystem.TileEnergyBase;
 
 /**
  * Created by modmuss50 on 06/05/2016.
@@ -16,17 +16,17 @@ public class TeslaPowerManager implements ITeslaPowerManager {
     AdvancedTeslaContainer container;
 
     @Override
-    public void readFromNBT(NBTTagCompound compound, TilePowerAcceptor powerAcceptor) {
+    public void readFromNBT(NBTTagCompound compound, TileEnergyBase powerAcceptor) {
         this.container = new AdvancedTeslaContainer(compound.getTag("TeslaContainer"), powerAcceptor);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound, TilePowerAcceptor powerAcceptor) {
+    public void writeToNBT(NBTTagCompound compound, TileEnergyBase powerAcceptor) {
         compound.setTag("TeslaContainer", this.container.writeNBT());
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing, TileEnergyBase powerAcceptor) {
         if(capability == TeslaCapabilities.CAPABILITY_CONSUMER && powerAcceptor.canAcceptEnergy(facing)){
             this.container.tile = powerAcceptor;
             return (T) this.container;
@@ -42,7 +42,7 @@ public class TeslaPowerManager implements ITeslaPowerManager {
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing, TilePowerAcceptor powerAcceptor) {
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing, TileEnergyBase powerAcceptor) {
         if(capability == TeslaCapabilities.CAPABILITY_CONSUMER && powerAcceptor.canAcceptEnergy(facing)){
             return true;
         } else if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && powerAcceptor.canProvideEnergy(facing)){
@@ -54,14 +54,14 @@ public class TeslaPowerManager implements ITeslaPowerManager {
     }
 
     @Override
-    public void update(TilePowerAcceptor powerAcceptor) {
+    public void update(TileEnergyBase powerAcceptor) {
         if (powerAcceptor.canProvideEnergy(null)) {
             //TeslaUtils.distributePowerEqually(powerAcceptor.getWorld(), powerAcceptor.getPos(), (long) powerAcceptor.getMaxOutput(), false);
         }
     }
 
     @Override
-    public void created(TilePowerAcceptor powerAcceptor) {
+    public void created(TileEnergyBase powerAcceptor) {
         this.container = new AdvancedTeslaContainer(powerAcceptor);
     }
 
