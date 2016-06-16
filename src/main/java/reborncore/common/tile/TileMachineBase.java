@@ -103,6 +103,16 @@ public abstract class TileMachineBase extends TileEnergyBase implements IWrencha
         }
     }
 
+    public boolean isActive()
+    {
+        Block block = worldObj.getBlockState(pos).getBlock();
+        if (block instanceof BlockMachineBase)
+        {
+            return worldObj.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+        }
+        return false;
+    }
+
     @Override
     public boolean wrenchCanRemove(EntityPlayer entityPlayer)
     {
