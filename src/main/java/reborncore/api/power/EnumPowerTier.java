@@ -7,7 +7,9 @@ public enum EnumPowerTier {
 	LOW(32, 32),
 	MEDIUM(128, 128),
 	HIGH(512, 512),
-	EXTREME(2048, 2048);
+	EXTREME(2048, 2048),
+	INSANE(8192, 8192),
+	INFINITE(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
 	private final int maxInput;
 	private final int maxOutput;
