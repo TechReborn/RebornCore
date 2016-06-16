@@ -107,6 +107,16 @@ public class TileMachineBase extends TileEntity implements ITickable, IInventory
 		}
 	}
 
+	public boolean isActive()
+	{
+		Block block = worldObj.getBlockState(pos).getBlock();
+		if (block instanceof BlockMachineBase)
+		{
+			return worldObj.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+		}
+		return false;
+	}
+
 	// This stops the tile from getting cleared when the state is
 	// updated(rotation and on/off)
 	@Override
