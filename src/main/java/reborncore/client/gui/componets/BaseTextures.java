@@ -1,7 +1,6 @@
 package reborncore.client.gui.componets;
 
 import net.minecraft.util.ResourceLocation;
-import reborncore.client.gui.GuiTexture;
 
 public class BaseTextures
 {

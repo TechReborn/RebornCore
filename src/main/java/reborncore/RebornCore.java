@@ -14,7 +14,6 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
-import reborncore.common.util.inventory.InventoryCapabilityAttacher;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
@@ -58,7 +57,7 @@ public class RebornCore implements IModInfo
 		OreUtil.scanForOres();
 
 		RebornCoreShields.init();
-		MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
+		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 
 		proxy.init(event);
 	}

@@ -17,3 +17,4 @@ changelog.txt
 *.log
 .idea/*
 RebornCore.iml
+classes
