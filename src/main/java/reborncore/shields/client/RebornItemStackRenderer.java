@@ -44,6 +44,10 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
              if (isCustom) {
                 ResourceLocation location = null;
                 String str = ItemNBTHelper.getString(itemStackIn, "type", "vanilla");
+                 if(ShieldJsonLoader.shieldJsonFile == null || ShieldJsonLoader.shieldJsonFile.userList == null){
+                     renderer.renderByItem(itemStackIn);
+                     return;
+                 }
                 for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
                     if (user.username.equalsIgnoreCase(str)) {
                         location = new ResourceLocation("LOOKUP:" + str);
