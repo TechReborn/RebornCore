@@ -94,10 +94,6 @@ public class RebornCoreConfig
 					return enableTesla;
 				}
 
-				@Override
-				public boolean internal() {
-					return true;
-				}
 			};
 		}
 		return powerConfig;

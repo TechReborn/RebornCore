@@ -1,27 +1,21 @@
 package reborncore.common.powerSystem;
 
+import net.minecraftforge.fml.common.Loader;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 
 public class PowerSystem
 {
-	public static String getLocaliszedPower(double eu)
-	{
-		return getLocaliszedPower((int) eu);
+	public static String getLocalizedPower(double eu) {
+		return getLocalizedPower((int) eu);
 	}
 
-	public static String getLocaliszedPower(int eu)
-	{
-		if (RebornCoreConfig.getRebornPower().eu())
-		{
+	public static String getLocalizedPower(int eu) {
+		if (RebornCoreConfig.getRebornPower().tesla() && Loader.isModLoaded("Tesla")) {
+			return getRoundedString(eu * RebornCoreConfig.euPerRF, "T");
+		} else if(RebornCoreConfig.getRebornPower().eu()) {
 			return getRoundedString(eu, "EU");
-		} else if (TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
-		{
-			return TeslaManager.manager.getDisplayableTeslaCount(eu);
-		}else
-		{
-			return getRoundedString(eu / RebornCoreConfig.euPerRF, "RF");
 		}
+		return getRoundedString(eu * RebornCoreConfig.euPerRF, "RF");
 	}
 
 	private static String getRoundedString(double euValue, String units)

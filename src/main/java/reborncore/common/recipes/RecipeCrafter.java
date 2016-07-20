@@ -400,8 +400,12 @@ public class RecipeCrafter
 		}
 	}
 
-	public void resetSpeedMulti()
-	{
+	public void resetMulti() {
+		resetPowerMulti();
+		resetSpeedMulti();
+	}
+
+	public void resetSpeedMulti() {
 		speedMultiplier = 0;
 	}
 
@@ -415,8 +419,7 @@ public class RecipeCrafter
 		powerMultiplier += amount;
 	}
 
-	public void resetPowerMulti()
-	{
+	public void resetPowerMulti() {
 		powerMultiplier = 1;
 	}
 
