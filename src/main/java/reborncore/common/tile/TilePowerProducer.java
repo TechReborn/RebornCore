@@ -23,7 +23,7 @@ import reborncore.common.powerSystem.PowerSystem;
 import java.util.List;
 
 /**
- * Skeleton implementation of the TESLA, RF
+ * Skeleton implementation of the TESLA, RF, EU producer
  */
 @Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2")
 public abstract class TilePowerProducer extends TileMachineBase implements
@@ -41,11 +41,17 @@ public abstract class TilePowerProducer extends TileMachineBase implements
     public void update() {
         super.update();
 
+        double canEmit = getEnergy() > getMaxOutput() ? getMaxOutput() : getEnergy();
+        double maxEmit = canEmit;
         for(EnumFacing facing : EnumFacing.VALUES) {
-            if(canProvideEnergy(facing))
-                emitEnergy(facing, useEnergy(getMaxOutput()));
+            if(canProvideEnergy(facing)) {
+                canEmit -= emitEnergy(facing, canEmit);
+                if(canEmit == 0) break;
+            }
         }
-
+        if(maxEmit - canEmit != 0) {
+            useEnergy(maxEmit - canEmit);
+        }
     }
 
     /**
@@ -180,8 +186,12 @@ public abstract class TilePowerProducer extends TileMachineBase implements
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(Loader.isModLoaded("Tesla") && RebornCoreConfig.getRebornPower().tesla()) {
             if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && canProvideEnergy(facing)) {
-                return (T) (ITeslaProducer) (amount, simulated) ->
-                        extractEnergy(facing, (int) amount, simulated);
+                return (T) new ITeslaProducer() {
+                    @Override
+                    public long takePower(long amount, boolean simulated) {
+                        return extractEnergy(facing, (int) amount, simulated);
+                    }
+                };
             }
         }
         return super.getCapability(capability, facing);
