@@ -9,19 +9,28 @@ import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
+import reborncore.api.IListInfoProvider;
 import reborncore.api.power.tile.IEnergyProducerTile;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.PowerSystem;
+
+import java.util.List;
 
 /**
  * Skeleton implementation of the TESLA, RF
  */
 @Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2")
-public abstract class TilePowerProducer extends TileMachineBase implements IEnergyProvider, IEnergySource, IEnergyProducerTile {
+public abstract class TilePowerProducer extends TileMachineBase implements
+        IEnergyProvider,
+        IEnergySource,
+        IEnergyProducerTile,
+        IListInfoProvider {
 
     private double energyStored = 0;
 
@@ -126,6 +135,20 @@ public abstract class TilePowerProducer extends TileMachineBase implements IEner
     }
 
     @Override
+    public void addInfo(List<String> info, boolean isRealTile) {
+        info.add(TextFormatting.LIGHT_PURPLE + "Energy Stored " +
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getEnergy()) + " / " +
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxPower()));
+
+        info.add(TextFormatting.LIGHT_PURPLE + "Max Output " +
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxOutput()));
+
+
+        info.add(TextFormatting.LIGHT_PURPLE + "Tier " +
+                TextFormatting.GREEN + getTier());
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
 
@@ -148,7 +171,7 @@ public abstract class TilePowerProducer extends TileMachineBase implements IEner
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         if(Loader.isModLoaded("Tesla") && RebornCoreConfig.getRebornPower().tesla())
-            if(capability == TeslaCapabilities.CAPABILITY_PRODUCER)
+            if(capability == TeslaCapabilities.CAPABILITY_PRODUCER && canProvideEnergy(facing))
                 return true;
         return super.hasCapability(capability, facing);
     }
@@ -156,7 +179,7 @@ public abstract class TilePowerProducer extends TileMachineBase implements IEner
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(Loader.isModLoaded("Tesla") && RebornCoreConfig.getRebornPower().tesla()) {
-            if (capability == TeslaCapabilities.CAPABILITY_PRODUCER) {
+            if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && canProvideEnergy(facing)) {
                 return (T) (ITeslaProducer) (amount, simulated) ->
                         extractEnergy(facing, (int) amount, simulated);
             }

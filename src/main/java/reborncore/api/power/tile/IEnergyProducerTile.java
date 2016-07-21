@@ -18,7 +18,6 @@ public interface IEnergyProducerTile extends IEnergyInterfaceTile {
      * energy
      *
      * @return the max amount of energy outputted per tick.
-     * @deprecated use {@link IEnergyProducerTile}
      */
     default double getMaxOutput() {
         return getTier().voltage;
