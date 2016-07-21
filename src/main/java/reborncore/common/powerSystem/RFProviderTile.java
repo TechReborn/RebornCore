@@ -17,7 +17,7 @@ import cofh.api.energy.IEnergyReceiver;
  * This is done in a different class so the updateEntity can be striped for ic2
  * and this one will still get called.
  */
-public abstract class RFProviderTile extends TileMachineBase
+@Deprecated public abstract class RFProviderTile extends TileMachineBase
 		implements IEnergyReceiver, IEnergyProvider, IEnergyInterfaceTile
 {
 

@@ -1,29 +1,32 @@
 package reborncore.common.powerSystem;
 
-import java.util.List;
-
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
-import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.IEnergyInterfaceTile;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
-
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 
+import java.util.List;
+
+/**
+ * @see reborncore.common.tile.TilePowerAcceptor
+ * @see reborncore.common.tile.TilePowerProducer
+ *
+ * @deprecated use new {@link reborncore.common.tile.TilePowerAcceptor}
+ */
+
+@Deprecated
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
         @Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
         @Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2")})
@@ -36,9 +39,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 
     public TilePowerAcceptor(int tier) {
         this.tier = tier;
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            TeslaManager.manager.created(this);
-        }
     }
 
     // IC2
@@ -49,9 +49,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     @Optional.Method(modid = "IC2")
     public void update() {
         super.update();
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            TeslaManager.manager.update(this);
-        }
         onLoaded();
     }
 
@@ -246,7 +243,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     public double useEnergy(double extract, boolean simulate) {
         if (extract > energy) {
             double tempEnergy = energy;
-            setEnergy(0);
+            if(!simulate) setEnergy(0);
             return tempEnergy;
         }
         if (!simulate) {
@@ -266,9 +263,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
         super.readFromNBT(tag);
         NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
         energy = data.getDouble("energy");
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            TeslaManager.manager.readFromNBT(tag, this);
-        }
     }
 
     @Override
@@ -277,9 +271,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
         NBTTagCompound data = new NBTTagCompound();
         data.setDouble("energy", energy);
         tag.setTag("TilePowerAcceptor", data);
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            TeslaManager.manager.writeToNBT(tag, this);
-        }
         return tag;
     }
 
@@ -298,14 +289,14 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     @Override
     public void addInfo(List<String> info, boolean isRealTile) {
         info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
-                + PowerSystem.getLocaliszedPower(getMaxPower()));
+                + PowerSystem.getLocalizedPower(getMaxPower()));
         if (getMaxInput() != 0) {
             info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
-                    + PowerSystem.getLocaliszedPower(getMaxInput()));
+                    + PowerSystem.getLocalizedPower(getMaxInput()));
         }
         if (getMaxOutput() != 0) {
             info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
-                    + PowerSystem.getLocaliszedPower(getMaxOutput()));
+                    + PowerSystem.getLocalizedPower(getMaxOutput()));
         }
         info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
         // if(isRealTile){ //TODO sync to client
@@ -350,25 +341,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     }
 
 
-    //Tesla
+    //Tesla moved to new implementation
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            return TeslaManager.manager.hasCapability(capability, facing, this);
-        }
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            return TeslaManager.manager.getCapability(capability, facing, this);
-        }
-        return super.getCapability(capability, facing);
-    }
-
-
-    //End Tesla
 }
