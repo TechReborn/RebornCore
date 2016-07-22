@@ -77,7 +77,6 @@ minecraft {
     mappings = "snapshot_20160518"
     replace "@MODVERSION@", project.version
     runDir = "run"
-    makeObfSourceJar = false
 }
 
 group = 'RebornCore'
