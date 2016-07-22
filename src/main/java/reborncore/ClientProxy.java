@@ -1,6 +1,6 @@
 package reborncore;
 
-import reborncore.corelib.client.render.FluidRenderer;
+import reborncore.bccorelib.client.render.FluidRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

@@ -1,6 +1,6 @@
 package reborncore.common.packets;
 
-import reborncore.corelib.gui.BuildCraftContainer;
+import reborncore.bccorelib.gui.BuildCraftContainer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 
