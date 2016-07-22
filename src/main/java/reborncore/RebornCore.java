@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.packets.PacketGuiWidget;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
@@ -50,7 +51,10 @@ public class RebornCore implements IModInfo
 	{
 		jsonDestroyer.load();
 		// packets
-		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
+
+		PacketHandler packetHandler = new PacketHandler();
+		packetHandler.addDiscriminator(1, PacketGuiWidget.class);
+		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", packetHandler));
 		OreUtil.scanForOres();
 
 		RebornCoreShields.init();
