@@ -1,6 +1,5 @@
 package reborncore;
 
-import reborncore.corelib.client.render.FluidRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -27,7 +26,6 @@ public class ClientProxy extends CommonProxy
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		super.postInit(event);
-		MinecraftForge.EVENT_BUS.register(FluidRenderer.INSTANCE);
 		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
 	}
 
