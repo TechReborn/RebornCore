@@ -16,13 +16,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
-import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.tile.IEnergyProducerTile;
 import reborncore.api.power.tile.IEnergyReceiverTile;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.util.PowerLocalization;
 
 import java.util.List;
 
@@ -179,14 +177,14 @@ public abstract class TilePowerAcceptorProducer extends TileMachineBase implemen
     @Override
     public void addInfo(List<String> info, boolean isRealTile) {
         info.add(TextFormatting.LIGHT_PURPLE + "Energy Stored " +
-                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getEnergy()) + " / " +
-                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxPower()));
+                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getEnergy()) + " / " +
+                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getMaxPower()));
 
         info.add(TextFormatting.LIGHT_PURPLE + "Max Input " +
-                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxInput()));
+                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getMaxInput()));
 
         info.add(TextFormatting.LIGHT_PURPLE + "Max Output " +
-                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxOutput()));
+                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getMaxOutput()));
 
 
         info.add(TextFormatting.LIGHT_PURPLE + "Tier " +

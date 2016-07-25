@@ -10,7 +10,7 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 * @param stack
 	 *            The {@link ItemStack} that contains the power
 	 */
-	public double getEnergy(ItemStack stack);
+    double getEnergy(ItemStack stack);
 
 	/**
 	 * Sets the energy in the tile
@@ -20,7 +20,7 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 * @param stack
 	 *            The {@link ItemStack} that contains the power
 	 */
-	public void setEnergy(double energy, ItemStack stack);
+    void setEnergy(double energy, ItemStack stack);
 
 	/**
 	 * @param energy
@@ -29,7 +29,9 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return will return true if can fit all
 	 */
-	public boolean canAddEnergy(double energy, ItemStack stack);
+	default boolean canAddEnergy(double energy, ItemStack stack) {
+        return getMaxPower(stack) - getEnergy(stack) >= energy;
+    }
 
 	/**
 	 * Will try add add the full amount of energy.
@@ -40,7 +42,9 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return The amount of energy that was added.
 	 */
-	public double addEnergy(double energy, ItemStack stack);
+    default double addEnergy(double energy, ItemStack stack) {
+        return addEnergy(energy, false, stack);
+    }
 
 	/**
 	 * Will try add add the full amount of energy, if simulate is true it wont
@@ -52,7 +56,17 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return The amount of energy that was added.
 	 */
-	public double addEnergy(double energy, boolean simulate, ItemStack stack);
+    default double addEnergy(double energy, boolean simulate, ItemStack stack) {
+        double canStore = getMaxPower(stack) - getEnergy(stack);
+        if(canStore >= energy) {
+            if(!simulate)
+                setEnergy(getEnergy(stack) + energy, stack);
+            return energy;
+        }
+        if(!simulate)
+            setEnergy(getEnergy(stack) + canStore, stack);
+        return canStore;
+    }
 
 	/**
 	 * Returns true if it can use the full amount of energy
@@ -63,7 +77,9 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return if all the energy can be used.
 	 */
-	public boolean canUseEnergy(double energy, ItemStack stack);
+    default boolean canUseEnergy(double energy, ItemStack stack) {
+        return getEnergy(stack) >= energy;
+    }
 
 	/**
 	 * Will try and use the full amount of energy
@@ -74,7 +90,9 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return the amount of energy used
 	 */
-	public double useEnergy(double energy, ItemStack stack);
+	default double useEnergy(double energy, ItemStack stack) {
+        return useEnergy(energy, false, stack);
+    }
 
 	/**
 	 * Will try and use the full amount of energy, if simulate is true it wont
@@ -88,6 +106,16 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo
 	 *            The {@link ItemStack} that contains the power
 	 * @return the amount of energy used
 	 */
-	public double useEnergy(double energy, boolean simulate, ItemStack stack);
+    default double useEnergy(double energy, boolean simulate, ItemStack stack) {
+        double energyStored = getEnergy(stack);
+        if(energyStored >= energy) {
+            if(!simulate)
+                setEnergy(energyStored - energy, stack);
+            return energy;
+        }
+        if(!simulate)
+            setEnergy(0, stack);
+        return energyStored;
+    }
 
 }
