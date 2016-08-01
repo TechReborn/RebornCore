@@ -67,7 +67,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-    version = "1.10.2-12.18.0.2006-1.10.0"
+    version = "1.10.2-12.18.1.2044"
 	if(ENV.JOB_BASE_NAME == "RebornCore-1.10"){
 	version = "1.10-12.18.0.1992-1.10.0"
 	}
