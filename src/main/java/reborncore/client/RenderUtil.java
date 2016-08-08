@@ -78,7 +78,7 @@ public class RenderUtil
         int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        crystekteam.crystek.util.RenderUtil.bindBlockTexture();
+        RenderUtil.bindBlockTexture();
         int color = fluid.getFluid().getColor(fluid);
         GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
 
