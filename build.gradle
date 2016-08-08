@@ -145,7 +145,6 @@ modsIO {
             artifact = jar.archivePath
             modid = "1181"
             minecraft = "1.10.2"
-            }
             changelog = "See github at : https://github.com/TechReborn/TechReborn"
             tag = "alpha"
             current = true
