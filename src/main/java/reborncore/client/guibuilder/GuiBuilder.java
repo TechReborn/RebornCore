@@ -91,7 +91,7 @@ public class GuiBuilder
     {
         gui.mc.getTextureManager().bindTexture(resourceLocation);
         gui.drawTexturedModalRect(x, y, 150, 18, 22, 15);
-        int j = (int) (progress * 22D);
+        int j = (int) (progress);
         if (j > 0)
         {
             gui.drawTexturedModalRect(x, y, 150, 34, j + 1, 15);
