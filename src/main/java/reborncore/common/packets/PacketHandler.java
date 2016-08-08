@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
+@Deprecated
 public class PacketHandler extends FMLIndexedMessageToMessageCodec<SimplePacket>
 {
 	private static EnumMap<Side, FMLEmbeddedChannel> channels;

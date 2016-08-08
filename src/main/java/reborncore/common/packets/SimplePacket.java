@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
 
+@Deprecated
 public abstract class SimplePacket
 {
 	protected EntityPlayer player;

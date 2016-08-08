@@ -2,6 +2,7 @@ package reborncore.common.packets;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+@Deprecated
 public class AddDiscriminatorEvent extends Event
 {
 
