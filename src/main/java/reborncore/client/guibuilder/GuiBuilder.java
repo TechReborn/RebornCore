@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidTank;
+import reborncore.client.RenderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,25 @@ public class GuiBuilder
         if (j > 0)
         {
             gui.drawTexturedModalRect(x, y, 150, 34, j + 1, 15);
+        }
+    }
+
+    public void drawTank(GuiScreen gui, FluidTank tank, int x, int y, float zLevel, int width, int height, int mouseX, int mouseY)
+    {
+        RenderUtil.renderGuiTank(tank, x, y, zLevel, width, height);
+        if (isInRect(x, y, 14, height, mouseX, mouseY))
+        {
+            List<String> list = new ArrayList<String>();
+            if(tank.getFluid() != null)
+            {
+                list.add(tank.getFluidAmount() + " / " + tank.getCapacity() + " " + tank.getFluid().getLocalizedName());
+            }
+            else
+            {
+                list.add("empty");
+            }
+            net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRendererObj);
+            GlStateManager.disableLighting();
         }
     }
 }
