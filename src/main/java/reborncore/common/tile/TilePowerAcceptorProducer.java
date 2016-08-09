@@ -7,7 +7,6 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.tile.IEnergyStorage;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.nbt.NBTTagCompound;
@@ -252,19 +251,11 @@ public abstract class TilePowerAcceptorProducer extends TileMachineBase implemen
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(Loader.isModLoaded("Tesla") && RebornCoreConfig.getRebornPower().tesla()) {
             if (capability == TeslaCapabilities.CAPABILITY_PRODUCER && canProvideEnergy(facing)) {
-                return (T) new ITeslaProducer() {
-                    @Override
-                    public long takePower(long amount, boolean simulated) {
-                        return extractEnergy(facing, (int) amount, simulated);
-                    }
-                };
+                return (T) (ITeslaProducer) (amount, simulated) ->
+                        extractEnergy(facing, (int) amount, simulated);
             } else if(capability == TeslaCapabilities.CAPABILITY_CONSUMER && canAcceptEnergy(facing)) {
-                return (T) new ITeslaConsumer() {
-                    @Override
-                    public long givePower(long amount, boolean simulated) {
-                        return receiveEnergy(facing, (int) amount, simulated);
-                    }
-                };
+                return (T) (ITeslaProducer) (amount, simulated) ->
+                        receiveEnergy(facing, (int) amount, simulated);
             }
         }
         return super.getCapability(capability, facing);

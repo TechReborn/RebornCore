@@ -158,12 +158,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(Loader.isModLoaded("Tesla") && RebornCoreConfig.getRebornPower().tesla()) {
             if (capability == TeslaCapabilities.CAPABILITY_CONSUMER && canAcceptEnergy(facing)) {
-                return (T) new ITeslaConsumer() {
-                    @Override
-                    public long givePower(long amount, boolean simulated) {
-                        return receiveEnergy(facing, (int) amount, simulated);
-                    }
-                };
+                return (T) (ITeslaConsumer) (amount, simulated) ->
+                        receiveEnergy(facing, (int) amount, simulated);
             }
         }
         return super.getCapability(capability, facing);
