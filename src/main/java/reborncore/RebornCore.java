@@ -11,11 +11,14 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.packets.PacketHandler;
+import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
 import reborncore.common.util.inventory.InventoryCapabilityAttacher;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
+
+import java.io.IOException;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.9.4]")
 public class RebornCore implements IModInfo
@@ -49,6 +52,7 @@ public class RebornCore implements IModInfo
 	public void init(FMLInitializationEvent event)
 	{
 		jsonDestroyer.load();
+		TeslaManager.load();
 		// packets
 		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
 		OreUtil.scanForOres();

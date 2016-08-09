@@ -8,4 +8,6 @@ public interface IPowerConfig {
 
     boolean tesla();
 
+    boolean internal();
+
 }
