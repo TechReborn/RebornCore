@@ -1,9 +1,9 @@
-package reborncore.common.util;
+package reborncore.common.powerSystem;
 
 import net.minecraftforge.fml.common.Loader;
 import reborncore.common.RebornCoreConfig;
 
-public class PowerLocalization
+public class PowerSystem
 {
 	public static String getLocalizedPower(double eu) {
 		return getLocalizedPower((int) eu);

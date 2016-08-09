@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.tile.IEnergyReceiverTile;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.util.PowerLocalization;
+import reborncore.common.powerSystem.PowerSystem;
 
 import java.util.List;
 
@@ -126,11 +126,11 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
     @Override
     public void addInfo(List<String> info, boolean isRealTile) {
         info.add(TextFormatting.LIGHT_PURPLE + "Energy Stored " +
-                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getEnergy()) + " / " +
-                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getMaxPower()));
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getEnergy()) + " / " +
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxPower()));
 
         info.add(TextFormatting.LIGHT_PURPLE + "Max Input " +
-                TextFormatting.GREEN + PowerLocalization.getLocalizedPower(getMaxInput()));
+                TextFormatting.GREEN + PowerSystem.getLocalizedPower(getMaxInput()));
 
         info.add(TextFormatting.LIGHT_PURPLE + "Tier " +
                 TextFormatting.GREEN + getTier());

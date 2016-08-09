@@ -5,7 +5,7 @@ package reborncore.api.power;
  */
 public enum EnumPowerTier {
 
-	LOW(1, 32), MEDIUM(2, 128), HIGH(3, 512), EXTREME(4, 2048), INSANE(Integer.MAX_VALUE, 8192);
+	LOW(0, 32), MEDIUM(1, 128), HIGH(2, 512), EXTREME(3, 2048), INSANE(Integer.MAX_VALUE, 8192);
 
 	public final int ic2SinkTier;
 	public final int voltage;
