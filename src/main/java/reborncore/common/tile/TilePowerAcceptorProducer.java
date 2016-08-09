@@ -33,7 +33,7 @@ import java.util.List;
 public abstract class TilePowerAcceptorProducer extends TileMachineBase implements
         IEnergyProducerTile, IEnergyReceiverTile,
         IEnergySource, IEnergySink, IEnergyStorage,
-        IEnergyReceiver, IEnergyProvider,
+        IEnergyReceiver, IEnergyProvider, cofh.api.energy.IEnergyStorage,
         IListInfoProvider {
 
     private double energyStored = 0;
@@ -133,28 +133,52 @@ public abstract class TilePowerAcceptorProducer extends TileMachineBase implemen
 
     @Override
     public int getEnergyStored(EnumFacing from) {
-        return (int) (getEnergy() * RebornCoreConfig.euPerRF);
+        return getEnergyStored();
     }
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) (getMaxPower() * RebornCoreConfig.euPerRF);
+        return getMaxEnergyStored();
     }
 
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        if(canProvideEnergy(from) && RebornCoreConfig.getRebornPower().rf()) {
+        if(canProvideEnergy(from))
+            return extractEnergy(maxExtract, simulate);
+        return 0;
+    }
+
+    @Override
+    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+        if(canAcceptEnergy(from))
+            return receiveEnergy(maxReceive, simulate);
+        return 0;
+    }
+
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        if(RebornCoreConfig.getRebornPower().rf()) {
+            return (int) (useEnergy(maxReceive / (RebornCoreConfig.euPerRF * 1F), simulate) * RebornCoreConfig.euPerRF);
+        }
+        return 0;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        if(RebornCoreConfig.getRebornPower().rf()) {
             return (int) (useEnergy(maxExtract / (RebornCoreConfig.euPerRF * 1F), simulate) * RebornCoreConfig.euPerRF);
         }
         return 0;
     }
 
     @Override
-    public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        if(canAcceptEnergy(from) && RebornCoreConfig.getRebornPower().rf()) {
-            return (int) (useEnergy(maxReceive / (RebornCoreConfig.euPerRF * 1F), simulate) * RebornCoreConfig.euPerRF);
-        }
-        return 0;
+    public int getEnergyStored() {
+        return (int) (RebornCoreConfig.euPerRF * getEnergy());
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        return (int) (RebornCoreConfig.euPerRF * getMaxPower());
     }
 
     @Override
