@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
+import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
@@ -59,6 +60,7 @@ public class RebornCore implements IModInfo
 
 		RebornCoreShields.init();
 		MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
+		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 
 		proxy.init(event);
 	}
