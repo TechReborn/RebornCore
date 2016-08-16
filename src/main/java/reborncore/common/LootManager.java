@@ -33,7 +33,7 @@ public class LootManager
 
         if (evt.getName().equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
         {
-            lp.addItem(createLootEntry(Items.NETHER_STAR, 0.95));
+//            lp.addItem(createLootEntry(Items.NETHER_STAR, 0.95));
         }
         if (!lp.isEmpty())
         {
