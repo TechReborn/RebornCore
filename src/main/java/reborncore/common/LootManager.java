@@ -1,14 +1,14 @@
 package reborncore.common;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
+import reborncore.RebornRegistry;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,70 +29,32 @@ public class LootManager
     {
         LootTable table = evt.getTable();
 
-        InnerPool lp = new InnerPool();
+        InnerPool lp = RebornRegistry.lp;
 
-        if (evt.getName().equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
-        {
-//            lp.addItem(createLootEntry(Items.NETHER_STAR, 0.95));
-        }
         if (!lp.isEmpty())
         {
             table.addPool(lp);
         }
     }
 
-    private LootItem createLootEntry(Item item, double chance)
+    public static LootItem createLootEntry(Item item, double chance, ResourceLocation loottablelist)
     {
-        return new LootItem(new ItemStack(item), chance, 1, 1);
+        return new LootItem(new ItemStack(item), chance, 1, 1, loottablelist);
     }
 
-    private LootItem createLootEntry(Item item, int minSize, int maxSize, double chance)
+    public static LootItem createLootEntry(Item item, int minSize, int maxSize, double chance, ResourceLocation loottablelist)
     {
-        return new LootItem(new ItemStack(item), chance, minSize, maxSize);
+        return new LootItem(new ItemStack(item), chance, minSize, maxSize, loottablelist);
     }
 
-    private LootItem createLootEntry(Item item, int ordinal, int minStackSize, int maxStackSize, double chance)
+    public static LootItem createLootEntry(Item item, int ordinal, int minStackSize, int maxStackSize, double chance, ResourceLocation loottablelist)
     {
-        return new LootItem(new ItemStack(item, 1, ordinal), chance, minStackSize, maxStackSize);
+        return new LootItem(new ItemStack(item, 1, ordinal), chance, minStackSize, maxStackSize, loottablelist);
     }
 
-    private static class LootItem
+    public static class InnerPool extends LootPool
     {
-        ItemStack item;
-        double chance;
-        int minSize;
-        int maxSize;
-
-        public LootItem(ItemStack item, double chance)
-        {
-            this(item, chance, 1, 1);
-        }
-
-        public LootItem(ItemStack item, double chance, int minSize, int maxSize)
-        {
-            this.item = item;
-            this.chance = chance;
-            this.minSize = minSize;
-            this.maxSize = maxSize;
-        }
-
-        public ItemStack createStack(Random rnd)
-        {
-            int size = minSize;
-            if (maxSize > minSize)
-            {
-                size += rnd.nextInt(maxSize - minSize + 1);
-            }
-
-            ItemStack result = item.copy();
-            result.stackSize = size;
-            return result;
-        }
-    }
-
-    private static class InnerPool extends LootPool
-    {
-        private final List<LootItem> items = new ArrayList<LootItem>();
+        public final List<LootItem> items = new ArrayList<LootItem>();
 
         public InnerPool()
         {
@@ -122,7 +84,7 @@ public class LootManager
                     ItemStack stack = entry.createStack(rand);
                     if (stack != null)
                     {
-                       System.out.println("LootManager.InnerPool.generateLoot: Added " + stack.getDisplayName() + " " + stack);
+//                       System.out.println("LootManager.InnerPool.generateLoot: Added " + stack.getDisplayName() + " " + stack);
                         stacks.add(stack);
                     }
                 }
