@@ -38,8 +38,7 @@ public class LootManager
                 if (item.getLootTableList() == evt.getName())
                 {
                     LootPool main = evt.getTable().getPool("main");
-                                                                            //TODO make chance a int
-                    main.addEntry(new LootEntryItem(item.item.getItem(), (int) item.chance, item.maxSize, count(3, 8), new LootCondition[0], RebornCore.MOD_NAME));
+                    main.addEntry(new LootEntryItem(item.item.getItem(), (int) item.chance, 1, count(0, item.maxSize), new LootCondition[0], RebornCore.MOD_NAME));
                 }
             }
         }

@@ -63,10 +63,6 @@ public class RebornCore implements IModInfo
 		RebornCoreShields.init();
 		MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
-		//eg:
-		RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
-
-        RebornRegistry.addLoot(Items.DIAMOND, 0.95, LootTableList.ENTITIES_COW);
 
         proxy.init(event);
 	}

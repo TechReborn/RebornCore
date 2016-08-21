@@ -62,6 +62,8 @@ public class RebornRegistry
     }
 
     //eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
+    //eg: RebornRegistry.addLoot(Items.DIAMOND, 1.95, LootTableList.ENTITIES_COW);
+
     public static void addLoot(Item item, double chance, ResourceLocation list)
     {
         lp.addItem(LootManager.createLootEntry(item, chance, list));
