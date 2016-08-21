@@ -5,6 +5,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.SetCount;
+import net.minecraft.world.storage.loot.functions.SetMetadata;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
@@ -27,14 +30,31 @@ public class LootManager
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent evt)
     {
-        LootTable table = evt.getTable();
-
         InnerPool lp = RebornRegistry.lp;
-
-        if (!lp.isEmpty())
+        for(LootItem item : lp.items)
         {
-            table.addPool(lp);
+            if(item != null)
+            {
+                if (item.getLootTableList() == evt.getName())
+                {
+                    LootPool main = evt.getTable().getPool("main");
+                                                                            //TODO make chance a int
+                    main.addEntry(new LootEntryItem(item.item.getItem(), (int) item.chance, item.maxSize, count(3, 8), new LootCondition[0], RebornCore.MOD_NAME));
+                }
+            }
         }
+    }
+
+    private static LootFunction[] count(float min, float max)
+    {
+        return new LootFunction[] { new SetCount(new LootCondition[0], new RandomValueRange(min, max)) };
+    }
+
+    private static LootFunction[] countAndMeta(float minCount, float maxCount, int minMeta, int maxMeta)
+    {
+        return new LootFunction[] {
+                new SetCount(new LootCondition[0], new RandomValueRange(minCount, maxCount)),
+                new SetMetadata(new LootCondition[0], new RandomValueRange(minMeta, maxMeta)) };
     }
 
     public static LootItem createLootEntry(Item item, double chance, ResourceLocation loottablelist)

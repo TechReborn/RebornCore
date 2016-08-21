@@ -42,4 +42,9 @@ public class LootItem
         result.stackSize = size;
         return result;
     }
+
+    public ResourceLocation getLootTableList()
+    {
+        return this.lootTableList;
+    }
 }
