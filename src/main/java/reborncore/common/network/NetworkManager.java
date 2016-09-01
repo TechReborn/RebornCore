@@ -13,13 +13,12 @@ public class NetworkManager {
 	public static HashMap<Integer, Class<? extends INetworkPacket>> packetHashMap = new HashMap<>();
 	public static HashMap<Class<? extends INetworkPacket>, Integer> packetHashMapReverse = new HashMap<>();
 
-	public static void load(){
+	public static void load() {
 		MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent(NETWORK_WRAPPER));
 	}
 
-
-	public static void sendToServer(INetworkPacket packet){
-		if(!packetHashMap.containsValue(packet.getClass())){
+	public static void sendToServer(INetworkPacket packet) {
+		if (!packetHashMap.containsValue(packet.getClass())) {
 			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
 		}
 		NETWORK_WRAPPER.sendToServer(new PacketWrapper(packet));
