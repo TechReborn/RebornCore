@@ -1,15 +1,22 @@
 package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
+import net.minecraft.init.Items;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.IModInfo;
+import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.network.NetworkManager;
+import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
@@ -20,7 +27,7 @@ import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.IOException;
 
-@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.9.4]")
+@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.10.2]")
 public class RebornCore implements IModInfo
 {
 
@@ -56,11 +63,13 @@ public class RebornCore implements IModInfo
 		// packets
 		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
 		OreUtil.scanForOres();
+		NetworkManager.load();
 
 		RebornCoreShields.init();
 		MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
+		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 
-		proxy.init(event);
+        proxy.init(event);
 	}
 
 	@Mod.EventHandler
