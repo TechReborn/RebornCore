@@ -81,7 +81,7 @@ dependencies {
     shade 'JSON-Destroyer:Json-Destroyer-1.9.4:2.2.1:dev'
     shade 'org.hjson:hjson:1.1.4'
    // compile "net.darkhax.tesla:Tesla:1.9.4-1.1.0.24:deobf"
-    shade 'net.industrial-craft:industrialcraft-2:2.5.1-ex19:api'
+    shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
 }
 
 processResources
