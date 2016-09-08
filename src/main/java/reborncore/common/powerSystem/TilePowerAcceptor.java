@@ -172,14 +172,14 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     public int getEnergyStored(EnumFacing from) {
         if (!getPowerConfig().rf())
             return 0;
-        return ((int) getEnergy() / RebornCoreConfig.euPerRF);
+        return ((int) getEnergy() * RebornCoreConfig.euPerRF);
     }
 
     @Override
     public int getMaxEnergyStored(EnumFacing from) {
         if (!getPowerConfig().rf())
             return 0;
-        return ((int) getMaxPower() / RebornCoreConfig.euPerRF);
+        return ((int) getMaxPower() * RebornCoreConfig.euPerRF);
     }
 
     @Override
@@ -195,7 +195,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
         if (!simulate) {
             setEnergy(energy - energyExtracted);
         }
-        return energyExtracted / RebornCoreConfig.euPerRF;
+        return energyExtracted * RebornCoreConfig.euPerRF;
     }
     // END COFH
 

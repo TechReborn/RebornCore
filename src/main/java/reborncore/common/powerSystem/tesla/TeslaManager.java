@@ -14,7 +14,7 @@ public class TeslaManager {
     private static boolean isTeslaEnabled = false;
 
     public static void load(){
-        isTeslaEnabled = Loader.isModLoaded("Tesla");
+        isTeslaEnabled = Loader.isModLoaded("tesla");
         if(isTeslaEnabled){
             manager = TeslaPowerManager.getPowerManager();
         }
