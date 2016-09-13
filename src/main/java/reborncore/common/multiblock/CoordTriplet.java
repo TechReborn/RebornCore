@@ -37,7 +37,7 @@ public class CoordTriplet implements Comparable
 
 	public long getChunkXZHash()
 	{
-		return ChunkPos.chunkXZ2Int(x >> 4, z >> 4);
+		return ChunkPos.asLong(x >> 4, z >> 4);
 	}
 
 	@Override
