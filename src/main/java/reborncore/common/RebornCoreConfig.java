@@ -89,6 +89,10 @@ public class RebornCoreConfig
 
 				@Override
 				public boolean rf() {
+					if(enableForge){
+						//Its the same, lets be honest
+						return true;
+					}
 					return enableRF;
 				}
 
