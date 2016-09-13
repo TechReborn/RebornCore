@@ -12,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.RebornCore;
@@ -22,6 +23,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 
 @Optional.InterfaceList(value = {@Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
@@ -33,6 +35,8 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 {
     public int tier;
     private double energy;
+
+    ForgePowerManager forgePowerManager;
 
     public TilePowerAcceptor(int tier) {
         this.tier = tier;
@@ -355,7 +359,14 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            return TeslaManager.manager.hasCapability(capability, facing, this);
+            if(TeslaManager.manager.hasCapability(capability, facing, this)){
+                return true;
+            }
+        }
+        if(getPowerConfig().forge()){
+            if(capability == CapabilityEnergy.ENERGY){
+                return true;
+            }
         }
         return super.hasCapability(capability, facing);
     }
@@ -364,7 +375,19 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-            return TeslaManager.manager.getCapability(capability, facing, this);
+            T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
+            if(capability != null){
+                return teslaCap;
+            }
+        }
+        if(getPowerConfig().forge()){
+            if(capability == CapabilityEnergy.ENERGY){
+                if(forgePowerManager == null){
+                    forgePowerManager = new ForgePowerManager(this, facing);
+                }
+                forgePowerManager.setFacing(facing);
+                return (T) forgePowerManager;
+            }
         }
         return super.getCapability(capability, facing);
     }

@@ -21,6 +21,7 @@ public class RebornCoreConfig
 	protected static boolean enableRF;
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
+	protected static boolean enableForge;
 	public static int euPerRF;
 
 	public static boolean versionCheck;
@@ -62,6 +63,8 @@ public class RebornCoreConfig
 
 		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla").getBoolean();
 
+		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system").getBoolean();
+
 		 enableEU = config
 		 .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
 		 .getBoolean();
@@ -97,6 +100,11 @@ public class RebornCoreConfig
 				@Override
 				public boolean internal() {
 					return true;
+				}
+
+				@Override
+				public boolean forge() {
+					return enableForge;
 				}
 			};
 		}

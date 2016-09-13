@@ -10,4 +10,6 @@ public interface IPowerConfig {
 
     boolean internal();
 
+    boolean forge();
+
 }
