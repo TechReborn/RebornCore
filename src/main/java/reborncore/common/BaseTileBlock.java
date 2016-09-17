@@ -17,11 +17,6 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 		setHardness(1F);
 	}
 
-	public int getRenderType()
-	{
-		return 3;
-	}
-
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
 	{
