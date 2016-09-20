@@ -5,6 +5,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.packets.PacketHandler;
 
 public class Tank extends FluidTank
@@ -13,6 +15,8 @@ public class Tank extends FluidTank
 	private final String name;
 
 	private FluidStack lastBeforeUpdate = null;
+
+	Fluid lastFluid;
 
 	public Tank(String name, int capacity, TileEntity tile)
 	{
@@ -65,36 +69,15 @@ public class Tank extends FluidTank
 		return this;
 	}
 
+	//TODO optimise
 	public void compareAndUpdate()
 	{
-		if (tile == null || tile.getWorld().isRemote)
-		{
+		if (tile == null || tile.getWorld().isRemote) {
 			return;
 		}
-		FluidStack current = this.getFluid();
-		if (current != null)
-		{
-			if (lastBeforeUpdate != null)
-			{
-				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500)
-				{
-					PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
-					lastBeforeUpdate = current.copy();
-				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity()
-						|| lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity())
-				{
-					PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
-					lastBeforeUpdate = current.copy();
-				}
-			} else
-			{
-				PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
-				lastBeforeUpdate = current.copy();
-			}
-		} else if (lastBeforeUpdate != null)
-		{
-			PacketHandler.sendPacketToAllPlayers(tile.getUpdatePacket(), tile.getWorld());
-			lastBeforeUpdate = null;
+		if(lastFluid != this.getFluid().getFluid()){
+			lastFluid = this.getFluid().getFluid();
+			reborncore.common.network.NetworkManager.sendToAllAround(new CustomDescriptionPacket(tile), new NetworkRegistry.TargetPoint(tile.getWorld().provider.getDimension(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 20));
 		}
 	}
 

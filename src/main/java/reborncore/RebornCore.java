@@ -4,6 +4,7 @@ import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraft.init.Items;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,6 +18,7 @@ import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
+import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.LogHelper;
@@ -63,6 +65,7 @@ public class RebornCore implements IModInfo
 		// packets
 		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
 		OreUtil.scanForOres();
+		MinecraftForge.EVENT_BUS.register(new RebornPackets());
 		NetworkManager.load();
 
 		RebornCoreShields.init();

@@ -23,4 +23,11 @@ public class NetworkManager {
 		}
 		NETWORK_WRAPPER.sendToServer(new PacketWrapper(packet));
 	}
+
+	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
+		if (!packetHashMap.containsValue(packet.getClass())) {
+			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
+		}
+		NETWORK_WRAPPER.sendToAllAround(new PacketWrapper(packet), point);
+	}
 }
