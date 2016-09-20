@@ -1,6 +1,8 @@
 package reborncore;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -33,5 +35,10 @@ public class ClientProxy extends CommonProxy
 	public void loadShieldTextures() {
 		super.loadShieldTextures();
 		ShieldTextureStore.load();
+	}
+
+	@Override
+	public World getClientWorld() {
+		return Minecraft.getMinecraft().theWorld;
 	}
 }

@@ -75,8 +75,12 @@ public class Tank extends FluidTank
 		if (tile == null || tile.getWorld().isRemote) {
 			return;
 		}
-		if(lastFluid != this.getFluid().getFluid()){
-			lastFluid = this.getFluid().getFluid();
+		if(lastFluid == null || (lastFluid != null && (this.getFluid() == null) || this.getFluid().getFluid() == null) || (lastFluid != this.getFluid().getFluid())){
+			if(this.getFluid() == null){
+				lastFluid = null;
+			} else {
+				lastFluid = this.getFluid().getFluid();
+			}
 			reborncore.common.network.NetworkManager.sendToAllAround(new CustomDescriptionPacket(tile), new NetworkRegistry.TargetPoint(tile.getWorld().provider.getDimension(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 20));
 		}
 	}

@@ -1,12 +1,11 @@
 package reborncore.common.network.packet;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 
@@ -50,7 +49,7 @@ public class CustomDescriptionPacket implements INetworkPacket<CustomDescription
         if(message.blockPos == null || message.nbt == null){
             return;
         }
-        World world = Minecraft.getMinecraft().theWorld;
+        World world = RebornCore.proxy.getClientWorld();
         if(world.isBlockLoaded(message.blockPos)){
             TileEntity tileentity = world.getTileEntity(message.blockPos);
             if(tileentity != null && message.nbt != null){
