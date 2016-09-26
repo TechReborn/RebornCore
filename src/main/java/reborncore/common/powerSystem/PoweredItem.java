@@ -14,22 +14,19 @@ public abstract class PoweredItem
 
 	public static Item createItem(Class itemClass) throws IllegalAccessException, InstantiationException
 	{
-		if(Loader.isModLoaded("IC2")){
-			return (Item) MixinFactory
-					.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class, EUItemPowerTrait.class).newInstance();
-		}
-		return (Item) MixinFactory
-				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class).newInstance();
+		return createItem(itemClass, Loader.isModLoaded("IC2"));
 	}
 
 	public static Item createItem(Class itemClass, boolean ic2) throws IllegalAccessException, InstantiationException
 	{
+		Class baseClass = MixinFactory.mixin(itemClass, BasePowerTrait.class);
 		if(ic2){
 			return (Item) MixinFactory
-					.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class, EUItemPowerTrait.class).newInstance();
+					.mixin(baseClass, /** RFItemPowerTrait.class, **/ EUItemPowerTrait.class).newInstance();
 		}
-		return (Item) MixinFactory
-				.mixin(itemClass, BasePowerTrait.class, RFItemPowerTrait.class).newInstance();
+		return (Item) baseClass.newInstance();
+//		return (Item) MixinFactory
+//				.mixin(baseClass, RFItemPowerTrait.class).newInstance();
 	}
 
 	public static boolean canUseEnergy(double energy, ItemStack stack)
