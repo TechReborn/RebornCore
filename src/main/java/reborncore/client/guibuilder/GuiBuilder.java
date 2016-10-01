@@ -118,4 +118,23 @@ public class GuiBuilder
             GlStateManager.disableLighting();
         }
     }
+
+    //TODO fix
+    public void drawBurnBar(GuiScreen gui, double progress, int x, int y)
+    {
+        gui.mc.getTextureManager().bindTexture(resourceLocation);
+        gui.drawTexturedModalRect(x, y, 150, 49, 22, 15);
+        int j = (int) (progress);
+        if (j > 0)
+        {
+            gui.drawTexturedModalRect(x, y, 150 , 64, 15, j + 1);
+
+        }
+    }
+
+    public void drawOutputSlot(GuiScreen gui, int x, int y)
+    {
+        gui.mc.getTextureManager().bindTexture(resourceLocation);
+        gui.drawTexturedModalRect(x, y, 174, 0, 26, 26);
+    }
 }

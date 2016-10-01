@@ -200,4 +200,32 @@ public abstract class RebornContainer extends Container
 		return true;
 
 	}
+
+	public void drawPlayersInv(EntityPlayer player)
+	{
+		int i;
+		for (i = 0; i < 3; ++i)
+        {
+			for (int j = 0; j < 9; ++j)
+            {
+				this.addSlotToContainer(new BaseSlot(player.inventory, j + i * 9 + 9, 8 + j * 18, 81 + i * 18));
+			}
+		}
+
+	}
+
+	public void drawPlayersHotBar(EntityPlayer player)
+	{
+		int i;
+		for (i = 0; i < 9; ++i)
+        {
+			this.addSlotToContainer(new BaseSlot(player.inventory, i, 8 + i * 18, 139));
+		}
+	}
+
+	public void drawPlayersInvAndHotbar(EntityPlayer player)
+	{
+		drawPlayersInv(player);
+		drawPlayersHotBar(player);
+	}
 }
