@@ -1,6 +1,7 @@
 package reborncore.client.guibuilder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -136,5 +137,28 @@ public class GuiBuilder
     {
         gui.mc.getTextureManager().bindTexture(resourceLocation);
         gui.drawTexturedModalRect(x, y, 174, 0, 26, 26);
+    }
+
+
+    public void drawInfoButton(int buttonID, int x, int y, List<GuiButton> buttonList)
+    {
+        buttonList.add(new GuiButton(0, x, y, 20, 20, "i"));
+    }
+
+    public void handleInfoButtonClick(int buttonID, List<GuiButton> buttonList)
+    {
+//        buttonList.get(buttonID).
+    }
+
+    public void drawInfo(GuiScreen gui, int x, int y, int height, int width, boolean draw)
+    {
+        if(draw)
+        {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+            gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
+            gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+            gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+            gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+        }
     }
 }
