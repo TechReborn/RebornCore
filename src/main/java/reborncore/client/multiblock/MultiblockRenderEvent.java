@@ -6,12 +6,19 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
+
 package reborncore.client.multiblock;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -20,12 +27,12 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
 import reborncore.common.misc.Location;
 import reborncore.common.multiblock.CoordTriplet;
 
-public class MultiblockRenderEvent
-{
+public class MultiblockRenderEvent {
 
 	private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
@@ -33,8 +40,7 @@ public class MultiblockRenderEvent
 	public Location partent;
 	public static int angle;
 
-	public void setMultiblock(MultiblockSet set)
-	{
+	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
 		anchor = null;
 		angle = 0;
@@ -42,90 +48,62 @@ public class MultiblockRenderEvent
 	}
 
 	@SubscribeEvent
-	public void onWorldRenderLast(RenderWorldLastEvent event)
-	{
+	public void onWorldRenderLast(RenderWorldLastEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.thePlayer != null && mc.objectMouseOver != null && !mc.thePlayer.isSneaking())
-		{
-			mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND);
+		if (mc.thePlayer != null && mc.objectMouseOver != null && !mc.thePlayer.isSneaking()) {
 			renderPlayerLook(mc.thePlayer, mc.objectMouseOver);
 		}
 	}
 
 	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent event)
-	{
-//		if (currentMultiblock != null && anchor == null && event.getAction() == Action.RIGHT_CLICK_BLOCK
-//				&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer)
-//		{
-//			anchor = new CoordTriplet(event.getPos());
-//			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
-//			event.setCanceled(true);
-//		}
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		//TODO test code, needs work
+		if(currentMultiblock == null){
+			Multiblock multiblock = new Multiblock();
+			for (int i = 0; i < 5; i++) {
+				multiblock.addComponent(new BlockPos(0, i, 0), Blocks.DIAMOND_BLOCK.getDefaultState());
+			}
+			currentMultiblock = new MultiblockSet(multiblock);
+		}
+
+		if (currentMultiblock != null && anchor == null && event.getHand() == EnumHand.MAIN_HAND
+			&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer) {
+			anchor = new CoordTriplet(event.getPos());
+			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
+			event.setCanceled(true);
+		}
 	}
 
-	private void renderPlayerLook(EntityPlayer player, RayTraceResult src)
-	{
-		if (currentMultiblock != null)
-		{
+	private void renderPlayerLook(EntityPlayer player, RayTraceResult src) {
+		if (currentMultiblock != null) {
 			int anchorX = anchor != null ? anchor.x : src.getBlockPos().getX();
 			int anchorY = anchor != null ? anchor.y + 1 : src.getBlockPos().getY() + 1;
 			int anchorZ = anchor != null ? anchor.z : src.getBlockPos().getZ();
-
 			Multiblock mb = currentMultiblock.getForEntity(player);
-			for (MultiblockComponent comp : mb.getComponents())
+			for (MultiblockComponent comp : mb.getComponents()){
 				renderComponent(player.worldObj, mb, comp, anchorX, anchorY, anchorZ);
+			}
 		}
 	}
 
 	private boolean renderComponent(World world, Multiblock mb, MultiblockComponent comp, int anchorX, int anchorY,
-			int anchorZ)
-	{
-		// CoordTriplet pos = comp.getRelativePosition();
-		// int x = pos.x + anchorX;
-		// int y = pos.y + anchorY;
-		// int z = pos.z + anchorZ;
-		//
-		// if (world.getBlockState(new BlockPos(x, y, z)) == comp.getBlock())
-		// return false;
-		//
-		// GL11.glPushMatrix();
-		// GL11.glEnable(GL11.GL_BLEND);
-		// GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		// GL11.glDisable(GL11.GL_DEPTH_TEST);
-		// GL11.glColor4f(1F, 1F, 1F, 0.4F);
-		// //GL11.glTranslated(x + 0.5 - RenderManager.renderPosX, y + 0.5 -
-		// RenderManager.renderPosY, z + 0.5 - RenderManager.renderPosZ);
-		// Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-		//
-		// Block block = comp.getBlock();
-		// if (IMultiblockRenderHook.renderHooks.containsKey(block))
-		// IMultiblockRenderHook.renderHooks.get(block).renderBlockForMultiblock(world,
-		// mb, block, comp.getMeta(), blockRender);
-		// else
-		// blockRender.renderBlock(block.getDefaultState(), new BlockPos(x, y,
-		// z), world, Tessellator.getInstance().getWorldRenderer());
-		// GL11.glEnable(GL11.GL_DEPTH_TEST);
-		// GL11.glPopMatrix();
+	                                int anchorZ) {
+		//TODO RENDER THINGS
 		return true;
 	}
 
 	@SubscribeEvent
-	public void breakBlock(BlockEvent.BreakEvent event)
-	{
-		if (partent != null)
-		{
+	public void breakBlock(BlockEvent.BreakEvent event) {
+		if (partent != null) {
 			if (event.getPos().getX() == partent.x && event.getPos().getY() == partent.y && event.getPos().getZ() == partent.z
-					&& Minecraft.getMinecraft().theWorld == partent.world)
-			{
+				&& Minecraft.getMinecraft().theWorld == partent.world) {
 				setMultiblock(null);
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public void worldUnloaded(WorldEvent.Unload event)
-	{
+	public void worldUnloaded(WorldEvent.Unload event) {
 		setMultiblock(null);
 	}
 }

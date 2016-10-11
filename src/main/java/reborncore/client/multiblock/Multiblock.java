@@ -6,25 +6,26 @@
  * Botania is Open Source and distributed under the
  * Botania License: http://botaniamod.net/license.php
  */
+
 package reborncore.client.multiblock;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import reborncore.client.multiblock.component.MultiblockComponent;
+import reborncore.common.multiblock.CoordTriplet;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import reborncore.client.multiblock.component.MultiblockComponent;
-import reborncore.common.multiblock.CoordTriplet;
 
 /**
  * This class describes a Mutiblock object. It's used to display a multiblock in
  * the pda and to show the player in a ghost-like look in the world.
  */
-public class Multiblock
-{
+public class Multiblock {
 
-	public List<MultiblockComponent> components = new ArrayList();
-	public List<ItemStack> materials = new ArrayList();
+	public List<MultiblockComponent> components = new ArrayList<>();
 
 	public int minX, minY, minZ, maxX, maxY, maxZ, offX, offY, offZ;
 
@@ -32,24 +33,20 @@ public class Multiblock
 	 * Adds a multiblock component to this multiblock. The component's x y z
 	 * coords should be pivoted to the center of the structure.
 	 */
-	public void addComponent(MultiblockComponent component)
-	{
+	public void addComponent(MultiblockComponent component) {
 		components.add(component);
-		changeAxisForNewComponent(component.relPos.x, component.relPos.y, component.relPos.z);
-		calculateCostForNewComponent(component);
+		changeAxisForNewComponent(component.relPos.getX(), component.relPos.getY(), component.relPos.getZ());
 	}
 
 	/**
 	 * Constructs and adds a multiblock component to this multiblock. The x y z
 	 * coords should be pivoted to the center of the structure.
 	 */
-	public void addComponent(int x, int y, int z, Block block, int meta)
-	{
-		addComponent(new MultiblockComponent(new CoordTriplet(x, y, z), block, meta));
+	public void addComponent(BlockPos pos, IBlockState state) {
+		addComponent(new MultiblockComponent(pos, state));
 	}
 
-	private void changeAxisForNewComponent(int x, int y, int z)
-	{
+	private void changeAxisForNewComponent(int x, int y, int z) {
 		if (x < minX)
 			minX = x;
 		else if (x > maxX)
@@ -65,39 +62,13 @@ public class Multiblock
 		else if (z > maxZ)
 			maxZ = z;
 	}
-
-	private void calculateCostForNewComponent(MultiblockComponent comp)
-	{
-		ItemStack[] materials = comp.getMaterials();
-		if (materials != null)
-			for (ItemStack stack : materials)
-				addStack(stack);
-	}
-
-	private void addStack(ItemStack stack)
-	{
-		if (stack == null)
-			return;
-
-		for (ItemStack oStack : materials)
-			if (oStack.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(oStack, stack))
-			{
-				oStack.stackSize += stack.stackSize;
-				return;
-			}
-
-		materials.add(stack);
-	}
-
-	public void setRenderOffset(int x, int y, int z)
-	{
+	public void setRenderOffset(int x, int y, int z) {
 		offX = x;
 		offY = y;
 		offZ = z;
 	}
 
-	public List<MultiblockComponent> getComponents()
-	{
+	public List<MultiblockComponent> getComponents() {
 		return components;
 	}
 
@@ -105,14 +76,12 @@ public class Multiblock
 	 * Rotates this multiblock by the angle passed in. For the best results, use
 	 * only multiples of pi/2.
 	 */
-	public void rotate(double angle)
-	{
+	public void rotate(double angle) {
 		for (MultiblockComponent comp : getComponents())
 			comp.rotate(angle);
 	}
 
-	public Multiblock copy()
-	{
+	public Multiblock copy() {
 		Multiblock mb = new Multiblock();
 		for (MultiblockComponent comp : getComponents())
 			mb.addComponent(comp.copy());
@@ -125,8 +94,7 @@ public class Multiblock
 	 * to render this multiblock in the world relevant to the 4 cardinal
 	 * orientations.
 	 */
-	public Multiblock[] createRotations()
-	{
+	public Multiblock[] createRotations() {
 		Multiblock[] blocks = new Multiblock[4];
 		blocks[0] = this;
 		blocks[1] = blocks[0].copy();
@@ -143,23 +111,19 @@ public class Multiblock
 	 * Makes a MultiblockSet from this Multiblock and its rotations using
 	 * createRotations().
 	 */
-	public MultiblockSet makeSet()
-	{
+	public MultiblockSet makeSet() {
 		return new MultiblockSet(this);
 	}
 
-	public int getXSize()
-	{
+	public int getXSize() {
 		return Math.abs(minX) + Math.abs(maxX) + 1;
 	}
 
-	public int getYSize()
-	{
+	public int getYSize() {
 		return Math.abs(minY) + Math.abs(maxY) + 1;
 	}
 
-	public int getZSize()
-	{
+	public int getZSize() {
 		return Math.abs(minZ) + Math.abs(maxZ) + 1;
 	}
 
