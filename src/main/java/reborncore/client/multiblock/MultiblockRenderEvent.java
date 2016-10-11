@@ -9,94 +9,125 @@
 
 package reborncore.client.multiblock;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
 import reborncore.common.misc.Location;
-import reborncore.common.multiblock.CoordTriplet;
+
+import java.util.List;
 
 public class MultiblockRenderEvent {
 
 	private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
-	public static CoordTriplet anchor;
-	public Location partent;
-	public static int angle;
+	public static BlockPos anchor;
+	public Location parent;
 
 	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
 		anchor = null;
-		angle = 0;
-		partent = null;
+		parent = null;
 	}
 
 	@SubscribeEvent
-	public void onWorldRenderLast(RenderWorldLastEvent event) {
+	public void onWorldRenderLast(RenderWorldLastEvent event) throws Throwable {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.thePlayer != null && mc.objectMouseOver != null && !mc.thePlayer.isSneaking()) {
-			renderPlayerLook(mc.thePlayer, mc.objectMouseOver);
-		}
-	}
+			if (currentMultiblock != null) {
+				BlockPos anchorPos = anchor != null ? anchor : mc.objectMouseOver.getBlockPos();
 
-	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		//TODO test code, needs work
-		if(currentMultiblock == null){
-			Multiblock multiblock = new Multiblock();
-			for (int i = 0; i < 5; i++) {
-				multiblock.addComponent(new BlockPos(0, i, 0), Blocks.DIAMOND_BLOCK.getDefaultState());
-			}
-			currentMultiblock = new MultiblockSet(multiblock);
-		}
+				Multiblock mb = currentMultiblock.getForIndex(0);
 
-		if (currentMultiblock != null && anchor == null && event.getHand() == EnumHand.MAIN_HAND
-			&& event.getEntityPlayer() == Minecraft.getMinecraft().thePlayer) {
-			anchor = new CoordTriplet(event.getPos());
-			angle = MathHelper.floor_double(event.getEntityPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3;
-			event.setCanceled(true);
-		}
-	}
+				for (MultiblockComponent comp : mb.getComponents()) {
+					renderComponent(comp, anchorPos, event.getPartialTicks(), mc.thePlayer);
+				}
 
-	private void renderPlayerLook(EntityPlayer player, RayTraceResult src) {
-		if (currentMultiblock != null) {
-			int anchorX = anchor != null ? anchor.x : src.getBlockPos().getX();
-			int anchorY = anchor != null ? anchor.y + 1 : src.getBlockPos().getY() + 1;
-			int anchorZ = anchor != null ? anchor.z : src.getBlockPos().getZ();
-			Multiblock mb = currentMultiblock.getForEntity(player);
-			for (MultiblockComponent comp : mb.getComponents()){
-				renderComponent(player.worldObj, mb, comp, anchorX, anchorY, anchorZ);
 			}
 		}
 	}
 
-	private boolean renderComponent(World world, Multiblock mb, MultiblockComponent comp, int anchorX, int anchorY,
-	                                int anchorZ) {
-		//TODO RENDER THINGS
-		return true;
+	private void renderComponent(MultiblockComponent comp, BlockPos anchor, float partialTicks, EntityPlayerSP player) {
+		double dx = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
+		double dy = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
+		double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+		BlockPos pos = anchor.add(comp.getRelativePosition());
+		Minecraft minecraft = Minecraft.getMinecraft();
+		World world = player.worldObj;
+
+		minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(pos.getX() - dx, pos.getY() - dy, pos.getZ() - dz);
+		GlStateManager.scale(1.02, 1, 1.02);
+		GlStateManager.translate(-0.01, 0, -0.01);
+
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.color(1f, 1f, 1f, 1f);
+		int alpha = ((int) (0.5 * 0xFF)) << 24;
+		GlStateManager.enableBlend();
+		GlStateManager.enableTexture2D();
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		GlStateManager.colorMask(true, true, true, true);
+		GlStateManager.depthFunc(GL11.GL_LEQUAL);
+		this.renderModel(world, pos, alpha, comp.state);
+		GlStateManager.disableBlend();
+		GlStateManager.popMatrix();
+	}
+
+	private void renderModel(World world, BlockPos pos, int alpha, IBlockState state) {
+		IBakedModel model = blockRender.getModelForState(state);
+		IBlockState extendedState = state.getBlock().getExtendedState(state, world, pos);
+		for (final EnumFacing facing : EnumFacing.values()) {
+			this.renderQuads(world, state, pos, model.getQuads(extendedState, facing, 0), alpha);
+		}
+
+		this.renderQuads(world, state, pos, model.getQuads(extendedState, null, 0), alpha);
+	}
+
+	private void renderQuads(final World world, final IBlockState actualState, final BlockPos pos, final List<BakedQuad> quads, final int alpha) {
+		final Tessellator tessellator = Tessellator.getInstance();
+		final VertexBuffer buffer = tessellator.getBuffer();
+
+		if (quads == null || quads.isEmpty()) { //Bad things
+			return;
+		}
+		for (final BakedQuad quad : quads) {
+			buffer.begin(GL11.GL_QUADS, quad.getFormat());
+
+			final int color = quad.hasTintIndex() ? this.getTint(world, actualState, pos, alpha, quad.getTintIndex()) : alpha | 0xffffff;
+			LightUtil.renderQuadColor(buffer, quad, color);
+
+			tessellator.draw();
+		}
+	}
+
+	private int getTint(final World world, final IBlockState actualState, final BlockPos pos, final int alpha, final int tintIndex) {
+		return alpha | Minecraft.getMinecraft().getBlockColors().colorMultiplier(actualState, world, pos, tintIndex);
 	}
 
 	@SubscribeEvent
 	public void breakBlock(BlockEvent.BreakEvent event) {
-		if (partent != null) {
-			if (event.getPos().getX() == partent.x && event.getPos().getY() == partent.y && event.getPos().getZ() == partent.z
-				&& Minecraft.getMinecraft().theWorld == partent.world) {
+		if (parent != null) {
+			if (event.getPos().getX() == parent.x && event.getPos().getY() == parent.y && event.getPos().getZ() == parent.z
+				&& Minecraft.getMinecraft().theWorld == parent.world) {
 				setMultiblock(null);
 			}
 		}

@@ -5,8 +5,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
 /*
- * Simple wrapper class for XYZ coordinates.
+ * Use BlockPos now
  */
+@Deprecated
 public class CoordTriplet implements Comparable
 {
 	public int x, y, z;
@@ -37,7 +38,7 @@ public class CoordTriplet implements Comparable
 
 	public long getChunkXZHash()
 	{
-		return ChunkPos.asLong(x >> 4, z >> 4);
+		return ChunkPos.chunkXZ2Int(x >> 4, z >> 4);
 	}
 
 	@Override
@@ -70,6 +71,9 @@ public class CoordTriplet implements Comparable
 
 	public boolean equals(BlockPos pos)
 	{
+		if(pos == null){
+			return false;
+		}
 		return equals(pos.getX(), pos.getY(), pos.getZ());
 	}
 
