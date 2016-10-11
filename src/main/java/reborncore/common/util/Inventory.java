@@ -178,7 +178,6 @@ public class Inventory implements IInventory
 		return true;
 	}
 
-	// TODO find out what this is
 	@Override
 	public int getField(int id)
 	{

@@ -65,7 +65,6 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
                         } else {
                             AbstractTexture texture = shieldTexture.getTexture();
                             customTextureMap.put(location.getResourcePath(), texture);
-                            //TODO make this even more threaded to stop the game stalling
                             final ResourceLocation resourceLocation = location;
                             THREAD_POOL.submit((Runnable) () -> Minecraft.getMinecraft().addScheduledTask((Runnable) () -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, texture)));
                             Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
