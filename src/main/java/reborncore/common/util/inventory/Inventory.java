@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
-import reborncore.common.powerSystem.TileEnergyBase;
+import reborncore.common.tile.TileBase;
 import reborncore.common.util.IInventoryUpdateable;
 
 public class Inventory implements IInventory
@@ -19,15 +19,15 @@ public class Inventory implements IInventory
 	private final int inventoryStackLimit;
 	private final ItemStack[] inventoryContent;
 
-	private TileEnergyBase tileEnergyBase;
+	private TileBase tileBase;
 
-	public Inventory(String inventoryName, int inventorySize, int inventoryStackLimit, TileEnergyBase tileEnergyBase) {
+	public Inventory(String inventoryName, int inventorySize, int inventoryStackLimit, TileBase tileBase) {
 		this.inventoryName = inventoryName;
 		this.inventorySize = inventorySize;
 		this.inventoryStackLimit = inventoryStackLimit;
 		this.inventoryContent = new ItemStack[this.getSizeInventory()];
 
-		this.tileEnergyBase = tileEnergyBase;
+		this.tileBase = tileBase;
 	}
 
 	@Override
@@ -75,10 +75,10 @@ public class Inventory implements IInventory
 
 	@Override
 	public void markDirty() {
-		if(this.tileEnergyBase instanceof IInventoryUpdateable) {
-			((IInventoryUpdateable) this.tileEnergyBase).updateInventory();
+		if(this.tileBase instanceof IInventoryUpdateable) {
+			((IInventoryUpdateable) this.tileBase).updateInventory();
 		}
-		this.tileEnergyBase.markBlockForUpdate();
+		this.tileBase.markBlockForUpdate();
 	}
 
 	@Override
