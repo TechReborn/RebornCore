@@ -2,13 +2,14 @@ package reborncore.common.powerSystem.forge;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
+import reborncore.common.powerSystem.TileEnergyBase;
 
 public class ForgePowerManager implements IEnergyStorage {
 
-    TilePowerAcceptor acceptor;
+    TileEnergyBase acceptor;
     EnumFacing facing;
 
-    public ForgePowerManager(TilePowerAcceptor acceptor, EnumFacing facing) {
+    public ForgePowerManager(TileEnergyBase acceptor, EnumFacing facing) {
         this.acceptor = acceptor;
         this.facing = facing;
     }
