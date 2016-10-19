@@ -41,7 +41,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
     public void renderByItem(ItemStack itemStackIn) {
         if (itemStackIn.getItem() == Items.SHIELD) {
             boolean isCustom = !ItemNBTHelper.getBoolean(itemStackIn, "vanilla", false);
-             if (isCustom) {
+            if (isCustom) {
                 ResourceLocation location = null;
                 String str = ItemNBTHelper.getString(itemStackIn, "type", "vanilla");
                  if(ShieldJsonLoader.shieldJsonFile == null || ShieldJsonLoader.shieldJsonFile.userList == null){
@@ -53,10 +53,10 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
                         location = new ResourceLocation("LOOKUP:" + str);
                     }
                 }
-                 if(location == null){
-                     renderer.renderByItem(itemStackIn);
-                     return;
-                 }
+                if(location == null){
+                    renderer.renderByItem(itemStackIn);
+                    return;
+                }
                 ShieldTexture shieldTexture = ShieldTextureStore.getTexture(location);
                 if (shieldTexture != null) {
                     if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
@@ -76,9 +76,9 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
                     Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);
                 }
             } else {
-                 renderer.renderByItem(itemStackIn);
-                 return;
-             }
+                renderer.renderByItem(itemStackIn);
+                return;
+            }
             GlStateManager.pushMatrix();
             GlStateManager.scale(1.0F, -1.0F, -1.0F);
             modelShield.render();

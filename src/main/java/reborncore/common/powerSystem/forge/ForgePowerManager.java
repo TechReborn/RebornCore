@@ -2,7 +2,6 @@ package reborncore.common.powerSystem.forge;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
-import reborncore.common.powerSystem.TilePowerAcceptor;
 
 public class ForgePowerManager implements IEnergyStorage {
 

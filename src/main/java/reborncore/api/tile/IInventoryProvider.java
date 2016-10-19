@@ -1,9 +1,9 @@
 package reborncore.api.tile;
 
-import reborncore.common.util.Inventory;
+import net.minecraft.inventory.IInventory;
 
 public interface IInventoryProvider {
 
-    Inventory getInventory();
+    IInventory getInventory();
 
 }

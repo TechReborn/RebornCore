@@ -6,16 +6,14 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import reborncore.api.tile.IContainerLayout;
-import reborncore.client.gui.BaseSlot;
-import reborncore.client.gui.SlotFake;
+import reborncore.client.gui.slots.BaseSlot;
+import reborncore.client.gui.slots.SlotFake;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 
 public abstract class RebornContainer extends Container
 {
-
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
 	@Override
@@ -199,6 +197,27 @@ public abstract class RebornContainer extends Container
 		}
 		return true;
 
+	}
+
+	public void addPlayersHotbar(EntityPlayer player)
+	{
+		int i;
+		for (i = 0; i < 9; ++i)
+		{
+			this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 142));
+		}
+	}
+
+	public void addPlayersInventory(EntityPlayer player)
+	{
+		int i;
+		for (i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 9; ++j)
+			{
+				this.addSlotToContainer(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+			}
+		}
 	}
 
 	public void drawPlayersInv(EntityPlayer player)
