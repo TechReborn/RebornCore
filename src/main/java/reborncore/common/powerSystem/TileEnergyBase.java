@@ -66,7 +66,8 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	    if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 		    TeslaManager.manager.update(this);
 	    }
-	    onLoaded();
+	    //TOOD re enable when fixing ic2 support
+	    //onLoaded();
     }
 
     @Override
