@@ -13,6 +13,8 @@ import reborncore.client.gui.slots.SlotFake;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
+import java.lang.reflect.InvocationTargetException;
+
 public abstract class RebornContainer extends Container
 {
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
