@@ -21,6 +21,8 @@ public class Inventory implements IInventory
 
 	private TileBase tileBase;
 
+	public boolean isDirty;
+
 	public Inventory(String inventoryName, int inventorySize, int inventoryStackLimit, TileBase tileBase) {
 		this.inventoryName = inventoryName;
 		this.inventorySize = inventorySize;
@@ -79,6 +81,7 @@ public class Inventory implements IInventory
 			((IInventoryUpdateable) this.tileBase).updateInventory();
 		}
 		this.tileBase.markBlockForUpdate();
+		isDirty = true;
 	}
 
 	@Override

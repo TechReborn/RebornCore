@@ -38,7 +38,7 @@ public abstract class RebornContainer extends Container
 	}
 
 	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player){
-		if(containerMap.containsKey(clazz.getCanonicalName())){
+		if(player == null && containerMap.containsKey(clazz.getCanonicalName())){
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
 			try {

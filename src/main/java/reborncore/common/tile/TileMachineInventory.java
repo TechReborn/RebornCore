@@ -65,7 +65,13 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
         return super.writeToNBT(data);
     }
 
-    @Override
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		getInventory().isDirty = false;
+	}
+
+	@Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
     }

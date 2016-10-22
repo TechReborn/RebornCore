@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import reborncore.api.power.EnumPowerTier;
+import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.IWrenchable;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.powerSystem.TileEnergyBase;
@@ -43,35 +44,11 @@ public abstract class TileMachineBase extends TileEnergyBase implements IWrencha
     @Override
     public void updateEntity() {
         super.updateEntity();
-
-        if (canWork()) {
-            machineTick();
-        }
-        else {
-            machineResetProgress();
+        if(this instanceof IRecipeCrafterProvider){
+	        IRecipeCrafterProvider provider = (IRecipeCrafterProvider) this;
+	        provider.getRecipeCrafter().updateEntity();
         }
     }
-
-    public void machineResetProgress() {
-        boolean needsUpdate = this.progress != 0;
-        this.progress = 0;
-        if(needsUpdate) {
-            markBlockForUpdate();
-        }
-    }
-
-    public void machineTick() {
-        useEnergy(this.costPerTick);
-        if(this.progress++ > this.ticksNeeded) {
-            this.progress = 0;
-
-            machineFinish();
-        }
-
-        markBlockForUpdate();
-    }
-
-    public abstract void machineFinish();
 
     public int gaugeProgressScaled(int scale)
     {
