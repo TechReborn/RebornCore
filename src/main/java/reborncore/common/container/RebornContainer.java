@@ -6,11 +6,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import reborncore.RebornCore;
 import reborncore.api.tile.IContainerLayout;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,16 +34,37 @@ public abstract class RebornContainer extends Container
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 
 	public static @Nullable RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, TileEntity tileEntity){
+		return createContainer(clazz, tileEntity, RebornCore.proxy.getPlayer());
+	}
+
+	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player){
 		if(containerMap.containsKey(clazz.getCanonicalName())){
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
 			try {
-				// Attempt to fix this?
-				RebornContainer container = clazz.getConstructor(TileEntity.class, EntityPlayer.class).newInstance(tileEntity, Minecraft.getMinecraft().thePlayer);
-				// if(container instanceof IContainerLayout){
-				// 	((IContainerLayout) container).setTile(tileEntity);
-				// 	((IContainerLayout) container).addInventorySlots();
-				// }
+				RebornContainer container = null;
+				for(Constructor constructor : clazz.getConstructors()){
+					if(constructor.getParameterCount() == 0){
+						container = clazz.newInstance();
+						if(container instanceof IContainerLayout){
+							((IContainerLayout) container).setTile(tileEntity);
+							((IContainerLayout) container).addInventorySlots();
+						}
+						continue;
+					} else if (constructor.getParameterCount() == 2){
+						Class[] paramTypes = constructor.getParameterTypes();
+						if(paramTypes[0].isInstance(tileEntity) && paramTypes[1] == EntityPlayer.class){
+							container = clazz.getDeclaredConstructor(tileEntity.getClass(), EntityPlayer.class).newInstance(tileEntity, player);
+							continue;
+						} else if (paramTypes[0] == EntityPlayer.class && paramTypes[1].isInstance(tileEntity)){
+							container = clazz.getDeclaredConstructor(EntityPlayer.class, tileEntity.getClass()).newInstance(player, tileEntity);
+							continue;
+						}
+					}
+				}
+				if(container == null){
+					RebornCore.logHelper.error("Failed to create container for " + clazz.getName() + " bad things may happen, please report to devs");
+				}
 				containerMap.put(clazz.getCanonicalName(), container);
 				return container;
 			} catch (InstantiationException e) {
@@ -53,24 +76,6 @@ public abstract class RebornContainer extends Container
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			}
-		}
-		return null;
-	}
-
-	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tile, EntityPlayer player){
-		try {
-			RebornContainer container = clazz.newInstance();
-			if(container instanceof IContainerLayout){
-				((IContainerLayout) container).setPlayer(player);
-				((IContainerLayout) container).setTile(tile);
-				((IContainerLayout) container).addInventorySlots();
-				((IContainerLayout) container).addPlayerSlots();
-			}
-			return container;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
