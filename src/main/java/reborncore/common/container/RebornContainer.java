@@ -1,5 +1,6 @@
 package reborncore.common.container;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -33,12 +34,12 @@ public abstract class RebornContainer extends Container
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
 			try {
-				//TODO think hard about how to fix this one
-				RebornContainer container = clazz.newInstance();
-				if(container instanceof IContainerLayout){
-					((IContainerLayout) container).setTile(tileEntity);
-					((IContainerLayout) container).addInventorySlots();
-				}
+				// Attempt to fix this?
+				RebornContainer container = clazz.getConstructor(TileEntity.class, EntityPlayer.class).newInstance(tileEntity, Minecraft.getMinecraft().thePlayer);
+				// if(container instanceof IContainerLayout){
+				// 	((IContainerLayout) container).setTile(tileEntity);
+				// 	((IContainerLayout) container).addInventorySlots();
+				// }
 				containerMap.put(clazz.getCanonicalName(), container);
 				return container;
 			} catch (InstantiationException e) {
