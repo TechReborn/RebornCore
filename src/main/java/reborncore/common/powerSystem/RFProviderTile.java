@@ -1,11 +1,14 @@
 package reborncore.common.powerSystem;
 
+import java.util.Random;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
@@ -15,12 +18,11 @@ import cofh.api.energy.IEnergyReceiver;
  * This is done in a different class so the updateEntity can be striped for ic2
  * and this one will still get called.
  */
-public abstract class RFProviderTile extends TileEnergyBase
+public abstract class RFProviderTile extends TileLegacyMachineBase
 		implements IEnergyReceiver, IEnergyProvider, IEnergyInterfaceTile
 {
-	public RFProviderTile(EnumPowerTier tier, int capacity) {
-		super(tier, capacity);
-	}
+
+	Random random = new Random();
 
 	@Override
 	public void updateEntity()

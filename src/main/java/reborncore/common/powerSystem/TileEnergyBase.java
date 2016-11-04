@@ -63,9 +63,9 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
         if(!getWorld().isRemote) {
             updateEntity();
         }
-	    if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-		    TeslaManager.manager.update(this);
-	    }
+//	    if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+//		    TeslaManager.manager.update(this);
+//	    }
 	    //TOOD re enable when fixing ic2 support
 	    //onLoaded();
     }
@@ -205,41 +205,41 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 		return RebornCoreConfig.getRebornPower();
 	}
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			if(TeslaManager.manager.hasCapability(capability, facing, this)){
-				return true;
-			}
-		}
-		if(getPowerConfig().forge()){
-			if(capability == CapabilityEnergy.ENERGY){
-				return true;
-			}
-		}
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
-			if(capability != null){
-				return teslaCap;
-			}
-		}
-		if(getPowerConfig().forge()){
-			if(capability == CapabilityEnergy.ENERGY){
-				if(forgePowerManager == null){
-					forgePowerManager = new ForgePowerManager(this, facing);
-				}
-				forgePowerManager.setFacing(facing);
-				return (T) forgePowerManager;
-			}
-		}
-		return super.getCapability(capability, facing);
-	}
+//	@Override
+//	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+//			if(TeslaManager.manager.hasCapability(capability, facing, this)){
+//				return true;
+//			}
+//		}
+//		if(getPowerConfig().forge()){
+//			if(capability == CapabilityEnergy.ENERGY){
+//				return true;
+//			}
+//		}
+//		return super.hasCapability(capability, facing);
+//	}
+//
+//	@Override
+//	@SuppressWarnings("unchecked")
+//	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+//			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
+//			if(capability != null){
+//				return teslaCap;
+//			}
+//		}
+//		if(getPowerConfig().forge()){
+//			if(capability == CapabilityEnergy.ENERGY){
+//				if(forgePowerManager == null){
+//					forgePowerManager = new ForgePowerManager(this, facing);
+//				}
+//				forgePowerManager.setFacing(facing);
+//				return (T) forgePowerManager;
+//			}
+//		}
+//		return super.getCapability(capability, facing);
+//	}
 
 
 	// COFH

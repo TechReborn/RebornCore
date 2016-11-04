@@ -25,6 +25,8 @@ public abstract class TileMachineBase extends TileEnergyBase implements IWrencha
     /*-----------------------*/
 
 
+
+
     public TileMachineBase(EnumPowerTier tier, int capacity, int costPerTick, int ticksNeeded) {
         super(tier, capacity);
 

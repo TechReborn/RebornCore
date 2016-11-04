@@ -452,7 +452,7 @@ public class MultiblockWorldRegistry
 	 */
 	public void onChunkLoaded(int chunkX, int chunkZ)
 	{
-		long chunkHash = ChunkPos.asLong(chunkX, chunkZ);
+		long chunkHash = ChunkPos.chunkXZ2Int(chunkX, chunkZ);
 		if (partsAwaitingChunkLoad.containsKey(chunkHash))
 		{
 			synchronized (partsAwaitingChunkLoadMutex)

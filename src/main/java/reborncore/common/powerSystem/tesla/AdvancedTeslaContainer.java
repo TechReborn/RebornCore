@@ -6,19 +6,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.TileEnergyBase;
+import reborncore.common.powerSystem.TilePowerAcceptor;
 
 /**
  * Created by modmuss50 on 06/05/2016.
  */
 public class AdvancedTeslaContainer implements ITeslaConsumer, ITeslaHolder, ITeslaProducer {
 
-    public TileEnergyBase tile;
+    public TilePowerAcceptor tile;
 
-    public AdvancedTeslaContainer(TileEnergyBase tile) {
+    public AdvancedTeslaContainer(TilePowerAcceptor tile) {
         this.tile = tile;
     }
 
-    public AdvancedTeslaContainer(NBTBase nbt, TileEnergyBase tile) {
+    public AdvancedTeslaContainer(NBTBase nbt, TilePowerAcceptor tile) {
         this.tile = tile;
         this.readNBT(nbt);
     }

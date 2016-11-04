@@ -2,12 +2,15 @@ package reborncore.common.recipes;
 
 import java.util.ArrayList;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemUtils;
 import reborncore.api.recipe.IBaseRecipeType;
@@ -28,7 +31,7 @@ public class RecipeCrafter
 	/**
 	 * This is the parent tile
 	 */
-	public TileMachineBase parentTile;
+	public TileEntity parentTile;
 
 	/**
 	 * This is the place to use the power from
@@ -48,7 +51,7 @@ public class RecipeCrafter
 	/**
 	 * This is the inventory to use for the crafting
 	 */
-	public Inventory inventory;
+	public IInventory inventory;
 
 	/**
 	 * This is the list of the slots that the crafting logic should look for the
@@ -117,6 +120,26 @@ public class RecipeCrafter
 		}
 	}
 
+	@Deprecated
+	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, reborncore.common.util.Inventory inventory,
+	                     int[] inputSlots, int[] outputSlots)
+	{
+		this.recipeName = recipeName;
+		this.parentTile = parentTile;
+		if (parentTile instanceof IEnergyInterfaceTile)
+		{
+			energy = (IEnergyInterfaceTile) parentTile;
+		}
+		this.inputs = inputs;
+		this.outputs = outputs;
+		this.inventory = inventory;
+		this.inputSlots = inputSlots;
+		this.outputSlots = outputSlots;
+		if(!(parentTile instanceof IRecipeCrafterProvider)){
+			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
+		}
+	}
+
 	/**
 	 * Call this on the tile tick
 	 */
@@ -129,10 +152,10 @@ public class RecipeCrafter
 		ticksSinceLastChange++;
 		if (ticksSinceLastChange == 20)
 		{// Force a has chanced every second
-			inventory.isDirty = true;
+			setInvDirty(true);
 			ticksSinceLastChange = 0;
 		}
-		if (currentRecipe == null && inventory.isDirty)
+		if (currentRecipe == null && isInvDirty())
 		{// It will now look for new recipes.
 			currentTickTime = 0;
 			for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName))
@@ -163,7 +186,7 @@ public class RecipeCrafter
 			}
 		} else
 		{
-			if (inventory.isDirty && !hasAllInputs())
+			if (isInvDirty() && !hasAllInputs())
 			{// If it doesn't have all the inputs reset
 				currentRecipe = null;
 				currentTickTime = -1;
@@ -215,10 +238,7 @@ public class RecipeCrafter
 				}
 			}
 		}
-		if (inventory.isDirty)
-		{
-			inventory.isDirty = false;
-		}
+		setInvDirty(false);
 	}
 
 	public boolean hasAllInputs()
@@ -452,6 +472,23 @@ public class RecipeCrafter
 		} catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public boolean isInvDirty(){
+		if(inventory instanceof Inventory){
+			return ((Inventory) inventory).isDirty;
+		} else if (inventory instanceof reborncore.common.util.Inventory){
+			return  ((reborncore.common.util.Inventory) inventory).hasChanged;
+		}
+		return true;
+	}
+
+	public void setInvDirty(boolean isDiry){
+		if(inventory instanceof Inventory){
+			((Inventory) inventory).isDirty = isDiry;
+		} else if (inventory instanceof reborncore.common.util.Inventory){
+			((reborncore.common.util.Inventory) inventory).hasChanged = isDiry;
 		}
 	}
 }
