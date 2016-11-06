@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import reborncore.RebornCore;
 import reborncore.shields.FaceShield;
 import reborncore.shields.api.ShieldRegistry;
@@ -13,6 +14,7 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,15 +60,23 @@ public class ShieldJsonLoader {
         {
             try {
                 File file = new File(event.getModConfigurationDirectory(), "reborncore/shields.json");
-                FileUtils.copyURLToFile(new URL(RebornCore.WEB_URL + "reborncore/shields2.json"), file);
-                if (file.exists()) {
-                    Gson gson = new Gson();
-                    BufferedReader reader = new BufferedReader(new FileReader(file));
-                    Type typeOfHashMap = new TypeToken<ShieldJsonFile>() {
-                    }.getType();
-                    shieldJsonFile = gson.fromJson(reader, typeOfHashMap);
-                    hasValidJsonFile = true;
-                }
+	            if(file.exists()){
+		            file.delete();
+	            }
+
+	            URLConnection con = new URL(RebornCore.WEB_URL + "reborncore/shields2.json").openConnection();
+	            InputStream in = con.getInputStream();
+	            String encoding = con.getContentEncoding();
+	            encoding = encoding == null ? "UTF-8" : encoding;
+	            String body = IOUtils.toString(in, encoding);
+
+	            Gson gson = new Gson();
+	            BufferedReader reader = new BufferedReader(new StringReader(body));
+	            Type typeOfHashMap = new TypeToken<ShieldJsonFile>() {
+	            }.getType();
+	            shieldJsonFile = gson.fromJson(reader, typeOfHashMap);
+	            hasValidJsonFile = true;
+
                 if (shieldJsonFile != null) {
                     for (ShieldUser user : shieldJsonFile.userList) {
                         ShieldRegistry.registerShield(new FaceShield(user.username));
