@@ -309,7 +309,7 @@ public class RecipeCrafter
 
 	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic)
 	{// Checks to see if it can fit the stack
-		if (stack == null)
+		if (stack == ItemStack.field_190927_a)
 		{
 			return true;
 		}

@@ -19,7 +19,7 @@ public class TorchHelper
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++)
 		{
 			ItemStack torchStack = player.inventory.getStackInSlot(i);
-			if (torchStack == null || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
+			if (torchStack == ItemStack.field_190927_a || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
 				continue;
 			Item item = torchStack.getItem();
 			if (!(item instanceof ItemBlock))

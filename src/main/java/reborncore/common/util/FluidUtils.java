@@ -47,7 +47,7 @@ public class FluidUtils
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 		ItemStack filled = getFilledContainer(fluidToFill, input);
-		if (filled != null && (output == null
+		if (filled != null && (output == ItemStack.field_190927_a
 				|| (output.func_190916_E() < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true))))
 		{
 			FluidStack fluidInContainer = getFluidStackInContainer(filled);
@@ -55,7 +55,7 @@ public class FluidUtils
 			if (drain != null && drain.amount == fluidInContainer.amount)
 			{
 				fluidHandler.drain(null, fluidInContainer, true);
-				if (output == null)
+				if (output == ItemStack.field_190927_a)
 					inv.setInventorySlotContents(outputSlot, filled);
 				else
 					output.func_190920_e(output.func_190916_E() + 1);
@@ -77,7 +77,7 @@ public class FluidUtils
 	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty)
 	{
 		if (fluid == null || empty == null)
-			return null;
+			return ItemStack.field_190927_a;
 		return FluidContainerRegistry.fillFluidContainer(new FluidStack(fluid, Integer.MAX_VALUE), empty);
 	}
 

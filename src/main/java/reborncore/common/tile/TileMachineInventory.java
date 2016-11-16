@@ -169,7 +169,7 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
                 }
             }
 
-            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.func_190916_E() - limit) : null;
+            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.func_190916_E() - limit) : ItemStack.field_190927_a;
         }
 
         @Override

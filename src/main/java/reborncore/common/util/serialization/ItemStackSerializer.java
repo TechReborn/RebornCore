@@ -60,7 +60,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 			}
 		}
 
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override

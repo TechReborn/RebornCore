@@ -103,7 +103,7 @@ public class ItemNBTHelper
 
 	public static boolean verifyExistance(ItemStack stack, String tag)
 	{
-		return stack != null && getNBT(stack).hasKey(tag);
+		return stack != ItemStack.field_190927_a && getNBT(stack).hasKey(tag);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected)

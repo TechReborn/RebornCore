@@ -22,6 +22,9 @@ public class Inventory implements IInventory
 	public Inventory(int size, String invName, int invStackLimit, TileEntity tileEntity)
 	{
 		contents = new ItemStack[size];
+		for (int i = 0; i < getSizeInventory(); i++) {
+			contents[i] = ItemStack.field_190927_a;
+		}
 		name = invName;
 		stackLimit = invStackLimit;
 		this.tile = tileEntity;
@@ -66,7 +69,7 @@ public class Inventory implements IInventory
 			hasChanged = true;
 			return stack;
 		}
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override
@@ -148,7 +151,7 @@ public class Inventory implements IInventory
 		NBTTagList slots = new NBTTagList();
 		for (byte index = 0; index < contents.length; ++index)
 		{
-			if (contents[index] != null && contents[index].func_190916_E() > 0)
+			if (contents[index] != ItemStack.field_190927_a && contents[index].func_190916_E() > 0)
 			{
 				NBTTagCompound slot = new NBTTagCompound();
 				slots.appendTag(slot);

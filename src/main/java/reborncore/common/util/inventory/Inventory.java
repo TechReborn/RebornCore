@@ -28,6 +28,9 @@ public class Inventory implements IInventory
 		this.inventorySize = inventorySize;
 		this.inventoryStackLimit = inventoryStackLimit;
 		this.inventoryContent = new ItemStack[this.getSizeInventory()];
+		for (int i = 0; i < getSizeInventory(); i++) {
+			inventoryContent[i] = ItemStack.field_190927_a;
+		}
 
 		this.tileBase = tileBase;
 	}
@@ -56,7 +59,7 @@ public class Inventory implements IInventory
 	public ItemStack decrStackSize(int slotId, int count) {
 		if(slotId < this.getSizeInventory()) {
 			ItemStack stack = this.getStackInSlot(slotId);
-			if(stack != null && stack.func_190916_E() > count) {
+			if(stack != ItemStack.field_190927_a && stack.func_190916_E() > count) {
 				ItemStack result = stack.splitStack(count);
 				markDirty();
 				return result;
@@ -65,7 +68,7 @@ public class Inventory implements IInventory
 			setInventorySlotContents(slotId, ItemStack.field_190927_a);
 			return stack;
 		}
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override
@@ -145,7 +148,7 @@ public class Inventory implements IInventory
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotId) {
-		if (slotId >= this.getSizeInventory() || this.getStackInSlot(slotId) == null) {
+		if (slotId >= this.getSizeInventory() || this.getStackInSlot(slotId) == ItemStack.field_190927_a) {
 			return ItemStack.field_190927_a;
 		}
 
@@ -178,7 +181,7 @@ public class Inventory implements IInventory
 	@Override
 	public void clear() {
 		for(int i=0; i<this.getSizeInventory(); i++) {
-			this.inventoryContent[i] = null;
+			this.inventoryContent[i] = ItemStack.field_190927_a;
 		}
 	}
 
@@ -196,220 +199,4 @@ public class Inventory implements IInventory
 	public ITextComponent getDisplayName() {
 		return new TextComponentString(this.getName());
 	}
-
-//	public final ItemStack[] contents;
-//	private final String name;
-//	private final int stackLimit;
-//	private IInventoryUpdateable tile;
-//
-//	public Inventory(int size, String name, int stackLimit)
-//	{
-//		this.contents = new ItemStack[size];
-//		this.name = name;
-//		this.stackLimit = stackLimit;
-//	}
-//
-//	public Inventory(int size, String name, int stackLimit, IInventoryUpdateable tile)
-//	{
-//		this(size, name, stackLimit);
-//		this.tile = tile;
-//	}
-//
-//	@Override
-//	public int getSizeInventory()
-//	{
-//		return contents.length;
-//	}
-//
-//	@Override
-//	public ItemStack getStackInSlot(int slotId)
-//	{
-//		return contents[slotId];
-//	}
-//
-//	@Override
-//	public ItemStack decrStackSize(int slotId, int count)
-//	{
-//		if (slotId < contents.length && contents[slotId] != null)
-//		{
-//			if (contents[slotId].stackSize > count)
-//			{
-//				ItemStack result = contents[slotId].splitStack(count);
-//				markDirty();
-//				return result;
-//			}
-//			ItemStack stack = contents[slotId];
-//			setInventorySlotContents(slotId, null);
-//			return stack;
-//		}
-//		return null;
-//	}
-//
-//	@Override
-//	public void setInventorySlotContents(int slotId, ItemStack itemstack)
-//	{
-//		if (slotId >= contents.length)
-//		{
-//			return;
-//		}
-//		contents[slotId] = itemstack;
-//
-//		if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit())
-//		{
-//			itemstack.stackSize = this.getInventoryStackLimit();
-//		}
-//		markDirty();
-//	}
-//
-//	@Override
-//	public int getInventoryStackLimit()
-//	{
-//		return stackLimit;
-//	}
-//
-//	@Override
-//	public void markDirty() {
-//		if(this.tile == null)
-//			return;
-//
-//		this.tile.updateInventory();
-//	}
-//
-//	@Override
-//	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-//	{
-//		return true;
-//	}
-//
-//	@Override
-//	public void openInventory(EntityPlayer player)
-//	{
-//
-//	}
-//
-//	@Override
-//	public void closeInventory(EntityPlayer player)
-//	{
-//
-//	}
-//
-//	public void readFromNBT(NBTTagCompound data)
-//	{
-//		readFromNBT(data, "Items");
-//	}
-//
-//	public void readFromNBT(NBTTagCompound data, String tag)
-//	{
-//		NBTTagList nbttaglist = data.getTagList(tag, Constants.NBT.TAG_COMPOUND);
-//
-//		for (int j = 0; j < nbttaglist.tagCount(); ++j)
-//		{
-//			NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
-//			int index;
-//			if (slot.hasKey("index"))
-//			{
-//				index = slot.getInteger("index");
-//			} else
-//			{
-//				index = slot.getByte("Slot");
-//			}
-//			if (index >= 0 && index < contents.length)
-//			{
-//				setInventorySlotContents(index, ItemStack.loadItemStackFromNBT(slot));
-//			}
-//		}
-//	}
-//
-//	public void writeToNBT(NBTTagCompound data)
-//	{
-//		writeToNBT(data, "Items");
-//	}
-//
-//	public void writeToNBT(NBTTagCompound data, String tag)
-//	{
-//		NBTTagList slots = new NBTTagList();
-//		for (byte index = 0; index < contents.length; ++index)
-//		{
-//			if (contents[index] != null && contents[index].stackSize > 0)
-//			{
-//				NBTTagCompound slot = new NBTTagCompound();
-//				slots.appendTag(slot);
-//				slot.setByte("Slot", index);
-//				contents[index].writeToNBT(slot);
-//			}
-//		}
-//		data.setTag(tag, slots);
-//	}
-//
-//	public void setTile(IInventoryUpdateable tile)
-//	{
-//		this.tile = tile;
-//	}
-//
-//	@Override
-//	public ItemStack removeStackFromSlot(int slotId)
-//	{
-//		if (this.contents[slotId] == null)
-//		{
-//			return null;
-//		}
-//
-//		ItemStack stackToTake = this.contents[slotId];
-//		setInventorySlotContents(slotId, null);
-//		return stackToTake;
-//	}
-//
-//	public ItemStack[] getStacks()
-//	{
-//		return contents;
-//	}
-//
-//	@Override
-//	public boolean isItemValidForSlot(int i, ItemStack itemstack)
-//	{
-//		return true;
-//	}
-//
-//	// TODO find out what this is
-//	@Override
-//	public int getField(int id)
-//	{
-//		return 0;
-//	}
-//
-//	@Override
-//	public void setField(int id, int value)
-//	{
-//
-//	}
-//
-//	@Override
-//	public int getFieldCount()
-//	{
-//		return 0;
-//	}
-//
-//	@Override
-//	public void clear()
-//	{
-//
-//	}
-//
-//	@Override
-//	public String getName()
-//	{
-//		return name;
-//	}
-//
-//	@Override
-//	public boolean hasCustomName()
-//	{
-//		return false;
-//	}
-//
-//	@Override
-//	public ITextComponent getDisplayName()
-//	{
-//		return new TextComponentString(name);
-//	}
 }

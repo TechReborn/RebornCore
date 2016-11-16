@@ -414,7 +414,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 				return stack.getItem().getContainerItem(stack);
 			} else
 			{
-				return null;
+				return ItemStack.field_190927_a;
 			}
 		} else
 		{

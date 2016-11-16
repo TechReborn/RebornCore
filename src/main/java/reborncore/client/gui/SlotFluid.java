@@ -18,7 +18,7 @@ public class SlotFluid extends reborncore.client.gui.slots.SlotFluid
 	{
 
 		return FluidContainerRegistry.isContainer(stack)
-				|| (stack != null && stack.getItem() instanceof IFluidContainerItem);
+				|| (stack != ItemStack.field_190927_a && stack.getItem() instanceof IFluidContainerItem);
 
 	}
 }

@@ -290,7 +290,7 @@ public class InventoryHelper
 
 				return itemstack;
 			}
-			return null;
+			return ItemStack.field_190927_a;
 		}
 
 		@Override
@@ -344,7 +344,7 @@ public class InventoryHelper
 
 		public boolean isItem(int slot, Item item)
 		{
-			return inventoryContents[slot] != null && inventoryContents[slot].getItem() == item;
+			return inventoryContents[slot] != ItemStack.field_190927_a && inventoryContents[slot].getItem() == item;
 		}
 
 		@Override
@@ -432,7 +432,7 @@ public class InventoryHelper
 			NBTTagList nbttaglist = new NBTTagList();
 			for (int i = 0; i < inventoryContents.length; i++)
 			{
-				if (inventoryContents[i] != null)
+				if (inventoryContents[i] != ItemStack.field_190927_a)
 				{
 					NBTTagCompound stacktag = new NBTTagCompound();
 					stacktag.setByte("Slot", (byte) i);
@@ -449,10 +449,10 @@ public class InventoryHelper
 				if (i < getSizeInventory())
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
-					if (stack != null)
+					if (stack != ItemStack.field_190927_a)
 						setInventorySlotContents(i, stack.copy());
 					else
-						setInventorySlotContents(i, null);
+						setInventorySlotContents(i, ItemStack.field_190927_a);
 				}
 		}
 

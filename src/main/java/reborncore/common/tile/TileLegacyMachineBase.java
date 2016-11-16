@@ -220,7 +220,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().getStackInSlot(index);
 		}
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().decrStackSize(index, count);
 		}
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().removeStackFromSlot(index);
 		}
-		return null;
+		return ItemStack.field_190927_a;
 	}
 
 	@Override
