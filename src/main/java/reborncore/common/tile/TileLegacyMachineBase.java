@@ -41,9 +41,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public void syncWithAll()
 	{
-		if (!worldObj.isRemote)
+		if (!world.isRemote)
 		{
-			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), worldObj);
+			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), world);
 		}
 	}
 
@@ -83,39 +83,39 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public int getFacingInt()
 	{
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase)
 		{
-			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos)).getIndex();
+			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
 		}
 		return 0;
 	}
 
 	public EnumFacing getFacingEnum()
 	{
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase)
 		{
-			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos));
+			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
 		}
 		return null;
 	}
 
 	public void setFacing(EnumFacing enumFacing)
 	{
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase)
 		{
-			((BlockMachineBase) block).setFacing(enumFacing, worldObj, pos);
+			((BlockMachineBase) block).setFacing(enumFacing, world, pos);
 		}
 	}
 
 	public boolean isActive()
 	{
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase)
 		{
-			return worldObj.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+			return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
 		}
 		return false;
 	}
@@ -200,6 +200,19 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			return getInventoryForTile().get().getSizeInventory();
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean func_191420_l() {
+		if(!getInventoryForTile().isPresent()){
+			return true;
+		}
+		for (ItemStack itemstack : getInventoryForTile().get().contents) {
+			if (!itemstack.func_190926_b()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 				jsonObject.addProperty(META_VALUE, src.getItemDamage());
 			}
 
-			jsonObject.addProperty(STACK_SIZE, src.stackSize);
+			jsonObject.addProperty(STACK_SIZE, src.func_190916_E());
 
 			if (src.getTagCompound() != null) {
 				jsonObject.addProperty(TAG_COMPOUND, src.getTagCompound().toString());

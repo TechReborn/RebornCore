@@ -45,21 +45,21 @@ public abstract class ItemMultiPart extends Item implements IItemMultipartFactor
     }
 
     protected void consumeItem(ItemStack stack) {
-
-        stack.stackSize--;
+		stack.func_190920_e(-1);
     }
 
-    @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
-            float hitX, float hitY, float hitZ) {
-
-        Vec3d hit = new Vec3d(hitX, hitY, hitZ);
-        double depth = ((hit.xCoord * 2 - 1) * side.getFrontOffsetX() + (hit.yCoord * 2 - 1) * side.getFrontOffsetY()
-                + (hit.zCoord * 2 - 1) * side.getFrontOffsetZ());
-        if (depth < 1 && place(world, pos, side, hit, stack, player)) return EnumActionResult.SUCCESS;
-        if (place(world, pos.offset(side), side.getOpposite(), hit, stack, player)) return EnumActionResult.SUCCESS;
-        return EnumActionResult.PASS;
-    }
+    //TODO mappings pls
+//    @Override
+//    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
+//            float hitX, float hitY, float hitZ) {
+//
+//        Vec3d hit = new Vec3d(hitX, hitY, hitZ);
+//        double depth = ((hit.xCoord * 2 - 1) * side.getFrontOffsetX() + (hit.yCoord * 2 - 1) * side.getFrontOffsetY()
+//                + (hit.zCoord * 2 - 1) * side.getFrontOffsetZ());
+//        if (depth < 1 && place(world, pos, side, hit, stack, player)) return EnumActionResult.SUCCESS;
+//        if (place(world, pos.offset(side), side.getOpposite(), hit, stack, player)) return EnumActionResult.SUCCESS;
+//        return EnumActionResult.PASS;
+//    }
 
     public SoundType getPlacementSound(ItemStack stack) {
 

@@ -18,7 +18,7 @@ public class ItemUtils
 	public static boolean isItemEqual(final ItemStack a, final ItemStack b, final boolean matchDamage,
 			final boolean matchNBT)
 	{
-		if (a == null || b == null)
+		if (a == ItemStack.field_190927_a || b == ItemStack.field_190927_a)
 			return false;
 		if (a.getItem() != b.getItem())
 			return false;
@@ -41,7 +41,7 @@ public class ItemUtils
 		{
 			return true;
 		}
-		if (a == null || b == null)
+		if (a == ItemStack.field_190927_a || b == ItemStack.field_190927_a)
 			return false;
 		if (useOreDic)
 		{
@@ -75,7 +75,7 @@ public class ItemUtils
 		for (byte slot = 0; slot < inv.getSizeInventory(); slot++)
 		{
 			ItemStack stack = inv.getStackInSlot(slot);
-			if (stack != null)
+			if (stack != ItemStack.field_190927_a)
 			{
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", slot);
@@ -103,21 +103,21 @@ public class ItemUtils
 
 	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data)
 	{
-		if (stack == null || stack.stackSize <= 0)
+		if (stack == ItemStack.field_190927_a || stack.func_190916_E() <= 0)
 			return;
-		if (stack.stackSize > 127)
-			stack.stackSize = 127;
+		if (stack.func_190916_E() > 127)
+			stack.func_190920_e(127);
 		stack.writeToNBT(data);
 	}
 
 	public static ItemStack readItemFromNBT(NBTTagCompound data)
 	{
-		return ItemStack.loadItemStackFromNBT(data);
+		return new ItemStack(data);
 	}
 
 	public static List<ItemStack> getStackWithAllOre(ItemStack stack)
 	{
-		if (stack == null)
+		if (stack == ItemStack.field_190927_a)
 		{
 			return new ArrayList<ItemStack>();
 		}
@@ -127,7 +127,7 @@ public class ItemUtils
 			for (ItemStack ore : OreDictionary.getOres(OreDictionary.getOreName(oreID)))
 			{
 				ItemStack newOre = ore.copy();
-				newOre.stackSize = stack.stackSize;
+				newOre.func_190920_e(stack.func_190916_E());
 				list.add(newOre);
 			}
 		}

@@ -48,14 +48,14 @@ public class MultiblockRenderEvent {
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) throws Throwable {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.thePlayer != null && mc.objectMouseOver != null && !mc.thePlayer.isSneaking()) {
+		if (mc.player != null && mc.objectMouseOver != null && !mc.player.isSneaking()) {
 			if (currentMultiblock != null) {
 				BlockPos anchorPos = anchor != null ? anchor : mc.objectMouseOver.getBlockPos();
 
 				Multiblock mb = currentMultiblock.getForIndex(0);
 
 				for (MultiblockComponent comp : mb.getComponents()) {
-					renderComponent(comp, anchorPos, event.getPartialTicks(), mc.thePlayer);
+					renderComponent(comp, anchorPos, event.getPartialTicks(), mc.player);
 				}
 
 			}
@@ -68,7 +68,7 @@ public class MultiblockRenderEvent {
 		double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
 		BlockPos pos = anchor.add(comp.getRelativePosition());
 		Minecraft minecraft = Minecraft.getMinecraft();
-		World world = player.worldObj;
+		World world = player.world;
 
 		minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
@@ -127,7 +127,7 @@ public class MultiblockRenderEvent {
 	public void breakBlock(BlockEvent.BreakEvent event) {
 		if (parent != null) {
 			if (event.getPos().getX() == parent.x && event.getPos().getY() == parent.y && event.getPos().getZ() == parent.z
-				&& Minecraft.getMinecraft().theWorld == parent.world) {
+				&& Minecraft.getMinecraft().world == parent.world) {
 				setMultiblock(null);
 			}
 		}

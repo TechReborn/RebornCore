@@ -174,14 +174,15 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
         return tile.getPartContainer().getHardness(player, hit);
     }
 
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem,
-            EnumFacing side, float hitX, float hitY, float hitZ) {
-
-        TileMultipartContainer tile = getMultipartTile(world, pos);
-        if (tile == null) return false;
-        return tile.getPartContainer().onActivated(player, hand, heldItem, reTrace(world, pos, player));
-    }
+    //TODO wait for mappings, as I cba to fix this
+//    @Override
+//    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem,
+//            EnumFacing side, float hitX, float hitY, float hitZ) {
+//
+//        TileMultipartContainer tile = getMultipartTile(world, pos);
+//        if (tile == null) return false;
+//        return tile.getPartContainer().onActivated(player, hand, heldItem, reTrace(world, pos, player));
+//    }
 
     @Override
     public void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {
@@ -192,11 +193,11 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos p_189540_5_) {
 
         TileMultipartContainer tile = getMultipartTile(worldIn, pos);
         if (tile == null) return;
-        tile.getPartContainer().onNeighborBlockChange(neighborBlock);
+        tile.getPartContainer().onNeighborBlockChange(blockIn);
     }
 
     @Override

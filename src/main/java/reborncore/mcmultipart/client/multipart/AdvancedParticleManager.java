@@ -28,9 +28,9 @@ public class AdvancedParticleManager extends ParticleManager {
 
     public static AdvancedParticleManager getInstance(ParticleManager particleManager) {
 
-        if (instance == null) return instance = new AdvancedParticleManager(Minecraft.getMinecraft().theWorld,
+        if (instance == null) return instance = new AdvancedParticleManager(Minecraft.getMinecraft().world,
                 Minecraft.getMinecraft().renderEngine, particleManager);
-        instance.worldObj = Minecraft.getMinecraft().theWorld;
+        instance.worldObj = Minecraft.getMinecraft().world;
         instance.parent = new WeakReference<ParticleManager>(particleManager);
         return instance;
     }

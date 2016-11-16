@@ -65,7 +65,7 @@ public class MessageWrappedPartPlacement implements IMessage, IMessageHandler<Me
 
     private static void handlePacket(MessageWrappedPartPlacement message, EntityPlayer player) {
 
-        World world = player.worldObj;
+        World world = player.world;
         RayTraceResult mop = world.rayTraceBlocks(RayTraceUtils.getStart(player), RayTraceUtils.getEnd(player));
         if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) return;
         BlockPos pos = mop.getBlockPos();

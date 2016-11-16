@@ -165,7 +165,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
     }
 
     /**
-     * Gets the hardness of this part. Similar to {@link Block#getBlockHardness(World, BlockPos)}, not to be confused with
+     * Gets the hardness of this part. Similar to {@link Block#getHardness(PartMOP)}, not to be confused with
      * {@link IMultipart#getStrength(EntityPlayer, PartMOP)}.
      */
     public float getHardness(PartMOP hit) {
@@ -407,7 +407,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
 
         World world = getWorld();
         BlockPos pos = getPos();
-        if (world != null) world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
+        if (world != null) world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), true);
     }
 
     protected void notifyPartUpdate() {

@@ -21,7 +21,7 @@ public class FluidUtils
 				emptyItem = ((UniversalBucket) input.getItem()).getEmpty();
 			}
 			if (fluidInContainer != null
-					&& (emptyItem == null || output == null || (output.stackSize < output.getMaxStackSize()
+					&& (emptyItem == null || output == null || (output.func_190916_E() < output.getMaxStackSize()
 							&& ItemUtils.isItemEqual(output, emptyItem, true, true))))
 			{
 				int used = fluidHandler.fill(null, fluidInContainer, false);
@@ -32,7 +32,7 @@ public class FluidUtils
 						if (output == null)
 							inv.setInventorySlotContents(outputSlot, emptyItem);
 						else
-							output.stackSize++;
+							output.func_190920_e(output.func_190916_E() + 1);
 					inv.decrStackSize(inputSlot, 1);
 					return true;
 				}
@@ -48,7 +48,7 @@ public class FluidUtils
 		ItemStack output = inv.getStackInSlot(outputSlot);
 		ItemStack filled = getFilledContainer(fluidToFill, input);
 		if (filled != null && (output == null
-				|| (output.stackSize < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true))))
+				|| (output.func_190916_E() < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true))))
 		{
 			FluidStack fluidInContainer = getFluidStackInContainer(filled);
 			FluidStack drain = fluidHandler.drain(null, fluidInContainer, false);
@@ -58,7 +58,7 @@ public class FluidUtils
 				if (output == null)
 					inv.setInventorySlotContents(outputSlot, filled);
 				else
-					output.stackSize++;
+					output.func_190920_e(output.func_190916_E() + 1);
 				inv.decrStackSize(inputSlot, 1);
 				return true;
 			}

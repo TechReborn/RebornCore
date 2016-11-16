@@ -132,67 +132,67 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 
         @Override
         public ItemStack insertItem(int slotIndex, ItemStack stack, boolean simulate) {
-            if(stack == null || stack.stackSize == 0)
-                return null;
+            if(stack == ItemStack.field_190927_a || stack.func_190916_E() == 0)
+                return ItemStack.field_190927_a;
 
             Slot slot = slotMap.get(facing).get(slotIndex);
             if(!slot.getHasStack()) {
                 slot.putStack(stack);
-                return null;
+                return ItemStack.field_190927_a;
             }
 
             ItemStack existing = slot.getStack();
             int limit = slot.getSlotStackLimit();
 
-            if (existing != null)
+            if (existing != ItemStack.field_190927_a)
             {
                 if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
                     return stack;
 
-                limit -= existing.stackSize;
+                limit -= existing.func_190916_E();
             }
 
             if (limit <= 0)
                 return stack;
 
-            boolean reachedLimit = stack.stackSize > limit;
+            boolean reachedLimit = stack.func_190916_E() > limit;
 
             if (!simulate)
             {
-                if (existing == null)
+                if (existing == ItemStack.field_190927_a)
                 {
                     slot.putStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
                 }
                 else
                 {
-                    existing.stackSize += reachedLimit ? limit : stack.stackSize;
+	                existing.func_190920_e(+(reachedLimit ? limit : stack.func_190916_E()));
                 }
             }
 
-            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.stackSize - limit) : null;
+            return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.func_190916_E() - limit) : null;
         }
 
         @Override
         public ItemStack extractItem(int slotIndex, int amount, boolean simulate) {
             if (amount == 0)
-                return null;
+                return ItemStack.field_190927_a;
 
             Slot slot = slotMap.get(facing).get(slotIndex);
-            if(slot.getStack() == null) {
-                return null;
+            if(slot.getStack() == ItemStack.field_190927_a) {
+                return ItemStack.field_190927_a;
             }
 
             ItemStack existing = slot.getStack();
-            if (existing == null)
-                return null;
+            if (existing == ItemStack.field_190927_a)
+                return ItemStack.field_190927_a;
 
             int toExtract = Math.min(amount, existing.getMaxStackSize());
 
-            if (existing.stackSize <= toExtract)
+            if (existing.func_190916_E() <= toExtract)
             {
                 if (!simulate)
                 {
-                    slot.putStack(null);
+                    slot.putStack(ItemStack.field_190927_a);
                 }
                 return existing;
             }
@@ -200,7 +200,7 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
             {
                 if (!simulate)
                 {
-                    slot.putStack(ItemHandlerHelper.copyStackWithSize(existing, existing.stackSize - toExtract));
+                    slot.putStack(ItemHandlerHelper.copyStackWithSize(existing, existing.func_190916_E() - toExtract));
                 }
 
                 return ItemHandlerHelper.copyStackWithSize(existing, toExtract);

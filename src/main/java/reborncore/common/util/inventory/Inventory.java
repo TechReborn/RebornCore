@@ -38,6 +38,16 @@ public class Inventory implements IInventory
 	}
 
 	@Override
+	public boolean func_191420_l() {
+		for (ItemStack itemstack : inventoryContent) {
+			if (!itemstack.func_190926_b()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public ItemStack getStackInSlot(int slotId) {
 		return this.inventoryContent[slotId];
 	}
@@ -46,13 +56,13 @@ public class Inventory implements IInventory
 	public ItemStack decrStackSize(int slotId, int count) {
 		if(slotId < this.getSizeInventory()) {
 			ItemStack stack = this.getStackInSlot(slotId);
-			if(stack != null && stack.stackSize > count) {
+			if(stack != null && stack.func_190916_E() > count) {
 				ItemStack result = stack.splitStack(count);
 				markDirty();
 				return result;
 			}
 
-			setInventorySlotContents(slotId, null);
+			setInventorySlotContents(slotId, ItemStack.field_190927_a);
 			return stack;
 		}
 		return null;
@@ -63,8 +73,8 @@ public class Inventory implements IInventory
 		if(slotId < this.getSizeInventory()) {
 			this.inventoryContent[slotId] = itemstack;
 
-			if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
-				itemstack.stackSize = this.getInventoryStackLimit();
+			if (itemstack != ItemStack.field_190927_a && itemstack.func_190916_E() > this.getInventoryStackLimit()) {
+				itemstack.func_190920_e(this.getInventoryStackLimit());
 			}
 			markDirty();
 		}
@@ -113,7 +123,7 @@ public class Inventory implements IInventory
 			}
 
 			if (index >= 0 && index < this.getSizeInventory()) {
-				this.setInventorySlotContents(index, ItemStack.loadItemStackFromNBT(slot));
+				this.setInventorySlotContents(index, new ItemStack(slot));
 			}
 		}
 	}
@@ -122,7 +132,7 @@ public class Inventory implements IInventory
 		NBTTagList slots = new NBTTagList();
 		for(byte index=0; index<this.getSizeInventory(); index++) {
 			ItemStack stack = this.getStackInSlot(index);
-			if (stack != null && stack.stackSize > 0) {
+			if (stack != ItemStack.field_190927_a && stack.func_190916_E() > 0) {
 				NBTTagCompound slot = new NBTTagCompound();
 				slots.appendTag(slot);
 				slot.setByte("Slot", index);
@@ -136,11 +146,11 @@ public class Inventory implements IInventory
 	@Override
 	public ItemStack removeStackFromSlot(int slotId) {
 		if (slotId >= this.getSizeInventory() || this.getStackInSlot(slotId) == null) {
-			return null;
+			return ItemStack.field_190927_a;
 		}
 
 		ItemStack stackToTake = this.getStackInSlot(slotId);
-		this.setInventorySlotContents(slotId, null);
+		this.setInventorySlotContents(slotId, ItemStack.field_190927_a);
 		return stackToTake;
 	}
 

@@ -93,32 +93,31 @@ public class PartPlacementWrapper {
 
         if (!block.isReplaceable(world, pos)) return false;
 
-        if (stack.stackSize == 0) {
+        if (stack.func_190916_E() == 0) {
             return false;
         } else if (!player.canPlayerEdit(pos, side, stack)) {
             return false;
-        } else if (world.canBlockBePlaced(placedBlock, pos, false, side, (Entity) null, stack)) {
-            if (world.isRemote) return true;
-
-            int i = stack.getItem().getMetadata(stack.getMetadata());
-            IBlockState iblockstate1 = placedBlock.onBlockPlaced(world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
-                    (float) hit.zCoord, i, player);
-
-            if (((ItemBlock) stack.getItem()).placeBlockAt(stack, player, world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
-                    (float) hit.zCoord, iblockstate1)) {
-                playPlacementSound(world, pos, stack, player);
-                if (!player.capabilities.isCreativeMode) consumeItem(stack);
-            }
-
-            return true;
-        } else {
-            return false;
+//        } else if (world.func_190522_c(placedBlock, pos, false, side, (Entity) null, stack);) {
+//            if (world.isRemote) return true;
+//
+//            int i = stack.getItem().getMetadata(stack.getMetadata());
+//            IBlockState iblockstate1 = placedBlock.onBlockPlaced(world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
+//                    (float) hit.zCoord, i, player);
+//
+//            if (((ItemBlock) stack.getItem()).placeBlockAt(stack, player, world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
+//                    (float) hit.zCoord, iblockstate1)) {
+//                playPlacementSound(world, pos, stack, player);
+//                if (!player.capabilities.isCreativeMode) consumeItem(stack);
+//            }
+//
+//            return true;
+//        } else {
         }
+	    return false;
     }
 
     protected void consumeItem(ItemStack stack) {
-
-        stack.stackSize--;
+		stack.func_190920_e(stack.func_190916_E() -1);
     }
 
     protected void playPlacementSound(World world, BlockPos pos, ItemStack stack, EntityPlayer player) {

@@ -282,7 +282,7 @@ public class MultipartContainer implements IMultipartContainer {
 
         for (IMultipart p : getParts())
             if (p != part) p.onPartChanged(part);
-        getWorldIn().notifyNeighborsOfStateChange(getPosIn(), getWorldIn().getBlockState(getPosIn()).getBlock());
+        getWorldIn().notifyNeighborsOfStateChange(getPosIn(), getWorldIn().getBlockState(getPosIn()).getBlock(), true);
     }
 
     public AdvancedRayTraceResultPart collisionRayTrace(Vec3d start, Vec3d end) {

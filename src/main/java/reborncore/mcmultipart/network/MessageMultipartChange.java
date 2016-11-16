@@ -105,7 +105,7 @@ public class MessageMultipartChange implements IMessage, IMessageHandler<Message
 
         EntityPlayer player = MCMultiPartMod.proxy.getPlayer();
         if (player == null || message.pos == null || message.type == null) return;
-        World world = player.worldObj;
+        World world = player.world;
         if (world == null) return;
 
         if (message.type == Type.ADD) {

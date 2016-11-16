@@ -29,7 +29,7 @@ import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.IOException;
 
-@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = "required-after:Forge@[12.18.2.2121,);")
+@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.11]", dependencies = "required-after:forge@[12.18.2.2121,);")
 public class RebornCore implements IModInfo
 {
 

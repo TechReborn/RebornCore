@@ -16,25 +16,25 @@ public class TorchHelper
 	public static EnumActionResult placeTorch(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
 			EnumFacing side, float xOffset, float yOffset, float zOffset, EnumHand hand)
 	{
-		for (int i = 0; i < player.inventory.mainInventory.length; i++)
+		for (int i = 0; i < player.inventory.mainInventory.size(); i++)
 		{
-			ItemStack torchStack = player.inventory.mainInventory[i];
+			ItemStack torchStack = player.inventory.getStackInSlot(i);
 			if (torchStack == null || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
 				continue;
 			Item item = torchStack.getItem();
 			if (!(item instanceof ItemBlock))
 				continue;
 			int oldMeta = torchStack.getItemDamage();
-			int oldSize = torchStack.stackSize;
+			int oldSize = torchStack.func_190916_E();
 			EnumActionResult result = torchStack.onItemUse(player, world, pos, hand, side, xOffset, yOffset, zOffset);
 			if (player.capabilities.isCreativeMode)
 			{
 				torchStack.setItemDamage(oldMeta);
-				torchStack.stackSize = oldSize;
-			} else if (torchStack.stackSize <= 0)
+				torchStack.func_190920_e(oldSize);
+			} else if (torchStack.func_190916_E() <= 0)
 			{
 				ForgeEventFactory.onPlayerDestroyItem(player, torchStack, hand);
-				player.inventory.mainInventory[i] = null;
+				player.inventory.setInventorySlotContents(i, ItemStack.field_190927_a);
 			}
 			if (result == EnumActionResult.SUCCESS)
 			{

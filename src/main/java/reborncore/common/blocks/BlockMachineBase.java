@@ -182,11 +182,11 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		{
 			ItemStack itemStack = inventory.getStackInSlot(i);
 
-			if (itemStack == null)
+			if (itemStack == ItemStack.field_190927_a)
 			{
 				continue;
 			}
-			if (itemStack != null && itemStack.stackSize > 0)
+			if (itemStack != ItemStack.field_190927_a && itemStack.func_190916_E() > 0)
 			{
 				if (itemStack.getItem() instanceof ItemBlock)
 				{
@@ -222,7 +222,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 			entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
 			entityItem.motionZ = rand.nextGaussian() * factor;
 			world.spawnEntityInWorld(entityItem);
-			itemStack.stackSize = 0;
+			itemStack.func_190920_e(0);
 		}
 	}
 
@@ -261,20 +261,21 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		}
 	}
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		if (fillBlockWithFluid(worldIn, pos, playerIn))
-		{
-			return true;
-		}
-		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ))
-		{
-			return true;
-		}
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
-	}
+	//TODO come back with mappings
+//	@Override
+//	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+//			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+//	{
+//		if (fillBlockWithFluid(worldIn, pos, playerIn))
+//		{
+//			return true;
+//		}
+//		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ))
+//		{
+//			return true;
+//		}
+//		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+//	}
 
 	@Deprecated
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float hitX,
@@ -287,7 +288,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 	{
 		ItemStack current = entityplayer.inventory.getCurrentItem();
 
-		if (current != null)
+		if (current != ItemStack.field_190927_a)
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
@@ -305,7 +306,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 						if (qty != 0 && !entityplayer.capabilities.isCreativeMode)
 						{
-							if (current.stackSize > 1)
+							if (current.func_190916_E() > 1)
 							{
 								if (!entityplayer.inventory
 										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
@@ -340,7 +341,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 							{
 								if (!entityplayer.capabilities.isCreativeMode)
 								{
-									if (current.stackSize > 1)
+									if (current.func_190916_E() > 1)
 									{
 										if (!entityplayer.inventory.addItemStackToInventory(filled))
 										{
@@ -367,7 +368,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 					}
 				} else if (current.getItem() instanceof IFluidContainerItem)
 				{
-					if (current.stackSize != 1)
+					if (current.func_190916_E() != 1)
 					{
 						return false;
 					}
@@ -406,7 +407,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	public static ItemStack consumeItem(ItemStack stack)
 	{
-		if (stack.stackSize == 1)
+		if (stack.func_190916_E() == 1)
 		{
 			if (stack.getItem().hasContainerItem(stack))
 			{

@@ -39,7 +39,7 @@ public class LootItem
         }
 
         ItemStack result = item.copy();
-        result.stackSize = size;
+	    result.func_190920_e(size);
         return result;
     }
 

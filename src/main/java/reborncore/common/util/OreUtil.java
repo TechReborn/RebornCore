@@ -28,7 +28,7 @@ public class OreUtil
 	public static ItemStack getStackFromName(String name, int stackSize)
 	{
 		ItemStack stack = OreDictionary.getOres(name).get(0).copy();
-		stack.stackSize = 1;
+		stack.func_190920_e(1);
 		return stack;
 	}
 

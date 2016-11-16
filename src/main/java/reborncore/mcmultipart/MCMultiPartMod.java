@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.9,1.9.4]")
+@Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.11]")
 public class MCMultiPartMod {
 
     public static final String MODID = "reborncore-mcmultipart", NAME = "reborncore-MCMultiPart", VERSION = "@MODVERSION@";
@@ -30,8 +30,7 @@ public class MCMultiPartMod {
 
         // Register the multipart container Block and TileEntity
         GameRegistry.register(multipart = new BlockMultipartContainer(), new ResourceLocation(MCMultiPartMod.MODID, "multipart"));
-        GameRegistry.registerTileEntityWithAlternatives(TileMultipartContainer.Ticking.class, "reborncore.mcmultipart:multipart.ticking",
-                "reborncore.mcmultipart:multipart");
+        GameRegistry.registerTileEntity(TileMultipartContainer.Ticking.class, "reborncore.mcmultipart:multipart.ticking");
         GameRegistry.registerTileEntity(TileMultipartContainer.class, "reborncore.mcmultipart:multipart.nonticking");
         // Register the default coverable tile for use with blocks that want to host covers, but don't require a TE
         GameRegistry.registerTileEntity(TileCoverable.class, "reborncore.mcmultipart:coverable");

@@ -71,7 +71,7 @@ public abstract class SimplePacket
 			return;
 		}
 		out.writeBoolean(true);
-		writeWorld(player.worldObj, out);
+		writeWorld(player.world, out);
 		writeString(player.getName(), out);
 	}
 

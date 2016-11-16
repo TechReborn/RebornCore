@@ -12,7 +12,7 @@ public class MultiblockClientTickHandler
 	{
 		if (event.phase == TickEvent.Phase.START)
 		{
-			MultiblockRegistry.tickStart(Minecraft.getMinecraft().theWorld);
+			MultiblockRegistry.tickStart(Minecraft.getMinecraft().world);
 		}
 	}
 }
