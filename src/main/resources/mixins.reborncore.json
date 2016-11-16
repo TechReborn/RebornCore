@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "reborncore.asm.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinItemStack",
+    "MixinFMLModContainer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap" : "reborncore.refmap.json"
+}

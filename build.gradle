@@ -50,6 +50,10 @@ repositories {
         name = "ic2"
         url = "http://maven.ic2.player.to/"
     }
+	maven {
+		name = 'SpongePowered'
+		url = 'http://repo.spongepowered.org/maven'
+	}
 }
 
 configurations {
@@ -81,6 +85,11 @@ dependencies {
     shade 'org.hjson:hjson:1.1.4'
    // compile "net.darkhax.tesla:Tesla:1.9.4-1.1.0.24:deobf"
     shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
+	shade('org.spongepowered:mixin:0.6-SNAPSHOT') {
+		exclude module: 'launchwrapper'
+		exclude module: 'guava'
+		exclude module: 'asm-commons'
+	}
 }
 
 processResources

@@ -2,6 +2,7 @@ package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -28,6 +29,7 @@ import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = "required-after:Forge@[12.18.2.2121,);")
 public class RebornCore implements IModInfo
