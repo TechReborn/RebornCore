@@ -290,13 +290,13 @@ public abstract class Microblock extends Multipart implements IMicroblock, IReds
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack heldItem, PartMOP hit) {
+    public boolean onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
         if (delegate != null) {
-            Optional<Boolean> activated = delegate.onActivated(player, hand, heldItem, hit);
+            Optional<Boolean> activated = delegate.onActivated(player, hand, hit);
             if (activated.isPresent()) return activated.get();
         }
-        return super.onActivated(player, hand, heldItem, hit);
+        return super.onActivated(player, hand, hit);
     }
 
     @Override

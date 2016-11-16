@@ -169,7 +169,7 @@ public interface IMultipart {
     /**
      * Called when a player right-clicks this part. Return true to play the right-click animation.
      */
-    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack heldItem, PartMOP hit);
+    public boolean onActivated(EntityPlayer player, EnumHand hand, PartMOP hit);
 
     /**
      * Called when a player left-clicks this part.

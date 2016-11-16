@@ -59,7 +59,7 @@ public class MicroblockDelegate {
 
     }
 
-    public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, ItemStack heldItem, PartMOP hit) {
+    public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
         return Optional.absent();
     }

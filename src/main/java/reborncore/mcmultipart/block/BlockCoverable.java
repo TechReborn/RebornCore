@@ -257,26 +257,25 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
     }
 
 
-    //TODO mappings pls
-//    @Override
-//    public final boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-//            ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-//
-//        RayTraceResult hit = reTraceAll(world, pos, player);
-//        if (hit instanceof PartMOP) {
-//            IMicroblockContainerTile tile = getMicroblockTile(world, pos);
-//            return tile != null ? tile.getMicroblockContainer().getPartContainer().onActivated(player, hand, heldItem, (PartMOP) hit)
-//                    : false;
-//        } else {
-//            return onBlockActivatedDefault(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
-//        }
-//    }
+    @Override
+    public final boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ) {
 
-//    public boolean onBlockActivatedDefault(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-//            ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-//
-//        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
-//    }
+        RayTraceResult hit = reTraceAll(world, pos, player);
+        if (hit instanceof PartMOP) {
+            IMicroblockContainerTile tile = getMicroblockTile(world, pos);
+            return tile != null ? tile.getMicroblockContainer().getPartContainer().onActivated(player, hand, (PartMOP) hit)
+                    : false;
+        } else {
+            return onBlockActivatedDefault(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+        }
+    }
+
+    public boolean onBlockActivatedDefault(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ) {
+
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+    }
 
     @Override
     public final void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {
@@ -295,19 +294,13 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
         super.onBlockClicked(world, pos, player);
     }
 
-    //TODO mappings pls
-//    @Override
-//    public final void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock) {
-//
-//        IMicroblockContainerTile tile = getMicroblockTile(world, pos);
-//        if (tile != null) tile.getMicroblockContainer().getPartContainer().onNeighborBlockChange(neighborBlock);
-//        onNeighborBlockChangeDefault(world, pos, state, neighborBlock);
-//    }
-//
-//    public void onNeighborBlockChangeDefault(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
-//
-//        super.neighborChanged(state, world, pos, neighborBlock);
-//    }
+    @Override
+    public final void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos pos2) {
+
+        IMicroblockContainerTile tile = getMicroblockTile(world, pos);
+        if (tile != null) tile.getMicroblockContainer().getPartContainer().onNeighborBlockChange(neighborBlock);
+    }
+
 
     @Override
     public final void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {

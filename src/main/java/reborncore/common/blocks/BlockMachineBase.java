@@ -261,21 +261,21 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		}
 	}
 
-	//TODO come back with mappings
-//	@Override
-//	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-//			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
-//	{
-//		if (fillBlockWithFluid(worldIn, pos, playerIn))
-//		{
-//			return true;
-//		}
-//		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ))
-//		{
-//			return true;
-//		}
-//		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
-//	}
+
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		if (fillBlockWithFluid(worldIn, pos, playerIn))
+		{
+			return true;
+		}
+		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ))
+		{
+			return true;
+		}
+		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
+	}
 
 	@Deprecated
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float hitX,

@@ -174,15 +174,14 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
         return tile.getPartContainer().getHardness(player, hit);
     }
 
-    //TODO wait for mappings, as I cba to fix this
-//    @Override
-//    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem,
-//            EnumFacing side, float hitX, float hitY, float hitZ) {
-//
-//        TileMultipartContainer tile = getMultipartTile(world, pos);
-//        if (tile == null) return false;
-//        return tile.getPartContainer().onActivated(player, hand, heldItem, reTrace(world, pos, player));
-//    }
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ) {
+
+        TileMultipartContainer tile = getMultipartTile(world, pos);
+        if (tile == null) return false;
+        return tile.getPartContainer().onActivated(player, hand, reTrace(world, pos, player));
+    }
 
     @Override
     public void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {

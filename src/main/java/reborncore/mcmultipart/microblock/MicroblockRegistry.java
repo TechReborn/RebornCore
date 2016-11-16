@@ -143,7 +143,7 @@ public class MicroblockRegistry {
         }
 
         @Override
-        public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, ItemStack heldItem, PartMOP hit) {
+        public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
             if (!delegated.getWorld().isRemote) {
                 player.displayGui(new InterfaceMicroCraftingTable(delegated));

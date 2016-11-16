@@ -261,7 +261,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack heldItem, PartMOP hit) {
+    public boolean onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
         return false;
     }

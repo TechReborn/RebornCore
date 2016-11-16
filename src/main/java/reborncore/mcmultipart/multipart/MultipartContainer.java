@@ -362,11 +362,11 @@ public class MultipartContainer implements IMultipartContainer {
             part.onNeighborTileChange(facing);
     }
 
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, PartMOP hit) {
+    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, PartMOP hit) {
 
         if (hit == null) return false;
         if (!partMap.values().contains(hit.partHit)) return false;
-        return hit.partHit.onActivated(playerIn, hand, heldItem, hit);
+        return hit.partHit.onActivated(playerIn, hand, hit);
     }
 
     public void onClicked(EntityPlayer playerIn, PartMOP hit) {
