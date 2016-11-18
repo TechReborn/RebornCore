@@ -241,3 +241,4 @@ task updateMappings(dependsOn: sourceJar) {
     }
 }
 
+apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
