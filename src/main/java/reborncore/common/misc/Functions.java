@@ -43,6 +43,6 @@ public class Functions
 				metaDataToSet = 5;
 				break;
 		}
-		return EnumFacing.getFront(metaDataToSet); // TODO 1.8 check this line
+		return EnumFacing.getFront(metaDataToSet);
 	}
 }

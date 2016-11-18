@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.11]")
 public class MCMultiPartMod {
 
-    public static final String MODID = "reborncore-mcmultipart", NAME = "reborncore-MCMultiPart", VERSION = "2.9.0";
+    public static final String MODID = "reborncore-mcmultipart", NAME = "reborncore-MCMultiPart", VERSION = "@MODVERSION@";
 
     @SidedProxy(serverSide = "reborncore.mcmultipart.MCMPCommonProxy", clientSide = "reborncore.mcmultipart.client.MCMPClientProxy")
     public static MCMPCommonProxy proxy;

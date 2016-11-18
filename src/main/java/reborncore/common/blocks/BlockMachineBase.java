@@ -9,6 +9,7 @@ import me.modmuss50.jsonDestroyer.api.ITexturedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -29,10 +30,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 
@@ -56,7 +54,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 	{
 		super(Material.ROCK);
 		setHardness(2f);
-		// setStepSound(soundTypeMetal); //TODO 1.9
+		setSoundType(SoundType.METAL);
 		this.hasCustomStaes = hasCustomStates;
 		if(!hasCustomStates){
 			this.setDefaultState(
@@ -250,11 +248,8 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 			TileEntity tile = world.getTileEntity(pos);
 			if (tile != null && tile instanceof TileMachineBase)
 			{
-				TileMachineBase machineBase = (TileMachineBase) tile;
-				// TODO fix
-				// world.setBlockState(pos,
-				// world.getBlockState(pos).withProperty(FACING,
-				// EnumFacing.getFront(world.getBlockState(pos).getValue(FACING)).getOpposite()));
+				 world.setBlockState(pos,
+				 world.getBlockState(pos).withProperty(FACING, axis));
 				return true;
 			}
 			return false;
@@ -284,126 +279,131 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		return false;
 	}
 
-	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer)
-	{
-		ItemStack current = entityplayer.inventory.getCurrentItem();
-
-		if (current != ItemStack.EMPTY)
-		{
-			TileEntity tile = world.getTileEntity(pos);
-
-			if (tile instanceof IFluidHandler)
-			{
-				IFluidHandler tank = (IFluidHandler) tile;
-				// Handle FluidContainerRegistry
-				if (FluidContainerRegistry.isContainer(current))
-				{
-					FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
-					// Handle filled containers
-					if (liquid != null)
-					{
-						int qty = tank.fill(null, liquid, true);
-
-						if (qty != 0 && !entityplayer.capabilities.isCreativeMode)
-						{
-							if (current.getCount() > 1)
-							{
-								if (!entityplayer.inventory
-										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
-								{
-									entityplayer.dropItem(
-											FluidContainerRegistry.drainFluidContainer(current), false);
-								}
-
-								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
-										consumeItem(current));
-							} else
-							{
-								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
-										FluidContainerRegistry.drainFluidContainer(current));
-							}
-						}
-
-						return true;
-
-						// Handle empty containers
-					} else
-					{
-						FluidStack available = tank.getTankInfo(null)[0].fluid;
-
-						if (available != null)
-						{
-							ItemStack filled = FluidContainerRegistry.fillFluidContainer(available, current);
-
-							liquid = FluidContainerRegistry.getFluidForFilledItem(filled);
-
-							if (liquid != null)
-							{
-								if (!entityplayer.capabilities.isCreativeMode)
-								{
-									if (current.getCount() > 1)
-									{
-										if (!entityplayer.inventory.addItemStackToInventory(filled))
-										{
-											return false;
-										} else
-										{
-											entityplayer.inventory.setInventorySlotContents(
-													entityplayer.inventory.currentItem, consumeItem(current));
-										}
-									} else
-									{
-										entityplayer.inventory.setInventorySlotContents(
-												entityplayer.inventory.currentItem, consumeItem(current));
-										entityplayer.inventory
-												.setInventorySlotContents(entityplayer.inventory.currentItem, filled);
-									}
-								}
-
-								tank.drain(null, liquid.amount, true);
-
-								return true;
-							}
-						}
-					}
-				} else if (current.getItem() instanceof IFluidContainerItem)
-				{
-					if (current.getCount() != 1)
-					{
-						return false;
-					}
-
-					if (!world.isRemote)
-					{
-						IFluidContainerItem container = (IFluidContainerItem) current.getItem();
-						FluidStack liquid = container.getFluid(current);
-						FluidStack tankLiquid = tank.getTankInfo(null)[0].fluid;
-						boolean mustDrain = liquid == null || liquid.amount == 0;
-						boolean mustFill = tankLiquid == null || tankLiquid.amount == 0;
-						if (mustDrain && mustFill)
-						{
-							// Both are empty, do nothing
-						} else if (mustDrain || !entityplayer.isSneaking())
-						{
-							liquid = tank.drain(null, 1000, false);
-							int qtyToFill = container.fill(current, liquid, true);
-							tank.drain(null, qtyToFill, true);
-						} else if (mustFill || entityplayer.isSneaking())
-						{
-							if (liquid.amount > 0)
-							{
-								int qty = tank.fill(null, liquid, false);
-								tank.fill(null, container.drain(current, qty, true), true);
-							}
-						}
-					}
-
-					return true;
-				}
-			}
-		}
+	//TODO 1.11 rewrite when I have something to test with
+	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer){
 		return false;
 	}
+
+//	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer)
+//	{
+//		ItemStack current = entityplayer.inventory.getCurrentItem();
+//
+//		if (current != ItemStack.EMPTY)
+//		{
+//			TileEntity tile = world.getTileEntity(pos);
+//
+//			if (tile instanceof IFluidHandler)
+//			{
+//				IFluidHandler tank = (IFluidHandler) tile;
+//				// Handle FluidContainerRegistry
+//				if (FluidContainerRegistry.isContainer(current))
+//				{
+//					FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
+//					// Handle filled containers
+//					if (liquid != null)
+//					{
+//						int qty = tank.fill(null, liquid, true);
+//
+//						if (qty != 0 && !entityplayer.capabilities.isCreativeMode)
+//						{
+//							if (current.getCount() > 1)
+//							{
+//								if (!entityplayer.inventory
+//										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
+//								{
+//									entityplayer.dropItem(
+//											FluidContainerRegistry.drainFluidContainer(current), false);
+//								}
+//
+//								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
+//										consumeItem(current));
+//							} else
+//							{
+//								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
+//										FluidContainerRegistry.drainFluidContainer(current));
+//							}
+//						}
+//
+//						return true;
+//
+//						// Handle empty containers
+//					} else
+//					{
+//						FluidStack available = tank.getTankInfo(null)[0].fluid;
+//
+//						if (available != null)
+//						{
+//							ItemStack filled = FluidContainerRegistry.fillFluidContainer(available, current);
+//
+//							liquid = FluidContainerRegistry.getFluidForFilledItem(filled);
+//
+//							if (liquid != null)
+//							{
+//								if (!entityplayer.capabilities.isCreativeMode)
+//								{
+//									if (current.getCount() > 1)
+//									{
+//										if (!entityplayer.inventory.addItemStackToInventory(filled))
+//										{
+//											return false;
+//										} else
+//										{
+//											entityplayer.inventory.setInventorySlotContents(
+//													entityplayer.inventory.currentItem, consumeItem(current));
+//										}
+//									} else
+//									{
+//										entityplayer.inventory.setInventorySlotContents(
+//												entityplayer.inventory.currentItem, consumeItem(current));
+//										entityplayer.inventory
+//												.setInventorySlotContents(entityplayer.inventory.currentItem, filled);
+//									}
+//								}
+//
+//								tank.drain(null, liquid.amount, true);
+//
+//								return true;
+//							}
+//						}
+//					}
+//				} else if (current.getItem() instanceof IFluidContainerItem)
+//				{
+//					if (current.getCount() != 1)
+//					{
+//						return false;
+//					}
+//
+//					if (!world.isRemote)
+//					{
+//						IFluidContainerItem container = (IFluidContainerItem) current.getItem();
+//						FluidStack liquid = container.getFluid(current);
+//						FluidStack tankLiquid = tank.getTankInfo(null)[0].fluid;
+//						boolean mustDrain = liquid == null || liquid.amount == 0;
+//						boolean mustFill = tankLiquid == null || tankLiquid.amount == 0;
+//						if (mustDrain && mustFill)
+//						{
+//							// Both are empty, do nothing
+//						} else if (mustDrain || !entityplayer.isSneaking())
+//						{
+//							liquid = tank.drain(null, 1000, false);
+//							int qtyToFill = container.fill(current, liquid, true);
+//							tank.drain(null, qtyToFill, true);
+//						} else if (mustFill || entityplayer.isSneaking())
+//						{
+//							if (liquid.amount > 0)
+//							{
+//								int qty = tank.fill(null, liquid, false);
+//								tank.fill(null, container.drain(current, qty, true), true);
+//							}
+//						}
+//					}
+//
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	public static ItemStack consumeItem(ItemStack stack)
 	{

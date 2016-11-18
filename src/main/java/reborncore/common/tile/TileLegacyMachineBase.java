@@ -21,7 +21,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
-import reborncore.client.gui.BaseSlot;
+import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.packets.PacketHandler;
@@ -371,7 +371,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getContainerForTile().isPresent()){
 			RebornContainer container = getContainerForTile().get();
 			if(container.slotMap.containsKey(index)){
-				BaseSlot slot = (BaseSlot) container.slotMap.get(index);
+				BaseSlot slot = container.slotMap.get(index);
 				if(slot.canWorldBlockRemove()){
 					return true;
 				}

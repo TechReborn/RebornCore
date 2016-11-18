@@ -2,8 +2,7 @@ package reborncore.client.gui.slots;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class SlotFluid extends BaseSlot
 {
@@ -16,8 +15,7 @@ public class SlotFluid extends BaseSlot
 	public boolean isItemValid(ItemStack stack)
 	{
 
-		return FluidContainerRegistry.isContainer(stack)
-				|| (stack != ItemStack.EMPTY && stack.getItem() instanceof IFluidContainerItem);
+		return FluidUtil.getFluidHandler(stack) != null;
 
 	}
 }
