@@ -93,11 +93,11 @@ public class PartPlacementWrapper {
 
         if (!block.isReplaceable(world, pos)) return false;
 
-        if (stack.func_190916_E() == 0) {
+        if (stack.getCount() == 0) {
             return false;
         } else if (!player.canPlayerEdit(pos, side, stack)) {
             return false;
-//        } else if (world.func_190522_c(placedBlock, pos, false, side, (Entity) null, stack);) {
+//        } else if (world.updateObservingBlocksAt(placedBlock, pos, false, side, (Entity) null, stack);) {
 //            if (world.isRemote) return true;
 //
 //            int i = stack.getItem().getMetadata(stack.getMetadata());
@@ -117,7 +117,7 @@ public class PartPlacementWrapper {
     }
 
     protected void consumeItem(ItemStack stack) {
-		stack.func_190920_e(stack.func_190916_E() -1);
+		stack.setCount(stack.getCount() -1);
     }
 
     protected void playPlacementSound(World world, BlockPos pos, ItemStack stack, EntityPlayer player) {

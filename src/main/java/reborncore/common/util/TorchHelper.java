@@ -19,22 +19,22 @@ public class TorchHelper
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++)
 		{
 			ItemStack torchStack = player.inventory.getStackInSlot(i);
-			if (torchStack == ItemStack.field_190927_a || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
+			if (torchStack == ItemStack.EMPTY || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
 				continue;
 			Item item = torchStack.getItem();
 			if (!(item instanceof ItemBlock))
 				continue;
 			int oldMeta = torchStack.getItemDamage();
-			int oldSize = torchStack.func_190916_E();
+			int oldSize = torchStack.getCount();
 			EnumActionResult result = torchStack.onItemUse(player, world, pos, hand, side, xOffset, yOffset, zOffset);
 			if (player.capabilities.isCreativeMode)
 			{
 				torchStack.setItemDamage(oldMeta);
-				torchStack.func_190920_e(oldSize);
-			} else if (torchStack.func_190916_E() <= 0)
+				torchStack.setCount(oldSize);
+			} else if (torchStack.getCount() <= 0)
 			{
 				ForgeEventFactory.onPlayerDestroyItem(player, torchStack, hand);
-				player.inventory.setInventorySlotContents(i, ItemStack.field_190927_a);
+				player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 			}
 			if (result == EnumActionResult.SUCCESS)
 			{

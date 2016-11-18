@@ -48,6 +48,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import reborncore.mcmultipart.multipart.IMultipartContainer.IMultipartContainerListener;
+
 /**
  * Helper class that contains all the logic required for an {@link IMultipartContainer} to work, as well as methods that are forwarded to
  * each of the parts.<br/>

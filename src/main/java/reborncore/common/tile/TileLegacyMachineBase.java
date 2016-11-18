@@ -203,12 +203,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
-	public boolean func_191420_l() {
+	public boolean isEmpty() {
 		if(!getInventoryForTile().isPresent()){
 			return true;
 		}
 		for (ItemStack itemstack : getInventoryForTile().get().contents) {
-			if (!itemstack.func_190926_b()) {
+			if (!itemstack.isEmpty()) {
 				return false;
 			}
 		}
@@ -220,7 +220,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().getStackInSlot(index);
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().decrStackSize(index, count);
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if(getInventoryForTile().isPresent()){
 			return getInventoryForTile().get().removeStackFromSlot(index);
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -255,9 +255,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().isUseableByPlayer(player);
+			return getInventoryForTile().get().isUsableByPlayer(player);
 		}
 		return false;
 	}

@@ -17,7 +17,7 @@ public class SlotFluid extends BaseSlot
 	{
 
 		return FluidContainerRegistry.isContainer(stack)
-				|| (stack != ItemStack.field_190927_a && stack.getItem() instanceof IFluidContainerItem);
+				|| (stack != ItemStack.EMPTY && stack.getItem() instanceof IFluidContainerItem);
 
 	}
 }

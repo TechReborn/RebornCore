@@ -182,11 +182,11 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		{
 			ItemStack itemStack = inventory.getStackInSlot(i);
 
-			if (itemStack == ItemStack.field_190927_a)
+			if (itemStack == ItemStack.EMPTY)
 			{
 				continue;
 			}
-			if (itemStack != ItemStack.field_190927_a && itemStack.func_190916_E() > 0)
+			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0)
 			{
 				if (itemStack.getItem() instanceof ItemBlock)
 				{
@@ -221,8 +221,8 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 			entityItem.motionX = rand.nextGaussian() * factor;
 			entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
 			entityItem.motionZ = rand.nextGaussian() * factor;
-			world.spawnEntityInWorld(entityItem);
-			itemStack.func_190920_e(0);
+			world.spawnEntity(entityItem);
+			itemStack.setCount(0);
 		}
 	}
 
@@ -288,7 +288,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 	{
 		ItemStack current = entityplayer.inventory.getCurrentItem();
 
-		if (current != ItemStack.field_190927_a)
+		if (current != ItemStack.EMPTY)
 		{
 			TileEntity tile = world.getTileEntity(pos);
 
@@ -306,7 +306,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 						if (qty != 0 && !entityplayer.capabilities.isCreativeMode)
 						{
-							if (current.func_190916_E() > 1)
+							if (current.getCount() > 1)
 							{
 								if (!entityplayer.inventory
 										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
@@ -341,7 +341,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 							{
 								if (!entityplayer.capabilities.isCreativeMode)
 								{
-									if (current.func_190916_E() > 1)
+									if (current.getCount() > 1)
 									{
 										if (!entityplayer.inventory.addItemStackToInventory(filled))
 										{
@@ -368,7 +368,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 					}
 				} else if (current.getItem() instanceof IFluidContainerItem)
 				{
-					if (current.func_190916_E() != 1)
+					if (current.getCount() != 1)
 					{
 						return false;
 					}
@@ -407,14 +407,14 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 	public static ItemStack consumeItem(ItemStack stack)
 	{
-		if (stack.func_190916_E() == 1)
+		if (stack.getCount() == 1)
 		{
 			if (stack.getItem().hasContainerItem(stack))
 			{
 				return stack.getItem().getContainerItem(stack);
 			} else
 			{
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			}
 		} else
 		{

@@ -9,7 +9,7 @@ public class OreDrop
 	public OreDrop(ItemStack drop, Double modifyer)
 	{
 		this.drop = drop;
-		this.count = drop.func_190916_E();
+		this.count = drop.getCount();
 		this.baseChance = 100;
 		this.modifyer = modifyer;
 	}
@@ -17,7 +17,7 @@ public class OreDrop
 	public OreDrop(ItemStack drop, double baseChance, Double modifyer)
 	{
 		this.drop = drop;
-		this.count = drop.func_190916_E();
+		this.count = drop.getCount();
 		this.baseChance = (int) (baseChance * 100);
 		this.modifyer = modifyer;
 	}

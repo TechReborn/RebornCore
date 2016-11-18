@@ -35,13 +35,13 @@ public class CustomDescriptionPacket implements INetworkPacket<CustomDescription
     @Override
     public void writeData(ExtendedPacketBuffer buffer) throws IOException {
         buffer.writeBlockPos(blockPos);
-        buffer.writeNBTTagCompoundToBuffer(nbt);
+        buffer.writeCompoundTag(nbt);
     }
 
     @Override
     public void readData(ExtendedPacketBuffer buffer) throws IOException {
         blockPos = buffer.readBlockPos();
-        nbt = buffer.readNBTTagCompoundFromBuffer();
+        nbt = buffer.readCompoundTag();
     }
 
     @Override

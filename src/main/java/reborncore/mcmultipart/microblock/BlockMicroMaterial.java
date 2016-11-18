@@ -17,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import reborncore.mcmultipart.microblock.IMicroMaterial.IDelegatedMicroMaterial;
+
 /**
  * A simple implementation of {@link IMicroMaterial} that's defined based on an {@link IBlockState}.
  */
@@ -45,7 +47,7 @@ public class BlockMicroMaterial implements IMicroMaterial {
 
     public BlockMicroMaterial(IBlockState blockState) {
 
-        this(blockState, ((Float) ReflectionHelper.getPrivateValue(Block.class, blockState.getBlock(), "blockHardness", "field_149782_v"))
+        this(blockState, ((Float) ReflectionHelper.getPrivateValue(Block.class, blockState.getBlock(), "blockHardness", "blockHardness"))
                 .floatValue());
     }
 

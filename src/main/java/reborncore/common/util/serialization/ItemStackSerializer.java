@@ -60,7 +60,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 			}
 		}
 
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 				jsonObject.addProperty(META_VALUE, src.getItemDamage());
 			}
 
-			jsonObject.addProperty(STACK_SIZE, src.func_190916_E());
+			jsonObject.addProperty(STACK_SIZE, src.getCount());
 
 			if (src.getTagCompound() != null) {
 				jsonObject.addProperty(TAG_COMPOUND, src.getTagCompound().toString());

@@ -65,8 +65,8 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.11-13.19.0.2130"
-	mappings = "snapshot_20161115"
+	version = "1.11-13.19.0.2152"
+	mappings = "snapshot_20161118"
     replace "@MODVERSION@", project.version
     runDir = "run"
     makeObfSourceJar = false
@@ -213,7 +213,6 @@ task updateMappings(dependsOn: sourceJar) {
     def fields = file('fields.csv')
 
     doLast {
-snapshot_20161115
         Map<String, String> map = new HashMap<>()
         methods.eachLine { line ->
             String[] pts = line.split(",")

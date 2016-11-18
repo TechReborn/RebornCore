@@ -36,7 +36,7 @@ public class SlotFake extends BaseSlot
 
 	public ItemStack decrStackSize(int par1)
 	{
-		return !this.mCanStackItem ? ItemStack.field_190927_a : super.decrStackSize(par1);
+		return !this.mCanStackItem ? ItemStack.EMPTY : super.decrStackSize(par1);
 	}
 
 	@Override

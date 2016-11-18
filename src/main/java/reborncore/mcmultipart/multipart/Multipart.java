@@ -158,7 +158,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
             for (ItemStack stack : getDrops()) {
                 EntityItem item = new EntityItem(world, x, y, z, stack);
                 item.setDefaultPickupDelay();
-                world.spawnEntityInWorld(item);
+                world.spawnEntity(item);
             }
         }
         getContainer().removePart(this);

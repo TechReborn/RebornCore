@@ -29,27 +29,27 @@ public class InventoryHelper
 		if (targetInventory.isItemValidForSlot(slot, stack))
 		{
 			ItemStack targetStack = targetInventory.getStackInSlot(slot);
-			if (targetStack == ItemStack.field_190927_a)
+			if (targetStack == ItemStack.EMPTY)
 			{
 				int space = targetInventory.getInventoryStackLimit();
-				int mergeAmount = Math.min(space, stack.func_190916_E());
+				int mergeAmount = Math.min(space, stack.getCount());
 
 				ItemStack copy = stack.copy();
-				copy.func_190920_e(mergeAmount);
+				copy.setCount(mergeAmount);
 				targetInventory.setInventorySlotContents(slot, copy);
-				stack.func_190920_e(-mergeAmount);
+				stack.setCount(-mergeAmount);
 			} else if (canMerge)
 			{
 				if (targetInventory.isItemValidForSlot(slot, stack) && areMergeCandidates(stack, targetStack))
 				{
 					int space = Math.min(targetInventory.getInventoryStackLimit(), targetStack.getMaxStackSize())
-							- targetStack.func_190916_E();
-					int mergeAmount = Math.min(space, stack.func_190916_E());
+							- targetStack.getCount();
+					int mergeAmount = Math.min(space, stack.getCount());
 
 					ItemStack copy = targetStack.copy();
-					copy.func_190920_e(mergeAmount);
+					copy.setCount(mergeAmount);
 					targetInventory.setInventorySlotContents(slot, copy);
-					stack.func_190920_e(-mergeAmount);
+					stack.setCount(-mergeAmount);
 				}
 			}
 		}
@@ -58,7 +58,7 @@ public class InventoryHelper
 	protected static boolean areMergeCandidates(ItemStack source, ItemStack target)
 	{
 		return source.isItemEqual(target) && ItemStack.areItemStackTagsEqual(source, target)
-				&& target.func_190916_E() < target.getMaxStackSize();
+				&& target.getCount() < target.getMaxStackSize();
 	}
 
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack)
@@ -80,7 +80,7 @@ public class InventoryHelper
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot,
 			boolean doMove, boolean canStack)
 	{
-		if (stack == ItemStack.field_190927_a)
+		if (stack == ItemStack.EMPTY)
 			return;
 
 		IInventory targetInventory = inventory;
@@ -116,7 +116,7 @@ public class InventoryHelper
 			else
 				attemptSlots = new int[0];
 		}
-		while (stack.func_190916_E() > 0 && i < attemptSlots.length)
+		while (stack.getCount() > 0 && i < attemptSlots.length)
 		{
 			if (side != null && inventory instanceof ISidedInventory)
 				if (!((ISidedInventory) inventory).canInsertItem(attemptSlots[i], stack, side.getOpposite()))
@@ -132,7 +132,7 @@ public class InventoryHelper
 
 	public static int testInventoryInsertion(IInventory inventory, ItemStack item, EnumFacing side)
 	{
-		if (item == ItemStack.field_190927_a || item.func_190916_E() == 0)
+		if (item == ItemStack.EMPTY || item.getCount() == 0)
 			return 0;
 		item = item.copy();
 
@@ -141,7 +141,7 @@ public class InventoryHelper
 
 		inventory.getSizeInventory();
 
-		int itemSizeCounter = item.func_190916_E();
+		int itemSizeCounter = item.getCount();
 		int[] availableSlots = new int[0];
 
 		if (inventory instanceof ISidedInventory)
@@ -164,21 +164,21 @@ public class InventoryHelper
 					continue;
 
 			ItemStack inventorySlot = inventory.getStackInSlot(i);
-			if (inventorySlot == ItemStack.field_190927_a)
+			if (inventorySlot == ItemStack.EMPTY)
 				itemSizeCounter -= Math.min(Math.min(itemSizeCounter, inventory.getInventoryStackLimit()),
 						item.getMaxStackSize());
 			else if (areMergeCandidates(item, inventorySlot))
 			{
 				int space = Math.min(inventory.getInventoryStackLimit(), inventorySlot.getMaxStackSize())
-						- inventorySlot.func_190916_E();
+						- inventorySlot.getCount();
 				itemSizeCounter -= Math.min(itemSizeCounter, space);
 			}
 		}
 
-		if (itemSizeCounter != item.func_190916_E())
+		if (itemSizeCounter != item.getCount())
 		{
 			itemSizeCounter = Math.max(itemSizeCounter, 0);
-			return item.func_190916_E() - itemSizeCounter;
+			return item.getCount() - itemSizeCounter;
 		}
 
 		return 0;
@@ -273,24 +273,24 @@ public class InventoryHelper
 		@Override
 		public ItemStack decrStackSize(int par1, int par2)
 		{
-			if (inventoryContents[par1] != ItemStack.field_190927_a)
+			if (inventoryContents[par1] != ItemStack.EMPTY)
 			{
 				ItemStack itemstack;
 
-				if (inventoryContents[par1].func_190916_E() <= par2)
+				if (inventoryContents[par1].getCount() <= par2)
 				{
 					itemstack = inventoryContents[par1];
-					inventoryContents[par1] = ItemStack.field_190927_a;
+					inventoryContents[par1] = ItemStack.EMPTY;
 					return itemstack;
 				}
 
 				itemstack = inventoryContents[par1].splitStack(par2);
-				if (inventoryContents[par1].func_190916_E() == 0)
-					inventoryContents[par1] = ItemStack.field_190927_a;
+				if (inventoryContents[par1].getCount() == 0)
+					inventoryContents[par1] = ItemStack.EMPTY;
 
 				return itemstack;
 			}
-			return ItemStack.field_190927_a;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -306,9 +306,9 @@ public class InventoryHelper
 		}
 
 		@Override
-		public boolean func_191420_l() {
+		public boolean isEmpty() {
 			for (ItemStack itemstack : inventoryContents) {
-				if (!itemstack.func_190926_b()) {
+				if (!itemstack.isEmpty()) {
 					return false;
 				}
 			}
@@ -330,21 +330,21 @@ public class InventoryHelper
 		public ItemStack removeStackFromSlot(int i)
 		{
 			if (i >= inventoryContents.length)
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 
-			if (inventoryContents[i] != ItemStack.field_190927_a)
+			if (inventoryContents[i] != ItemStack.EMPTY)
 			{
 				ItemStack itemstack = inventoryContents[i];
-				inventoryContents[i] = ItemStack.field_190927_a;
+				inventoryContents[i] = ItemStack.EMPTY;
 				return itemstack;
 			}
 
-			return ItemStack.field_190927_a;
+			return ItemStack.EMPTY;
 		}
 
 		public boolean isItem(int slot, Item item)
 		{
-			return inventoryContents[slot] != ItemStack.field_190927_a && inventoryContents[slot].getItem() == item;
+			return inventoryContents[slot] != ItemStack.EMPTY && inventoryContents[slot].getItem() == item;
 		}
 
 		@Override
@@ -378,7 +378,7 @@ public class InventoryHelper
 		}
 
 		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer)
+		public boolean isUsableByPlayer(EntityPlayer entityplayer)
 		{
 			return true;
 		}
@@ -422,8 +422,8 @@ public class InventoryHelper
 		{
 			inventoryContents[i] = itemstack;
 
-			if (itemstack != ItemStack.field_190927_a && itemstack.func_190916_E() > getInventoryStackLimit())
-				itemstack.func_190920_e(getInventoryStackLimit());
+			if (itemstack != ItemStack.EMPTY && itemstack.getCount() > getInventoryStackLimit())
+				itemstack.setCount(getInventoryStackLimit());
 		}
 
 		public void writeToNBT(NBTTagCompound tag)
@@ -432,7 +432,7 @@ public class InventoryHelper
 			NBTTagList nbttaglist = new NBTTagList();
 			for (int i = 0; i < inventoryContents.length; i++)
 			{
-				if (inventoryContents[i] != ItemStack.field_190927_a)
+				if (inventoryContents[i] != ItemStack.EMPTY)
 				{
 					NBTTagCompound stacktag = new NBTTagCompound();
 					stacktag.setByte("Slot", (byte) i);
@@ -449,10 +449,10 @@ public class InventoryHelper
 				if (i < getSizeInventory())
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
-					if (stack != ItemStack.field_190927_a)
+					if (stack != ItemStack.EMPTY)
 						setInventorySlotContents(i, stack.copy());
 					else
-						setInventorySlotContents(i, ItemStack.field_190927_a);
+						setInventorySlotContents(i, ItemStack.EMPTY);
 				}
 		}
 

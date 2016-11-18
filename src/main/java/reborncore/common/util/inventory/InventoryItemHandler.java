@@ -56,67 +56,67 @@ public class InventoryItemHandler implements IItemHandler {
 
     @Override
     public ItemStack insertItem(int slotIndex, ItemStack stack, boolean simulate) {
-        if(stack == ItemStack.field_190927_a || stack.func_190916_E() == 0)
-            return ItemStack.field_190927_a;
+        if(stack == ItemStack.EMPTY || stack.getCount() == 0)
+            return ItemStack.EMPTY;
 
         Slot slot = this.slotMap.get(this.facing).get(slotIndex);
         if(!slot.getHasStack()) {
             slot.putStack(stack);
-            return ItemStack.field_190927_a;
+            return ItemStack.EMPTY;
         }
 
         ItemStack existing = slot.getStack();
         int limit = slot.getSlotStackLimit();
 
-        if (existing != ItemStack.field_190927_a)
+        if (existing != ItemStack.EMPTY)
         {
             if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
                 return stack;
 
-            limit -= existing.func_190916_E();
+            limit -= existing.getCount();
         }
 
         if (limit <= 0)
             return stack;
 
-        boolean reachedLimit = stack.func_190916_E() > limit;
+        boolean reachedLimit = stack.getCount() > limit;
 
         if (!simulate)
         {
-            if (existing == ItemStack.field_190927_a)
+            if (existing == ItemStack.EMPTY)
             {
                 slot.putStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
             }
             else
             {
-                existing.func_190920_e(reachedLimit ? limit : stack.func_190916_E());
+                existing.setCount(reachedLimit ? limit : stack.getCount());
             }
         }
 
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.func_190916_E() - limit) : ItemStack.field_190927_a;
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack extractItem(int slotIndex, int amount, boolean simulate) {
         if (amount == 0)
-            return ItemStack.field_190927_a;
+            return ItemStack.EMPTY;
 
         Slot slot = this.slotMap.get(this.facing).get(slotIndex);
-        if(slot.getStack() == ItemStack.field_190927_a) {
-            return ItemStack.field_190927_a;
+        if(slot.getStack() == ItemStack.EMPTY) {
+            return ItemStack.EMPTY;
         }
 
         ItemStack existing = slot.getStack();
-        if (existing == ItemStack.field_190927_a)
-            return ItemStack.field_190927_a;
+        if (existing == ItemStack.EMPTY)
+            return ItemStack.EMPTY;
 
         int toExtract = Math.min(amount, existing.getMaxStackSize());
 
-        if (existing.func_190916_E() <= toExtract)
+        if (existing.getCount() <= toExtract)
         {
             if (!simulate)
             {
-                slot.putStack(ItemStack.field_190927_a);
+                slot.putStack(ItemStack.EMPTY);
             }
             return existing;
         }
@@ -124,7 +124,7 @@ public class InventoryItemHandler implements IItemHandler {
         {
             if (!simulate)
             {
-                slot.putStack(ItemHandlerHelper.copyStackWithSize(existing, existing.func_190916_E() - toExtract));
+                slot.putStack(ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
             }
 
             return ItemHandlerHelper.copyStackWithSize(existing, toExtract);

@@ -39,7 +39,7 @@ public class LootItem
         }
 
         ItemStack result = item.copy();
-	    result.func_190920_e(size);
+	    result.setCount(size);
         return result;
     }
 

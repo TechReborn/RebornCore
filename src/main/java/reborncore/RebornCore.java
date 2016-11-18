@@ -35,7 +35,7 @@ public class RebornCore implements IModInfo
 
 	public static final String MOD_NAME = "RebornCore";
 	public static final String MOD_ID = "reborncore";
-	public static final String MOD_VERSION = "@MODVERSION@";
+	public static final String MOD_VERSION = "2.9.0";
 	public static final String WEB_URL = "http://files.modmuss50.me/";
 
 	public static LogHelper logHelper;

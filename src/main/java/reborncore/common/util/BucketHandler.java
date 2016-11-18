@@ -52,7 +52,7 @@ public class BucketHandler
 				}
 			}
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 }

@@ -29,7 +29,7 @@ public class Inventory implements IInventory
 		this.inventoryStackLimit = inventoryStackLimit;
 		this.inventoryContent = new ItemStack[this.getSizeInventory()];
 		for (int i = 0; i < getSizeInventory(); i++) {
-			inventoryContent[i] = ItemStack.field_190927_a;
+			inventoryContent[i] = ItemStack.EMPTY;
 		}
 
 		this.tileBase = tileBase;
@@ -41,9 +41,9 @@ public class Inventory implements IInventory
 	}
 
 	@Override
-	public boolean func_191420_l() {
+	public boolean isEmpty() {
 		for (ItemStack itemstack : inventoryContent) {
-			if (!itemstack.func_190926_b()) {
+			if (!itemstack.isEmpty()) {
 				return false;
 			}
 		}
@@ -59,16 +59,16 @@ public class Inventory implements IInventory
 	public ItemStack decrStackSize(int slotId, int count) {
 		if(slotId < this.getSizeInventory()) {
 			ItemStack stack = this.getStackInSlot(slotId);
-			if(stack != ItemStack.field_190927_a && stack.func_190916_E() > count) {
+			if(stack != ItemStack.EMPTY && stack.getCount() > count) {
 				ItemStack result = stack.splitStack(count);
 				markDirty();
 				return result;
 			}
 
-			setInventorySlotContents(slotId, ItemStack.field_190927_a);
+			setInventorySlotContents(slotId, ItemStack.EMPTY);
 			return stack;
 		}
-		return ItemStack.field_190927_a;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -76,8 +76,8 @@ public class Inventory implements IInventory
 		if(slotId < this.getSizeInventory()) {
 			this.inventoryContent[slotId] = itemstack;
 
-			if (itemstack != ItemStack.field_190927_a && itemstack.func_190916_E() > this.getInventoryStackLimit()) {
-				itemstack.func_190920_e(this.getInventoryStackLimit());
+			if (itemstack != ItemStack.EMPTY && itemstack.getCount() > this.getInventoryStackLimit()) {
+				itemstack.setCount(this.getInventoryStackLimit());
 			}
 			markDirty();
 		}
@@ -98,7 +98,7 @@ public class Inventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
 		return true;
 	}
 
@@ -135,7 +135,7 @@ public class Inventory implements IInventory
 		NBTTagList slots = new NBTTagList();
 		for(byte index=0; index<this.getSizeInventory(); index++) {
 			ItemStack stack = this.getStackInSlot(index);
-			if (stack != ItemStack.field_190927_a && stack.func_190916_E() > 0) {
+			if (stack != ItemStack.EMPTY && stack.getCount() > 0) {
 				NBTTagCompound slot = new NBTTagCompound();
 				slots.appendTag(slot);
 				slot.setByte("Slot", index);
@@ -148,12 +148,12 @@ public class Inventory implements IInventory
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotId) {
-		if (slotId >= this.getSizeInventory() || this.getStackInSlot(slotId) == ItemStack.field_190927_a) {
-			return ItemStack.field_190927_a;
+		if (slotId >= this.getSizeInventory() || this.getStackInSlot(slotId) == ItemStack.EMPTY) {
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack stackToTake = this.getStackInSlot(slotId);
-		this.setInventorySlotContents(slotId, ItemStack.field_190927_a);
+		this.setInventorySlotContents(slotId, ItemStack.EMPTY);
 		return stackToTake;
 	}
 
@@ -181,7 +181,7 @@ public class Inventory implements IInventory
 	@Override
 	public void clear() {
 		for(int i=0; i<this.getSizeInventory(); i++) {
-			this.inventoryContent[i] = ItemStack.field_190927_a;
+			this.inventoryContent[i] = ItemStack.EMPTY;
 		}
 	}
 

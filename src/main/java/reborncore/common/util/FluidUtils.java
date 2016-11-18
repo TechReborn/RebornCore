@@ -4,6 +4,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FluidUtils
 {
@@ -21,18 +27,18 @@ public class FluidUtils
 				emptyItem = ((UniversalBucket) input.getItem()).getEmpty();
 			}
 			if (fluidInContainer != null
-					&& (emptyItem == null || output == null || (output.func_190916_E() < output.getMaxStackSize()
+					&& (emptyItem == null || output == null || (output.getCount() < output.getMaxStackSize()
 							&& ItemUtils.isItemEqual(output, emptyItem, true, true))))
 			{
-				int used = fluidHandler.fill(null, fluidInContainer, false);
-				if (used >= fluidInContainer.amount && fluidHandler.canFill(EnumFacing.UP, fluidInContainer.getFluid()))
+				int used = fluidHandler.fill(fluidInContainer, false);
+				if (used >= fluidInContainer.amount && fluidHandler.fill(fluidInContainer, true) > 0)
 				{
-					fluidHandler.fill(null, fluidInContainer, true);
+					fluidHandler.fill(fluidInContainer, true);
 					if (emptyItem != null)
 						if (output == null)
 							inv.setInventorySlotContents(outputSlot, emptyItem);
 						else
-							output.func_190920_e(output.func_190916_E() + 1);
+							output.setCount(output.getCount() + 1);
 					inv.decrStackSize(inputSlot, 1);
 					return true;
 				}
@@ -47,18 +53,18 @@ public class FluidUtils
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 		ItemStack filled = getFilledContainer(fluidToFill, input);
-		if (filled != null && (output == ItemStack.field_190927_a
-				|| (output.func_190916_E() < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true))))
+		if (filled != null && (output == ItemStack.EMPTY
+				|| (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true))))
 		{
 			FluidStack fluidInContainer = getFluidStackInContainer(filled);
-			FluidStack drain = fluidHandler.drain(null, fluidInContainer, false);
+			FluidStack drain = fluidHandler.drain(fluidInContainer, false);
 			if (drain != null && drain.amount == fluidInContainer.amount)
 			{
-				fluidHandler.drain(null, fluidInContainer, true);
-				if (output == ItemStack.field_190927_a)
+				fluidHandler.drain(fluidInContainer, true);
+				if (output == ItemStack.EMPTY)
 					inv.setInventorySlotContents(outputSlot, filled);
 				else
-					output.func_190920_e(output.func_190916_E() + 1);
+					output.setCount(output.getCount() + 1);
 				inv.decrStackSize(inputSlot, 1);
 				return true;
 			}
@@ -66,19 +72,21 @@ public class FluidUtils
 		return false;
 	}
 
+	@Deprecated // Use forge one
+	@Nullable
 	public static FluidStack getFluidStackInContainer(ItemStack stack)
 	{
-		if(stack.getItem() instanceof IFluidContainerItem){
-			return  ((IFluidContainerItem) stack.getItem()).getFluid(stack);
-		}
-		return FluidContainerRegistry.getFluidForFilledItem(stack);
+		return FluidUtil.getFluidContained(stack);
 	}
 
+	@Nonnull
 	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty)
 	{
-		if (fluid == null || empty == null)
-			return ItemStack.field_190927_a;
-		return FluidContainerRegistry.fillFluidContainer(new FluidStack(fluid, Integer.MAX_VALUE), empty);
+		if (fluid == null || empty == ItemStack.EMPTY)
+			return ItemStack.EMPTY;
+		IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(empty);
+		fluidHandler.fill(new FluidStack(fluid, fluidHandler.getTankProperties()[0].getCapacity()), true);
+		return empty;
 	}
 
 }

@@ -253,7 +253,7 @@ public class RecipeCrafter
 			for (int inputSlot : inputSlots)
 			{// Checks to see if it can find the input
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputSlot), true, true,
-					currentRecipe.useOreDic()) && inventory.getStackInSlot(inputSlot).func_190916_E() >= input.func_190916_E())
+					currentRecipe.useOreDic()) && inventory.getStackInSlot(inputSlot).getCount() >= input.getCount())
 				{
 					hasItem = true;
 				}
@@ -276,7 +276,7 @@ public class RecipeCrafter
 			for (int inputslot : inputSlots)
 			{
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputslot), true, true,
-					recipeType.useOreDic()) && inventory.getStackInSlot(inputslot).func_190916_E() >= input.func_190916_E())
+					recipeType.useOreDic()) && inventory.getStackInSlot(inputslot).getCount() >= input.getCount())
 				{
 					hasItem = true;
 				}
@@ -300,7 +300,7 @@ public class RecipeCrafter
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputSlot), true, true,
 					currentRecipe.useOreDic()))
 				{
-					inventory.decrStackSize(inputSlot, input.func_190916_E());
+					inventory.decrStackSize(inputSlot, input.getCount());
 					break;
 				}
 			}
@@ -309,17 +309,17 @@ public class RecipeCrafter
 
 	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic)
 	{// Checks to see if it can fit the stack
-		if (stack == ItemStack.field_190927_a)
+		if (stack == ItemStack.EMPTY)
 		{
 			return true;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.field_190927_a)
+		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY)
 		{
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, oreDic))
 		{
-			if (stack.func_190916_E() + inventory.getStackInSlot(slot).func_190916_E() <= stack.getMaxStackSize())
+			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize())
 			{
 				return true;
 			}
@@ -329,21 +329,21 @@ public class RecipeCrafter
 
 	public void fitStack(ItemStack stack, int slot)
 	{// This fits a stack into a slot
-		if (stack == ItemStack.field_190927_a)
+		if (stack == ItemStack.EMPTY)
 		{
 			return;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.field_190927_a)
+		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY)
 		{// If the slot is empty set the contents
 			inventory.setInventorySlotContents(slot, stack);
 			return;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, currentRecipe.useOreDic()))
 		{// If the slot has stuff in
-			if (stack.func_190916_E() + inventory.getStackInSlot(slot).func_190916_E() <= stack.getMaxStackSize())
+			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize())
 			{// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.func_190920_e(inventory.getStackInSlot(slot).func_190916_E() + stack.func_190916_E());// Sets
+				newStack.setCount(inventory.getStackInSlot(slot).getCount() + stack.getCount());// Sets
 				// the
 				// new
 				// stack

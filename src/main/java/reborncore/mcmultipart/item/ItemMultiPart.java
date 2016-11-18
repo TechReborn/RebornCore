@@ -45,7 +45,7 @@ public abstract class ItemMultiPart extends Item implements IItemMultipartFactor
     }
 
     protected void consumeItem(ItemStack stack) {
-		stack.func_190920_e(-1);
+		stack.setCount(-1);
     }
 
     @Override

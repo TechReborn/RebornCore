@@ -97,31 +97,31 @@ public abstract class RebornContainer extends Container
 			{
 				if (!shiftItemStack(stackInSlot, numSlots - 9, numSlots))
 				{
-					return ItemStack.field_190927_a;
+					return ItemStack.EMPTY;
 				}
 			} else if (slotIndex >= numSlots - 9 && slotIndex < numSlots)
 			{
 				if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots - 9))
 				{
-					return ItemStack.field_190927_a;
+					return ItemStack.EMPTY;
 				}
 			} else if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots))
 			{
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			}
 			slot.onSlotChange(stackInSlot, originalStack);
-			if (stackInSlot.func_190916_E() <= 0)
+			if (stackInSlot.getCount() <= 0)
 			{
-				slot.putStack(ItemStack.field_190927_a);
+				slot.putStack(ItemStack.EMPTY);
 			} else
 			{
 				slot.onSlotChanged();
 			}
-			if (stackInSlot.func_190916_E() == originalStack.func_190916_E())
+			if (stackInSlot.getCount() == originalStack.getCount())
 			{
-				return ItemStack.field_190927_a;
+				return ItemStack.EMPTY;
 			}
-			slot.func_190901_a(player, stackInSlot);
+			slot.onTake(player, stackInSlot);
 		}
 		return originalStack;
 	}
@@ -131,42 +131,42 @@ public abstract class RebornContainer extends Container
 		boolean changed = false;
 		if (stackToShift.isStackable())
 		{
-			for (int slotIndex = start; stackToShift.func_190916_E() > 0 && slotIndex < end; slotIndex++)
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++)
 			{
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot != ItemStack.field_190927_a && canStacksMerge(stackInSlot, stackToShift))
+				if (stackInSlot != ItemStack.EMPTY && canStacksMerge(stackInSlot, stackToShift))
 				{
-					int resultingStackSize = stackInSlot.func_190916_E()  + stackToShift.func_190916_E() ;
+					int resultingStackSize = stackInSlot.getCount()  + stackToShift.getCount() ;
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					if (resultingStackSize <= max)
 					{
-						stackToShift.func_190920_e(0);
-						stackInSlot.func_190920_e(resultingStackSize);
+						stackToShift.setCount(0);
+						stackInSlot.setCount(resultingStackSize);
 						slot.onSlotChanged();
 						changed = true;
-					} else if (stackInSlot.func_190916_E() < max)
+					} else if (stackInSlot.getCount() < max)
 					{
-						stackToShift.func_190920_e(-(max - stackInSlot.func_190916_E()));
-						stackInSlot.func_190920_e(max);
+						stackToShift.setCount(-(max - stackInSlot.getCount()));
+						stackInSlot.setCount(max);
 						slot.onSlotChanged();
 						changed = true;
 					}
 				}
 			}
 		}
-		if (stackToShift.func_190916_E() > 0)
+		if (stackToShift.getCount() > 0)
 		{
-			for (int slotIndex = start; stackToShift.func_190916_E() > 0 && slotIndex < end; slotIndex++)
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++)
 			{
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot == ItemStack.field_190927_a)
+				if (stackInSlot == ItemStack.EMPTY)
 				{
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					stackInSlot = stackToShift.copy();
-					stackInSlot.func_190920_e(Math.min(stackToShift.func_190916_E(), max));
-					stackToShift.func_190920_e(-stackInSlot.func_190916_E());
+					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
+					stackToShift.setCount(-stackInSlot.getCount());
 					slot.putStack(stackInSlot);
 					slot.onSlotChanged();
 					changed = true;
@@ -195,7 +195,7 @@ public abstract class RebornContainer extends Container
 
 	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2)
 	{
-		if (stack1 == ItemStack.field_190927_a || stack2 == ItemStack.field_190927_a)
+		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY)
 		{
 			return false;
 		}

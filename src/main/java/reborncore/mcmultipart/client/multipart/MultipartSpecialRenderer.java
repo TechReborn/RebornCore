@@ -42,7 +42,7 @@ public abstract class MultipartSpecialRenderer<T extends IMultipart> {
 
     protected World getWorld() {
 
-        return this.rendererDispatcher.worldObj;
+        return this.rendererDispatcher.world;
     }
 
     public void setRendererDispatcher(TileEntityRendererDispatcher rendererDispatcher) {
