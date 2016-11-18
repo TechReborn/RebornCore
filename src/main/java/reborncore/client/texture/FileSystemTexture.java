@@ -20,44 +20,35 @@ import java.io.InputStream;
 /**
  * Created by Mark on 25/03/2016.
  */
-public class FileSystemTexture extends AbstractTexture
-{
+public class FileSystemTexture extends AbstractTexture {
 	private static final Logger logger = LogManager.getLogger();
 	protected final File textureLocation;
 	BufferedImage image;
 
-	public FileSystemTexture(File textureResourceLocation)
-	{
+	public FileSystemTexture(File textureResourceLocation) {
 		this.textureLocation = textureResourceLocation;
 	}
 
-	public void loadTexture(IResourceManager resourceManager) throws IOException
-	{
+	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
-		if(image == null){
+		if (image == null) {
 			IResource iresource = null;
-			try
-			{
-				iresource = new IResource()
-				{
+			try {
+				iresource = new IResource() {
 
 					FileInputStream stream;
 
 					@Override
-					public ResourceLocation getResourceLocation()
-					{
+					public ResourceLocation getResourceLocation() {
 						return new ResourceLocation("reborncore:loaded/" + textureLocation.getName());
 					}
 
 					@Override
-					public InputStream getInputStream()
-					{
-						if(stream == null){
-							try
-							{
+					public InputStream getInputStream() {
+						if (stream == null) {
+							try {
 								stream = new FileInputStream(textureLocation);
-							} catch (FileNotFoundException e)
-							{
+							} catch (FileNotFoundException e) {
 								e.printStackTrace();
 							}
 						}
@@ -65,34 +56,29 @@ public class FileSystemTexture extends AbstractTexture
 					}
 
 					@Override
-					public boolean hasMetadata()
-					{
+					public boolean hasMetadata() {
 						return false;
 					}
 
 					@Override
-					public <T extends IMetadataSection> T getMetadata(String sectionName)
-					{
+					public <T extends IMetadataSection> T getMetadata(String sectionName) {
 						return null;
 					}
 
 					@Override
-					public String getResourcePackName()
-					{
+					public String getResourcePackName() {
 						return "reborncore";
 					}
 
 					@Override
-					public void close() throws IOException
-					{
-						if(stream != null){
+					public void close() throws IOException {
+						if (stream != null) {
 							stream.close();
 						}
 					}
 				};
-				image= TextureUtil.readBufferedImage(iresource.getInputStream());
-			} finally
-			{
+				image = TextureUtil.readBufferedImage(iresource.getInputStream());
+			} finally {
 				IOUtils.closeQuietly(iresource);
 			}
 		}

@@ -1,11 +1,10 @@
 package reborncore.api.fuel;
 
-import java.util.HashMap;
-
 import net.minecraftforge.fluids.Fluid;
 
-public class FluidPowerManager
-{
+import java.util.HashMap;
+
+public class FluidPowerManager {
 
 	/**
 	 * Use this to register a fluid with a power value

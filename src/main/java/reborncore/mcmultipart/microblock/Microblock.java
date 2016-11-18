@@ -1,20 +1,6 @@
 package reborncore.mcmultipart.microblock;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import com.google.common.base.Optional;
-
-import reborncore.mcmultipart.microblock.IMicroMaterial.IDelegatedMicroMaterial;
-import reborncore.mcmultipart.multipart.IMultipart;
-import reborncore.mcmultipart.multipart.IRedstonePart;
-import reborncore.mcmultipart.multipart.IRedstonePart.ISlottedRedstonePart;
-import reborncore.mcmultipart.multipart.Multipart;
-import reborncore.mcmultipart.multipart.PartSlot;
-import reborncore.mcmultipart.property.PropertyBlockState;
-import reborncore.mcmultipart.property.PropertyMicroMaterial;
-import reborncore.mcmultipart.raytrace.PartMOP;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -33,378 +19,412 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties.PropertyAdapter;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import reborncore.mcmultipart.microblock.IMicroMaterial.IDelegatedMicroMaterial;
+import reborncore.mcmultipart.multipart.IMultipart;
+import reborncore.mcmultipart.multipart.IRedstonePart;
+import reborncore.mcmultipart.multipart.IRedstonePart.ISlottedRedstonePart;
+import reborncore.mcmultipart.multipart.Multipart;
+import reborncore.mcmultipart.multipart.PartSlot;
+import reborncore.mcmultipart.property.PropertyBlockState;
+import reborncore.mcmultipart.property.PropertyMicroMaterial;
+import reborncore.mcmultipart.raytrace.PartMOP;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public abstract class Microblock extends Multipart implements IMicroblock, IRedstonePart, ISlottedRedstonePart {
 
-    public static final IUnlistedProperty<?>[] PROPERTIES = new IUnlistedProperty[4];
-    public static final IUnlistedProperty<IMicroMaterial> PROPERTY_MATERIAL;
-    public static final IUnlistedProperty<IBlockState> PROPERTY_MATERIAL_STATE;
-    public static final IUnlistedProperty<Integer> PROPERTY_SIZE;
-    public static final IUnlistedProperty<PartSlot> PROPERTY_SLOT;
+	public static final IUnlistedProperty<?>[] PROPERTIES = new IUnlistedProperty[4];
+	public static final IUnlistedProperty<IMicroMaterial> PROPERTY_MATERIAL;
+	public static final IUnlistedProperty<IBlockState> PROPERTY_MATERIAL_STATE;
+	public static final IUnlistedProperty<Integer> PROPERTY_SIZE;
+	public static final IUnlistedProperty<PartSlot> PROPERTY_SLOT;
 
-    static {
-        PROPERTIES[0] = PROPERTY_MATERIAL = new PropertyMicroMaterial("material");
-        PROPERTIES[1] = PROPERTY_MATERIAL_STATE = new PropertyBlockState("material_state");
-        PROPERTIES[2] = PROPERTY_SIZE = new PropertyAdapter<Integer>(PropertyInteger.create("size", 0, 7));
-        PROPERTIES[3] = PROPERTY_SLOT = new PropertyAdapter<PartSlot>(PropertyEnum.create("slot", PartSlot.class));
-    }
+	static {
+		PROPERTIES[0] = PROPERTY_MATERIAL = new PropertyMicroMaterial("material");
+		PROPERTIES[1] = PROPERTY_MATERIAL_STATE = new PropertyBlockState("material_state");
+		PROPERTIES[2] = PROPERTY_SIZE = new PropertyAdapter<Integer>(PropertyInteger.create("size", 0, 7));
+		PROPERTIES[3] = PROPERTY_SLOT = new PropertyAdapter<PartSlot>(PropertyEnum.create("slot", PartSlot.class));
+	}
 
-    protected IMicroMaterial material;
-    protected PartSlot slot;
-    protected int size;
-    protected MicroblockDelegate delegate;
+	protected IMicroMaterial material;
+	protected PartSlot slot;
+	protected int size;
+	protected MicroblockDelegate delegate;
 
-    public Microblock(IMicroMaterial material, PartSlot slot, int size, boolean isRemote) {
+	public Microblock(IMicroMaterial material, PartSlot slot, int size, boolean isRemote) {
 
-        this.material = material;
-        this.slot = slot;
-        this.size = size;
-        this.delegate = material instanceof IDelegatedMicroMaterial ? ((IDelegatedMicroMaterial) material).provideDelegate(this, isRemote)
-                : null;
-    }
+		this.material = material;
+		this.slot = slot;
+		this.size = size;
+		this.delegate = material instanceof IDelegatedMicroMaterial ? ((IDelegatedMicroMaterial) material).provideDelegate(this, isRemote)
+		                                                            : null;
+	}
 
-    @Override
-    public abstract MicroblockClass getMicroClass();
+	@Override
+	public abstract MicroblockClass getMicroClass();
 
-    @Override
-    public IMicroMaterial getMicroMaterial() {
+	@Override
+	public IMicroMaterial getMicroMaterial() {
 
-        return material;
-    }
+		return material;
+	}
 
-    @Override
-    public EnumSet<PartSlot> getSlotMask() {
+	@Override
+	public EnumSet<PartSlot> getSlotMask() {
 
-        return slot == null ? EnumSet.noneOf(PartSlot.class) : EnumSet.of(slot);
-    }
+		return slot == null ? EnumSet.noneOf(PartSlot.class) : EnumSet.of(slot);
+	}
 
-    @Override
-    public PartSlot getSlot() {
+	@Override
+	public PartSlot getSlot() {
 
-        return slot;
-    }
+		return slot;
+	}
 
-    @Override
-    public void setSlot(PartSlot slot) {
+	@Override
+	public void setSlot(PartSlot slot) {
 
-        this.slot = slot;
-    }
+		this.slot = slot;
+	}
 
-    @Override
-    public int getSize() {
+	@Override
+	public int getSize() {
 
-        return size;
-    }
+		return size;
+	}
 
-    @Override
-    public void setSize(int size) {
+	@Override
+	public void setSize(int size) {
 
-        this.size = size;
-    }
+		this.size = size;
+	}
 
-    @Override
-    public ResourceLocation getType() {
+	@Override
+	public ResourceLocation getType() {
 
-        return getMicroClass().getFullQualifiedType();
-    }
+		return getMicroClass().getFullQualifiedType();
+	}
 
-    @Override
-    public int getLightValue() {
+	@Override
+	public int getLightValue() {
 
-        return getMicroMaterial().getLightValue();
-    }
+		return getMicroMaterial().getLightValue();
+	}
 
-    @Override
-    public float getHardness(PartMOP hit) {
+	@Override
+	public float getHardness(PartMOP hit) {
 
-        return getMicroMaterial().getHardness();
-    }
+		return getMicroMaterial().getHardness();
+	}
 
-    @Override
-    public ItemStack getPickBlock(EntityPlayer player, PartMOP hit) {
+	@Override
+	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit) {
 
-        int size = getSize();
-        int picked = 1;
+		int size = getSize();
+		int picked = 1;
 
-        for (int i = 2; i >= 0; i--)
-            if (size - (1 << i) >= 0) size -= (picked = (1 << i));
+		for (int i = 2; i >= 0; i--)
+			if (size - (1 << i) >= 0)
+				size -= (picked = (1 << i));
 
-        return getMicroClass().createStack(getMicroMaterial(), picked, 1);
-    }
+		return getMicroClass().createStack(getMicroMaterial(), picked, 1);
+	}
 
-    @Override
-    public List<ItemStack> getDrops() {
+	@Override
+	public List<ItemStack> getDrops() {
 
-        MicroblockClass microclass = getMicroClass();
-        IMicroMaterial material = getMicroMaterial();
-        int size = getSize();
-        List<ItemStack> drops = new ArrayList<ItemStack>();
-
-        for (int i = 2; i >= 0; i--) {
-            if (size - (1 << i) >= 0) {
-                size -= 1 << i;
-                drops.add(microclass.createStack(material, 1 << i, 1));
-            }
-        }
-
-        return drops;
-    }
-
-    @Override
-    public boolean occlusionTest(IMultipart part) {
+		MicroblockClass microclass = getMicroClass();
+		IMicroMaterial material = getMicroMaterial();
+		int size = getSize();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+
+		for (int i = 2; i >= 0; i--) {
+			if (size - (1 << i) >= 0) {
+				size -= 1 << i;
+				drops.add(microclass.createStack(material, 1 << i, 1));
+			}
+		}
+
+		return drops;
+	}
+
+	@Override
+	public boolean occlusionTest(IMultipart part) {
+
+		if (part instanceof IMicroblock)
+			return true;
+		return super.occlusionTest(part);
+	}
+
+	@Override
+	public IExtendedBlockState getExtendedState(IBlockState state) {
+
+		return ((IExtendedBlockState) state).withProperty(PROPERTY_MATERIAL, getMicroMaterial())
+			.withProperty(PROPERTY_MATERIAL_STATE, getMicroMaterial().getMaterialState(getWorld(), getPos(), this))
+			.withProperty(PROPERTY_SIZE, getSize()).withProperty(PROPERTY_SLOT, slot);
+	}
+
+	@Override
+	public ExtendedBlockState createBlockState() {
+
+		return new ExtendedBlockState(null, new IProperty[0], PROPERTIES);
+	}
+
+	@Override
+	public void writeUpdatePacket(PacketBuffer buf) {
+
+		super.writeUpdatePacket(buf);
+
+		ByteBufUtils.writeUTF8String(buf, getMicroMaterial().getName());
+		buf.writeInt(slot != null ? slot.ordinal() : -1);
+		buf.writeInt(getSize());
+		if (delegate != null)
+			delegate.writeUpdatePacket(buf);
+	}
+
+	@Override
+	public void readUpdatePacket(PacketBuffer buf) {
+
+		super.readUpdatePacket(buf);
+
+		IMicroMaterial oldMat = material;
+		material = MicroblockRegistry.getMaterial(ByteBufUtils.readUTF8String(buf));
+		int iSlot = buf.readInt();
+		slot = iSlot == -1 ? null : PartSlot.VALUES[iSlot];
+		size = buf.readInt();
+		if (oldMat != material)
+			delegate = material instanceof IDelegatedMicroMaterial
+			           ? ((IDelegatedMicroMaterial) material).provideDelegate(this, true) : null;
+		if (delegate != null)
+			delegate.readUpdatePacket(buf);
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+
+		tag = super.writeToNBT(tag);
+
+		tag.setString("material", getMicroMaterial().getName());
+		tag.setInteger("slot", slot != null ? slot.ordinal() : -1);
+		tag.setInteger("size", getSize());
+		if (delegate != null)
+			tag = delegate.writeToNBT(tag);
+		return tag;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+
+		super.readFromNBT(tag);
+
+		material = MicroblockRegistry.getMaterial(tag.getString("material"));
+		int iSlot = tag.getInteger("slot");
+		slot = iSlot == -1 ? null : PartSlot.VALUES[iSlot];
+		size = tag.getInteger("size");
+		delegate = material instanceof IDelegatedMicroMaterial ? ((IDelegatedMicroMaterial) material).provideDelegate(this, false) : null;
+		if (delegate != null)
+			delegate.readFromNBT(tag);
+	}
+
+	// Delegation
+
+	@Override
+	public void harvest(EntityPlayer player, PartMOP hit) {
+
+		if (delegate == null || !delegate.harvest(player, hit))
+			super.harvest(player, hit);
+	}
+
+	@Override
+	public float getStrength(EntityPlayer player, PartMOP hit) {
+
+		if (delegate != null) {
+			Optional<Float> strength = delegate.getStrength(player, hit);
+			if (strength.isPresent())
+				return strength.get();
+		}
+		return super.getStrength(player, hit);
+	}
+
+	@Override
+	public void onPartChanged(IMultipart part) {
+
+		super.onPartChanged(part);
+		if (delegate != null)
+			delegate.onPartChanged(part);
+	}
+
+	@Override
+	public void onNeighborBlockChange(Block block) {
+
+		super.onNeighborBlockChange(block);
+		if (delegate != null)
+			delegate.onNeighborBlockChange(block);
+	}
+
+	@Override
+	public void onNeighborTileChange(EnumFacing facing) {
+
+		super.onNeighborTileChange(facing);
+		if (delegate != null)
+			delegate.onNeighborTileChange(facing);
+	}
+
+	@Override
+	public void onAdded() {
+
+		super.onAdded();
+		if (delegate != null)
+			delegate.onAdded();
+	}
+
+	@Override
+	public void onRemoved() {
+
+		super.onRemoved();
+		if (delegate != null)
+			delegate.onRemoved();
+	}
+
+	@Override
+	public void onLoaded() {
+
+		super.onLoaded();
+		if (delegate != null)
+			delegate.onLoaded();
+	}
 
-        if (part instanceof IMicroblock) return true;
-        return super.occlusionTest(part);
-    }
+	@Override
+	public void onUnloaded() {
 
-    @Override
-    public IExtendedBlockState getExtendedState(IBlockState state) {
+		super.onUnloaded();
+		if (delegate != null)
+			delegate.onUnloaded();
+	}
 
-        return ((IExtendedBlockState) state).withProperty(PROPERTY_MATERIAL, getMicroMaterial())
-                .withProperty(PROPERTY_MATERIAL_STATE, getMicroMaterial().getMaterialState(getWorld(), getPos(), this))
-                .withProperty(PROPERTY_SIZE, getSize()).withProperty(PROPERTY_SLOT, slot);
-    }
+	@Override
+	public boolean onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
-    @Override
-    public ExtendedBlockState createBlockState() {
+		if (delegate != null) {
+			Optional<Boolean> activated = delegate.onActivated(player, hand, hit);
+			if (activated.isPresent())
+				return activated.get();
+		}
+		return super.onActivated(player, hand, hit);
+	}
 
-        return new ExtendedBlockState(null, new IProperty[0], PROPERTIES);
-    }
+	@Override
+	public void onClicked(EntityPlayer player, PartMOP hit) {
 
-    @Override
-    public void writeUpdatePacket(PacketBuffer buf) {
+		if (delegate != null && delegate.onClicked(player, hit))
+			return;
+		super.onClicked(player, hit);
+	}
 
-        super.writeUpdatePacket(buf);
+	@Override
+	public boolean canConnectRedstone(EnumFacing side) {
 
-        ByteBufUtils.writeUTF8String(buf, getMicroMaterial().getName());
-        buf.writeInt(slot != null ? slot.ordinal() : -1);
-        buf.writeInt(getSize());
-        if (delegate != null) delegate.writeUpdatePacket(buf);
-    }
+		if (delegate != null) {
+			Optional<Boolean> can = delegate.canConnectRedstone(side);
+			if (can.isPresent())
+				return can.get();
+		}
+		return false;
+	}
 
-    @Override
-    public void readUpdatePacket(PacketBuffer buf) {
+	@Override
+	public int getWeakSignal(EnumFacing side) {
 
-        super.readUpdatePacket(buf);
+		if (delegate != null) {
+			Optional<Integer> signal = delegate.getWeakSignal(side);
+			if (signal.isPresent())
+				return signal.get();
+		}
+		return 0;
+	}
 
-        IMicroMaterial oldMat = material;
-        material = MicroblockRegistry.getMaterial(ByteBufUtils.readUTF8String(buf));
-        int iSlot = buf.readInt();
-        slot = iSlot == -1 ? null : PartSlot.VALUES[iSlot];
-        size = buf.readInt();
-        if (oldMat != material) delegate = material instanceof IDelegatedMicroMaterial
-                ? ((IDelegatedMicroMaterial) material).provideDelegate(this, true) : null;
-        if (delegate != null) delegate.readUpdatePacket(buf);
-    }
+	@Override
+	public int getStrongSignal(EnumFacing side) {
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		if (delegate != null) {
+			Optional<Integer> signal = delegate.getStrongSignal(side);
+			if (signal.isPresent())
+				return signal.get();
+		}
+		return 0;
+	}
 
-        tag = super.writeToNBT(tag);
+	public static class PropertyAABB implements IUnlistedProperty<AxisAlignedBB> {
 
-        tag.setString("material", getMicroMaterial().getName());
-        tag.setInteger("slot", slot != null ? slot.ordinal() : -1);
-        tag.setInteger("size", getSize());
-        if (delegate != null) tag = delegate.writeToNBT(tag);
-        return tag;
-    }
+		private final String name;
 
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
+		public PropertyAABB(String name) {
 
-        super.readFromNBT(tag);
+			this.name = name;
+		}
 
-        material = MicroblockRegistry.getMaterial(tag.getString("material"));
-        int iSlot = tag.getInteger("slot");
-        slot = iSlot == -1 ? null : PartSlot.VALUES[iSlot];
-        size = tag.getInteger("size");
-        delegate = material instanceof IDelegatedMicroMaterial ? ((IDelegatedMicroMaterial) material).provideDelegate(this, false) : null;
-        if (delegate != null) delegate.readFromNBT(tag);
-    }
+		@Override
+		public String getName() {
 
-    // Delegation
+			return name;
+		}
 
-    @Override
-    public void harvest(EntityPlayer player, PartMOP hit) {
+		@Override
+		public boolean isValid(AxisAlignedBB value) {
 
-        if (delegate == null || !delegate.harvest(player, hit)) super.harvest(player, hit);
-    }
+			return value != null;
+		}
 
-    @Override
-    public float getStrength(EntityPlayer player, PartMOP hit) {
+		@Override
+		public Class<AxisAlignedBB> getType() {
 
-        if (delegate != null) {
-            Optional<Float> strength = delegate.getStrength(player, hit);
-            if (strength.isPresent()) return strength.get();
-        }
-        return super.getStrength(player, hit);
-    }
+			return AxisAlignedBB.class;
+		}
 
-    @Override
-    public void onPartChanged(IMultipart part) {
+		@Override
+		public String valueToString(AxisAlignedBB value) {
 
-        super.onPartChanged(part);
-        if (delegate != null) delegate.onPartChanged(part);
-    }
+			return value.toString();
+		}
 
-    @Override
-    public void onNeighborBlockChange(Block block) {
+	}
 
-        super.onNeighborBlockChange(block);
-        if (delegate != null) delegate.onNeighborBlockChange(block);
-    }
+	public static class PropertyEnumSet<T extends Enum<T>> implements IUnlistedProperty<EnumSet<T>> {
 
-    @Override
-    public void onNeighborTileChange(EnumFacing facing) {
+		private final String name;
 
-        super.onNeighborTileChange(facing);
-        if (delegate != null) delegate.onNeighborTileChange(facing);
-    }
+		public PropertyEnumSet(String name) {
 
-    @Override
-    public void onAdded() {
+			this.name = name;
+		}
 
-        super.onAdded();
-        if (delegate != null) delegate.onAdded();
-    }
+		@Override
+		public String getName() {
 
-    @Override
-    public void onRemoved() {
+			return name;
+		}
 
-        super.onRemoved();
-        if (delegate != null) delegate.onRemoved();
-    }
+		@Override
+		public boolean isValid(EnumSet<T> value) {
 
-    @Override
-    public void onLoaded() {
+			return value != null;
+		}
 
-        super.onLoaded();
-        if (delegate != null) delegate.onLoaded();
-    }
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<EnumSet<T>> getType() {
 
-    @Override
-    public void onUnloaded() {
+			return (Class<EnumSet<T>>) (Class<?>) EnumSet.class;
+		}
 
-        super.onUnloaded();
-        if (delegate != null) delegate.onUnloaded();
-    }
+		@Override
+		public String valueToString(EnumSet<T> value) {
 
-    @Override
-    public boolean onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
+			return value.toString();
+		}
 
-        if (delegate != null) {
-            Optional<Boolean> activated = delegate.onActivated(player, hand, hit);
-            if (activated.isPresent()) return activated.get();
-        }
-        return super.onActivated(player, hand, hit);
-    }
-
-    @Override
-    public void onClicked(EntityPlayer player, PartMOP hit) {
-
-        if (delegate != null && delegate.onClicked(player, hit)) return;
-        super.onClicked(player, hit);
-    }
-
-    @Override
-    public boolean canConnectRedstone(EnumFacing side) {
-
-        if (delegate != null) {
-            Optional<Boolean> can = delegate.canConnectRedstone(side);
-            if (can.isPresent()) return can.get();
-        }
-        return false;
-    }
-
-    @Override
-    public int getWeakSignal(EnumFacing side) {
-
-        if (delegate != null) {
-            Optional<Integer> signal = delegate.getWeakSignal(side);
-            if (signal.isPresent()) return signal.get();
-        }
-        return 0;
-    }
-
-    @Override
-    public int getStrongSignal(EnumFacing side) {
-
-        if (delegate != null) {
-            Optional<Integer> signal = delegate.getStrongSignal(side);
-            if (signal.isPresent()) return signal.get();
-        }
-        return 0;
-    }
-
-    public static class PropertyAABB implements IUnlistedProperty<AxisAlignedBB> {
-
-        private final String name;
-
-        public PropertyAABB(String name) {
-
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-
-            return name;
-        }
-
-        @Override
-        public boolean isValid(AxisAlignedBB value) {
-
-            return value != null;
-        }
-
-        @Override
-        public Class<AxisAlignedBB> getType() {
-
-            return AxisAlignedBB.class;
-        }
-
-        @Override
-        public String valueToString(AxisAlignedBB value) {
-
-            return value.toString();
-        }
-
-    }
-
-    public static class PropertyEnumSet<T extends Enum<T>> implements IUnlistedProperty<EnumSet<T>> {
-
-        private final String name;
-
-        public PropertyEnumSet(String name) {
-
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-
-            return name;
-        }
-
-        @Override
-        public boolean isValid(EnumSet<T> value) {
-
-            return value != null;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public Class<EnumSet<T>> getType() {
-
-            return (Class<EnumSet<T>>) (Class<?>) EnumSet.class;
-        }
-
-        @Override
-        public String valueToString(EnumSet<T> value) {
-
-            return value.toString();
-        }
-
-    }
+	}
 
 }

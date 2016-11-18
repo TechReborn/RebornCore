@@ -7,16 +7,16 @@ import javax.annotation.Nullable;
  */
 public class ShieldUser {
 
-    public String username;
-    public
-    @Nullable
-    String textureName;
+	public String username;
+	public
+	@Nullable
+	String textureName;
 
-    public ShieldUser(String username) {
-        this.username = username;
-    }
+	public ShieldUser(String username) {
+		this.username = username;
+	}
 
-    public ShieldUser() {
-    }
+	public ShieldUser() {
+	}
 
 }

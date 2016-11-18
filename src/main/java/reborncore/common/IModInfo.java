@@ -1,7 +1,6 @@
 package reborncore.common;
 
-public interface IModInfo
-{
+public interface IModInfo {
 	String MOD_NAME();
 
 	String MOD_ID();

@@ -1,7 +1,6 @@
 package reborncore.common.blocks;
 
-public interface IAdvancedRotationTexture
-{
+public interface IAdvancedRotationTexture {
 
 	String getFront(boolean isActive);
 

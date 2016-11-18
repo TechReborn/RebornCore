@@ -8,9 +8,9 @@ import java.util.EnumSet;
  */
 public interface ISlotOccludingPart extends ISlottedPart {
 
-    /**
-     * Gets an {@link EnumSet} of slots that are occluded by this part, even though they aren't occupied by it.
-     */
-    public EnumSet<PartSlot> getOccludedSlots();
+	/**
+	 * Gets an {@link EnumSet} of slots that are occluded by this part, even though they aren't occupied by it.
+	 */
+	public EnumSet<PartSlot> getOccludedSlots();
 
 }

@@ -1,29 +1,25 @@
 package reborncore.common.misc.vecmath;
 
-import java.util.List;
-
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class Vecs3dCube
-{
+import java.util.List;
+
+public class Vecs3dCube {
 
 	private Vecs3d min, max;
 
-	public Vecs3dCube(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
-	{
+	public Vecs3dCube(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 
 		this(minX, minY, minZ, maxX, maxY, maxZ, (World) null);
 	}
 
-	public Vecs3dCube(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, World world)
-	{
+	public Vecs3dCube(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, World world) {
 
 		this(new Vecs3d(minX, minY, minZ, world), new Vecs3d(maxX, maxY, maxZ, world));
 	}
 
-	public Vecs3dCube(Vecs3d a, Vecs3d b)
-	{
+	public Vecs3dCube(Vecs3d a, Vecs3d b) {
 
 		World w = a.getWorld();
 		if (w == null)
@@ -35,82 +31,69 @@ public class Vecs3dCube
 		fix();
 	}
 
-	public Vecs3dCube(AxisAlignedBB aabb)
-	{
+	public Vecs3dCube(AxisAlignedBB aabb) {
 
 		this(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
 	}
 
-	public Vecs3d getMin()
-	{
+	public Vecs3d getMin() {
 
 		return min;
 	}
 
-	public Vecs3d getMax()
-	{
+	public Vecs3d getMax() {
 
 		return max;
 	}
 
-	public Vecs3d getCenter()
-	{
+	public Vecs3d getCenter() {
 
 		return new Vecs3d((getMinX() + getMaxX()) / 2D, (getMinY() + getMaxY()) / 2D, (getMinZ() + getMaxZ()) / 2D,
-				getMin().getWorld());
+			getMin().getWorld());
 	}
 
-	public double getMinX()
-	{
+	public double getMinX() {
 
 		return min.getX();
 	}
 
-	public double getMinY()
-	{
+	public double getMinY() {
 
 		return min.getY();
 	}
 
-	public double getMinZ()
-	{
+	public double getMinZ() {
 
 		return min.getZ();
 	}
 
-	public double getMaxX()
-	{
+	public double getMaxX() {
 
 		return max.getX();
 	}
 
-	public double getMaxY()
-	{
+	public double getMaxY() {
 
 		return max.getY();
 	}
 
-	public double getMaxZ()
-	{
+	public double getMaxZ() {
 
 		return max.getZ();
 	}
 
-	public AxisAlignedBB toAABB()
-	{
+	public AxisAlignedBB toAABB() {
 
 		return new AxisAlignedBB(getMinX(), getMinY(), getMinZ(), getMaxX(), getMaxY(), getMaxZ());
 	}
 
 	@Override
-	public Vecs3dCube clone()
-	{
+	public Vecs3dCube clone() {
 
 		return new Vecs3dCube(min.clone(), max.clone());
 	}
 
-	public Vecs3dCube expand(double size)
-	{
+	public Vecs3dCube expand(double size) {
 
 		min.sub(size, size, size);
 		max.add(size, size, size);
@@ -118,8 +101,7 @@ public class Vecs3dCube
 		return this;
 	}
 
-	public Vecs3dCube fix()
-	{
+	public Vecs3dCube fix() {
 
 		Vecs3d a = min.clone();
 		Vecs3d b = max.clone();
@@ -138,8 +120,7 @@ public class Vecs3dCube
 		return this;
 	}
 
-	public Vecs3dCube add(double x, double y, double z)
-	{
+	public Vecs3dCube add(double x, double y, double z) {
 
 		min.add(x, y, z);
 		max.add(x, y, z);
@@ -147,8 +128,7 @@ public class Vecs3dCube
 		return this;
 	}
 
-	public static final Vecs3dCube merge(List<Vecs3dCube> cubes)
-	{
+	public static final Vecs3dCube merge(List<Vecs3dCube> cubes) {
 
 		double minx = Double.MAX_VALUE;
 		double miny = Double.MAX_VALUE;
@@ -157,8 +137,7 @@ public class Vecs3dCube
 		double maxy = Double.MIN_VALUE;
 		double maxz = Double.MIN_VALUE;
 
-		for (Vecs3dCube c : cubes)
-		{
+		for (Vecs3dCube c : cubes) {
 			minx = Math.min(minx, c.getMinX());
 			miny = Math.min(miny, c.getMinY());
 			minz = Math.min(minz, c.getMinZ());
@@ -174,8 +153,7 @@ public class Vecs3dCube
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 
 		return min.hashCode() << 8 + max.hashCode();
 	}

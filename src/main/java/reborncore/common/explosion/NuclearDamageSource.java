@@ -6,10 +6,8 @@ import net.minecraft.util.EntityDamageSource;
 /**
  * Created by modmuss50 on 16/03/2016.
  */
-public class NuclearDamageSource extends EntityDamageSource
-{
-	public NuclearDamageSource(Entity entity)
-	{
+public class NuclearDamageSource extends EntityDamageSource {
+	public NuclearDamageSource(Entity entity) {
 		super("nuke", entity);
 	}
 }

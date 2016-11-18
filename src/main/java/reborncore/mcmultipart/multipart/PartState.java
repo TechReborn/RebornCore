@@ -1,55 +1,57 @@
 package reborncore.mcmultipart.multipart;
 
-import java.util.EnumSet;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import scala.collection.mutable.StringBuilder;
+
+import java.util.EnumSet;
 
 /**
  * Representation of a part's state. Used for rendering purposes.
  */
 public class PartState {
 
-    public final IBlockState state, extendedState;
-    public final EnumSet<BlockRenderLayer> renderLayers;
-    public final ResourceLocation modelPath;
+	public final IBlockState state, extendedState;
+	public final EnumSet<BlockRenderLayer> renderLayers;
+	public final ResourceLocation modelPath;
 
-    public PartState(IBlockState state, IBlockState extendedState, EnumSet<BlockRenderLayer> renderLayers, ResourceLocation modelPath) {
+	public PartState(IBlockState state, IBlockState extendedState, EnumSet<BlockRenderLayer> renderLayers, ResourceLocation modelPath) {
 
-        this.state = state;
-        this.extendedState = extendedState;
-        this.renderLayers = renderLayers;
-        this.modelPath = modelPath;
-    }
+		this.state = state;
+		this.extendedState = extendedState;
+		this.renderLayers = renderLayers;
+		this.modelPath = modelPath;
+	}
 
-    public static PartState fromPart(IMultipart part) {
+	public static PartState fromPart(IMultipart part) {
 
-        ResourceLocation path = part.getModelPath();
-        if (path == null) return null;
+		ResourceLocation path = part.getModelPath();
+		if (path == null)
+			return null;
 
-        EnumSet<BlockRenderLayer> renderLayers = EnumSet.noneOf(BlockRenderLayer.class);
-        for (BlockRenderLayer layer : BlockRenderLayer.values())
-            if (part.canRenderInLayer(layer)) renderLayers.add(layer);
+		EnumSet<BlockRenderLayer> renderLayers = EnumSet.noneOf(BlockRenderLayer.class);
+		for (BlockRenderLayer layer : BlockRenderLayer.values())
+			if (part.canRenderInLayer(layer))
+				renderLayers.add(layer);
 
-        IBlockState state = part.getActualState(MultipartRegistry.getDefaultState(part).getBaseState());
-        IBlockState extendedState = part.getExtendedState(state);
+		IBlockState state = part.getActualState(MultipartRegistry.getDefaultState(part).getBaseState());
+		IBlockState extendedState = part.getExtendedState(state);
 
-        return new PartState(state, extendedState, renderLayers, path);
-    }
+		return new PartState(state, extendedState, renderLayers, path);
+	}
 
-    @Override
-    public int hashCode() {
+	@Override
+	public int hashCode() {
 
-        return state.hashCode() + (renderLayers != null ? renderLayers.hashCode() << 7 : 0)
-                + (modelPath != null ? modelPath.hashCode() << 15 : 0);
-    }
+		return state.hashCode() + (renderLayers != null ? renderLayers.hashCode() << 7 : 0)
+			+ (modelPath != null ? modelPath.hashCode() << 15 : 0);
+	}
 
-    @Override
-    public String toString() {
+	@Override
+	public String toString() {
 
-        return new StringBuilder().append("(state=").append(state).append(", extendedState=").append(extendedState)
-                .append(", renderLayers=").append(renderLayers).append(", modelPath=").append(modelPath).append(")").toString();
-    }
+		return new StringBuilder().append("(state=").append(state).append(", extendedState=").append(extendedState)
+			.append(", renderLayers=").append(renderLayers).append(", modelPath=").append(modelPath).append(")").toString();
+	}
 }

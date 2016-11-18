@@ -1,7 +1,6 @@
 package reborncore.common.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
@@ -15,19 +14,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BucketHandler
-{
+public class BucketHandler {
 
 	public static BucketHandler INSTANCE = new BucketHandler();
 	public Map<Fluid, Item> buckets = new HashMap<>();
 
-	private BucketHandler()
-	{
+	private BucketHandler() {
 
 	}
 
-	@SubscribeEvent public void onBucketFill(FillBucketEvent event)
-	{
+	@SubscribeEvent
+	public void onBucketFill(FillBucketEvent event) {
 		ItemStack result = fillCustomBucket(event.getWorld(), event.getTarget());
 
 		if (result == null)
@@ -37,13 +34,12 @@ public class BucketHandler
 		event.setResult(Event.Result.ALLOW);
 	}
 
-	private ItemStack fillCustomBucket(World world, RayTraceResult pos)
-	{
+	private ItemStack fillCustomBucket(World world, RayTraceResult pos) {
 		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
 			Block block = world.getBlockState(pos.getBlockPos()).getBlock();
-			if(block instanceof BlockFluidBase){
+			if (block instanceof BlockFluidBase) {
 				Fluid fluid = ((BlockFluidBase) block).getFluid();
-				if(buckets.containsKey(fluid)){
+				if (buckets.containsKey(fluid)) {
 					Item bucket = buckets.get(fluid);
 					if (bucket != null) {
 						world.setBlockToAir(pos.getBlockPos());

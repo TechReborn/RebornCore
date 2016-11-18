@@ -6,83 +6,64 @@ import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.powerSystem.traits.BasePowerTrait;
 import reborncore.common.powerSystem.traits.EUItemPowerTrait;
-import reborncore.common.powerSystem.traits.RFItemPowerTrait;
 import reborncore.jtraits.MixinFactory;
 
-public abstract class PoweredItem
-{
+public abstract class PoweredItem {
 
-	public static Item createItem(Class itemClass) throws IllegalAccessException, InstantiationException
-	{
+	public static Item createItem(Class itemClass) throws IllegalAccessException, InstantiationException {
 		return createItem(itemClass, Loader.isModLoaded("IC2"));
 	}
 
-	public static Item createItem(Class itemClass, boolean ic2) throws IllegalAccessException, InstantiationException
-	{
+	public static Item createItem(Class itemClass, boolean ic2) throws IllegalAccessException, InstantiationException {
 		Class baseClass = MixinFactory.mixin(itemClass, BasePowerTrait.class);
-		if(ic2){
+		if (ic2) {
 			return (Item) MixinFactory
-					.mixin(baseClass, /** RFItemPowerTrait.class, **/ EUItemPowerTrait.class).newInstance();
+				.mixin(baseClass, /** RFItemPowerTrait.class, **/EUItemPowerTrait.class).newInstance();
 		}
 		return (Item) baseClass.newInstance();
-//		return (Item) MixinFactory
-//				.mixin(baseClass, RFItemPowerTrait.class).newInstance();
+		//		return (Item) MixinFactory
+		//				.mixin(baseClass, RFItemPowerTrait.class).newInstance();
 	}
 
-	public static boolean canUseEnergy(double energy, ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static boolean canUseEnergy(double energy, ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			return ((IEnergyInterfaceItem) stack.getItem()).canUseEnergy(energy, stack);
-		} else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	public static double useEnergy(double energy, ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static double useEnergy(double energy, ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			return ((IEnergyInterfaceItem) stack.getItem()).useEnergy(energy, stack);
-		} else
-		{
+		} else {
 			return 0;
 		}
 	}
 
-	public static void setEnergy(double energy, ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static void setEnergy(double energy, ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			((IEnergyInterfaceItem) stack.getItem()).setEnergy(energy, stack);
 		}
 	}
 
-	public static double getEnergy(ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static double getEnergy(ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			return ((IEnergyInterfaceItem) stack.getItem()).getEnergy(stack);
-		} else
-		{
+		} else {
 			return 0;
 		}
 	}
 
-	public static double addEnergy(double energy, ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static double addEnergy(double energy, ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			return ((IEnergyInterfaceItem) stack.getItem()).addEnergy(energy, stack);
 		}
 		return 0;
 	}
 
-	public static double getMaxPower(ItemStack stack)
-	{
-		if (stack.getItem() instanceof IEnergyInterfaceItem)
-		{
+	public static double getMaxPower(ItemStack stack) {
+		if (stack.getItem() instanceof IEnergyInterfaceItem) {
 			return ((IEnergyInterfaceItem) stack.getItem()).getMaxPower(stack);
 		}
 		return 0;

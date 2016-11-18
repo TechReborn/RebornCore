@@ -13,33 +13,33 @@ import java.util.List;
  */
 public abstract class Shield {
 
-    public String name;
+	public String name;
 
-    public Shield(String name) {
-        this.name = name;
-    }
+	public Shield(String name) {
+		this.name = name;
+	}
 
-    public ResourceLocation getShieldTexture() {
-        return new ResourceLocation("null");
-    }
+	public ResourceLocation getShieldTexture() {
+		return new ResourceLocation("null");
+	}
 
-    public boolean showInItemLists() {
-        return true;
-    }
+	public boolean showInItemLists() {
+		return true;
+	}
 
-    public void getSubTypes(Shield shield, CreativeTabs tab, List<ItemStack> subItems) {
-        ItemStack newStack = new ItemStack(Items.SHIELD);
-        ItemNBTHelper.setString(newStack, "type", shield.name);
-        ItemNBTHelper.setBoolean(newStack, "vanilla", false);
-        subItems.add(newStack);
-    }
+	public void getSubTypes(Shield shield, CreativeTabs tab, List<ItemStack> subItems) {
+		ItemStack newStack = new ItemStack(Items.SHIELD);
+		ItemNBTHelper.setString(newStack, "type", shield.name);
+		ItemNBTHelper.setBoolean(newStack, "vanilla", false);
+		subItems.add(newStack);
+	}
 
-    public double getDurabilityForDisplay(ItemStack stack) {
-        return (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-    }
+	public double getDurabilityForDisplay(ItemStack stack) {
+		return (double) stack.getItemDamage() / (double) stack.getMaxDamage();
+	}
 
-    public boolean showDurabilityBar(ItemStack stack) {
-        return false;
-    }
+	public boolean showDurabilityBar(ItemStack stack) {
+		return false;
+	}
 
 }

@@ -5,8 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public class Annotation
-{
+public class Annotation {
 
 	/**
 	 * Can be applied to classes.<br/>
@@ -16,8 +15,7 @@ public class Annotation
 	 */
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface ClosingTrait
-	{
+	public static @interface ClosingTrait {
 
 		/**
 		 * The JTrait that will be applied last when making a mixin with this
@@ -34,8 +32,7 @@ public class Annotation
 	 */
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface CheckMixin
-	{
+	public static @interface CheckMixin {
 
 		/**
 		 * The field that will be set to true when this class is part of a

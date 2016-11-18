@@ -1,21 +1,21 @@
 package reborncore.mcmultipart.capabilities;
 
-import reborncore.mcmultipart.multipart.IMultipart;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import reborncore.mcmultipart.multipart.IMultipart;
 
 public class PartAttachCapabilitiesEvent extends AttachCapabilitiesEvent {
 
-    private final IMultipart part;
+	private final IMultipart part;
 
-    public PartAttachCapabilitiesEvent(IMultipart part) {
+	public PartAttachCapabilitiesEvent(IMultipart part) {
 
-        super(part);
-        this.part = part;
-    }
+		super(part);
+		this.part = part;
+	}
 
-    public IMultipart getPart() {
+	public IMultipart getPart() {
 
-        return part;
-    }
+		return part;
+	}
 
 }

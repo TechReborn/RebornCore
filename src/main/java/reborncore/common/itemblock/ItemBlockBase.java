@@ -10,25 +10,21 @@ import net.minecraft.stats.Achievement;
 import reborncore.common.achievement.ICraftAchievement;
 import reborncore.common.achievement.IPickupAchievement;
 
-public class ItemBlockBase extends ItemMultiTexture implements IPickupAchievement, ICraftAchievement
-{
-	public ItemBlockBase(Block p_i45346_1_, Block p_i45346_2_, String[] p_i45346_3_)
-	{
+public class ItemBlockBase extends ItemMultiTexture implements IPickupAchievement, ICraftAchievement {
+	public ItemBlockBase(Block p_i45346_1_, Block p_i45346_2_, String[] p_i45346_3_) {
 		super(p_i45346_1_, p_i45346_2_, p_i45346_3_);
 	}
 
 	@Override
-	public Achievement getAchievementOnCraft(ItemStack stack, EntityPlayer player, IInventory matrix)
-	{
+	public Achievement getAchievementOnCraft(ItemStack stack, EntityPlayer player, IInventory matrix) {
 		return theBlock instanceof ICraftAchievement
-				? ((ICraftAchievement) theBlock).getAchievementOnCraft(stack, player, matrix) : null;
+		       ? ((ICraftAchievement) theBlock).getAchievementOnCraft(stack, player, matrix) : null;
 	}
 
 	@Override
-	public Achievement getAchievementOnPickup(ItemStack stack, EntityPlayer player, EntityItem item)
-	{
+	public Achievement getAchievementOnPickup(ItemStack stack, EntityPlayer player, EntityItem item) {
 		return theBlock instanceof IPickupAchievement
-				? ((IPickupAchievement) theBlock).getAchievementOnPickup(stack, player, item) : null;
+		       ? ((IPickupAchievement) theBlock).getAchievementOnPickup(stack, player, item) : null;
 	}
 
 }

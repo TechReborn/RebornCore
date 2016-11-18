@@ -11,8 +11,7 @@ import net.minecraftforge.common.util.Constants;
 import reborncore.common.tile.TileBase;
 import reborncore.common.util.IInventoryUpdateable;
 
-public class Inventory implements IInventory
-{
+public class Inventory implements IInventory {
 
 	private final String inventoryName;
 	private final int inventorySize;
@@ -57,9 +56,9 @@ public class Inventory implements IInventory
 
 	@Override
 	public ItemStack decrStackSize(int slotId, int count) {
-		if(slotId < this.getSizeInventory()) {
+		if (slotId < this.getSizeInventory()) {
 			ItemStack stack = this.getStackInSlot(slotId);
-			if(stack != ItemStack.EMPTY && stack.getCount() > count) {
+			if (stack != ItemStack.EMPTY && stack.getCount() > count) {
 				ItemStack result = stack.splitStack(count);
 				markDirty();
 				return result;
@@ -73,7 +72,7 @@ public class Inventory implements IInventory
 
 	@Override
 	public void setInventorySlotContents(int slotId, ItemStack itemstack) {
-		if(slotId < this.getSizeInventory()) {
+		if (slotId < this.getSizeInventory()) {
 			this.inventoryContent[slotId] = itemstack;
 
 			if (itemstack != ItemStack.EMPTY && itemstack.getCount() > this.getInventoryStackLimit()) {
@@ -90,7 +89,7 @@ public class Inventory implements IInventory
 
 	@Override
 	public void markDirty() {
-		if(this.tileBase instanceof IInventoryUpdateable) {
+		if (this.tileBase instanceof IInventoryUpdateable) {
 			((IInventoryUpdateable) this.tileBase).updateInventory();
 		}
 		this.tileBase.markBlockForUpdate();
@@ -115,13 +114,12 @@ public class Inventory implements IInventory
 	public void readFromNBT(NBTTagCompound data) {
 		NBTTagList nbttaglist = data.getTagList("inventory_" + getName(), Constants.NBT.TAG_COMPOUND);
 
-		for(int i=0; i<nbttaglist.tagCount(); i++) {
+		for (int i = 0; i < nbttaglist.tagCount(); i++) {
 			NBTTagCompound slot = nbttaglist.getCompoundTagAt(i);
 			int index;
 			if (slot.hasKey("index")) {
 				index = slot.getInteger("index");
-			}
-			else {
+			} else {
 				index = slot.getByte("Slot");
 			}
 
@@ -133,7 +131,7 @@ public class Inventory implements IInventory
 
 	public NBTTagCompound writeToNBT(NBTTagCompound data) {
 		NBTTagList slots = new NBTTagList();
-		for(byte index=0; index<this.getSizeInventory(); index++) {
+		for (byte index = 0; index < this.getSizeInventory(); index++) {
 			ItemStack stack = this.getStackInSlot(index);
 			if (stack != ItemStack.EMPTY && stack.getCount() > 0) {
 				NBTTagCompound slot = new NBTTagCompound();
@@ -180,7 +178,7 @@ public class Inventory implements IInventory
 
 	@Override
 	public void clear() {
-		for(int i=0; i<this.getSizeInventory(); i++) {
+		for (int i = 0; i < this.getSizeInventory(); i++) {
 			this.inventoryContent[i] = ItemStack.EMPTY;
 		}
 	}

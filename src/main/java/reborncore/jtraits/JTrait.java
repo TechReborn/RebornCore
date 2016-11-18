@@ -1,7 +1,6 @@
 package reborncore.jtraits;
 
-public class JTrait<T>
-{
+public class JTrait<T> {
 
 	/**
 	 * A reference to the class this trait was applied to.

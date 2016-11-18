@@ -9,10 +9,9 @@ import reborncore.common.network.RegisterPacketEvent;
  */
 public class RebornPackets {
 
-    @SubscribeEvent
-    public void loadPackets(RegisterPacketEvent event){
-        event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
-    }
-
+	@SubscribeEvent
+	public void loadPackets(RegisterPacketEvent event) {
+		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
+	}
 
 }

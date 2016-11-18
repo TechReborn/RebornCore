@@ -11,75 +11,65 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by modmuss50 on 23/05/2016.
  */
 public class InputStreamTexture extends AbstractTexture {
-    private static final Logger logger = LogManager.getLogger();
-    protected final InputStream textureLocation;
-    BufferedImage image;
-    String name;
+	private static final Logger logger = LogManager.getLogger();
+	protected final InputStream textureLocation;
+	BufferedImage image;
+	String name;
 
-    public InputStreamTexture(InputStream textureResourceLocation, String name)
-    {
-        this.textureLocation = textureResourceLocation;
-        this.name = name;
-    }
+	public InputStreamTexture(InputStream textureResourceLocation, String name) {
+		this.textureLocation = textureResourceLocation;
+		this.name = name;
+	}
 
-    public void loadTexture(IResourceManager resourceManager) throws IOException
-    {
-        this.deleteGlTexture();
-        if(image == null){
-            IResource iresource = null;
-            try
-            {
-                iresource = new IResource()
-                {
+	public void loadTexture(IResourceManager resourceManager) throws IOException {
+		this.deleteGlTexture();
+		if (image == null) {
+			IResource iresource = null;
+			try {
+				iresource = new IResource() {
 
-                    @Override
-                    public ResourceLocation getResourceLocation()
-                    {
-                        return new ResourceLocation("reborncore:loaded/" + name);
-                    }
+					@Override
+					public ResourceLocation getResourceLocation() {
+						return new ResourceLocation("reborncore:loaded/" + name);
+					}
 
-                    @Override
-                    public InputStream getInputStream()
-                    {
-                        return textureLocation;
-                    }
+					@Override
+					public InputStream getInputStream() {
+						return textureLocation;
+					}
 
-                    @Override
-                    public boolean hasMetadata()
-                    {
-                        return false;
-                    }
+					@Override
+					public boolean hasMetadata() {
+						return false;
+					}
 
-                    @Override
-                    public <T extends IMetadataSection> T getMetadata(String sectionName)
-                    {
-                        return null;
-                    }
+					@Override
+					public <T extends IMetadataSection> T getMetadata(String sectionName) {
+						return null;
+					}
 
-                    @Override
-                    public String getResourcePackName()
-                    {
-                        return "reborncore";
-                    }
+					@Override
+					public String getResourcePackName() {
+						return "reborncore";
+					}
 
-                    @Override
-                    public void close() throws IOException
-                    {
+					@Override
+					public void close() throws IOException {
 
-                    }
-                };
-                image= TextureUtil.readBufferedImage(iresource.getInputStream());
-            } finally
-            {
-                IOUtils.closeQuietly(iresource);
-            }
-        }
-        TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
-    }
+					}
+				};
+				image = TextureUtil.readBufferedImage(iresource.getInputStream());
+			} finally {
+				IOUtils.closeQuietly(iresource);
+			}
+		}
+		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
+	}
 }

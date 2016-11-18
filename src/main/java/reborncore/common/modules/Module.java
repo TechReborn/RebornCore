@@ -7,8 +7,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 /**
  * @author Prospector on 28/05/16
  */
-public class Module
-{
+public class Module {
 	/* Module ID; format as so: modid:moduleName
 	 * Example:
 	 *	crystek.rawMaterials
@@ -23,48 +22,39 @@ public class Module
 
 	public boolean isActive = true;
 
-	public Module(String id)
-	{
+	public Module(String id) {
 		moduleID = id;
 	}
 
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 
 	}
 
-	public void init(FMLInitializationEvent event)
-	{
+	public void init(FMLInitializationEvent event) {
 
 	}
 
-	public void postInit(FMLPostInitializationEvent event)
-	{
+	public void postInit(FMLPostInitializationEvent event) {
 
 	}
 
-	public String getModuleID()
-	{
+	public String getModuleID() {
 		return moduleID;
 	}
 
-	public String[] getModsRequired()
-	{
+	public String[] getModsRequired() {
 		return modsRequired;
 	}
 
-	public void setModsRequired(String... modIds)
-	{
+	public void setModsRequired(String... modIds) {
 		modsRequired = modIds;
 	}
 
-	public String[] getModulesRequired()
-	{
+	public String[] getModulesRequired() {
 		return modulesRequired;
 	}
 
-	public void setModulesRequired(String... moduleIDs)
-	{
+	public void setModulesRequired(String... moduleIDs) {
 		modulesRequired = moduleIDs;
 	}
 }

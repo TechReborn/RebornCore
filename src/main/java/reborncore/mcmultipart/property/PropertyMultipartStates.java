@@ -1,42 +1,42 @@
 package reborncore.mcmultipart.property;
 
-import java.util.List;
-
-import reborncore.mcmultipart.multipart.PartState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import reborncore.mcmultipart.multipart.PartState;
+
+import java.util.List;
 
 public class PropertyMultipartStates implements IUnlistedProperty<List<PartState>> {
 
-    private String name;
+	private String name;
 
-    public PropertyMultipartStates(String name) {
+	public PropertyMultipartStates(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    @Override
-    public boolean isValid(List<PartState> value) {
+	@Override
+	public boolean isValid(List<PartState> value) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class<List<PartState>> getType() {
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<List<PartState>> getType() {
 
-        return (Class<List<PartState>>) (Class<?>) List.class;
-    }
+		return (Class<List<PartState>>) (Class<?>) List.class;
+	}
 
-    @Override
-    public String valueToString(List<PartState> value) {
+	@Override
+	public String valueToString(List<PartState> value) {
 
-        return "";
-    }
+		return "";
+	}
 
 }

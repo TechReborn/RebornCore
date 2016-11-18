@@ -4,8 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
-public interface IWrenchable
-{
+public interface IWrenchable {
 	boolean wrenchCanSetFacing(EntityPlayer p0, EnumFacing p1);
 
 	EnumFacing getFacing();

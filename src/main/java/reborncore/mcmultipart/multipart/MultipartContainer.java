@@ -1,30 +1,9 @@
 package reborncore.mcmultipart.multipart;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import reborncore.mcmultipart.capabilities.CapabilityWrapperRegistry;
-import reborncore.mcmultipart.capabilities.ISlottedCapabilityProvider;
-import reborncore.mcmultipart.event.PartEvent;
-import reborncore.mcmultipart.multipart.ISolidPart.ISolidTopPart;
-import reborncore.mcmultipart.network.MessageMultipartChange;
-import reborncore.mcmultipart.network.MessageMultipartChange.Type;
-import reborncore.mcmultipart.raytrace.PartMOP;
-import reborncore.mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
-import reborncore.mcmultipart.util.IWorldLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -47,8 +26,26 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import reborncore.mcmultipart.capabilities.CapabilityWrapperRegistry;
+import reborncore.mcmultipart.capabilities.ISlottedCapabilityProvider;
+import reborncore.mcmultipart.event.PartEvent;
+import reborncore.mcmultipart.multipart.ISolidPart.ISolidTopPart;
+import reborncore.mcmultipart.network.MessageMultipartChange;
+import reborncore.mcmultipart.network.MessageMultipartChange.Type;
+import reborncore.mcmultipart.raytrace.PartMOP;
+import reborncore.mcmultipart.raytrace.RayTraceUtils.AdvancedRayTraceResultPart;
+import reborncore.mcmultipart.util.IWorldLocation;
 
-import reborncore.mcmultipart.multipart.IMultipartContainer.IMultipartContainerListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Helper class that contains all the logic required for an {@link IMultipartContainer} to work, as well as methods that are forwarded to
@@ -58,513 +55,563 @@ import reborncore.mcmultipart.multipart.IMultipartContainer.IMultipartContainerL
  */
 public class MultipartContainer implements IMultipartContainer {
 
-    private IWorldLocation location;
-    private IMultipartContainerListener listener;
+	private IWorldLocation location;
+	private IMultipartContainerListener listener;
 
-    private boolean canTurnIntoBlock;
-    private BiMap<UUID, IMultipart> partMap = HashBiMap.create();
-    private Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>();
+	private boolean canTurnIntoBlock;
+	private BiMap<UUID, IMultipart> partMap = HashBiMap.create();
+	private Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>();
 
-    public MultipartContainer(IWorldLocation location, boolean canTurnIntoBlock) {
+	public MultipartContainer(IWorldLocation location, boolean canTurnIntoBlock) {
 
-        this.location = location;
-        this.canTurnIntoBlock = canTurnIntoBlock;
-    }
+		this.location = location;
+		this.canTurnIntoBlock = canTurnIntoBlock;
+	}
 
-    public MultipartContainer(IWorldLocation location, boolean canTurnIntoBlock, MultipartContainer container) {
+	public MultipartContainer(IWorldLocation location, boolean canTurnIntoBlock, MultipartContainer container) {
 
-        this.location = location;
-        this.canTurnIntoBlock = canTurnIntoBlock;
-        this.partMap = HashBiMap.create(container.partMap);
-        this.slotMap = new HashMap<PartSlot, ISlottedPart>(container.slotMap);
-        for (IMultipart part : partMap.values())
-            part.setContainer(this);
-    }
+		this.location = location;
+		this.canTurnIntoBlock = canTurnIntoBlock;
+		this.partMap = HashBiMap.create(container.partMap);
+		this.slotMap = new HashMap<PartSlot, ISlottedPart>(container.slotMap);
+		for (IMultipart part : partMap.values())
+			part.setContainer(this);
+	}
 
-    public void setListener(IMultipartContainerListener listener) {
+	public void setListener(IMultipartContainerListener listener) {
 
-        this.listener = listener;
-    }
+		this.listener = listener;
+	}
 
-    @Override
-    public World getWorldIn() {
+	@Override
+	public World getWorldIn() {
 
-        return location.getWorldIn();
-    }
+		return location.getWorldIn();
+	}
 
-    @Override
-    public BlockPos getPosIn() {
+	@Override
+	public BlockPos getPosIn() {
 
-        return location.getPosIn();
-    }
+		return location.getPosIn();
+	}
 
-    public boolean canTurnIntoBlock() {
+	public boolean canTurnIntoBlock() {
 
-        return canTurnIntoBlock;
-    }
+		return canTurnIntoBlock;
+	}
 
-    @Override
-    public Collection<? extends IMultipart> getParts() {
+	@Override
+	public Collection<? extends IMultipart> getParts() {
 
-        return partMap.values();
-    }
+		return partMap.values();
+	}
 
-    @Override
-    public ISlottedPart getPartInSlot(PartSlot slot) {
+	@Override
+	public ISlottedPart getPartInSlot(PartSlot slot) {
 
-        return slotMap.get(slot);
-    }
+		return slotMap.get(slot);
+	}
 
-    @Override
-    public boolean canAddPart(IMultipart part) {
+	@Override
+	public boolean canAddPart(IMultipart part) {
 
-        if (part == null || getParts().contains(part)) return false;
+		if (part == null || getParts().contains(part))
+			return false;
 
-        if (part instanceof ISlottedPart) {
-            for (PartSlot s : ((ISlottedPart) part).getSlotMask())
-                if (getPartInSlot(s) != null) return false;
-        }
+		if (part instanceof ISlottedPart) {
+			for (PartSlot s : ((ISlottedPart) part).getSlotMask())
+				if (getPartInSlot(s) != null)
+					return false;
+		}
 
-        if (!occlusionTest(part)) return false;
+		if (!occlusionTest(part))
+			return false;
 
-        List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-        part.addCollisionBoxes(new AxisAlignedBB(0, 0, 0, 1, 1, 1), list, null);
-        if (getWorldIn() != null && getPosIn() != null) for (AxisAlignedBB bb : list)
-            if (!getWorldIn().checkNoEntityCollision(bb.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ()))) return false;
+		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
+		part.addCollisionBoxes(new AxisAlignedBB(0, 0, 0, 1, 1, 1), list, null);
+		if (getWorldIn() != null && getPosIn() != null)
+			for (AxisAlignedBB bb : list)
+				if (!getWorldIn().checkNoEntityCollision(bb.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ())))
+					return false;
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public boolean canReplacePart(IMultipart oldPart, IMultipart newPart) {
+	@Override
+	public boolean canReplacePart(IMultipart oldPart, IMultipart newPart) {
 
-        if (oldPart == null) return canAddPart(newPart);
-        if (newPart == null || getParts().contains(newPart)) return false;
+		if (oldPart == null)
+			return canAddPart(newPart);
+		if (newPart == null || getParts().contains(newPart))
+			return false;
 
-        if (newPart instanceof ISlottedPart) {
-            for (PartSlot s : ((ISlottedPart) newPart).getSlotMask()) {
-                IMultipart p = getPartInSlot(s);
-                if (p != null && p != oldPart) return false;
-            }
-        }
+		if (newPart instanceof ISlottedPart) {
+			for (PartSlot s : ((ISlottedPart) newPart).getSlotMask()) {
+				IMultipart p = getPartInSlot(s);
+				if (p != null && p != oldPart)
+					return false;
+			}
+		}
 
-        if (!occlusionTest(newPart, oldPart)) return false;
+		if (!occlusionTest(newPart, oldPart))
+			return false;
 
-        List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-        newPart.addCollisionBoxes(new AxisAlignedBB(0, 0, 0, 1, 1, 1), list, null);
-        if (getWorldIn() != null && getPosIn() != null) for (AxisAlignedBB bb : list)
-            if (!getWorldIn().checkNoEntityCollision(bb.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ()))) return false;
+		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
+		newPart.addCollisionBoxes(new AxisAlignedBB(0, 0, 0, 1, 1, 1), list, null);
+		if (getWorldIn() != null && getPosIn() != null)
+			for (AxisAlignedBB bb : list)
+				if (!getWorldIn().checkNoEntityCollision(bb.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ())))
+					return false;
+
+		return true;
+	}
+
+	@Override
+	public void addPart(IMultipart part) {
+
+		if (getWorldIn().isRemote)
+			throw new IllegalStateException("Attempted to add a part on the client!");
+		addPart(part, true, true, true, true, UUID.randomUUID());
+	}
+
+	public void addPart(IMultipart part, boolean notifyPart, boolean notifyNeighbors, boolean tryConvert, boolean postEvent, UUID id) {
 
-        return true;
-    }
+		if (part == null)
+			throw new NullPointerException("Attempted to add a null part at " + getPosIn());
+		if (getParts().contains(part))
+			throw new IllegalArgumentException("Attempted to add a duplicate part at " + getPosIn() + " (" + part + ")");
 
-    @Override
-    public void addPart(IMultipart part) {
+		if (listener != null)
+			listener.onAddPartPre(part);
 
-        if (getWorldIn().isRemote) throw new IllegalStateException("Attempted to add a part on the client!");
-        addPart(part, true, true, true, true, UUID.randomUUID());
-    }
+		part.setContainer(this);
 
-    public void addPart(IMultipart part, boolean notifyPart, boolean notifyNeighbors, boolean tryConvert, boolean postEvent, UUID id) {
+		BiMap<UUID, IMultipart> partMap = HashBiMap.create(this.partMap);
+		Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>(this.slotMap);
 
-        if (part == null) throw new NullPointerException("Attempted to add a null part at " + getPosIn());
-        if (getParts().contains(part))
-            throw new IllegalArgumentException("Attempted to add a duplicate part at " + getPosIn() + " (" + part + ")");
+		partMap.put(id, part);
+		if (part instanceof ISlottedPart) {
+			for (PartSlot s : ((ISlottedPart) part).getSlotMask())
+				slotMap.put(s, (ISlottedPart) part);
+		}
 
-        if (listener != null) listener.onAddPartPre(part);
+		this.partMap = partMap;
+		this.slotMap = slotMap;
 
-        part.setContainer(this);
+		if (postEvent)
+			MinecraftForge.EVENT_BUS.post(new PartEvent.Add(part));
 
-        BiMap<UUID, IMultipart> partMap = HashBiMap.create(this.partMap);
-        Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>(this.slotMap);
+		if (notifyPart)
+			part.onAdded();
+		if (notifyNeighbors) {
+			notifyPartChanged(part);
+			getWorldIn().checkLight(getPosIn());
+		}
 
-        partMap.put(id, part);
-        if (part instanceof ISlottedPart) {
-            for (PartSlot s : ((ISlottedPart) part).getSlotMask())
-                slotMap.put(s, (ISlottedPart) part);
-        }
+		if (listener != null)
+			listener.onAddPartPost(part);
 
-        this.partMap = partMap;
-        this.slotMap = slotMap;
+		if (getWorldIn() != null && !getWorldIn().isRemote && (!canTurnIntoBlock || !tryConvert || !MultipartRegistry.convertToBlock(this)))
+			MessageMultipartChange.newPacket(getWorldIn(), getPosIn(), part, Type.ADD).send(getWorldIn());
+	}
 
-        if (postEvent) MinecraftForge.EVENT_BUS.post(new PartEvent.Add(part));
+	@Override
+	public void removePart(IMultipart part) {
 
-        if (notifyPart) part.onAdded();
-        if (notifyNeighbors) {
-            notifyPartChanged(part);
-            getWorldIn().checkLight(getPosIn());
-        }
+		removePart(part, true, true, true);
+	}
 
-        if (listener != null) listener.onAddPartPost(part);
+	public void removePart(IMultipart part, boolean notifyPart, boolean notifyNeighbors, boolean postEvent) {
 
-        if (getWorldIn() != null && !getWorldIn().isRemote && (!canTurnIntoBlock || !tryConvert || !MultipartRegistry.convertToBlock(this)))
-            MessageMultipartChange.newPacket(getWorldIn(), getPosIn(), part, Type.ADD).send(getWorldIn());
-    }
+		if (part == null)
+			throw new NullPointerException("Attempted to remove a null part from " + getPosIn());
+		if (!getParts().contains(part))
+			throw new IllegalArgumentException("Attempted to remove a part that doesn't exist from " + getPosIn() + " (" + part + ")");
 
-    @Override
-    public void removePart(IMultipart part) {
+		BiMap<UUID, IMultipart> partMap = HashBiMap.create(this.partMap), oldPartMap = this.partMap;
+		Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>(this.slotMap), oldSlotMap = this.slotMap;
 
-        removePart(part, true, true, true);
-    }
+		if (listener != null)
+			listener.onRemovePartPre(part);
 
-    public void removePart(IMultipart part, boolean notifyPart, boolean notifyNeighbors, boolean postEvent) {
+		partMap.inverse().remove(part);
+		if (part instanceof ISlottedPart) {
+			Iterator<Entry<PartSlot, ISlottedPart>> it = slotMap.entrySet().iterator();
+			while (it.hasNext()) {
+				if (it.next().getValue() == part)
+					it.remove();
+			}
+		}
 
-        if (part == null) throw new NullPointerException("Attempted to remove a null part from " + getPosIn());
-        if (!getParts().contains(part))
-            throw new IllegalArgumentException("Attempted to remove a part that doesn't exist from " + getPosIn() + " (" + part + ")");
+		this.partMap = partMap;
+		this.slotMap = slotMap;
 
-        BiMap<UUID, IMultipart> partMap = HashBiMap.create(this.partMap), oldPartMap = this.partMap;
-        Map<PartSlot, ISlottedPart> slotMap = new HashMap<PartSlot, ISlottedPart>(this.slotMap), oldSlotMap = this.slotMap;
+		if (postEvent)
+			MinecraftForge.EVENT_BUS.post(new PartEvent.Remove(part));
 
-        if (listener != null) listener.onRemovePartPre(part);
+		// Yes, it's a bit of a dirty solution, but it's the best I could come up with. The part must not be there in the if statement :P
+		if (getWorldIn() != null && !getWorldIn().isRemote && (!canTurnIntoBlock || !MultipartRegistry.convertToBlock(this))) {
+			this.partMap = oldPartMap;
+			this.slotMap = oldSlotMap;
+			MessageMultipartChange.newPacket(getWorldIn(), getPosIn(), part, Type.REMOVE).send(getWorldIn());
+			this.partMap = partMap;
+			this.slotMap = slotMap;
+		}
 
-        partMap.inverse().remove(part);
-        if (part instanceof ISlottedPart) {
-            Iterator<Entry<PartSlot, ISlottedPart>> it = slotMap.entrySet().iterator();
-            while (it.hasNext()) {
-                if (it.next().getValue() == part) it.remove();
-            }
-        }
+		if (notifyPart)
+			part.onRemoved();
+		if (notifyNeighbors) {
+			notifyPartChanged(part);
+			getWorldIn().checkLight(getPosIn());
+		}
 
-        this.partMap = partMap;
-        this.slotMap = slotMap;
+		part.setContainer(null);
 
-        if (postEvent) MinecraftForge.EVENT_BUS.post(new PartEvent.Remove(part));
+		if (listener != null)
+			listener.onRemovePartPost(part);
+	}
 
-        // Yes, it's a bit of a dirty solution, but it's the best I could come up with. The part must not be there in the if statement :P
-        if (getWorldIn() != null && !getWorldIn().isRemote && (!canTurnIntoBlock || !MultipartRegistry.convertToBlock(this))) {
-            this.partMap = oldPartMap;
-            this.slotMap = oldSlotMap;
-            MessageMultipartChange.newPacket(getWorldIn(), getPosIn(), part, Type.REMOVE).send(getWorldIn());
-            this.partMap = partMap;
-            this.slotMap = slotMap;
-        }
+	@Override
+	public UUID getPartID(IMultipart part) {
 
-        if (notifyPart) part.onRemoved();
-        if (notifyNeighbors) {
-            notifyPartChanged(part);
-            getWorldIn().checkLight(getPosIn());
-        }
+		return partMap.inverse().get(part);
+	}
 
-        part.setContainer(null);
+	@Override
+	public IMultipart getPartFromID(UUID id) {
 
-        if (listener != null) listener.onRemovePartPost(part);
-    }
+		return partMap.get(id);
+	}
 
-    @Override
-    public UUID getPartID(IMultipart part) {
+	@Override
+	public void addPart(UUID id, IMultipart part) {
 
-        return partMap.inverse().get(part);
-    }
+		addPart(part, true, true, true, true, id);
+	}
 
-    @Override
-    public IMultipart getPartFromID(UUID id) {
+	@Override
+	public boolean occlusionTest(IMultipart part, IMultipart... ignored) {
 
-        return partMap.get(id);
-    }
+		List<IMultipart> ignoredList = Arrays.asList(ignored);
 
-    @Override
-    public void addPart(UUID id, IMultipart part) {
+		for (IMultipart p : getParts())
+			if (!ignoredList.contains(p) && (!p.occlusionTest(part) || !part.occlusionTest(p)))
+				return false;
 
-        addPart(part, true, true, true, true, id);
-    }
+		return true;
+	}
 
-    @Override
-    public boolean occlusionTest(IMultipart part, IMultipart... ignored) {
+	public void notifyPartChanged(IMultipart part) {
 
-        List<IMultipart> ignoredList = Arrays.asList(ignored);
+		for (IMultipart p : getParts())
+			if (p != part)
+				p.onPartChanged(part);
+		getWorldIn().notifyNeighborsOfStateChange(getPosIn(), getWorldIn().getBlockState(getPosIn()).getBlock(), true);
+	}
 
-        for (IMultipart p : getParts())
-            if (!ignoredList.contains(p) && (!p.occlusionTest(part) || !part.occlusionTest(p))) return false;
+	public AdvancedRayTraceResultPart collisionRayTrace(Vec3d start, Vec3d end) {
 
-        return true;
-    }
+		double dist = Double.POSITIVE_INFINITY;
+		AdvancedRayTraceResultPart current = null;
 
-    public void notifyPartChanged(IMultipart part) {
+		for (IMultipart p : getParts()) {
+			AdvancedRayTraceResultPart result = p.collisionRayTrace(start, end);
+			if (result == null)
+				continue;
+			double d = result.squareDistanceTo(start);
+			if (d <= dist) {
+				dist = d;
+				current = result;
+			}
+		}
 
-        for (IMultipart p : getParts())
-            if (p != part) p.onPartChanged(part);
-        getWorldIn().notifyNeighborsOfStateChange(getPosIn(), getWorldIn().getBlockState(getPosIn()).getBlock(), true);
-    }
+		return current;
+	}
 
-    public AdvancedRayTraceResultPart collisionRayTrace(Vec3d start, Vec3d end) {
+	public void addCollisionBoxes(AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity collidingEntity) {
 
-        double dist = Double.POSITIVE_INFINITY;
-        AdvancedRayTraceResultPart current = null;
+		for (IMultipart p : getParts())
+			p.addCollisionBoxes(entityBox, collidingBoxes, collidingEntity);
+	}
 
-        for (IMultipart p : getParts()) {
-            AdvancedRayTraceResultPart result = p.collisionRayTrace(start, end);
-            if (result == null) continue;
-            double d = result.squareDistanceTo(start);
-            if (d <= dist) {
-                dist = d;
-                current = result;
-            }
-        }
+	public int getLightValue() {
 
-        return current;
-    }
+		int max = 0;
+		for (IMultipart part : getParts())
+			max = Math.max(max, part.getLightValue());
+		return max;
+	}
 
-    public void addCollisionBoxes(AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity collidingEntity) {
+	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit) {
 
-        for (IMultipart p : getParts())
-            p.addCollisionBoxes(entityBox, collidingBoxes, collidingEntity);
-    }
+		return hit.partHit.getPickBlock(player, hit);
+	}
 
-    public int getLightValue() {
+	public List<ItemStack> getDrops() {
 
-        int max = 0;
-        for (IMultipart part : getParts())
-            max = Math.max(max, part.getLightValue());
-        return max;
-    }
+		List<ItemStack> list = new ArrayList<ItemStack>();
+		for (IMultipart part : getParts())
+			list.addAll(part.getDrops());
+		return list;
+	}
 
-    public ItemStack getPickBlock(EntityPlayer player, PartMOP hit) {
+	public boolean harvest(EntityPlayer player, PartMOP hit) {
 
-        return hit.partHit.getPickBlock(player, hit);
-    }
+		if (getWorldIn().isRemote)
+			return false;
+		if (hit == null) {
+			for (IMultipart part : getParts())
+				part.harvest(null, hit);
+			return true;
+		}
+		if (!partMap.values().contains(hit.partHit))
+			return false;
+		if (getWorldIn().isRemote)
+			return getParts().size() - 1 == 0;
+		hit.partHit.harvest(player, hit);
+		return getParts().isEmpty();
+	}
 
-    public List<ItemStack> getDrops() {
+	public float getHardness(EntityPlayer player, PartMOP hit) {
 
-        List<ItemStack> list = new ArrayList<ItemStack>();
-        for (IMultipart part : getParts())
-            list.addAll(part.getDrops());
-        return list;
-    }
+		if (!partMap.values().contains(hit.partHit))
+			return -1;
+		return hit.partHit.getStrength(player, hit);
+	}
 
-    public boolean harvest(EntityPlayer player, PartMOP hit) {
+	public void onNeighborBlockChange(Block block) {
+
+		for (IMultipart part : getParts())
+			part.onNeighborBlockChange(block);
+	}
+
+	public void onNeighborTileChange(EnumFacing facing) {
 
-        if (getWorldIn().isRemote) return false;
-        if (hit == null) {
-            for (IMultipart part : getParts())
-                part.harvest(null, hit);
-            return true;
-        }
-        if (!partMap.values().contains(hit.partHit)) return false;
-        if (getWorldIn().isRemote) return getParts().size() - 1 == 0;
-        hit.partHit.harvest(player, hit);
-        return getParts().isEmpty();
-    }
-
-    public float getHardness(EntityPlayer player, PartMOP hit) {
-
-        if (!partMap.values().contains(hit.partHit)) return -1;
-        return hit.partHit.getStrength(player, hit);
-    }
-
-    public void onNeighborBlockChange(Block block) {
-
-        for (IMultipart part : getParts())
-            part.onNeighborBlockChange(block);
-    }
-
-    public void onNeighborTileChange(EnumFacing facing) {
-
-        for (IMultipart part : getParts())
-            part.onNeighborTileChange(facing);
-    }
-
-    public boolean onActivated(EntityPlayer playerIn, EnumHand hand, PartMOP hit) {
-
-        if (hit == null) return false;
-        if (!partMap.values().contains(hit.partHit)) return false;
-        return hit.partHit.onActivated(playerIn, hand, hit);
-    }
-
-    public void onClicked(EntityPlayer playerIn, PartMOP hit) {
-
-        if (hit == null) return;
-        if (!partMap.values().contains(hit.partHit)) return;
-        hit.partHit.onClicked(playerIn, hit);
-    }
-
-    public boolean canConnectRedstone(EnumFacing side) {
-
-        return MultipartRedstoneHelper.canConnectRedstone(this, side);
-    }
-
-    public int getWeakSignal(EnumFacing side) {
-
-        return MultipartRedstoneHelper.getWeakSignal(this, side);
-    }
-
-    public int getStrongSignal(EnumFacing side) {
-
-        return MultipartRedstoneHelper.getStrongSignal(this, side);
-    }
-
-    public boolean isSideSolid(EnumFacing side) {
-
-        IMultipart slotPart = getPartInSlot(PartSlot.getFaceSlot(side));
-        if (slotPart != null && slotPart instanceof ISolidPart) return ((ISolidPart) slotPart).isSideSolid(side);
-        for (IMultipart p : getParts())
-            if ((!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty()) && p instanceof ISolidPart)
-                if (((ISolidPart) p).isSideSolid(side)) return true;
-        return false;
-    }
-
-    public boolean canPlaceTorchOnTop() {
-
-        IMultipart slotPart = getPartInSlot(PartSlot.getFaceSlot(EnumFacing.UP));
-        if (slotPart != null && slotPart instanceof ISolidTopPart) return ((ISolidTopPart) slotPart).canPlaceTorchOnTop();
-        for (IMultipart p : getParts())
-            if (p instanceof ISolidTopPart) if (((ISolidTopPart) p).canPlaceTorchOnTop()) return true;
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(Random rand) {
-
-        for (IMultipart p : getParts())
-            p.randomDisplayTick(rand);
-    }
-
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-
-        NBTTagList partList = new NBTTagList();
-        for (Entry<UUID, IMultipart> entry : partMap.entrySet()) {
-            NBTTagCompound t = new NBTTagCompound();
-            t.setString("__partID", entry.getKey().toString());
-            t.setString("__partType", entry.getValue().getType().toString());
-            t = entry.getValue().writeToNBT(t);
-            partList.appendTag(t);
-        }
-        tag.setTag("partList", partList);
-        return tag;
-    }
-
-    public void readFromNBT(NBTTagCompound tag) {
-
-        partMap.clear();
-        slotMap.clear();
-
-        NBTTagList partList = tag.getTagList("partList", new NBTTagCompound().getId());
-        for (int i = 0; i < partList.tagCount(); i++) {
-            NBTTagCompound t = partList.getCompoundTagAt(i);
-            UUID id = UUID.fromString(t.getString("__partID"));
-            IMultipart part = MultipartRegistry.createPart(new ResourceLocation(t.getString("__partType")), t);
-            if (part != null) addPart(part, false, false, false, false, id);
-        }
-    }
-
-    public NBTTagCompound writeDescription(NBTTagCompound tag) {
-
-        NBTTagList partList = new NBTTagList();
-        for (Entry<UUID, IMultipart> entry : partMap.entrySet()) {
-            NBTTagCompound t = new NBTTagCompound();
-            t.setString("__partID", entry.getKey().toString());
-            t.setString("__partType", entry.getValue().getType().toString());
-            ByteBuf buf = Unpooled.buffer();
-            entry.getValue().writeUpdatePacket(new PacketBuffer(buf));
-            t.setByteArray("data", buf.array());
-            partList.appendTag(t);
-        }
-        tag.setTag("partList", partList);
-        return tag;
-    }
-
-    public void readDescription(NBTTagCompound tag) {
-
-        NBTTagList partList = tag.getTagList("partList", new NBTTagCompound().getId());
-        for (int i = 0; i < partList.tagCount(); i++) {
-            NBTTagCompound t = partList.getCompoundTagAt(i);
-            UUID id = UUID.fromString(t.getString("__partID"));
-            IMultipart part = partMap.get(id);
-            if (part == null) {
-                part = MultipartRegistry.createPart(new ResourceLocation(t.getString("__partType")),
-                        new PacketBuffer(Unpooled.copiedBuffer(t.getByteArray("data"))));
-                addPart(part, false, false, false, false, id);
-            } else {
-                part.readUpdatePacket(new PacketBuffer(Unpooled.copiedBuffer(t.getByteArray("data"))));
-            }
-        }
-    }
-
-    public List<PartState> getExtendedStates(IBlockAccess world, BlockPos pos) {
-
-        List<PartState> states = new ArrayList<PartState>();
-        for (IMultipart part : getParts()) {
-            PartState state = PartState.fromPart(part);
-            if (state != null) states.add(state);
-        }
-        return states;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, PartSlot slot, EnumFacing facing) {
-
-        if (slot == null) {
-            for (IMultipart p : getParts())
-                if (!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty())
-                    if (p instanceof ICapabilityProvider && ((ICapabilityProvider) p).hasCapability(capability, facing)) return true;
-            return false;
-        }
-
-        IMultipart part = getPartInSlot(slot);
-        return part instanceof ISlottedCapabilityProvider ? ((ISlottedCapabilityProvider) part).hasCapability(capability, slot, facing)
-                : part instanceof ICapabilityProvider ? ((ICapabilityProvider) part).hasCapability(capability, facing) : false;
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, PartSlot slot, EnumFacing facing) {
-
-        if (slot == null) {
-            List<T> implementations = new ArrayList<T>();
-            for (IMultipart p : getParts()) {
-                if (!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty()) {
-                    if (p instanceof ICapabilityProvider) {
-                        T impl = ((ICapabilityProvider) p).getCapability(capability, facing);
-                        if (impl != null) implementations.add(impl);
-                    }
-                }
-            }
-
-            if (implementations.isEmpty()) return null;
-            else if (implementations.size() == 1) return implementations.get(0);
-            else return CapabilityWrapperRegistry.wrap(capability, implementations);
-        }
-
-        IMultipart part = getPartInSlot(slot);
-        return part instanceof ISlottedCapabilityProvider ? ((ISlottedCapabilityProvider) part).getCapability(capability, slot, facing)
-                : part instanceof ICapabilityProvider ? ((ICapabilityProvider) part).getCapability(capability, facing) : null;
-    }
-
-    public Boolean isAABBInsideMaterial(AxisAlignedBB aabb, Material material) {
-
-        Boolean def = null;
-        for (IMultipart part : getParts()) {
-            Boolean is = part.isAABBInsideMaterial(aabb, material);
-            if (is != null) {
-                if (is == true) return true;
-                else def = false;
-            }
-        }
-        return def;
-    }
-
-    public Boolean isEntityInsideMaterial(Entity entity, double yToTest, Material material, boolean testingHead) {
-
-        Boolean def = null;
-        for (IMultipart part : getParts()) {
-            Boolean is = part.isEntityInsideMaterial(entity, yToTest, material, testingHead);
-            if (is != null) {
-                if (is == true) return true;
-                else def = false;
-            }
-        }
-        return def;
-    }
-
-    public void onEntityStanding(Entity entity) {
-
-        for (IMultipart part : getParts())
-            part.onEntityStanding(entity);
-    }
-
-    public void onEntityCollided(Entity entity) {
-
-        for (IMultipart part : getParts())
-            part.onEntityCollided(entity);
-    }
+		for (IMultipart part : getParts())
+			part.onNeighborTileChange(facing);
+	}
+
+	public boolean onActivated(EntityPlayer playerIn, EnumHand hand, PartMOP hit) {
+
+		if (hit == null)
+			return false;
+		if (!partMap.values().contains(hit.partHit))
+			return false;
+		return hit.partHit.onActivated(playerIn, hand, hit);
+	}
+
+	public void onClicked(EntityPlayer playerIn, PartMOP hit) {
+
+		if (hit == null)
+			return;
+		if (!partMap.values().contains(hit.partHit))
+			return;
+		hit.partHit.onClicked(playerIn, hit);
+	}
+
+	public boolean canConnectRedstone(EnumFacing side) {
+
+		return MultipartRedstoneHelper.canConnectRedstone(this, side);
+	}
+
+	public int getWeakSignal(EnumFacing side) {
+
+		return MultipartRedstoneHelper.getWeakSignal(this, side);
+	}
+
+	public int getStrongSignal(EnumFacing side) {
+
+		return MultipartRedstoneHelper.getStrongSignal(this, side);
+	}
+
+	public boolean isSideSolid(EnumFacing side) {
+
+		IMultipart slotPart = getPartInSlot(PartSlot.getFaceSlot(side));
+		if (slotPart != null && slotPart instanceof ISolidPart)
+			return ((ISolidPart) slotPart).isSideSolid(side);
+		for (IMultipart p : getParts())
+			if ((!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty()) && p instanceof ISolidPart)
+				if (((ISolidPart) p).isSideSolid(side))
+					return true;
+		return false;
+	}
+
+	public boolean canPlaceTorchOnTop() {
+
+		IMultipart slotPart = getPartInSlot(PartSlot.getFaceSlot(EnumFacing.UP));
+		if (slotPart != null && slotPart instanceof ISolidTopPart)
+			return ((ISolidTopPart) slotPart).canPlaceTorchOnTop();
+		for (IMultipart p : getParts())
+			if (p instanceof ISolidTopPart)
+				if (((ISolidTopPart) p).canPlaceTorchOnTop())
+					return true;
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(Random rand) {
+
+		for (IMultipart p : getParts())
+			p.randomDisplayTick(rand);
+	}
+
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+
+		NBTTagList partList = new NBTTagList();
+		for (Entry<UUID, IMultipart> entry : partMap.entrySet()) {
+			NBTTagCompound t = new NBTTagCompound();
+			t.setString("__partID", entry.getKey().toString());
+			t.setString("__partType", entry.getValue().getType().toString());
+			t = entry.getValue().writeToNBT(t);
+			partList.appendTag(t);
+		}
+		tag.setTag("partList", partList);
+		return tag;
+	}
+
+	public void readFromNBT(NBTTagCompound tag) {
+
+		partMap.clear();
+		slotMap.clear();
+
+		NBTTagList partList = tag.getTagList("partList", new NBTTagCompound().getId());
+		for (int i = 0; i < partList.tagCount(); i++) {
+			NBTTagCompound t = partList.getCompoundTagAt(i);
+			UUID id = UUID.fromString(t.getString("__partID"));
+			IMultipart part = MultipartRegistry.createPart(new ResourceLocation(t.getString("__partType")), t);
+			if (part != null)
+				addPart(part, false, false, false, false, id);
+		}
+	}
+
+	public NBTTagCompound writeDescription(NBTTagCompound tag) {
+
+		NBTTagList partList = new NBTTagList();
+		for (Entry<UUID, IMultipart> entry : partMap.entrySet()) {
+			NBTTagCompound t = new NBTTagCompound();
+			t.setString("__partID", entry.getKey().toString());
+			t.setString("__partType", entry.getValue().getType().toString());
+			ByteBuf buf = Unpooled.buffer();
+			entry.getValue().writeUpdatePacket(new PacketBuffer(buf));
+			t.setByteArray("data", buf.array());
+			partList.appendTag(t);
+		}
+		tag.setTag("partList", partList);
+		return tag;
+	}
+
+	public void readDescription(NBTTagCompound tag) {
+
+		NBTTagList partList = tag.getTagList("partList", new NBTTagCompound().getId());
+		for (int i = 0; i < partList.tagCount(); i++) {
+			NBTTagCompound t = partList.getCompoundTagAt(i);
+			UUID id = UUID.fromString(t.getString("__partID"));
+			IMultipart part = partMap.get(id);
+			if (part == null) {
+				part = MultipartRegistry.createPart(new ResourceLocation(t.getString("__partType")),
+					new PacketBuffer(Unpooled.copiedBuffer(t.getByteArray("data"))));
+				addPart(part, false, false, false, false, id);
+			} else {
+				part.readUpdatePacket(new PacketBuffer(Unpooled.copiedBuffer(t.getByteArray("data"))));
+			}
+		}
+	}
+
+	public List<PartState> getExtendedStates(IBlockAccess world, BlockPos pos) {
+
+		List<PartState> states = new ArrayList<PartState>();
+		for (IMultipart part : getParts()) {
+			PartState state = PartState.fromPart(part);
+			if (state != null)
+				states.add(state);
+		}
+		return states;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, PartSlot slot, EnumFacing facing) {
+
+		if (slot == null) {
+			for (IMultipart p : getParts())
+				if (!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty())
+					if (p instanceof ICapabilityProvider && ((ICapabilityProvider) p).hasCapability(capability, facing))
+						return true;
+			return false;
+		}
+
+		IMultipart part = getPartInSlot(slot);
+		return part instanceof ISlottedCapabilityProvider ? ((ISlottedCapabilityProvider) part).hasCapability(capability, slot, facing)
+		                                                  : part instanceof ICapabilityProvider ? ((ICapabilityProvider) part).hasCapability(capability, facing) : false;
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, PartSlot slot, EnumFacing facing) {
+
+		if (slot == null) {
+			List<T> implementations = new ArrayList<T>();
+			for (IMultipart p : getParts()) {
+				if (!(p instanceof ISlottedPart) || ((ISlottedPart) p).getSlotMask().isEmpty()) {
+					if (p instanceof ICapabilityProvider) {
+						T impl = ((ICapabilityProvider) p).getCapability(capability, facing);
+						if (impl != null)
+							implementations.add(impl);
+					}
+				}
+			}
+
+			if (implementations.isEmpty())
+				return null;
+			else if (implementations.size() == 1)
+				return implementations.get(0);
+			else
+				return CapabilityWrapperRegistry.wrap(capability, implementations);
+		}
+
+		IMultipart part = getPartInSlot(slot);
+		return part instanceof ISlottedCapabilityProvider ? ((ISlottedCapabilityProvider) part).getCapability(capability, slot, facing)
+		                                                  : part instanceof ICapabilityProvider ? ((ICapabilityProvider) part).getCapability(capability, facing) : null;
+	}
+
+	public Boolean isAABBInsideMaterial(AxisAlignedBB aabb, Material material) {
+
+		Boolean def = null;
+		for (IMultipart part : getParts()) {
+			Boolean is = part.isAABBInsideMaterial(aabb, material);
+			if (is != null) {
+				if (is == true)
+					return true;
+				else
+					def = false;
+			}
+		}
+		return def;
+	}
+
+	public Boolean isEntityInsideMaterial(Entity entity, double yToTest, Material material, boolean testingHead) {
+
+		Boolean def = null;
+		for (IMultipart part : getParts()) {
+			Boolean is = part.isEntityInsideMaterial(entity, yToTest, material, testingHead);
+			if (is != null) {
+				if (is == true)
+					return true;
+				else
+					def = false;
+			}
+		}
+		return def;
+	}
+
+	public void onEntityStanding(Entity entity) {
+
+		for (IMultipart part : getParts())
+			part.onEntityStanding(entity);
+	}
+
+	public void onEntityCollided(Entity entity) {
+
+		for (IMultipart part : getParts())
+			part.onEntityCollided(entity);
+	}
 
 }

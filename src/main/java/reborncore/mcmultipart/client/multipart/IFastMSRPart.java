@@ -4,6 +4,6 @@ import reborncore.mcmultipart.multipart.IMultipart;
 
 public interface IFastMSRPart extends IMultipart {
 
-    public boolean hasFastRenderer();
+	public boolean hasFastRenderer();
 
 }

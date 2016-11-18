@@ -1,10 +1,5 @@
 package reborncore.common.util;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -20,17 +15,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-//From OpenBlocksLib: https://github.com/OpenMods/OpenModsLib
-public class InventoryHelper
-{
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-	public static void tryInsertStack(IInventory targetInventory, int slot, ItemStack stack, boolean canMerge)
-	{
-		if (targetInventory.isItemValidForSlot(slot, stack))
-		{
+//From OpenBlocksLib: https://github.com/OpenMods/OpenModsLib
+public class InventoryHelper {
+
+	public static void tryInsertStack(IInventory targetInventory, int slot, ItemStack stack, boolean canMerge) {
+		if (targetInventory.isItemValidForSlot(slot, stack)) {
 			ItemStack targetStack = targetInventory.getStackInSlot(slot);
-			if (targetStack == ItemStack.EMPTY)
-			{
+			if (targetStack == ItemStack.EMPTY) {
 				int space = targetInventory.getInventoryStackLimit();
 				int mergeAmount = Math.min(space, stack.getCount());
 
@@ -38,12 +34,10 @@ public class InventoryHelper
 				copy.setCount(mergeAmount);
 				targetInventory.setInventorySlotContents(slot, copy);
 				stack.setCount(-mergeAmount);
-			} else if (canMerge)
-			{
-				if (targetInventory.isItemValidForSlot(slot, stack) && areMergeCandidates(stack, targetStack))
-				{
+			} else if (canMerge) {
+				if (targetInventory.isItemValidForSlot(slot, stack) && areMergeCandidates(stack, targetStack)) {
 					int space = Math.min(targetInventory.getInventoryStackLimit(), targetStack.getMaxStackSize())
-							- targetStack.getCount();
+						- targetStack.getCount();
 					int mergeAmount = Math.min(space, stack.getCount());
 
 					ItemStack copy = targetStack.copy();
@@ -55,38 +49,32 @@ public class InventoryHelper
 		}
 	}
 
-	protected static boolean areMergeCandidates(ItemStack source, ItemStack target)
-	{
+	protected static boolean areMergeCandidates(ItemStack source, ItemStack target) {
 		return source.isItemEqual(target) && ItemStack.areItemStackTagsEqual(source, target)
-				&& target.getCount() < target.getMaxStackSize();
+			&& target.getCount() < target.getMaxStackSize();
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack)
-	{
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack) {
 		insertItemIntoInventory(inventory, stack, null, -1);
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot)
-	{
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot) {
 		insertItemIntoInventory(inventory, stack, side, intoSlot, true);
 	}
 
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot,
-			boolean doMove)
-	{
+	                                           boolean doMove) {
 		insertItemIntoInventory(inventory, stack, side, intoSlot, doMove, true);
 	}
 
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot,
-			boolean doMove, boolean canStack)
-	{
+	                                           boolean doMove, boolean canStack) {
 		if (stack == ItemStack.EMPTY)
 			return;
 
 		IInventory targetInventory = inventory;
 
-		if (!doMove)
-		{
+		if (!doMove) {
 			targetInventory = new GenericInventory("temporary.inventory", false, targetInventory.getSizeInventory());
 			((GenericInventory) targetInventory).copyFrom(inventory);
 		}
@@ -94,19 +82,16 @@ public class InventoryHelper
 		int i = 0;
 		int[] attemptSlots = new int[0];
 
-		if (inventory instanceof ISidedInventory && side != null)
-		{
+		if (inventory instanceof ISidedInventory && side != null) {
 			attemptSlots = ((ISidedInventory) inventory).getSlotsForFace(side);
 			if (attemptSlots == null)
 				attemptSlots = new int[0];
-		} else
-		{
+		} else {
 			attemptSlots = new int[inventory.getSizeInventory()];
 			for (int a = 0; a < inventory.getSizeInventory(); a++)
 				attemptSlots[a] = a;
 		}
-		if (intoSlot > -1)
-		{
+		if (intoSlot > -1) {
 			Set<Integer> x = new HashSet<Integer>();
 			for (int attemptedSlot : attemptSlots)
 				x.add(attemptedSlot);
@@ -116,11 +101,9 @@ public class InventoryHelper
 			else
 				attemptSlots = new int[0];
 		}
-		while (stack.getCount() > 0 && i < attemptSlots.length)
-		{
+		while (stack.getCount() > 0 && i < attemptSlots.length) {
 			if (side != null && inventory instanceof ISidedInventory)
-				if (!((ISidedInventory) inventory).canInsertItem(attemptSlots[i], stack, side.getOpposite()))
-				{
+				if (!((ISidedInventory) inventory).canInsertItem(attemptSlots[i], stack, side.getOpposite())) {
 					i++;
 					continue;
 				}
@@ -130,8 +113,7 @@ public class InventoryHelper
 		}
 	}
 
-	public static int testInventoryInsertion(IInventory inventory, ItemStack item, EnumFacing side)
-	{
+	public static int testInventoryInsertion(IInventory inventory, ItemStack item, EnumFacing side) {
 		if (item == ItemStack.EMPTY || item.getCount() == 0)
 			return 0;
 		item = item.copy();
@@ -146,13 +128,11 @@ public class InventoryHelper
 
 		if (inventory instanceof ISidedInventory)
 			availableSlots = ((ISidedInventory) inventory).getSlotsForFace(side);
-		else
-		{
+		else {
 			availableSlots = buildSlotsForLinearInventory(inventory);
 		}
 
-		for (int i : availableSlots)
-		{
+		for (int i : availableSlots) {
 			if (itemSizeCounter <= 0)
 				break;
 
@@ -166,17 +146,15 @@ public class InventoryHelper
 			ItemStack inventorySlot = inventory.getStackInSlot(i);
 			if (inventorySlot == ItemStack.EMPTY)
 				itemSizeCounter -= Math.min(Math.min(itemSizeCounter, inventory.getInventoryStackLimit()),
-						item.getMaxStackSize());
-			else if (areMergeCandidates(item, inventorySlot))
-			{
+					item.getMaxStackSize());
+			else if (areMergeCandidates(item, inventorySlot)) {
 				int space = Math.min(inventory.getInventoryStackLimit(), inventorySlot.getMaxStackSize())
-						- inventorySlot.getCount();
+					- inventorySlot.getCount();
 				itemSizeCounter -= Math.min(itemSizeCounter, space);
 			}
 		}
 
-		if (itemSizeCounter != item.getCount())
-		{
+		if (itemSizeCounter != item.getCount()) {
 			itemSizeCounter = Math.max(itemSizeCounter, 0);
 			return item.getCount() - itemSizeCounter;
 		}
@@ -184,38 +162,31 @@ public class InventoryHelper
 		return 0;
 	}
 
-	public static IInventory getInventory(World world, int x, int y, int z)
-	{
+	public static IInventory getInventory(World world, int x, int y, int z) {
 		BlockPos pos = new BlockPos(x, y, z);
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if (tileEntity instanceof TileEntityChest)
-		{
+		if (tileEntity instanceof TileEntityChest) {
 			TileEntityChest chest = (TileEntityChest) tileEntity;
 
 			TileEntityChest adjacent = null;
 
-			if (chest.adjacentChestXNeg != null)
-			{
+			if (chest.adjacentChestXNeg != null) {
 				adjacent = chest.adjacentChestXNeg;
 			}
 
-			if (chest.adjacentChestXPos != null)
-			{
+			if (chest.adjacentChestXPos != null) {
 				adjacent = chest.adjacentChestXPos;
 			}
 
-			if (chest.adjacentChestZNeg != null)
-			{
+			if (chest.adjacentChestZNeg != null) {
 				adjacent = chest.adjacentChestZNeg;
 			}
 
-			if (chest.adjacentChestZPos != null)
-			{
+			if (chest.adjacentChestZPos != null) {
 				adjacent = chest.adjacentChestZPos;
 			}
 
-			if (adjacent != null)
-			{
+			if (adjacent != null) {
 				return new InventoryLargeChest("", chest, adjacent);
 			}
 			return chest;
@@ -223,10 +194,8 @@ public class InventoryHelper
 		return tileEntity instanceof IInventory ? (IInventory) tileEntity : null;
 	}
 
-	public static IInventory getInventory(World world, int x, int y, int z, EnumFacing direction)
-	{
-		if (direction != null && direction != null)
-		{
+	public static IInventory getInventory(World world, int x, int y, int z, EnumFacing direction) {
+		if (direction != null && direction != null) {
 			x += direction.getFrontOffsetX();
 			y += direction.getFrontOffsetY();
 			z += direction.getFrontOffsetZ();
@@ -235,18 +204,15 @@ public class InventoryHelper
 
 	}
 
-	public static IInventory getInventory(IInventory inventory)
-	{
-		if (inventory instanceof TileEntityChest)
-		{
+	public static IInventory getInventory(IInventory inventory) {
+		if (inventory instanceof TileEntityChest) {
 			TileEntity te = (TileEntity) inventory;
 			return getInventory(te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 		}
 		return inventory;
 	}
 
-	public static int[] buildSlotsForLinearInventory(IInventory inv)
-	{
+	public static int[] buildSlotsForLinearInventory(IInventory inv) {
 		int[] slots = new int[inv.getSizeInventory()];
 		for (int i = 0; i < slots.length; i++)
 			slots[i] = i;
@@ -254,16 +220,14 @@ public class InventoryHelper
 		return slots;
 	}
 
-	public static class GenericInventory implements IInventory
-	{
+	public static class GenericInventory implements IInventory {
 
 		protected String inventoryTitle;
 		protected int slotsCount;
 		protected ItemStack[] inventoryContents;
 		protected boolean isInvNameLocalized;
 
-		public GenericInventory(String name, boolean isInvNameLocalized, int size)
-		{
+		public GenericInventory(String name, boolean isInvNameLocalized, int size) {
 			this.isInvNameLocalized = isInvNameLocalized;
 			slotsCount = size;
 			inventoryTitle = name;
@@ -271,14 +235,11 @@ public class InventoryHelper
 		}
 
 		@Override
-		public ItemStack decrStackSize(int par1, int par2)
-		{
-			if (inventoryContents[par1] != ItemStack.EMPTY)
-			{
+		public ItemStack decrStackSize(int par1, int par2) {
+			if (inventoryContents[par1] != ItemStack.EMPTY) {
 				ItemStack itemstack;
 
-				if (inventoryContents[par1].getCount() <= par2)
-				{
+				if (inventoryContents[par1].getCount() <= par2) {
 					itemstack = inventoryContents[par1];
 					inventoryContents[par1] = ItemStack.EMPTY;
 					return itemstack;
@@ -294,14 +255,12 @@ public class InventoryHelper
 		}
 
 		@Override
-		public int getInventoryStackLimit()
-		{
+		public int getInventoryStackLimit() {
 			return 64;
 		}
 
 		@Override
-		public int getSizeInventory()
-		{
+		public int getSizeInventory() {
 			return slotsCount;
 		}
 
@@ -316,24 +275,20 @@ public class InventoryHelper
 		}
 
 		@Override
-		public ItemStack getStackInSlot(int i)
-		{
+		public ItemStack getStackInSlot(int i) {
 			return inventoryContents[i];
 		}
 
-		public ItemStack getStackInSlot(Enum<?> i)
-		{
+		public ItemStack getStackInSlot(Enum<?> i) {
 			return getStackInSlot(i.ordinal());
 		}
 
 		@Override
-		public ItemStack removeStackFromSlot(int i)
-		{
+		public ItemStack removeStackFromSlot(int i) {
 			if (i >= inventoryContents.length)
 				return ItemStack.EMPTY;
 
-			if (inventoryContents[i] != ItemStack.EMPTY)
-			{
+			if (inventoryContents[i] != ItemStack.EMPTY) {
 				ItemStack itemstack = inventoryContents[i];
 				inventoryContents[i] = ItemStack.EMPTY;
 				return itemstack;
@@ -342,74 +297,62 @@ public class InventoryHelper
 			return ItemStack.EMPTY;
 		}
 
-		public boolean isItem(int slot, Item item)
-		{
+		public boolean isItem(int slot, Item item) {
 			return inventoryContents[slot] != ItemStack.EMPTY && inventoryContents[slot].getItem() == item;
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int i, ItemStack itemstack)
-		{
+		public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 			return true;
 		}
 
 		@Override
-		public int getField(int id)
-		{
+		public int getField(int id) {
 			return 0;
 		}
 
 		@Override
-		public void setField(int id, int value)
-		{
+		public void setField(int id, int value) {
 
 		}
 
 		@Override
-		public int getFieldCount()
-		{
+		public int getFieldCount() {
 			return 0;
 		}
 
 		@Override
-		public void clear()
-		{
+		public void clear() {
 
 		}
 
 		@Override
-		public boolean isUsableByPlayer(EntityPlayer entityplayer)
-		{
+		public boolean isUsableByPlayer(EntityPlayer entityplayer) {
 			return true;
 		}
 
 		@Override
-		public void openInventory(EntityPlayer player)
-		{
+		public void openInventory(EntityPlayer player) {
 
 		}
 
 		@Override
-		public void closeInventory(EntityPlayer player)
-		{
+		public void closeInventory(EntityPlayer player) {
 
 		}
 
-		public void clearAndSetSlotCount(int amount)
-		{
+		public void clearAndSetSlotCount(int amount) {
 			slotsCount = amount;
 			inventoryContents = new ItemStack[amount];
 		}
 
-		public void readFromNBT(NBTTagCompound tag)
-		{
+		public void readFromNBT(NBTTagCompound tag) {
 			if (tag.hasKey("size"))
 				slotsCount = tag.getInteger("size");
 
 			NBTTagList nbttaglist = tag.getTagList("Items", 10);
 			inventoryContents = new ItemStack[slotsCount];
-			for (int i = 0; i < nbttaglist.tagCount(); i++)
-			{
+			for (int i = 0; i < nbttaglist.tagCount(); i++) {
 				NBTTagCompound stacktag = nbttaglist.getCompoundTagAt(i);
 				int j = stacktag.getByte("Slot");
 				if (j >= 0 && j < inventoryContents.length)
@@ -418,22 +361,18 @@ public class InventoryHelper
 		}
 
 		@Override
-		public void setInventorySlotContents(int i, ItemStack itemstack)
-		{
+		public void setInventorySlotContents(int i, ItemStack itemstack) {
 			inventoryContents[i] = itemstack;
 
 			if (itemstack != ItemStack.EMPTY && itemstack.getCount() > getInventoryStackLimit())
 				itemstack.setCount(getInventoryStackLimit());
 		}
 
-		public void writeToNBT(NBTTagCompound tag)
-		{
+		public void writeToNBT(NBTTagCompound tag) {
 			tag.setInteger("size", getSizeInventory());
 			NBTTagList nbttaglist = new NBTTagList();
-			for (int i = 0; i < inventoryContents.length; i++)
-			{
-				if (inventoryContents[i] != ItemStack.EMPTY)
-				{
+			for (int i = 0; i < inventoryContents.length; i++) {
+				if (inventoryContents[i] != ItemStack.EMPTY) {
 					NBTTagCompound stacktag = new NBTTagCompound();
 					stacktag.setByte("Slot", (byte) i);
 					inventoryContents[i].writeToNBT(stacktag);
@@ -443,11 +382,9 @@ public class InventoryHelper
 			tag.setTag("Items", nbttaglist);
 		}
 
-		public void copyFrom(IInventory inventory)
-		{
+		public void copyFrom(IInventory inventory) {
 			for (int i = 0; i < inventory.getSizeInventory(); i++)
-				if (i < getSizeInventory())
-				{
+				if (i < getSizeInventory()) {
 					ItemStack stack = inventory.getStackInSlot(i);
 					if (stack != ItemStack.EMPTY)
 						setInventorySlotContents(i, stack.copy());
@@ -456,31 +393,26 @@ public class InventoryHelper
 				}
 		}
 
-		public List<ItemStack> contents()
-		{
+		public List<ItemStack> contents() {
 			return Arrays.asList(inventoryContents);
 		}
 
 		@Override
-		public void markDirty()
-		{
+		public void markDirty() {
 		}
 
 		@Override
-		public String getName()
-		{
+		public String getName() {
 			return null;
 		}
 
 		@Override
-		public boolean hasCustomName()
-		{
+		public boolean hasCustomName() {
 			return false;
 		}
 
 		@Override
-		public ITextComponent getDisplayName()
-		{
+		public ITextComponent getDisplayName() {
 			return null;
 		}
 	}

@@ -4,8 +4,7 @@ package reborncore.common.util;
  * @author TeamC4
  */
 
-public enum Color
-{
+public enum Color {
 	BLACK("\u00A70"), //
 	DARK_BLUE("\u00A71"), //
 	DARK_GREEN("\u00A72"), //
@@ -32,15 +31,13 @@ public enum Color
 
 	public String code = "";
 
-	private Color(String code)
-	{
+	private Color(String code) {
 
 		this.code = code;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 
 		return code;
 	}

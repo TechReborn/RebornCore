@@ -6,11 +6,9 @@ package reborncore.common.multiblock;
  *
  * @author Erogenous Beef
  */
-public class MultiblockValidationException extends Exception
-{
+public class MultiblockValidationException extends Exception {
 
-	public MultiblockValidationException(String reason)
-	{
+	public MultiblockValidationException(String reason) {
 		super(reason);
 	}
 }

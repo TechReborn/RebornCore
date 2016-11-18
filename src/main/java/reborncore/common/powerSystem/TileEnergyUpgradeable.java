@@ -9,31 +9,31 @@ import reborncore.common.util.inventory.Inventory;
  */
 public abstract class TileEnergyUpgradeable extends TileEnergyBase {
 
-    /* Inventory Setup */
-    private final Inventory inventoryUpgrades;
-    /*-----------------*/
+	/* Inventory Setup */
+	private final Inventory inventoryUpgrades;
+	/*-----------------*/
 
-    public TileEnergyUpgradeable(EnumPowerTier tier, int capacity) {
-        super(tier, capacity);
+	public TileEnergyUpgradeable(EnumPowerTier tier, int capacity) {
+		super(tier, capacity);
 
-        this.inventoryUpgrades = new Inventory("Upgrades", 4, 64, this);
-    }
+		this.inventoryUpgrades = new Inventory("Upgrades", 4, 64, this);
+	}
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
 
-        this.inventoryUpgrades.readFromNBT(compound);
-    }
+		this.inventoryUpgrades.readFromNBT(compound);
+	}
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        this.inventoryUpgrades.writeToNBT(compound);
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		this.inventoryUpgrades.writeToNBT(compound);
 
-        return super.writeToNBT(compound);
-    }
+		return super.writeToNBT(compound);
+	}
 
-    public Inventory getInventoryUpgrades() {
-        return getInventoryUpgrades();
-    }
+	public Inventory getInventoryUpgrades() {
+		return getInventoryUpgrades();
+	}
 }

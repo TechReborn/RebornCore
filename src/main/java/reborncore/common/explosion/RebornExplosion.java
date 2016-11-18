@@ -1,11 +1,5 @@
 package reborncore.common.explosion;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,16 +7,18 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-
 import org.apache.commons.lang3.time.StopWatch;
-
 import reborncore.RebornCore;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by modmuss50 on 12/03/2016.
  */
-public class RebornExplosion extends Explosion
-{
+public class RebornExplosion extends Explosion {
 
 	@Nonnull
 	BlockPos center;
@@ -36,41 +32,42 @@ public class RebornExplosion extends Explosion
 	@Nullable
 	EntityLivingBase livingBase;
 
-	public RebornExplosion(@Nonnull BlockPos center, @Nonnull World world, @Nonnull int radius)
-	{
+	public RebornExplosion(
+		@Nonnull
+			BlockPos center,
+		@Nonnull
+			World world,
+		@Nonnull
+			int radius) {
 		super(world, null, center.getX(), center.getY(), center.getZ(), radius, false, true);
 		this.center = center;
 		this.world = world;
 		this.radius = radius;
 	}
 
-	public void setLivingBase(@Nullable EntityLivingBase livingBase)
-	{
+	public void setLivingBase(
+		@Nullable
+			EntityLivingBase livingBase) {
 		this.livingBase = livingBase;
 	}
 
-	public @Nullable EntityLivingBase getLivingBase()
-	{
+	public
+	@Nullable
+	EntityLivingBase getLivingBase() {
 		return livingBase;
 	}
 
-	public void explode()
-	{
+	public void explode() {
 		StopWatch watch = new StopWatch();
 		watch.start();
-		for (int tx = -radius; tx < radius + 1; tx++)
-		{
-			for (int ty = -radius; ty < radius + 1; ty++)
-			{
-				for (int tz = -radius; tz < radius + 1; tz++)
-				{
-					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2)
-					{
+		for (int tx = -radius; tx < radius + 1; tx++) {
+			for (int ty = -radius; ty < radius + 1; ty++) {
+				for (int tz = -radius; tz < radius + 1; tz++) {
+					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2) {
 						BlockPos pos = center.add(tx, ty, tz);
 						IBlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						if (block != Blocks.BEDROCK && block != Blocks.AIR)
-						{
+						if (block != Blocks.BEDROCK && block != Blocks.AIR) {
 							block.onBlockDestroyedByExplosion(world, pos, this);
 							world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 						}
@@ -82,40 +79,33 @@ public class RebornExplosion extends Explosion
 	}
 
 	@Override
-	public void doExplosionA()
-	{
+	public void doExplosionA() {
 		explode();
 	}
 
 	@Override
-	public void doExplosionB(boolean spawnParticles)
-	{
+	public void doExplosionB(boolean spawnParticles) {
 		explode();
 	}
 
 	@Override
-	public @Nullable EntityLivingBase getExplosivePlacedBy()
-	{
+	public
+	@Nullable
+	EntityLivingBase getExplosivePlacedBy() {
 		return livingBase;
 	}
 
 	@Override
-	public List<BlockPos> getAffectedBlockPositions()
-	{
+	public List<BlockPos> getAffectedBlockPositions() {
 		List<BlockPos> poses = new ArrayList<>();
-		for (int tx = -radius; tx < radius + 1; tx++)
-		{
-			for (int ty = -radius; ty < radius + 1; ty++)
-			{
-				for (int tz = -radius; tz < radius + 1; tz++)
-				{
-					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2)
-					{
+		for (int tx = -radius; tx < radius + 1; tx++) {
+			for (int ty = -radius; ty < radius + 1; ty++) {
+				for (int tz = -radius; tz < radius + 1; tz++) {
+					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2) {
 						BlockPos pos = center.add(tx, ty, tz);
 						IBlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						if (block != Blocks.BEDROCK && block != Blocks.AIR)
-						{
+						if (block != Blocks.BEDROCK && block != Blocks.AIR) {
 							poses.add(pos);
 						}
 					}

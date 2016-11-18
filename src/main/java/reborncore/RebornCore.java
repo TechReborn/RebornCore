@@ -1,23 +1,17 @@
 package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
-import net.minecraft.init.Items;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
@@ -27,11 +21,8 @@ import reborncore.common.util.RebornPermissions;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
-import java.io.IOException;
-
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.11]", dependencies = "required-after:forge@[12.18.2.2121,);")
-public class RebornCore implements IModInfo
-{
+public class RebornCore implements IModInfo {
 
 	public static final String MOD_NAME = "RebornCore";
 	public static final String MOD_ID = "reborncore";
@@ -44,22 +35,19 @@ public class RebornCore implements IModInfo
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
 
-	public RebornCore()
-	{
+	public RebornCore() {
 		logHelper = new LogHelper(this);
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
 	}
 
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent event)
-	{
+	public void init(FMLInitializationEvent event) {
 		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets
@@ -73,35 +61,30 @@ public class RebornCore implements IModInfo
 		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 
-        proxy.init(event);
+		proxy.init(event);
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 	}
 
-	public String MOD_NAME()
-	{
+	public String MOD_NAME() {
 		return MOD_NAME;
 	}
 
 	@Override
-	public String MOD_ID()
-	{
+	public String MOD_ID() {
 		return MOD_ID;
 	}
 
 	@Override
-	public String MOD_VERSION()
-	{
+	public String MOD_VERSION() {
 		return MOD_VERSION;
 	}
 
 	@Override
-	public String MOD_DEPENDENCIES()
-	{
+	public String MOD_DEPENDENCIES() {
 		return "";
 	}
 }

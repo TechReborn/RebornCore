@@ -9,14 +9,14 @@ import reborncore.mcmultipart.multipart.PartSlot;
  */
 public interface IEdgeConnectablePart extends IMultipart {
 
-    /**
-     * Gets the width of the part.
-     */
-    public int getHoleWidth(PartSlot slot);
+	/**
+	 * Gets the width of the part.
+	 */
+	public int getHoleWidth(PartSlot slot);
 
-    /**
-     * Gets the height of the part.
-     */
-    public int getHoleHeight(PartSlot slot);
+	/**
+	 * Gets the height of the part.
+	 */
+	public int getHoleHeight(PartSlot slot);
 
 }

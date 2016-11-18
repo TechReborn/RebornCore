@@ -9,32 +9,32 @@ import net.minecraft.world.IBlockAccess;
 
 public interface IMicroMaterial {
 
-    public String getName();
+	public String getName();
 
-    public String getLocalizedName();
+	public String getLocalizedName();
 
-    public boolean isSolid();
+	public boolean isSolid();
 
-    public int getLightValue();
+	public int getLightValue();
 
-    public float getHardness();
+	public float getHardness();
 
-    public int getSawStrength();
+	public int getSawStrength();
 
-    public ItemStack getItem();
+	public ItemStack getItem();
 
-    public SoundType getSound();
+	public SoundType getSound();
 
-    public boolean canRenderInLayer(BlockRenderLayer layer);
+	public boolean canRenderInLayer(BlockRenderLayer layer);
 
-    public IBlockState getDefaultMaterialState();
+	public IBlockState getDefaultMaterialState();
 
-    public IBlockState getMaterialState(IBlockAccess world, BlockPos pos, IMicroblock microblock);
+	public IBlockState getMaterialState(IBlockAccess world, BlockPos pos, IMicroblock microblock);
 
-    public static interface IDelegatedMicroMaterial extends IMicroMaterial {
+	public static interface IDelegatedMicroMaterial extends IMicroMaterial {
 
-        public MicroblockDelegate provideDelegate(IMicroblock microblock, boolean isRemote);
+		public MicroblockDelegate provideDelegate(IMicroblock microblock, boolean isRemote);
 
-    }
+	}
 
 }

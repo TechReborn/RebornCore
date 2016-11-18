@@ -1,7 +1,5 @@
 package reborncore.common.misc.vecmath;
 
-import java.util.StringTokenizer;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -16,53 +14,47 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class Vecs3d
-{
+import java.util.StringTokenizer;
+
+public class Vecs3d {
 	protected double x, y, z;
 	protected World w = null;
 
-	public Vecs3d(double x, double y, double z)
-	{
+	public Vecs3d(double x, double y, double z) {
 
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Vecs3d(double x, double y, double z, World w)
-	{
+	public Vecs3d(double x, double y, double z, World w) {
 
 		this(x, y, z);
 		this.w = w;
 	}
 
-	public Vecs3d(TileEntity te)
-	{
+	public Vecs3d(TileEntity te) {
 
 		this(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ(), te.getWorld());
 	}
 
-	public Vecs3d(Vec3i vec)
-	{
+	public Vecs3d(Vec3i vec) {
 
 		this(vec.getX(), vec.getY(), vec.getZ());
 	}
 
-	public Vecs3d(Vec3i vec, World w)
-	{
+	public Vecs3d(Vec3i vec, World w) {
 
 		this(vec.getX(), vec.getY(), vec.getZ());
 		this.w = w;
 	}
 
-	public boolean hasWorld()
-	{
+	public boolean hasWorld() {
 
 		return w != null;
 	}
 
-	public Vecs3d add(double x, double y, double z)
-	{
+	public Vecs3d add(double x, double y, double z) {
 
 		this.x += x;
 		this.y += y;
@@ -70,20 +62,17 @@ public class Vecs3d
 		return this;
 	}
 
-	public Vecs3d add(EnumFacing dir)
-	{
+	public Vecs3d add(EnumFacing dir) {
 
 		return add(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
 	}
 
-	public Vecs3d add(Vecs3d vec)
-	{
+	public Vecs3d add(Vecs3d vec) {
 
 		return add(vec.x, vec.y, vec.z);
 	}
 
-	public Vecs3d sub(double x, double y, double z)
-	{
+	public Vecs3d sub(double x, double y, double z) {
 
 		this.x -= x;
 		this.y -= y;
@@ -91,20 +80,17 @@ public class Vecs3d
 		return this;
 	}
 
-	public Vecs3d sub(EnumFacing dir)
-	{
+	public Vecs3d sub(EnumFacing dir) {
 
 		return sub(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
 	}
 
-	public Vecs3d sub(Vecs3d vec)
-	{
+	public Vecs3d sub(Vecs3d vec) {
 
 		return sub(vec.x, vec.y, vec.z);
 	}
 
-	public Vecs3d mul(double x, double y, double z)
-	{
+	public Vecs3d mul(double x, double y, double z) {
 
 		this.x *= x;
 		this.y *= y;
@@ -112,26 +98,22 @@ public class Vecs3d
 		return this;
 	}
 
-	public Vecs3d mul(double multiplier)
-	{
+	public Vecs3d mul(double multiplier) {
 
 		return mul(multiplier, multiplier, multiplier);
 	}
 
-	public Vecs3d mul(EnumFacing direction)
-	{
+	public Vecs3d mul(EnumFacing direction) {
 
 		return mul(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
 	}
 
-	public Vecs3d multiply(Vecs3d v)
-	{
+	public Vecs3d multiply(Vecs3d v) {
 
 		return mul(v.getX(), v.getY(), v.getZ());
 	}
 
-	public Vecs3d div(double x, double y, double z)
-	{
+	public Vecs3d div(double x, double y, double z) {
 
 		this.x /= x;
 		this.y /= y;
@@ -139,26 +121,22 @@ public class Vecs3d
 		return this;
 	}
 
-	public Vecs3d div(double multiplier)
-	{
+	public Vecs3d div(double multiplier) {
 
 		return div(multiplier, multiplier, multiplier);
 	}
 
-	public Vecs3d div(EnumFacing direction)
-	{
+	public Vecs3d div(EnumFacing direction) {
 
 		return div(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
 	}
 
-	public double length()
-	{
+	public double length() {
 
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 
-	public Vecs3d normalize()
-	{
+	public Vecs3d normalize() {
 
 		Vecs3d v = clone();
 
@@ -174,96 +152,80 @@ public class Vecs3d
 		return v;
 	}
 
-	public Vecs3d abs()
-	{
+	public Vecs3d abs() {
 
 		return new Vecs3d(Math.abs(x), Math.abs(y), Math.abs(z));
 	}
 
-	public double dot(Vecs3d v)
-	{
+	public double dot(Vecs3d v) {
 
 		return x * v.getX() + y * v.getY() + z * v.getZ();
 	}
 
-	public Vecs3d cross(Vecs3d v)
-	{
+	public Vecs3d cross(Vecs3d v) {
 
 		return new Vecs3d(y * v.getZ() - z * v.getY(), x * v.getZ() - z * v.getX(), x * v.getY() - y * v.getX());
 	}
 
-	public Vecs3d getRelative(double x, double y, double z)
-	{
+	public Vecs3d getRelative(double x, double y, double z) {
 
 		return clone().add(x, y, z);
 	}
 
-	public Vecs3d getRelative(EnumFacing dir)
-	{
+	public Vecs3d getRelative(EnumFacing dir) {
 
 		return getRelative(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
 	}
 
-	public EnumFacing getDirectionTo(Vecs3d vec)
-	{
+	public EnumFacing getDirectionTo(Vecs3d vec) {
 
 		for (EnumFacing d : EnumFacing.VALUES)
 			if (getBlockX() + d.getFrontOffsetX() == vec.getBlockX()
-					&& getBlockY() + d.getFrontOffsetY() == vec.getBlockY()
-					&& getBlockZ() + d.getFrontOffsetZ() == vec.getBlockZ())
+				&& getBlockY() + d.getFrontOffsetY() == vec.getBlockY()
+				&& getBlockZ() + d.getFrontOffsetZ() == vec.getBlockZ())
 				return d;
 		return null;
 	}
 
-	public boolean isZero()
-	{
+	public boolean isZero() {
 
 		return x == 0 && y == 0 && z == 0;
 	}
 
 	@Override
-	public Vecs3d clone()
-	{
+	public Vecs3d clone() {
 
 		return new Vecs3d(x, y, z, w);
 	}
 
-	public boolean hasTileEntity()
-	{
+	public boolean hasTileEntity() {
 
-		if (hasWorld())
-		{
+		if (hasWorld()) {
 			return w.getTileEntity(getBlockPos()) != null;
 		}
 		return false;
 	}
 
-	public BlockPos getBlockPos()
-	{
+	public BlockPos getBlockPos() {
 		return new BlockPos(x, y, z);
 	}
 
-	public TileEntity getTileEntity()
-	{
+	public TileEntity getTileEntity() {
 
-		if (hasTileEntity())
-		{
+		if (hasTileEntity()) {
 			return w.getTileEntity(getBlockPos());
 		}
 		return null;
 	}
 
-	public boolean isBlock(Block b)
-	{
+	public boolean isBlock(Block b) {
 
 		return isBlock(b, false);
 	}
 
-	public boolean isBlock(Block b, boolean checkAir)
-	{
+	public boolean isBlock(Block b, boolean checkAir) {
 
-		if (hasWorld())
-		{
+		if (hasWorld()) {
 			IBlockState state = w.getBlockState(getBlockPos());
 			Block bl = state.getBlock();
 
@@ -279,17 +241,14 @@ public class Vecs3d
 		return false;
 	}
 
-	public Block getBlock()
-	{
+	public Block getBlock() {
 
 		return getBlock(false);
 	}
 
-	public Block getBlock(boolean airIsNull)
-	{
+	public Block getBlock(boolean airIsNull) {
 
-		if (hasWorld())
-		{
+		if (hasWorld()) {
 			if (airIsNull && isBlock(null, true))
 				return null;
 			return w.getBlockState(getBlockPos()).getBlock();
@@ -298,64 +257,54 @@ public class Vecs3d
 		return null;
 	}
 
-	public World getWorld()
-	{
+	public World getWorld() {
 
 		return w;
 	}
 
-	public Vecs3d setWorld(World world)
-	{
+	public Vecs3d setWorld(World world) {
 
 		w = world;
 
 		return this;
 	}
 
-	public double getX()
-	{
+	public double getX() {
 
 		return x;
 	}
 
-	public double getY()
-	{
+	public double getY() {
 
 		return y;
 	}
 
-	public double getZ()
-	{
+	public double getZ() {
 
 		return z;
 	}
 
-	public int getBlockX()
-	{
+	public int getBlockX() {
 
 		return (int) Math.floor(x);
 	}
 
-	public int getBlockY()
-	{
+	public int getBlockY() {
 
 		return (int) Math.floor(y);
 	}
 
-	public int getBlockZ()
-	{
+	public int getBlockZ() {
 
 		return (int) Math.floor(z);
 	}
 
-	public double distanceTo(Vecs3d vec)
-	{
+	public double distanceTo(Vecs3d vec) {
 
 		return distanceTo(vec.x, vec.y, vec.z);
 	}
 
-	public double distanceTo(double x, double y, double z)
-	{
+	public double distanceTo(double x, double y, double z) {
 
 		double dx = x - this.x;
 		double dy = y - this.y;
@@ -363,30 +312,25 @@ public class Vecs3d
 		return dx * dx + dy * dy + dz * dz;
 	}
 
-	public void setX(double x)
-	{
+	public void setX(double x) {
 
 		this.x = x;
 	}
 
-	public void setY(double y)
-	{
+	public void setY(double y) {
 
 		this.y = y;
 	}
 
-	public void setZ(double z)
-	{
+	public void setZ(double z) {
 
 		this.z = z;
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 
-		if (obj instanceof Vecs3d)
-		{
+		if (obj instanceof Vecs3d) {
 			Vecs3d vec = (Vecs3d) obj;
 			return vec.w == w && vec.x == x && vec.y == y && vec.z == z;
 		}
@@ -394,21 +338,18 @@ public class Vecs3d
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 
 		return new Double(x).hashCode() + new Double(y).hashCode() << 8 + new Double(z).hashCode() << 16;
 	}
 
-	public Vec3i toVec3()
-	{
+	public Vec3i toVec3() {
 
 		return new Vec3i(x, y, z);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 
 		String s = "Vector3{";
 		if (hasWorld())
@@ -417,8 +358,7 @@ public class Vecs3d
 		return s;
 	}
 
-	public EnumFacing toForgeDirection()
-	{
+	public EnumFacing toForgeDirection() {
 
 		if (z == 1)
 			return EnumFacing.SOUTH;
@@ -438,24 +378,19 @@ public class Vecs3d
 		return null;
 	}
 
-	public static Vecs3d fromString(String s)
-	{
+	public static Vecs3d fromString(String s) {
 
-		if (s.startsWith("Vector3{") && s.endsWith("}"))
-		{
+		if (s.startsWith("Vector3{") && s.endsWith("}")) {
 			World w = null;
 			double x = 0, y = 0, z = 0;
 			String s2 = s.substring(s.indexOf("{") + 1, s.lastIndexOf("}"));
 			StringTokenizer st = new StringTokenizer(s2, ";");
-			while (st.hasMoreTokens())
-			{
+			while (st.hasMoreTokens()) {
 				String t = st.nextToken();
 
-				if (t.toLowerCase().startsWith("w"))
-				{
+				if (t.toLowerCase().startsWith("w")) {
 					int world = Integer.parseInt(t.split("=")[1]);
-					if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-					{
+					if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
 						// TODO 1.9
 						// for (World wo :
 						// MinecraftServer.getServer().worldServers) {
@@ -464,8 +399,7 @@ public class Vecs3d
 						// break;
 						// }
 						// }
-					} else
-					{
+					} else {
 						w = getClientWorld(world);
 					}
 				}
@@ -478,11 +412,9 @@ public class Vecs3d
 					z = Double.parseDouble(t.split("=")[1]);
 			}
 
-			if (w != null)
-			{
+			if (w != null) {
 				return new Vecs3d(x, y, z, w);
-			} else
-			{
+			} else {
 				return new Vecs3d(x, y, z);
 			}
 		}
@@ -490,8 +422,7 @@ public class Vecs3d
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static World getClientWorld(int world)
-	{
+	private static World getClientWorld(int world) {
 
 		if (Minecraft.getMinecraft().world.provider.getDimension() != world)
 			return null;

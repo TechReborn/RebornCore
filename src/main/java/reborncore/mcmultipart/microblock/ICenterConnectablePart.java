@@ -1,10 +1,10 @@
 package reborncore.mcmultipart.microblock;
 
-import reborncore.mcmultipart.multipart.IMultipart;
 import net.minecraft.util.EnumFacing;
+import reborncore.mcmultipart.multipart.IMultipart;
 
 public interface ICenterConnectablePart extends IMultipart {
 
-    public int getHoleRadius(EnumFacing side);
+	public int getHoleRadius(EnumFacing side);
 
 }

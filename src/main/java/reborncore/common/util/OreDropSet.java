@@ -1,23 +1,19 @@
 package reborncore.common.util;
 
+import net.minecraft.item.ItemStack;
+
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.item.ItemStack;
-
-public class OreDropSet
-{
-	public OreDropSet(OreDrop... oreDrops)
-	{
+public class OreDropSet {
+	public OreDropSet(OreDrop... oreDrops) {
 		this.dropSet = oreDrops;
 	}
 
-	public ArrayList<ItemStack> drop(int fortune, Random random)
-	{
+	public ArrayList<ItemStack> drop(int fortune, Random random) {
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
 
-		for (OreDrop drop : dropSet)
-		{
+		for (OreDrop drop : dropSet) {
 			drops.add(drop.getDrops(fortune, random));
 		}
 

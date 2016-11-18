@@ -8,18 +8,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
 
-public abstract class BaseTileBlock extends Block implements ITileEntityProvider
-{
-	protected BaseTileBlock(Material materialIn)
-	{
+public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
+	protected BaseTileBlock(Material materialIn) {
 		super(materialIn);
 		RebornCore.jsonDestroyer.registerObject(this);
 		setHardness(1F);
 	}
 
 	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-	{
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		super.breakBlock(worldIn, pos, state);
 		worldIn.removeTileEntity(pos);
 	}

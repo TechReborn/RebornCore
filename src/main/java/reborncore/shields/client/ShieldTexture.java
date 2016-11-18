@@ -13,42 +13,42 @@ import java.net.URL;
  */
 public class ShieldTexture {
 
-    DownloadState state = DownloadState.AVAILABLE;
+	DownloadState state = DownloadState.AVAILABLE;
 
-    @Nullable
-    AbstractTexture texture;
+	@Nullable
+	AbstractTexture texture;
 
-    String url;
+	String url;
 
-    public ShieldTexture(String url) {
-        this.url = url;
-    }
+	public ShieldTexture(String url) {
+		this.url = url;
+	}
 
-    public void download() {
-        if (state != DownloadState.AVAILABLE) {
-            return;
-        }
-        state = DownloadState.DOWNLOADING;
+	public void download() {
+		if (state != DownloadState.AVAILABLE) {
+			return;
+		}
+		state = DownloadState.DOWNLOADING;
 
-        new Thread(() ->
-        {
-            try {
-                InputStream inputStream = new URL(url).openStream();
-                texture = new InputStreamTexture(inputStream, url);
-                state = DownloadState.DOWNLOADED;
-            } catch (IOException e) {
-                e.printStackTrace();
-                state = DownloadState.FAILED;
-            }
-        }).start();
-    }
+		new Thread(() ->
+		{
+			try {
+				InputStream inputStream = new URL(url).openStream();
+				texture = new InputStreamTexture(inputStream, url);
+				state = DownloadState.DOWNLOADED;
+			} catch (IOException e) {
+				e.printStackTrace();
+				state = DownloadState.FAILED;
+			}
+		}).start();
+	}
 
-    public DownloadState getState() {
-        return state;
-    }
+	public DownloadState getState() {
+		return state;
+	}
 
-    @Nullable
-    public AbstractTexture getTexture() {
-        return texture;
-    }
+	@Nullable
+	public AbstractTexture getTexture() {
+		return texture;
+	}
 }

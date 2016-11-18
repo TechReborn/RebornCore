@@ -2,12 +2,9 @@ package reborncore.common.misc;
 
 import net.minecraft.util.EnumFacing;
 
-public class Functions
-{
-	public static int getIntDirFromDirection(EnumFacing dir)
-	{
-		switch (dir)
-		{
+public class Functions {
+	public static int getIntDirFromDirection(EnumFacing dir) {
+		switch (dir) {
 			case DOWN:
 				return 0;
 			case EAST:
@@ -25,11 +22,9 @@ public class Functions
 		}
 	}
 
-	public static EnumFacing getDirectionFromInt(int dir)
-	{
+	public static EnumFacing getDirectionFromInt(int dir) {
 		int metaDataToSet = 0;
-		switch (dir)
-		{
+		switch (dir) {
 			case 0:
 				metaDataToSet = 2;
 				break;

@@ -7,10 +7,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.network.packet.CustomDescriptionPacket;
-import reborncore.common.packets.PacketHandler;
 
-public class Tank extends FluidTank
-{
+public class Tank extends FluidTank {
 
 	private final String name;
 
@@ -18,48 +16,41 @@ public class Tank extends FluidTank
 
 	Fluid lastFluid;
 
-	public Tank(String name, int capacity, TileEntity tile)
-	{
+	public Tank(String name, int capacity, TileEntity tile) {
 		super(capacity);
 		this.name = name;
 		this.tile = tile;
 	}
 
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return getFluid() == null || getFluid().amount <= 0;
 	}
 
-	public boolean isFull()
-	{
+	public boolean isFull() {
 		return getFluid() != null && getFluid().amount >= getCapacity();
 	}
 
-	public Fluid getFluidType()
-	{
+	public Fluid getFluidType() {
 		return getFluid() != null ? getFluid().getFluid() : null;
 	}
 
 	@Override
-	public final NBTTagCompound writeToNBT(NBTTagCompound nbt)
-	{
+	public final NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		NBTTagCompound tankData = new NBTTagCompound();
 		super.writeToNBT(tankData);
 		nbt.setTag(name, tankData);
 		return nbt;
 	}
 
-	public void setFluidAmount(int amount){
-		if(fluid != null){
+	public void setFluidAmount(int amount) {
+		if (fluid != null) {
 			fluid.amount = amount;
 		}
 	}
 
 	@Override
-	public final FluidTank readFromNBT(NBTTagCompound nbt)
-	{
-		if (nbt.hasKey(name))
-		{
+	public final FluidTank readFromNBT(NBTTagCompound nbt) {
+		if (nbt.hasKey(name)) {
 			// allow to read empty tanks
 			setFluid(null);
 
@@ -70,13 +61,12 @@ public class Tank extends FluidTank
 	}
 
 	//TODO optimise
-	public void compareAndUpdate()
-	{
+	public void compareAndUpdate() {
 		if (tile == null || tile.getWorld().isRemote) {
 			return;
 		}
-		if(lastFluid == null || (lastFluid != null && (this.getFluid() == null) || this.getFluid().getFluid() == null) || (lastFluid != this.getFluid().getFluid())){
-			if(this.getFluid() == null){
+		if (lastFluid == null || (lastFluid != null && (this.getFluid() == null) || this.getFluid().getFluid() == null) || (lastFluid != this.getFluid().getFluid())) {
+			if (this.getFluid() == null) {
 				lastFluid = null;
 			} else {
 				lastFluid = this.getFluid().getFluid();

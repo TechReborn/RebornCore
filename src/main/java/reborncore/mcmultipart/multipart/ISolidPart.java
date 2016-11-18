@@ -8,21 +8,21 @@ import net.minecraft.util.EnumFacing;
  */
 public interface ISolidPart extends IMultipart {
 
-    /**
-     * Checks whether or not the specified side of this part is solid.
-     */
-    public boolean isSideSolid(EnumFacing side);
+	/**
+	 * Checks whether or not the specified side of this part is solid.
+	 */
+	public boolean isSideSolid(EnumFacing side);
 
-    /**
-     * Implement this interface in your {@link IMultipart} if you want torches to be placed on top of it, even though the side isn't solid.
-     */
-    public interface ISolidTopPart extends IMultipart {
+	/**
+	 * Implement this interface in your {@link IMultipart} if you want torches to be placed on top of it, even though the side isn't solid.
+	 */
+	public interface ISolidTopPart extends IMultipart {
 
-        /**
-         * Checks whether or not a torch can be placed on top of this part.
-         */
-        public boolean canPlaceTorchOnTop();
+		/**
+		 * Checks whether or not a torch can be placed on top of this part.
+		 */
+		public boolean canPlaceTorchOnTop();
 
-    }
+	}
 
 }

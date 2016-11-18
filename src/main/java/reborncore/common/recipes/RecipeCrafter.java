@@ -1,27 +1,25 @@
 package reborncore.common.recipes;
 
-import java.util.ArrayList;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
+import reborncore.api.recipe.IBaseRecipeType;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.api.recipe.RecipeHandler;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemUtils;
-import reborncore.api.recipe.IBaseRecipeType;
-import reborncore.api.recipe.RecipeHandler;
 import reborncore.common.util.inventory.Inventory;
+
+import java.util.ArrayList;
 
 /**
  * Use this in your tile entity to craft things
  */
-public class RecipeCrafter
-{
+public class RecipeCrafter {
 
 	/**
 	 * This is the recipe type to use
@@ -86,28 +84,19 @@ public class RecipeCrafter
 	/**
 	 * This is the constructor, not a lot to say here :P
 	 *
-	 * @param recipeName
-	 *            The recipe name that should be crafted
-	 * @param parentTile
-	 *            The tile that wil be using this recipe crafter
-	 * @param inputs
-	 *            The amount of input slots
-	 * @param outputs
-	 *            The amount of output slots
-	 * @param inventory
-	 *            The inventory of the machine
-	 * @param inputSlots
-	 *            A list of the input slot ids
-	 * @param outputSlots
-	 *            A list of output slot ids
+	 * @param recipeName The recipe name that should be crafted
+	 * @param parentTile The tile that wil be using this recipe crafter
+	 * @param inputs The amount of input slots
+	 * @param outputs The amount of output slots
+	 * @param inventory The inventory of the machine
+	 * @param inputSlots A list of the input slot ids
+	 * @param outputSlots A list of output slot ids
 	 */
 	public RecipeCrafter(String recipeName, TileMachineBase parentTile, int inputs, int outputs, Inventory inventory,
-	                     int[] inputSlots, int[] outputSlots)
-	{
+	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeName = recipeName;
 		this.parentTile = parentTile;
-		if (parentTile instanceof IEnergyInterfaceTile)
-		{
+		if (parentTile instanceof IEnergyInterfaceTile) {
 			energy = (IEnergyInterfaceTile) parentTile;
 		}
 		this.inputs = inputs;
@@ -115,19 +104,17 @@ public class RecipeCrafter
 		this.inventory = inventory;
 		this.inputSlots = inputSlots;
 		this.outputSlots = outputSlots;
-		if(!(parentTile instanceof IRecipeCrafterProvider)){
+		if (!(parentTile instanceof IRecipeCrafterProvider)) {
 			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
 		}
 	}
 
 	@Deprecated
 	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, reborncore.common.util.Inventory inventory,
-	                     int[] inputSlots, int[] outputSlots)
-	{
+	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeName = recipeName;
 		this.parentTile = parentTile;
-		if (parentTile instanceof IEnergyInterfaceTile)
-		{
+		if (parentTile instanceof IEnergyInterfaceTile) {
 			energy = (IEnergyInterfaceTile) parentTile;
 		}
 		this.inputs = inputs;
@@ -135,7 +122,7 @@ public class RecipeCrafter
 		this.inventory = inventory;
 		this.inputSlots = inputSlots;
 		this.outputSlots = outputSlots;
-		if(!(parentTile instanceof IRecipeCrafterProvider)){
+		if (!(parentTile instanceof IRecipeCrafterProvider)) {
 			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
 		}
 	}
@@ -143,62 +130,47 @@ public class RecipeCrafter
 	/**
 	 * Call this on the tile tick
 	 */
-	public void updateEntity()
-	{
-		if (parentTile.getWorld().isRemote)
-		{
+	public void updateEntity() {
+		if (parentTile.getWorld().isRemote) {
 			return;
 		}
 		ticksSinceLastChange++;
-		if (ticksSinceLastChange == 20)
-		{// Force a has chanced every second
+		if (ticksSinceLastChange == 20) {// Force a has chanced every second
 			setInvDirty(true);
 			ticksSinceLastChange = 0;
 		}
-		if (currentRecipe == null && isInvDirty())
-		{// It will now look for new recipes.
+		if (currentRecipe == null && isInvDirty()) {// It will now look for new recipes.
 			currentTickTime = 0;
-			for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName))
-			{
-				if (recipe.canCraft(parentTile) && hasAllInputs(recipe))
-				{// This checks to see if it has all of the inputs
+			for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
+				if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {// This checks to see if it has all of the inputs
 					boolean canGiveInvAll = true;
-					for (int i = 0; i < recipe.getOutputsSize(); i++)
-					{// This checks to see if it can fit all of the outputs
-						if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic()))
-						{
+					for (int i = 0; i < recipe.getOutputsSize(); i++) {// This checks to see if it can fit all of the outputs
+						if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
 							canGiveInvAll = false;
 							return;
 						}
 					}
-					if (canGiveInvAll)
-					{
+					if (canGiveInvAll) {
 						setCurrentRecipe(recipe);// Sets the current recipe then
 						// syncs
 						this.currentNeededTicks = (int) (currentRecipe.tickTime() * (1.0 - speedMultiplier));
 						this.currentTickTime = -1;
 						setIsActive();
-					} else
-					{
+					} else {
 						this.currentTickTime = -1;
 					}
 				}
 			}
-		} else
-		{
-			if (isInvDirty() && !hasAllInputs())
-			{// If it doesn't have all the inputs reset
+		} else {
+			if (isInvDirty() && !hasAllInputs()) {// If it doesn't have all the inputs reset
 				currentRecipe = null;
 				currentTickTime = -1;
 				setIsActive();
 			}
-			if (currentRecipe != null && currentTickTime >= currentNeededTicks)
-			{// If it has reached the recipe tick time
+			if (currentRecipe != null && currentTickTime >= currentNeededTicks) {// If it has reached the recipe tick time
 				boolean canGiveInvAll = true;
-				for (int i = 0; i < currentRecipe.getOutputsSize(); i++)
-				{// Checks to see if it can fit the output
-					if (!canFitStack(currentRecipe.getOutput(i), outputSlots[i], currentRecipe.useOreDic()))
-					{
+				for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {// Checks to see if it can fit the output
+					if (!canFitStack(currentRecipe.getOutput(i), outputSlots[i], currentRecipe.useOreDic())) {
 						canGiveInvAll = false;
 					}
 				}
@@ -208,12 +180,9 @@ public class RecipeCrafter
 				// have
 				// been
 				// filled
-				if (canGiveInvAll && currentRecipe.onCraft(parentTile))
-				{
-					for (int i = 0; i < currentRecipe.getOutputsSize(); i++)
-					{
-						if (!filledSlots.contains(outputSlots[i]))
-						{// checks it has not been filled
+				if (canGiveInvAll && currentRecipe.onCraft(parentTile)) {
+					for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
+						if (!filledSlots.contains(outputSlots[i])) {// checks it has not been filled
 							fitStack(currentRecipe.getOutput(i).copy(), outputSlots[i]);// fills
 							// the
 							// slot
@@ -229,10 +198,8 @@ public class RecipeCrafter
 					currentTickTime = -1;
 					setIsActive();
 				}
-			} else if (currentRecipe != null && currentTickTime < currentNeededTicks)
-			{
-				if (energy.canUseEnergy(getEuPerTick()))
-				{// This uses the power
+			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
+				if (energy.canUseEnergy(getEuPerTick())) {// This uses the power
 					energy.useEnergy(getEuPerTick());
 					currentTickTime++;// increase the ticktime
 				}
@@ -241,20 +208,15 @@ public class RecipeCrafter
 		setInvDirty(false);
 	}
 
-	public boolean hasAllInputs()
-	{
-		if (currentRecipe == null)
-		{
+	public boolean hasAllInputs() {
+		if (currentRecipe == null) {
 			return false;
 		}
-		for (ItemStack input : currentRecipe.getInputs())
-		{
+		for (ItemStack input : currentRecipe.getInputs()) {
 			Boolean hasItem = false;
-			for (int inputSlot : inputSlots)
-			{// Checks to see if it can find the input
+			for (int inputSlot : inputSlots) {// Checks to see if it can find the input
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputSlot), true, true,
-					currentRecipe.useOreDic()) && inventory.getStackInSlot(inputSlot).getCount() >= input.getCount())
-				{
+					currentRecipe.useOreDic()) && inventory.getStackInSlot(inputSlot).getCount() >= input.getCount()) {
 					hasItem = true;
 				}
 			}
@@ -264,20 +226,15 @@ public class RecipeCrafter
 		return true;
 	}
 
-	public boolean hasAllInputs(IBaseRecipeType recipeType)
-	{
-		if (recipeType == null)
-		{
+	public boolean hasAllInputs(IBaseRecipeType recipeType) {
+		if (recipeType == null) {
 			return false;
 		}
-		for (ItemStack input : recipeType.getInputs())
-		{
+		for (ItemStack input : recipeType.getInputs()) {
 			Boolean hasItem = false;
-			for (int inputslot : inputSlots)
-			{
+			for (int inputslot : inputSlots) {
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputslot), true, true,
-					recipeType.useOreDic()) && inventory.getStackInSlot(inputslot).getCount() >= input.getCount())
-				{
+					recipeType.useOreDic()) && inventory.getStackInSlot(inputslot).getCount() >= input.getCount()) {
 					hasItem = true;
 				}
 			}
@@ -287,19 +244,14 @@ public class RecipeCrafter
 		return true;
 	}
 
-	public void useAllInputs()
-	{
-		if (currentRecipe == null)
-		{
+	public void useAllInputs() {
+		if (currentRecipe == null) {
 			return;
 		}
-		for (ItemStack input : currentRecipe.getInputs())
-		{
-			for (int inputSlot : inputSlots)
-			{// Uses all of the inputs
+		for (ItemStack input : currentRecipe.getInputs()) {
+			for (int inputSlot : inputSlots) {// Uses all of the inputs
 				if (ItemUtils.isItemEqual(input, inventory.getStackInSlot(inputSlot), true, true,
-					currentRecipe.useOreDic()))
-				{
+					currentRecipe.useOreDic())) {
 					inventory.decrStackSize(inputSlot, input.getCount());
 					break;
 				}
@@ -307,41 +259,31 @@ public class RecipeCrafter
 		}
 	}
 
-	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic)
-	{// Checks to see if it can fit the stack
-		if (stack == ItemStack.EMPTY)
-		{
+	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic) {// Checks to see if it can fit the stack
+		if (stack == ItemStack.EMPTY) {
 			return true;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY)
-		{
+		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, oreDic))
-		{
-			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize())
-			{
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, oreDic)) {
+			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void fitStack(ItemStack stack, int slot)
-	{// This fits a stack into a slot
-		if (stack == ItemStack.EMPTY)
-		{
+	public void fitStack(ItemStack stack, int slot) {// This fits a stack into a slot
+		if (stack == ItemStack.EMPTY) {
 			return;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY)
-		{// If the slot is empty set the contents
+		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY) {// If the slot is empty set the contents
 			inventory.setInventorySlotContents(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, currentRecipe.useOreDic()))
-		{// If the slot has stuff in
-			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize())
-			{// Check to see if it fits
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, currentRecipe.useOreDic())) {// If the slot has stuff in
+			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
 				newStack.setCount(inventory.getStackInSlot(slot).getCount() + stack.getCount());// Sets
 				// the
@@ -353,15 +295,13 @@ public class RecipeCrafter
 		}
 	}
 
-	public void readFromNBT(NBTTagCompound tag)
-	{
+	public void readFromNBT(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompoundTag("Crater");
 
 		if (data.hasKey("currentTickTime"))
 			currentTickTime = data.getInteger("currentTickTime");
 
-		if (parentTile != null && parentTile.getWorld() != null && parentTile.getWorld().isRemote)
-		{
+		if (parentTile != null && parentTile.getWorld() != null && parentTile.getWorld().isRemote) {
 			parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),
 				parentTile.getWorld().getBlockState(parentTile.getPos()),
 				parentTile.getWorld().getBlockState(parentTile.getPos()), 3);
@@ -371,8 +311,7 @@ public class RecipeCrafter
 		}
 	}
 
-	public void writeToNBT(NBTTagCompound tag)
-	{
+	public void writeToNBT(NBTTagCompound tag) {
 
 		NBTTagCompound data = new NBTTagCompound();
 
@@ -381,26 +320,21 @@ public class RecipeCrafter
 		tag.setTag("Crater", data);
 	}
 
-	private boolean isActive()
-	{
+	private boolean isActive() {
 		return currentRecipe != null && energy.getEnergy() >= currentRecipe.euPerTick();
 	}
 
-	private boolean canCraftAgain(){
-		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName))
-		{
-			if (recipe.canCraft(parentTile) && hasAllInputs(recipe))
-			{
+	private boolean canCraftAgain() {
+		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
+			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {
 				boolean canGiveInvAll = true;
-				for (int i = 0; i < recipe.getOutputsSize(); i++)
-				{
-					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic()))
-					{
+				for (int i = 0; i < recipe.getOutputsSize(); i++) {
+					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
 						canGiveInvAll = false;
 						return false;
 					}
 				}
-				if(energy.getEnergy() < recipe.euPerTick()){
+				if (energy.getEnergy() < recipe.euPerTick()) {
 					return false;
 				}
 				return canGiveInvAll;
@@ -409,51 +343,40 @@ public class RecipeCrafter
 		return false;
 	}
 
-	public void addSpeedMulti(double amount)
-	{
-		if (speedMultiplier + amount <= 0.99)
-		{
+	public void addSpeedMulti(double amount) {
+		if (speedMultiplier + amount <= 0.99) {
 			speedMultiplier += amount;
-		} else
-		{
+		} else {
 			speedMultiplier = 0.99;
 		}
 	}
 
-	public void resetSpeedMulti()
-	{
+	public void resetSpeedMulti() {
 		speedMultiplier = 0;
 	}
 
-	public double getSpeedMultiplier()
-	{
+	public double getSpeedMultiplier() {
 		return speedMultiplier;
 	}
 
-	public void addPowerMulti(double amount)
-	{
+	public void addPowerMulti(double amount) {
 		powerMultiplier += amount;
 	}
 
-	public void resetPowerMulti()
-	{
+	public void resetPowerMulti() {
 		powerMultiplier = 1;
 	}
 
-	public double getPowerMultiplier()
-	{
+	public double getPowerMultiplier() {
 		return powerMultiplier;
 	}
 
-	public double getEuPerTick()
-	{
+	public double getEuPerTick() {
 		return currentRecipe.euPerTick() * powerMultiplier;
 	}
 
-	public void setIsActive()
-	{
-		if (parentTile.getWorld().getBlockState(parentTile.getPos()).getBlock() instanceof BlockMachineBase)
-		{
+	public void setIsActive() {
+		if (parentTile.getWorld().getBlockState(parentTile.getPos()).getBlock() instanceof BlockMachineBase) {
 			BlockMachineBase blockMachineBase = (BlockMachineBase) parentTile.getWorld()
 				.getBlockState(parentTile.getPos()).getBlock();
 			boolean isActive = isActive() || canCraftAgain();
@@ -464,30 +387,27 @@ public class RecipeCrafter
 			parentTile.getWorld().getBlockState(parentTile.getPos()), 3);
 	}
 
-	public void setCurrentRecipe(IBaseRecipeType recipe)
-	{
-		try
-		{
+	public void setCurrentRecipe(IBaseRecipeType recipe) {
+		try {
 			this.currentRecipe = (IBaseRecipeType) recipe.clone();
-		} catch (CloneNotSupportedException e)
-		{
+		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean isInvDirty(){
-		if(inventory instanceof Inventory){
+	public boolean isInvDirty() {
+		if (inventory instanceof Inventory) {
 			return ((Inventory) inventory).isDirty;
-		} else if (inventory instanceof reborncore.common.util.Inventory){
-			return  ((reborncore.common.util.Inventory) inventory).hasChanged;
+		} else if (inventory instanceof reborncore.common.util.Inventory) {
+			return ((reborncore.common.util.Inventory) inventory).hasChanged;
 		}
 		return true;
 	}
 
-	public void setInvDirty(boolean isDiry){
-		if(inventory instanceof Inventory){
+	public void setInvDirty(boolean isDiry) {
+		if (inventory instanceof Inventory) {
 			((Inventory) inventory).isDirty = isDiry;
-		} else if (inventory instanceof reborncore.common.util.Inventory){
+		} else if (inventory instanceof reborncore.common.util.Inventory) {
 			((reborncore.common.util.Inventory) inventory).hasChanged = isDiry;
 		}
 	}

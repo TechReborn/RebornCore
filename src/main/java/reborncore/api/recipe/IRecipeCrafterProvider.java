@@ -7,5 +7,5 @@ import reborncore.common.recipes.RecipeCrafter;
  */
 public interface IRecipeCrafterProvider {
 
-    RecipeCrafter getRecipeCrafter();
+	RecipeCrafter getRecipeCrafter();
 }

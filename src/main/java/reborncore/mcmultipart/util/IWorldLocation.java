@@ -8,8 +8,8 @@ import net.minecraft.world.World;
  */
 public interface IWorldLocation {
 
-    public World getWorldIn();
+	public World getWorldIn();
 
-    public BlockPos getPosIn();
+	public BlockPos getPosIn();
 
 }

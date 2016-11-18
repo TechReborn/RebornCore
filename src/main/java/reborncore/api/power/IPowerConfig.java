@@ -2,14 +2,14 @@ package reborncore.api.power;
 
 public interface IPowerConfig {
 
-    boolean eu();
+	boolean eu();
 
-    boolean rf();
+	boolean rf();
 
-    boolean tesla();
+	boolean tesla();
 
-    boolean internal();
+	boolean internal();
 
-    boolean forge();
+	boolean forge();
 
 }

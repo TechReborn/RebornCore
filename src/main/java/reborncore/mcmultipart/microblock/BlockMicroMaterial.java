@@ -1,11 +1,8 @@
 package reborncore.mcmultipart.microblock;
 
-import java.util.Map.Entry;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
@@ -17,154 +14,154 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import reborncore.mcmultipart.microblock.IMicroMaterial.IDelegatedMicroMaterial;
+import java.util.Map.Entry;
 
 /**
  * A simple implementation of {@link IMicroMaterial} that's defined based on an {@link IBlockState}.
  */
 public class BlockMicroMaterial implements IMicroMaterial {
 
-    private static final Joiner COMMA_JOINER = Joiner.on(',');
-    @SuppressWarnings("rawtypes")
-    private static final Function<Entry<IProperty<?>, Comparable<?>>, String> MAP_ENTRY_TO_STRING = new Function<Entry<IProperty<?>, Comparable<?>>, String>() {
+	private static final Joiner COMMA_JOINER = Joiner.on(',');
+	@SuppressWarnings("rawtypes")
+	private static final Function<Entry<IProperty<?>, Comparable<?>>, String> MAP_ENTRY_TO_STRING = new Function<Entry<IProperty<?>, Comparable<?>>, String>() {
 
-        @SuppressWarnings("unchecked")
-        @Override
-        public String apply(Entry<IProperty<?>, Comparable<?>> entry) {
+		@SuppressWarnings("unchecked")
+		@Override
+		public String apply(Entry<IProperty<?>, Comparable<?>> entry) {
 
-            if (entry == null) {
-                return "<NULL>";
-            } else {
-                IProperty iproperty = entry.getKey();
-                return iproperty.getName() + "=" + iproperty.getName(entry.getValue());
-            }
-        }
-    };
+			if (entry == null) {
+				return "<NULL>";
+			} else {
+				IProperty iproperty = entry.getKey();
+				return iproperty.getName() + "=" + iproperty.getName(entry.getValue());
+			}
+		}
+	};
 
-    private final IBlockState blockState;
-    private final float hardness;
-    private final String name;
+	private final IBlockState blockState;
+	private final float hardness;
+	private final String name;
 
-    public BlockMicroMaterial(IBlockState blockState) {
+	public BlockMicroMaterial(IBlockState blockState) {
 
-        this(blockState, ((Float) ReflectionHelper.getPrivateValue(Block.class, blockState.getBlock(), "blockHardness", "blockHardness"))
-                .floatValue());
-    }
+		this(blockState, ((Float) ReflectionHelper.getPrivateValue(Block.class, blockState.getBlock(), "blockHardness", "blockHardness"))
+			.floatValue());
+	}
 
-    public BlockMicroMaterial(IBlockState blockState, float hardness) {
+	public BlockMicroMaterial(IBlockState blockState, float hardness) {
 
-        this.blockState = blockState;
-        this.hardness = hardness;
-        this.name = genName();
-    }
+		this.blockState = blockState;
+		this.hardness = hardness;
+		this.name = genName();
+	}
 
-    private BlockMicroMaterial(BlockMicroMaterial material) {
+	private BlockMicroMaterial(BlockMicroMaterial material) {
 
-        this.blockState = material.blockState;
-        this.hardness = material.hardness;
-        this.name = material.name;
-    }
+		this.blockState = material.blockState;
+		this.hardness = material.hardness;
+		this.name = material.name;
+	}
 
-    private final String genName() {
+	private final String genName() {
 
-        StringBuilder stringbuilder = new StringBuilder();
-        stringbuilder.append(Block.REGISTRY.getNameForObject(blockState.getBlock()));
-        if (!blockState.getProperties().isEmpty()) {
-            stringbuilder.append("[");
-            COMMA_JOINER.appendTo(stringbuilder, Iterables.transform(blockState.getProperties().entrySet(), MAP_ENTRY_TO_STRING));
-            stringbuilder.append("]");
-        }
-        return stringbuilder.toString();
-    }
+		StringBuilder stringbuilder = new StringBuilder();
+		stringbuilder.append(Block.REGISTRY.getNameForObject(blockState.getBlock()));
+		if (!blockState.getProperties().isEmpty()) {
+			stringbuilder.append("[");
+			COMMA_JOINER.appendTo(stringbuilder, Iterables.transform(blockState.getProperties().entrySet(), MAP_ENTRY_TO_STRING));
+			stringbuilder.append("]");
+		}
+		return stringbuilder.toString();
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    @Override
-    public String getLocalizedName() {
+	@Override
+	public String getLocalizedName() {
 
-        return getItem().getDisplayName();
-    }
+		return getItem().getDisplayName();
+	}
 
-    @Override
-    public boolean isSolid() {
+	@Override
+	public boolean isSolid() {
 
-        return blockState.isFullCube();
-    }
+		return blockState.isFullCube();
+	}
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public int getLightValue() {
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getLightValue() {
 
-        return blockState.getLightValue();
-    }
+		return blockState.getLightValue();
+	}
 
-    @Override
-    public float getHardness() {
+	@Override
+	public float getHardness() {
 
-        return hardness;
-    }
+		return hardness;
+	}
 
-    @Override
-    public int getSawStrength() {
+	@Override
+	public int getSawStrength() {
 
-        return blockState.getBlock().getHarvestLevel(blockState);
-    }
+		return blockState.getBlock().getHarvestLevel(blockState);
+	}
 
-    @Override
-    public ItemStack getItem() {
+	@Override
+	public ItemStack getItem() {
 
-        return new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
-    }
+		return new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
+	}
 
-    @Override
-    public SoundType getSound() {
+	@Override
+	public SoundType getSound() {
 
-        return blockState.getBlock().getSoundType();
-    }
+		return blockState.getBlock().getSoundType();
+	}
 
-    @Override
-    public boolean canRenderInLayer(BlockRenderLayer layer) {
+	@Override
+	public boolean canRenderInLayer(BlockRenderLayer layer) {
 
-        return blockState.getBlock().canRenderInLayer(getDefaultMaterialState(), layer);
-    }
+		return blockState.getBlock().canRenderInLayer(getDefaultMaterialState(), layer);
+	}
 
-    @Override
-    public IBlockState getDefaultMaterialState() {
+	@Override
+	public IBlockState getDefaultMaterialState() {
 
-        return blockState;
-    }
+		return blockState;
+	}
 
-    @Override
-    public IBlockState getMaterialState(IBlockAccess world, BlockPos pos, IMicroblock microblock) {
+	@Override
+	public IBlockState getMaterialState(IBlockAccess world, BlockPos pos, IMicroblock microblock) {
 
-        return blockState;
-    }
+		return blockState;
+	}
 
-    public DelegatedBlockMicroMaterial withDelegate(Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory) {
+	public DelegatedBlockMicroMaterial withDelegate(Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory) {
 
-        return new DelegatedBlockMicroMaterial(this, delegateFactory);
-    }
+		return new DelegatedBlockMicroMaterial(this, delegateFactory);
+	}
 
-    public static class DelegatedBlockMicroMaterial extends BlockMicroMaterial implements IDelegatedMicroMaterial {
+	public static class DelegatedBlockMicroMaterial extends BlockMicroMaterial implements IDelegatedMicroMaterial {
 
-        private final Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory;
+		private final Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory;
 
-        private DelegatedBlockMicroMaterial(BlockMicroMaterial material,
-                Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory) {
+		private DelegatedBlockMicroMaterial(BlockMicroMaterial material,
+		                                    Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate> delegateFactory) {
 
-            super(material);
-            this.delegateFactory = delegateFactory;
-        }
+			super(material);
+			this.delegateFactory = delegateFactory;
+		}
 
-        @Override
-        public MicroblockDelegate provideDelegate(IMicroblock microblock, boolean isRemote) {
+		@Override
+		public MicroblockDelegate provideDelegate(IMicroblock microblock, boolean isRemote) {
 
-            return delegateFactory.apply(new Tuple<IMicroblock, Boolean>(microblock, isRemote));
-        }
-    }
+			return delegateFactory.apply(new Tuple<IMicroblock, Boolean>(microblock, isRemote));
+		}
+	}
 
 }

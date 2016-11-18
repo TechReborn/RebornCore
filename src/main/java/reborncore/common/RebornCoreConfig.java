@@ -1,16 +1,15 @@
 package reborncore.common;
 
-import java.io.File;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IPowerConfig;
 
+import java.io.File;
+
 /**
  * Created by Mark on 20/02/2016.
  */
-public class RebornCoreConfig
-{
+public class RebornCoreConfig {
 
 	public static Configuration config;
 
@@ -26,8 +25,7 @@ public class RebornCoreConfig
 
 	public static boolean versionCheck;
 
-	public RebornCoreConfig(File configFile)
-	{
+	public RebornCoreConfig(File configFile) {
 		config = new Configuration(configFile);
 		config.load();
 
@@ -36,8 +34,7 @@ public class RebornCoreConfig
 		config.save();
 	}
 
-	public static RebornCoreConfig initialize(File configFile)
-	{
+	public static RebornCoreConfig initialize(File configFile) {
 
 		if (instance == null)
 			instance = new RebornCoreConfig(configFile);
@@ -47,27 +44,24 @@ public class RebornCoreConfig
 		return instance;
 	}
 
-	public static RebornCoreConfig instance()
-	{
-		if (instance == null)
-		{
+	public static RebornCoreConfig instance() {
+		if (instance == null) {
 
 			throw new IllegalStateException("Instance of TechReborn Config requested before initialization");
 		}
 		return instance;
 	}
 
-	public static void Configs()
-	{
+	public static void Configs() {
 		enableRF = config.get(CATEGORY_POWER, "Allow RF", false, "Allow machines to be powered with RF").getBoolean();
 
 		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla").getBoolean();
 
 		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system").getBoolean();
 
-		 enableEU = config
-		 .get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
-		 .getBoolean();
+		enableEU = config
+			.get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
+			.getBoolean();
 
 		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
 
@@ -79,8 +73,8 @@ public class RebornCoreConfig
 
 	private static IPowerConfig powerConfig = null;
 
-	public static IPowerConfig getRebornPower(){
-		if(powerConfig == null){
+	public static IPowerConfig getRebornPower() {
+		if (powerConfig == null) {
 			powerConfig = new IPowerConfig() {
 				@Override
 				public boolean eu() {
@@ -89,7 +83,7 @@ public class RebornCoreConfig
 
 				@Override
 				public boolean rf() {
-					if(enableForge){
+					if (enableForge) {
 						//Its the same, lets be honest
 						return true;
 					}

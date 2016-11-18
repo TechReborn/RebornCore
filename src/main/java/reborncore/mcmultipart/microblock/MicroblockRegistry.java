@@ -1,17 +1,7 @@
 package reborncore.mcmultipart.microblock;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-
-import reborncore.mcmultipart.multipart.MultipartRegistry;
-import reborncore.mcmultipart.raytrace.PartMOP;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +9,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Tuple;
@@ -27,186 +16,196 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IInteractionObject;
+import reborncore.mcmultipart.multipart.MultipartRegistry;
+import reborncore.mcmultipart.raytrace.PartMOP;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MicroblockRegistry {
 
-    private static final Map<String, IMicroMaterial> materials = new LinkedHashMap<String, IMicroMaterial>();
-    private static final Set<MicroblockClass> microClasses = new HashSet<MicroblockClass>();
+	private static final Map<String, IMicroMaterial> materials = new LinkedHashMap<String, IMicroMaterial>();
+	private static final Set<MicroblockClass> microClasses = new HashSet<MicroblockClass>();
 
-    public static void registerMicroClass(MicroblockClass microClass) {
+	public static void registerMicroClass(MicroblockClass microClass) {
 
-        microClasses.add(microClass);
-        MultipartRegistry.registerPartFactory(microClass, microClass.getType());
-    }
+		microClasses.add(microClass);
+		MultipartRegistry.registerPartFactory(microClass, microClass.getType());
+	}
 
-    public static <T extends IMicroMaterial> T registerMaterial(T material) {
+	public static <T extends IMicroMaterial> T registerMaterial(T material) {
 
-        if (material == null) throw new NullPointerException("Attempting to register a null micro material!");
-        String name = material.getName();
-        if (materials.containsKey(name))
-            throw new IllegalArgumentException("Attempting to register a micro material with a name that's already in use!");
-        materials.put(name, material);
-        return material;
-    }
+		if (material == null)
+			throw new NullPointerException("Attempting to register a null micro material!");
+		String name = material.getName();
+		if (materials.containsKey(name))
+			throw new IllegalArgumentException("Attempting to register a micro material with a name that's already in use!");
+		materials.put(name, material);
+		return material;
+	}
 
-    public static BlockMicroMaterial registerMaterial(IBlockState blockState, float hardness) {
+	public static BlockMicroMaterial registerMaterial(IBlockState blockState, float hardness) {
 
-        return registerMaterial(new BlockMicroMaterial(blockState, hardness));
-    }
+		return registerMaterial(new BlockMicroMaterial(blockState, hardness));
+	}
 
-    public static BlockMicroMaterial registerMaterial(IBlockState blockState) {
+	public static BlockMicroMaterial registerMaterial(IBlockState blockState) {
 
-        return registerMaterial(new BlockMicroMaterial(blockState));
-    }
+		return registerMaterial(new BlockMicroMaterial(blockState));
+	}
 
-    public static BlockMicroMaterial registerMaterial(Block block, int meta) {
+	public static BlockMicroMaterial registerMaterial(Block block, int meta) {
 
-        return registerMaterial(block.getStateFromMeta(meta));
-    }
+		return registerMaterial(block.getStateFromMeta(meta));
+	}
 
-    public static BlockMicroMaterial[] registerMaterial(Block block, int fromMeta, int toMeta) {
+	public static BlockMicroMaterial[] registerMaterial(Block block, int fromMeta, int toMeta) {
 
-        BlockMicroMaterial[] materials = new BlockMicroMaterial[toMeta - fromMeta + 1];
-        for (int i = fromMeta; i <= toMeta; i++)
-            materials[i - fromMeta] = registerMaterial(block, i);
-        return materials;
-    }
+		BlockMicroMaterial[] materials = new BlockMicroMaterial[toMeta - fromMeta + 1];
+		for (int i = fromMeta; i <= toMeta; i++)
+			materials[i - fromMeta] = registerMaterial(block, i);
+		return materials;
+	}
 
-    public static BlockMicroMaterial registerMaterial(Block block) {
+	public static BlockMicroMaterial registerMaterial(Block block) {
 
-        return registerMaterial(block.getDefaultState());
-    }
+		return registerMaterial(block.getDefaultState());
+	}
 
-    public static Collection<IMicroMaterial> getRegisteredMaterials() {
+	public static Collection<IMicroMaterial> getRegisteredMaterials() {
 
-        return Collections.unmodifiableCollection(materials.values());
-    }
+		return Collections.unmodifiableCollection(materials.values());
+	}
 
-    public static IMicroMaterial getMaterial(String name) {
+	public static IMicroMaterial getMaterial(String name) {
 
-        return materials.get(name);
-    }
+		return materials.get(name);
+	}
 
-    static {
-        registerMaterial(Blocks.STONE, 0, 6);
-        registerMaterial(Blocks.COBBLESTONE);
-        registerMaterial(Blocks.PLANKS, 0, 5);
-        registerMaterial(Blocks.LAPIS_BLOCK);
-        registerMaterial(Blocks.SANDSTONE, 0, 2);
-        registerMaterial(Blocks.WOOL, 0, 15);
-        registerMaterial(Blocks.GOLD_BLOCK);
-        registerMaterial(Blocks.IRON_BLOCK);
-        registerMaterial(Blocks.BRICK_BLOCK);
-        registerMaterial(Blocks.BOOKSHELF);
-        registerMaterial(Blocks.MOSSY_COBBLESTONE);
-        registerMaterial(Blocks.OBSIDIAN);
-        registerMaterial(Blocks.DIAMOND_BLOCK);
-        registerMaterial(Blocks.PUMPKIN);
-        registerMaterial(Blocks.NETHERRACK);
-        registerMaterial(Blocks.SOUL_SAND);
-        registerMaterial(Blocks.STONEBRICK, 0, 3);
-        registerMaterial(Blocks.NETHER_BRICK);
-        registerMaterial(Blocks.END_STONE);
-        registerMaterial(Blocks.EMERALD_BLOCK);
-        registerMaterial(Blocks.QUARTZ_BLOCK, 0, 2);
-        registerMaterial(Blocks.STAINED_HARDENED_CLAY, 0, 15);
-        registerMaterial(Blocks.PRISMARINE, 0, 2);
-        registerMaterial(Blocks.HAY_BLOCK);
-        registerMaterial(Blocks.HARDENED_CLAY);
-        registerMaterial(Blocks.COAL_BLOCK);
-        registerMaterial(Blocks.ICE);
-        registerMaterial(Blocks.PACKED_ICE);
-        registerMaterial(Blocks.RED_SANDSTONE, 0, 2);
-        registerMaterial(Blocks.GLASS);
-        registerMaterial(Blocks.STAINED_GLASS, 0, 15);
-        registerMaterial(Blocks.LIT_PUMPKIN);
-        registerMaterial(Blocks.GLOWSTONE);
-        registerMaterial(Blocks.SEA_LANTERN);
-        registerMaterial(Blocks.REDSTONE_BLOCK);
+	static {
+		registerMaterial(Blocks.STONE, 0, 6);
+		registerMaterial(Blocks.COBBLESTONE);
+		registerMaterial(Blocks.PLANKS, 0, 5);
+		registerMaterial(Blocks.LAPIS_BLOCK);
+		registerMaterial(Blocks.SANDSTONE, 0, 2);
+		registerMaterial(Blocks.WOOL, 0, 15);
+		registerMaterial(Blocks.GOLD_BLOCK);
+		registerMaterial(Blocks.IRON_BLOCK);
+		registerMaterial(Blocks.BRICK_BLOCK);
+		registerMaterial(Blocks.BOOKSHELF);
+		registerMaterial(Blocks.MOSSY_COBBLESTONE);
+		registerMaterial(Blocks.OBSIDIAN);
+		registerMaterial(Blocks.DIAMOND_BLOCK);
+		registerMaterial(Blocks.PUMPKIN);
+		registerMaterial(Blocks.NETHERRACK);
+		registerMaterial(Blocks.SOUL_SAND);
+		registerMaterial(Blocks.STONEBRICK, 0, 3);
+		registerMaterial(Blocks.NETHER_BRICK);
+		registerMaterial(Blocks.END_STONE);
+		registerMaterial(Blocks.EMERALD_BLOCK);
+		registerMaterial(Blocks.QUARTZ_BLOCK, 0, 2);
+		registerMaterial(Blocks.STAINED_HARDENED_CLAY, 0, 15);
+		registerMaterial(Blocks.PRISMARINE, 0, 2);
+		registerMaterial(Blocks.HAY_BLOCK);
+		registerMaterial(Blocks.HARDENED_CLAY);
+		registerMaterial(Blocks.COAL_BLOCK);
+		registerMaterial(Blocks.ICE);
+		registerMaterial(Blocks.PACKED_ICE);
+		registerMaterial(Blocks.RED_SANDSTONE, 0, 2);
+		registerMaterial(Blocks.GLASS);
+		registerMaterial(Blocks.STAINED_GLASS, 0, 15);
+		registerMaterial(Blocks.LIT_PUMPKIN);
+		registerMaterial(Blocks.GLOWSTONE);
+		registerMaterial(Blocks.SEA_LANTERN);
+		registerMaterial(Blocks.REDSTONE_BLOCK);
 
-        registerMaterial(new BlockMicroMaterial(Blocks.CRAFTING_TABLE.getDefaultState())
-                .withDelegate(new Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate>() {
+		registerMaterial(new BlockMicroMaterial(Blocks.CRAFTING_TABLE.getDefaultState())
+			.withDelegate(new Function<Tuple<IMicroblock, Boolean>, MicroblockDelegate>() {
 
-                    @Override
-                    public MicroblockDelegate apply(Tuple<IMicroblock, Boolean> input) {
+				@Override
+				public MicroblockDelegate apply(Tuple<IMicroblock, Boolean> input) {
 
-                        return new CraftingTableMicroblockDelegate(input.getFirst());
-                    }
-                }));
-    }
+					return new CraftingTableMicroblockDelegate(input.getFirst());
+				}
+			}));
+	}
 
-    private static final class CraftingTableMicroblockDelegate extends MicroblockDelegate {
+	private static final class CraftingTableMicroblockDelegate extends MicroblockDelegate {
 
-        public CraftingTableMicroblockDelegate(IMicroblock delegated) {
+		public CraftingTableMicroblockDelegate(IMicroblock delegated) {
 
-            super(delegated);
-        }
+			super(delegated);
+		}
 
-        @Override
-        public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
+		@Override
+		public Optional<Boolean> onActivated(EntityPlayer player, EnumHand hand, PartMOP hit) {
 
-            if (!delegated.getWorld().isRemote) {
-                player.displayGui(new InterfaceMicroCraftingTable(delegated));
-                player.addStat(StatList.CRAFTING_TABLE_INTERACTION);
-            }
+			if (!delegated.getWorld().isRemote) {
+				player.displayGui(new InterfaceMicroCraftingTable(delegated));
+				player.addStat(StatList.CRAFTING_TABLE_INTERACTION);
+			}
 
-            return Optional.of(true);
-        }
+			return Optional.of(true);
+		}
 
-        @Override
-        public void onRemoved() {
+		@Override
+		public void onRemoved() {
 
-        }
+		}
 
-    }
+	}
 
-    private static class InterfaceMicroCraftingTable implements IInteractionObject {
+	private static class InterfaceMicroCraftingTable implements IInteractionObject {
 
-        private final IMicroblock microblock;
+		private final IMicroblock microblock;
 
-        public InterfaceMicroCraftingTable(IMicroblock microblock) {
+		public InterfaceMicroCraftingTable(IMicroblock microblock) {
 
-            this.microblock = microblock;
-        }
+			this.microblock = microblock;
+		}
 
-        @Override
-        public String getName() {
+		@Override
+		public String getName() {
 
-            return null;
-        }
+			return null;
+		}
 
-        @Override
-        public boolean hasCustomName() {
+		@Override
+		public boolean hasCustomName() {
 
-            return false;
-        }
+			return false;
+		}
 
-        @Override
-        public ITextComponent getDisplayName() {
+		@Override
+		public ITextComponent getDisplayName() {
 
-            return new TextComponentTranslation(Blocks.CRAFTING_TABLE.getUnlocalizedName() + ".name");
-        }
+			return new TextComponentTranslation(Blocks.CRAFTING_TABLE.getUnlocalizedName() + ".name");
+		}
 
-        @Override
-        public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
+		@Override
+		public Container createContainer(InventoryPlayer playerInventory, EntityPlayer playerIn) {
 
-            return new ContainerWorkbench(playerInventory, microblock.getWorld(), microblock.getPos()) {
+			return new ContainerWorkbench(playerInventory, microblock.getWorld(), microblock.getPos()) {
 
-                @Override
-                public boolean canInteractWith(EntityPlayer player) {
+				@Override
+				public boolean canInteractWith(EntityPlayer player) {
 
-                    BlockPos pos = microblock.getPos();
-                    return microblock.getContainer() == null ? false
-                            : player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
-                }
-            };
-        }
+					BlockPos pos = microblock.getPos();
+					return microblock.getContainer() == null ? false
+					                                         : player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+				}
+			};
+		}
 
-        @Override
-        public String getGuiID() {
+		@Override
+		public String getGuiID() {
 
-            return "minecraft:crafting_table";
-        }
-    }
+			return "minecraft:crafting_table";
+		}
+	}
 
 }

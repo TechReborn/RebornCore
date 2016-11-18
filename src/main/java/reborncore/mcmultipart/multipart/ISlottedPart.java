@@ -7,9 +7,9 @@ import java.util.EnumSet;
  */
 public interface ISlottedPart extends IMultipart {
 
-    /**
-     * Gets an {@link EnumSet} of the slots occupied by this part.
-     */
-    public EnumSet<PartSlot> getSlotMask();
+	/**
+	 * Gets an {@link EnumSet} of the slots occupied by this part.
+	 */
+	public EnumSet<PartSlot> getSlotMask();
 
 }

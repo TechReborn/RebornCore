@@ -2,8 +2,7 @@ package reborncore.api;
 
 import java.util.List;
 
-public interface IListInfoProvider
-{
+public interface IListInfoProvider {
 
 	void addInfo(List<String> info, boolean isRealTile);
 }

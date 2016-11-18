@@ -7,31 +7,27 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Location implements Comparable<Location>
-{
+public class Location implements Comparable<Location> {
 	public int x;
 	public int y;
 	public int z;
 	public int depth;
 	public World world;
 
-	public Location(int x, int y, int z)
-	{
+	public Location(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Location(int x, int y, int z, int depth)
-	{
+	public Location(int x, int y, int z, int depth) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.depth = depth;
 	}
 
-	public Location(int x, int y, int z, int depth, World world)
-	{
+	public Location(int x, int y, int z, int depth, World world) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -39,106 +35,87 @@ public class Location implements Comparable<Location>
 		this.world = world;
 	}
 
-	public Location(int x, int y, int z, World world)
-	{
+	public Location(int x, int y, int z, World world) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.world = world;
 	}
 
-	public Location(int xCoord, int yCoord, int zCoord, EnumFacing dir)
-	{
+	public Location(int xCoord, int yCoord, int zCoord, EnumFacing dir) {
 		this.x = xCoord + dir.getFrontOffsetX();
 		this.y = yCoord + dir.getFrontOffsetY();
 		this.z = zCoord + dir.getFrontOffsetZ();
 	}
 
-	public Location(int[] coords)
-	{
-		if (coords.length >= 2)
-		{
+	public Location(int[] coords) {
+		if (coords.length >= 2) {
 			this.x = coords[0];
 			this.y = coords[1];
 			this.z = coords[2];
 		}
 	}
 
-	public Location(BlockPos pos)
-	{
-		if (pos != null)
-		{
+	public Location(BlockPos pos) {
+		if (pos != null) {
 			this.x = pos.getX();
 			this.y = pos.getZ();
 			this.z = pos.getY();
 		}
 	}
 
-	public Location(RayTraceResult blockLookedAt)
-	{
-		if (blockLookedAt != null)
-		{
+	public Location(RayTraceResult blockLookedAt) {
+		if (blockLookedAt != null) {
 			this.x = blockLookedAt.getBlockPos().getX();
 			this.y = blockLookedAt.getBlockPos().getY();
 			this.z = blockLookedAt.getBlockPos().getZ();
 		}
 	}
 
-	public Location(TileEntity par1)
-	{
+	public Location(TileEntity par1) {
 		this.x = par1.getPos().getX();
 		this.y = par1.getPos().getY();
 		this.z = par1.getPos().getZ();
 	}
 
-	public boolean equals(Location toTest)
-	{
-		if (this.x == toTest.x && this.y == toTest.y && this.z == toTest.z)
-		{
+	public boolean equals(Location toTest) {
+		if (this.x == toTest.x && this.y == toTest.y && this.z == toTest.z) {
 			return true;
 		}
 		return false;
 	}
 
-	public void setLocation(int x, int y, int z)
-	{
+	public void setLocation(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public int getX()
-	{
+	public int getX() {
 		return this.x;
 	}
 
-	public void setX(int newX)
-	{
+	public void setX(int newX) {
 		this.x = newX;
 	}
 
-	public int getY()
-	{
+	public int getY() {
 		return this.y;
 	}
 
-	public void setY(int newY)
-	{
+	public void setY(int newY) {
 		this.y = newY;
 	}
 
-	public int getZ()
-	{
+	public int getZ() {
 		return this.z;
 	}
 
-	public void setZ(int newZ)
-	{
+	public void setZ(int newZ) {
 		this.z = newZ;
 	}
 
-	public int[] getLocation()
-	{
+	public int[] getLocation() {
 		int[] ret = new int[3];
 		ret[0] = this.x;
 		ret[1] = this.y;
@@ -146,43 +123,35 @@ public class Location implements Comparable<Location>
 		return ret;
 	}
 
-	public void setLocation(int[] coords)
-	{
+	public void setLocation(int[] coords) {
 		this.x = coords[0];
 		this.y = coords[1];
 		this.z = coords[2];
 	}
 
-	public int getDifference(Location otherLoc)
-	{
+	public int getDifference(Location otherLoc) {
 		return (int) Math.sqrt(
-				Math.pow(this.x - otherLoc.x, 2) + Math.pow(this.y - otherLoc.y, 2) + Math.pow(this.z - otherLoc.z, 2));
+			Math.pow(this.x - otherLoc.x, 2) + Math.pow(this.y - otherLoc.y, 2) + Math.pow(this.z - otherLoc.z, 2));
 	}
 
-	public String printLocation()
-	{
+	public String printLocation() {
 		return "X: " + this.x + " Y: " + this.y + " Z: " + this.z;
 	}
 
-	public String printCoords()
-	{
+	public String printCoords() {
 		return this.x + ", " + this.y + ", " + this.z;
 	}
 
-	public boolean compare(int x, int y, int z)
-	{
+	public boolean compare(int x, int y, int z) {
 		return (this.x == x && this.y == y && this.z == z);
 	}
 
-	public Location getLocation(EnumFacing dir)
-	{
+	public Location getLocation(EnumFacing dir) {
 		return new Location(x + dir.getFrontOffsetX(), y + dir.getFrontOffsetY(), z + dir.getFrontOffsetZ());
 	}
 
-	public Location modifyPositionFromSide(EnumFacing side, int amount)
-	{
-		switch (side.ordinal())
-		{
+	public Location modifyPositionFromSide(EnumFacing side, int amount) {
+		switch (side.ordinal()) {
 			case 0:
 				this.y -= amount;
 				break;
@@ -205,34 +174,29 @@ public class Location implements Comparable<Location>
 		return this;
 	}
 
-	public Location modifyPositionFromSide(EnumFacing side)
-	{
+	public Location modifyPositionFromSide(EnumFacing side) {
 		return this.modifyPositionFromSide(side, 1);
 	}
 
 	/**
 	 * This will load the chunk.
 	 */
-	public TileEntity getTileEntity(IBlockAccess world)
-	{
+	public TileEntity getTileEntity(IBlockAccess world) {
 		return world.getTileEntity(new BlockPos(this.x, this.y, this.z));
 	}
 
-	public final Location clone()
-	{
+	public final Location clone() {
 		return new Location(this.x, this.y, this.z);
 	}
 
 	/**
 	 * No chunk load: returns null if chunk to side is unloaded
 	 */
-	public TileEntity getTileEntityOnSide(World world, EnumFacing side)
-	{
+	public TileEntity getTileEntityOnSide(World world, EnumFacing side) {
 		int x = this.x;
 		int y = this.y;
 		int z = this.z;
-		switch (side.ordinal())
-		{
+		switch (side.ordinal()) {
 			case 0:
 				y--;
 				break;
@@ -254,30 +218,25 @@ public class Location implements Comparable<Location>
 			default:
 				return null;
 		}
-		if (world.isBlockLoaded(getBlockPos()))
-		{
+		if (world.isBlockLoaded(getBlockPos())) {
 			return world.getTileEntity(getBlockPos());
-		} else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	public BlockPos getBlockPos()
-	{
+	public BlockPos getBlockPos() {
 		return new BlockPos(x, y, z);
 	}
 
 	/**
 	 * No chunk load: returns null if chunk to side is unloaded
 	 */
-	public TileEntity getTileEntityOnSide(World world, int side)
-	{
+	public TileEntity getTileEntityOnSide(World world, int side) {
 		int x = this.x;
 		int y = this.y;
 		int z = this.z;
-		switch (side)
-		{
+		switch (side) {
 			case 0:
 				y--;
 				break;
@@ -299,38 +258,31 @@ public class Location implements Comparable<Location>
 			default:
 				return null;
 		}
-		if (world.isBlockLoaded(getBlockPos()))
-		{
+		if (world.isBlockLoaded(getBlockPos())) {
 			return world.getTileEntity(getBlockPos());
-		} else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	public int getDepth()
-	{
+	public int getDepth() {
 		return depth;
 	}
 
-	public int compareTo(Location o)
-	{
+	public int compareTo(Location o) {
 		return ((Integer) depth).compareTo(o.depth);
 	}
 
-	public World getWorld()
-	{
+	public World getWorld() {
 		return world;
 	}
 
-	public void setWorld(World world)
-	{
+	public void setWorld(World world) {
 		this.world = world;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Location{" + "x=" + x + ", y=" + y + ", z=" + z + ", depth=" + depth + ", world=" + world + '}';
 	}
 }

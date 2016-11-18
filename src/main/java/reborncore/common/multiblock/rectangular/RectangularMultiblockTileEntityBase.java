@@ -6,14 +6,12 @@ import reborncore.common.multiblock.MultiblockControllerBase;
 import reborncore.common.multiblock.MultiblockTileEntityBase;
 import reborncore.common.multiblock.MultiblockValidationException;
 
-public abstract class RectangularMultiblockTileEntityBase extends MultiblockTileEntityBase
-{
+public abstract class RectangularMultiblockTileEntityBase extends MultiblockTileEntityBase {
 
 	PartPosition position;
 	EnumFacing outwards;
 
-	public RectangularMultiblockTileEntityBase()
-	{
+	public RectangularMultiblockTileEntityBase() {
 		super();
 
 		position = PartPosition.Unknown;
@@ -21,27 +19,23 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	}
 
 	// Positional Data
-	public EnumFacing getOutwardsDir()
-	{
+	public EnumFacing getOutwardsDir() {
 		return outwards;
 	}
 
-	public PartPosition getPartPosition()
-	{
+	public PartPosition getPartPosition() {
 		return position;
 	}
 
 	// Handlers from MultiblockTileEntityBase
 	@Override
-	public void onAttached(MultiblockControllerBase newController)
-	{
+	public void onAttached(MultiblockControllerBase newController) {
 		super.onAttached(newController);
 		recalculateOutwardsDirection(newController.getMinimumCoord(), newController.getMaximumCoord());
 	}
 
 	@Override
-	public void onMachineAssembled(MultiblockControllerBase controller)
-	{
+	public void onMachineAssembled(MultiblockControllerBase controller) {
 		CoordTriplet maxCoord = controller.getMaximumCoord();
 		CoordTriplet minCoord = controller.getMinimumCoord();
 
@@ -50,66 +44,51 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	}
 
 	@Override
-	public void onMachineBroken()
-	{
+	public void onMachineBroken() {
 		position = PartPosition.Unknown;
 		outwards = null;
 	}
 
 	// Positional helpers
-	public void recalculateOutwardsDirection(CoordTriplet minCoord, CoordTriplet maxCoord)
-	{
+	public void recalculateOutwardsDirection(CoordTriplet minCoord, CoordTriplet maxCoord) {
 		outwards = null;
 		position = PartPosition.Unknown;
 
 		int facesMatching = 0;
-		if (maxCoord.x == this.getPos().getX() || minCoord.x == this.getPos().getX())
-		{
+		if (maxCoord.x == this.getPos().getX() || minCoord.x == this.getPos().getX()) {
 			facesMatching++;
 		}
-		if (maxCoord.y == this.getPos().getY() || minCoord.y == this.getPos().getY())
-		{
+		if (maxCoord.y == this.getPos().getY() || minCoord.y == this.getPos().getY()) {
 			facesMatching++;
 		}
-		if (maxCoord.z == this.getPos().getZ() || minCoord.z == this.getPos().getZ())
-		{
+		if (maxCoord.z == this.getPos().getZ() || minCoord.z == this.getPos().getZ()) {
 			facesMatching++;
 		}
 
-		if (facesMatching <= 0)
-		{
+		if (facesMatching <= 0) {
 			position = PartPosition.Interior;
-		} else if (facesMatching >= 3)
-		{
+		} else if (facesMatching >= 3) {
 			position = PartPosition.FrameCorner;
-		} else if (facesMatching == 2)
-		{
+		} else if (facesMatching == 2) {
 			position = PartPosition.Frame;
-		} else
-		{
+		} else {
 			// 1 face matches
-			if (maxCoord.x == this.getPos().getX())
-			{
+			if (maxCoord.x == this.getPos().getX()) {
 				position = PartPosition.EastFace;
 				outwards = EnumFacing.EAST;
-			} else if (minCoord.x == this.getPos().getX())
-			{
+			} else if (minCoord.x == this.getPos().getX()) {
 				position = PartPosition.WestFace;
 				outwards = EnumFacing.WEST;
-			} else if (maxCoord.z == this.getPos().getZ())
-			{
+			} else if (maxCoord.z == this.getPos().getZ()) {
 				position = PartPosition.SouthFace;
 				outwards = EnumFacing.SOUTH;
-			} else if (minCoord.z == this.getPos().getZ())
-			{
+			} else if (minCoord.z == this.getPos().getZ()) {
 				position = PartPosition.NorthFace;
 				outwards = EnumFacing.NORTH;
-			} else if (maxCoord.y == this.getPos().getY())
-			{
+			} else if (maxCoord.y == this.getPos().getY()) {
 				position = PartPosition.TopFace;
 				outwards = EnumFacing.UP;
-			} else
-			{
+			} else {
 				position = PartPosition.BottomFace;
 				outwards = EnumFacing.DOWN;
 			}

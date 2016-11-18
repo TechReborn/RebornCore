@@ -4,19 +4,20 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.*;
+import ic2.api.energy.tile.IEnergyAcceptor;
+import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.Info;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
@@ -25,11 +26,8 @@ import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileBase;
-import reborncore.common.util.inventory.Inventory;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,165 +35,163 @@ import java.util.List;
 /**
  * Created by Lordmau5 on 08.06.2016.
  */
-@Optional.InterfaceList(value = {@Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
+@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2")})
+	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
 public abstract class TileEnergyBase extends TileBase implements IEnergyInterfaceTile, IListInfoProvider, ITickable, IEnergyReceiver, IEnergyProvider, IEnergyTile, IEnergySink, IEnergySource {
 
-    /* Power storage Setup */
-    public EnumPowerTier tier;
-    private double energy;
-    private int capacity;
+	/* Power storage Setup */
+	public EnumPowerTier tier;
+	private double energy;
+	private int capacity;
 	private ForgePowerManager forgePowerManager;
-    /*-----------------------*/
+	/*-----------------------*/
 
-    public TileEnergyBase(EnumPowerTier tier, int capacity) {
-        this.tier = tier;
-        this.capacity = capacity;
-    }
+	public TileEnergyBase(EnumPowerTier tier, int capacity) {
+		this.tier = tier;
+		this.capacity = capacity;
+	}
 
-    public void updateEntity() {
+	public void updateEntity() {
 
-    }
+	}
 
-    @Override
-    public void update() {
-        if(!getWorld().isRemote) {
-            updateEntity();
-        }
-//	    if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-//		    TeslaManager.manager.update(this);
-//	    }
-	    //TOOD re enable when fixing ic2 support
-	    //onLoaded();
-    }
+	@Override
+	public void update() {
+		if (!getWorld().isRemote) {
+			updateEntity();
+		}
+		//	    if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+		//		    TeslaManager.manager.update(this);
+		//	    }
+		//TOOD re enable when fixing ic2 support
+		//onLoaded();
+	}
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
 
-        this.energy = compound.getDouble("energy");
-    }
+		this.energy = compound.getDouble("energy");
+	}
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound.setDouble("energy", this.energy);
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		compound.setDouble("energy", this.energy);
 
-        return super.writeToNBT(compound);
-    }
+		return super.writeToNBT(compound);
+	}
 
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(getPos(), 0, writeToNBT(new NBTTagCompound()));
+	}
 
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		super.onDataPacket(net, pkt);
+		readFromNBT(pkt.getNbtCompound());
+	}
 
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 0, writeToNBT(new NBTTagCompound()));
-    }
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
 
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        super.onDataPacket(net, pkt);
-        readFromNBT(pkt.getNbtCompound());
-    }
+	public EnumFacing getFacingEnum() {
+		Block block = getWorld().getBlockState(getPos()).getBlock();
+		if (block instanceof BlockMachineBase) {
+			return ((BlockMachineBase) block).getFacing(getWorld().getBlockState(getPos()));
+		}
+		return null;
+	}
 
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        return writeToNBT(new NBTTagCompound());
-    }
+	@Override
+	public void addInfo(List<String> info, boolean isRealTile) {
+		info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
+			+ PowerSystem.getLocaliszedPower(getMaxPower()));
+		if (getMaxInput() > 0) {
+			info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
+				+ PowerSystem.getLocaliszedPower(getMaxInput()));
+		}
+		if (getMaxOutput() > 0) {
+			info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
+				+ PowerSystem.getLocaliszedPower(getMaxOutput()));
+		}
+		info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
+	}
 
-    public EnumFacing getFacingEnum() {
-        Block block = getWorld().getBlockState(getPos()).getBlock();
-        if (block instanceof BlockMachineBase) {
-            return ((BlockMachineBase) block).getFacing(getWorld().getBlockState(getPos()));
-        }
-        return null;
-    }
+	@Override
+	public double getEnergy() {
+		return this.energy;
+	}
 
-    @Override
-    public void addInfo(List<String> info, boolean isRealTile) {
-        info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
-                + PowerSystem.getLocaliszedPower(getMaxPower()));
-        if (getMaxInput() > 0) {
-            info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
-                    + PowerSystem.getLocaliszedPower(getMaxInput()));
-        }
-        if (getMaxOutput() > 0) {
-            info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
-                    + PowerSystem.getLocaliszedPower(getMaxOutput()));
-        }
-        info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
-    }
+	@Override
+	public void setEnergy(double energy) {
+		this.energy = Math.min(0, Math.max(this.capacity, energy));
+	}
 
-    @Override
-    public double getEnergy() {
-        return this.energy;
-    }
+	@Override
+	public double getMaxPower() {
+		return this.capacity;
+	}
 
-    @Override
-    public void setEnergy(double energy) {
-        this.energy = Math.min(0, Math.max(this.capacity, energy));
-    }
+	@Override
+	public boolean canAddEnergy(double energy) {
+		return this.energy + energy <= getMaxPower();
+	}
 
-    @Override
-    public double getMaxPower() {
-        return this.capacity;
-    }
+	@Override
+	public double addEnergy(double energy) {
+		return addEnergy(energy, false);
+	}
 
-    @Override
-    public boolean canAddEnergy(double energy) {
-        return this.energy + energy <= getMaxPower();
-    }
+	@Override
+	public double addEnergy(double energy, boolean simulate) {
+		double _taken = energy - ((this.energy + energy > this.capacity) ? (this.energy + energy - this.capacity) : 0);
+		if (!simulate) {
+			this.energy = Math.min(this.energy + energy, this.capacity);
+			if (this.energy > this.capacity) {
+				this.energy = this.capacity;
+			}
+		}
+		return _taken;
+	}
 
-    @Override
-    public double addEnergy(double energy) {
-        return addEnergy(energy, false);
-    }
+	@Override
+	public boolean canUseEnergy(double energy) {
+		return energy <= this.energy;
+	}
 
-    @Override
-    public double addEnergy(double energy, boolean simulate) {
-        double _taken = energy - ((this.energy + energy > this.capacity) ? (this.energy + energy - this.capacity) : 0);
-        if(!simulate) {
-            this.energy = Math.min(this.energy + energy, this.capacity);
-            if(this.energy > this.capacity) {
-                this.energy = this.capacity;
-            }
-        }
-        return _taken;
-    }
+	@Override
+	public double useEnergy(double energy) {
+		return useEnergy(energy, false);
+	}
 
-    @Override
-    public boolean canUseEnergy(double energy) {
-        return energy <= this.energy;
-    }
+	@Override
+	public double useEnergy(double energy, boolean simulate) {
+		double _used = energy - ((this.energy - energy < 0) ? (0 - this.energy - energy) : 0);
+		if (!simulate) {
+			this.energy = Math.max(0, this.energy - energy);
+		}
+		return _used;
+	}
 
-    @Override
-    public double useEnergy(double energy) {
-        return useEnergy(energy, false);
-    }
+	@Override
+	public double getMaxOutput() {
+		return this.tier.getMaxOutput();
+	}
 
-    @Override
-    public double useEnergy(double energy, boolean simulate) {
-        double _used = energy - ((this.energy - energy < 0) ? (0 - this.energy - energy) : 0);
-        if(!simulate) {
-            this.energy = Math.max(0, this.energy - energy);
-        }
-        return _used;
-    }
+	@Override
+	public double getMaxInput() {
+		return this.tier.getMaxInput();
+	}
 
-    @Override
-    public double getMaxOutput() {
-        return this.tier.getMaxOutput();
-    }
-
-    @Override
-    public double getMaxInput() {
-        return this.tier.getMaxInput();
-    }
-
-    @Override
-    public EnumPowerTier getTier() {
-        return this.tier;
-    }
+	@Override
+	public EnumPowerTier getTier() {
+		return this.tier;
+	}
 
 	public int getEnergyScaled(int scale) {
 		return (int) ((energy * scale / getMaxPower()));
@@ -205,42 +201,41 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 		return RebornCoreConfig.getRebornPower();
 	}
 
-//	@Override
-//	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-//			if(TeslaManager.manager.hasCapability(capability, facing, this)){
-//				return true;
-//			}
-//		}
-//		if(getPowerConfig().forge()){
-//			if(capability == CapabilityEnergy.ENERGY){
-//				return true;
-//			}
-//		}
-//		return super.hasCapability(capability, facing);
-//	}
-//
-//	@Override
-//	@SuppressWarnings("unchecked")
-//	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-//			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
-//			if(capability != null){
-//				return teslaCap;
-//			}
-//		}
-//		if(getPowerConfig().forge()){
-//			if(capability == CapabilityEnergy.ENERGY){
-//				if(forgePowerManager == null){
-//					forgePowerManager = new ForgePowerManager(this, facing);
-//				}
-//				forgePowerManager.setFacing(facing);
-//				return (T) forgePowerManager;
-//			}
-//		}
-//		return super.getCapability(capability, facing);
-//	}
-
+	//	@Override
+	//	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+	//			if(TeslaManager.manager.hasCapability(capability, facing, this)){
+	//				return true;
+	//			}
+	//		}
+	//		if(getPowerConfig().forge()){
+	//			if(capability == CapabilityEnergy.ENERGY){
+	//				return true;
+	//			}
+	//		}
+	//		return super.hasCapability(capability, facing);
+	//	}
+	//
+	//	@Override
+	//	@SuppressWarnings("unchecked")
+	//	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	//		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+	//			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
+	//			if(capability != null){
+	//				return teslaCap;
+	//			}
+	//		}
+	//		if(getPowerConfig().forge()){
+	//			if(capability == CapabilityEnergy.ENERGY){
+	//				if(forgePowerManager == null){
+	//					forgePowerManager = new ForgePowerManager(this, facing);
+	//				}
+	//				forgePowerManager.setFacing(facing);
+	//				return (T) forgePowerManager;
+	//			}
+	//		}
+	//		return super.getCapability(capability, facing);
+	//	}
 
 	// COFH
 	@Override

@@ -8,41 +8,39 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-
-
 /**
  * Created by covers1624 on 2/6/2016.
  */
 public class PropertyString extends PropertyHelper<String> {
 
-    private final HashSet<String> valuesSet;
+	private final HashSet<String> valuesSet;
 
-    public PropertyString(String name, Collection<String> values) {
-        super(name, String.class);
-        valuesSet = new HashSet(values);
-    }
+	public PropertyString(String name, Collection<String> values) {
+		super(name, String.class);
+		valuesSet = new HashSet(values);
+	}
 
-    public PropertyString(String name, String... values) {
-        super(name, String.class);
-        valuesSet = new HashSet<String>();
-        Collections.addAll(valuesSet, values);
-    }
+	public PropertyString(String name, String... values) {
+		super(name, String.class);
+		valuesSet = new HashSet<String>();
+		Collections.addAll(valuesSet, values);
+	}
 
-    @Override
-    public Collection<String> getAllowedValues() {
-        return ImmutableSet.copyOf(valuesSet);
-    }
+	@Override
+	public Collection<String> getAllowedValues() {
+		return ImmutableSet.copyOf(valuesSet);
+	}
 
-    @Override
-    public Optional<String> parseValue(String value) {
-        if (valuesSet.contains(value)) {
-            return Optional.of(value);
-        }
-        return Optional.absent();
-    }
+	@Override
+	public Optional<String> parseValue(String value) {
+		if (valuesSet.contains(value)) {
+			return Optional.of(value);
+		}
+		return Optional.absent();
+	}
 
-    @Override
-    public String getName(String value) {
-        return value;
-    }
+	@Override
+	public String getName(String value) {
+		return value;
+	}
 }

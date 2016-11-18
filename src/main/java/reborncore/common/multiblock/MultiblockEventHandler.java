@@ -13,11 +13,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * asynchronously in environments like MCPC+, so we cannot process any blocks
  * that are in chunks which are still loading.
  */
-public class MultiblockEventHandler
-{
+public class MultiblockEventHandler {
 	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onChunkLoad(ChunkEvent.Load loadEvent)
-	{
+	public void onChunkLoad(ChunkEvent.Load loadEvent) {
 		Chunk chunk = loadEvent.getChunk();
 		World world = loadEvent.getWorld();
 		MultiblockRegistry.onChunkLoaded(world, chunk.xPosition, chunk.zPosition);
@@ -25,8 +23,7 @@ public class MultiblockEventHandler
 
 	// Cleanup, for nice memory usageness
 	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onWorldUnload(WorldEvent.Unload unloadWorldEvent)
-	{
+	public void onWorldUnload(WorldEvent.Unload unloadWorldEvent) {
 		MultiblockRegistry.onWorldUnloaded(unloadWorldEvent.getWorld());
 	}
 }

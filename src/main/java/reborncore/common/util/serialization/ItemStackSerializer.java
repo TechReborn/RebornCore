@@ -1,6 +1,13 @@
 package reborncore.common.util.serialization;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -41,7 +48,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 				}
 			}
 
-			if(jsonObject.has(STACK_SIZE) && jsonObject.get(STACK_SIZE).isJsonPrimitive()){
+			if (jsonObject.has(STACK_SIZE) && jsonObject.get(STACK_SIZE).isJsonPrimitive()) {
 				stackSize = jsonObject.getAsJsonPrimitive(STACK_SIZE).getAsInt();
 			}
 

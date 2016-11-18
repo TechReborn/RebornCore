@@ -6,8 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassLoadingHelper
-{
+public class ClassLoadingHelper {
 
 	public static ClassLoadingHelper instance = new ClassLoadingHelper();
 
@@ -16,37 +15,30 @@ public class ClassLoadingHelper
 
 	private final Method m_defineClass;
 
-	private ClassLoadingHelper()
-	{
+	private ClassLoadingHelper() {
 
-		try
-		{
+		try {
 			m_defineClass = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class,
-					int.class);
+				int.class);
 			m_defineClass.setAccessible(true);
-		} catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
-	public Class<?> addMixin(String name, byte[] bytecode, Mixin<?> mixin)
-	{
+	public Class<?> addMixin(String name, byte[] bytecode, Mixin<?> mixin) {
 
 		bytecodes.put(name, bytecode);
 		mixins.put(name, mixin);
-		try
-		{
+		try {
 			return (Class<?>) m_defineClass.invoke(this.getClass().getClassLoader(), name, bytecode, 0,
-					bytecode.length);
-		} catch (Exception ex)
-		{
+				bytecode.length);
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
-	public Mixin<?> findMixin(String name)
-	{
+	public Mixin<?> findMixin(String name) {
 
 		if (mixins.containsKey(name))
 			return mixins.get(name);
@@ -54,14 +46,12 @@ public class ClassLoadingHelper
 		return null;
 	}
 
-	public Mixin<?> findMixin(Class<?> clazz, Class<?> trait)
-	{
+	public Mixin<?> findMixin(Class<?> clazz, Class<?> trait) {
 
 		return findMixin(Mixin.getName(clazz, trait).replace("/", "."));
 	}
 
-	public InputStream getResourceAsStream(String name)
-	{
+	public InputStream getResourceAsStream(String name) {
 
 		for (String s : bytecodes.keySet())
 			if ((s.replace(".", "/") + ".class").equals(name))
@@ -70,8 +60,7 @@ public class ClassLoadingHelper
 		return this.getClass().getClassLoader().getResourceAsStream(name);
 	}
 
-	public Map<String, Mixin<?>> getDefinedMixins()
-	{
+	public Map<String, Mixin<?>> getDefinedMixins() {
 
 		return mixins;
 	}

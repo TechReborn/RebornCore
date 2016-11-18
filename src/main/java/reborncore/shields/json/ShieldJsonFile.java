@@ -7,6 +7,6 @@ import java.util.List;
  */
 public class ShieldJsonFile {
 
-    public List<ShieldUser> userList;
+	public List<ShieldUser> userList;
 
 }

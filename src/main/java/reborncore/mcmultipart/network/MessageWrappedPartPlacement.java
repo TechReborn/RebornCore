@@ -1,8 +1,6 @@
 package reborncore.mcmultipart.network;
 
 import io.netty.buffer.ByteBuf;
-import reborncore.mcmultipart.item.PartPlacementWrapper;
-import reborncore.mcmultipart.raytrace.RayTraceUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -17,68 +15,72 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import reborncore.mcmultipart.item.PartPlacementWrapper;
+import reborncore.mcmultipart.raytrace.RayTraceUtils;
 
 public class MessageWrappedPartPlacement implements IMessage, IMessageHandler<MessageWrappedPartPlacement, MessageWrappedPartPlacement> {
 
-    private String wrapper;
-    private EnumHand hand;
+	private String wrapper;
+	private EnumHand hand;
 
-    public MessageWrappedPartPlacement(String handler, EnumHand hand) {
+	public MessageWrappedPartPlacement(String handler, EnumHand hand) {
 
-        this.wrapper = handler;
-        this.hand = hand;
-    }
+		this.wrapper = handler;
+		this.hand = hand;
+	}
 
-    public MessageWrappedPartPlacement() {
+	public MessageWrappedPartPlacement() {
 
-    }
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf) {
+	@Override
+	public void toBytes(ByteBuf buf) {
 
-        ByteBufUtils.writeUTF8String(buf, wrapper);
-        buf.writeInt(hand.ordinal());
-    }
+		ByteBufUtils.writeUTF8String(buf, wrapper);
+		buf.writeInt(hand.ordinal());
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
+	@Override
+	public void fromBytes(ByteBuf buf) {
 
-        wrapper = ByteBufUtils.readUTF8String(buf);
-        hand = EnumHand.values()[buf.readInt()];
-    }
+		wrapper = ByteBufUtils.readUTF8String(buf);
+		hand = EnumHand.values()[buf.readInt()];
+	}
 
-    @Override
-    public MessageWrappedPartPlacement onMessage(final MessageWrappedPartPlacement message, final MessageContext ctx) {
+	@Override
+	public MessageWrappedPartPlacement onMessage(final MessageWrappedPartPlacement message, final MessageContext ctx) {
 
-        if (ctx.side == Side.SERVER) {
-            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable() {
+		if (ctx.side == Side.SERVER) {
+			FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable() {
 
-                @Override
-                public void run() {
+				@Override
+				public void run() {
 
-                    MessageWrappedPartPlacement.handlePacket(message, ctx.getServerHandler().playerEntity);
-                }
-            });
-        }
-        return null;
-    }
+					MessageWrappedPartPlacement.handlePacket(message, ctx.getServerHandler().playerEntity);
+				}
+			});
+		}
+		return null;
+	}
 
-    private static void handlePacket(MessageWrappedPartPlacement message, EntityPlayer player) {
+	private static void handlePacket(MessageWrappedPartPlacement message, EntityPlayer player) {
 
-        World world = player.world;
-        RayTraceResult mop = world.rayTraceBlocks(RayTraceUtils.getStart(player), RayTraceUtils.getEnd(player));
-        if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK) return;
-        BlockPos pos = mop.getBlockPos();
-        EnumFacing side = mop.sideHit;
-        Vec3d hit = mop.hitVec.subtract(new Vec3d(mop.getBlockPos()));
-        ItemStack stack = player.getHeldItem(message.hand);
+		World world = player.world;
+		RayTraceResult mop = world.rayTraceBlocks(RayTraceUtils.getStart(player), RayTraceUtils.getEnd(player));
+		if (mop == null || mop.typeOfHit != RayTraceResult.Type.BLOCK)
+			return;
+		BlockPos pos = mop.getBlockPos();
+		EnumFacing side = mop.sideHit;
+		Vec3d hit = mop.hitVec.subtract(new Vec3d(mop.getBlockPos()));
+		ItemStack stack = player.getHeldItem(message.hand);
 
-        if (PartPlacementWrapper.getWrapper(message.wrapper).doPlace(world, pos, side, hit, stack, player)) player.swingArm(message.hand);
-    }
+		if (PartPlacementWrapper.getWrapper(message.wrapper).doPlace(world, pos, side, hit, stack, player))
+			player.swingArm(message.hand);
+	}
 
-    public void send() {
+	public void send() {
 
-        MultipartNetworkHandler.sendToServer(this);
-    }
+		MultipartNetworkHandler.sendToServer(this);
+	}
 
 }

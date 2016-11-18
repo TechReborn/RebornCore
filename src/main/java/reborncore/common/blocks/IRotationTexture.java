@@ -1,7 +1,6 @@
 package reborncore.common.blocks;
 
-public interface IRotationTexture
-{
+public interface IRotationTexture {
 
 	String getFrontOff();
 

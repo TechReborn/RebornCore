@@ -9,12 +9,9 @@
 
 package reborncore.client.multiblock;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import reborncore.client.multiblock.component.MultiblockComponent;
-import reborncore.common.multiblock.CoordTriplet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +59,7 @@ public class Multiblock {
 		else if (z > maxZ)
 			maxZ = z;
 	}
+
 	public void setRenderOffset(int x, int y, int z) {
 		offX = x;
 		offY = y;

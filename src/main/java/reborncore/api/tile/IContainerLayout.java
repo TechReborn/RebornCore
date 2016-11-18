@@ -12,17 +12,23 @@ import java.util.List;
  */
 public interface IContainerLayout<T extends TileEntity> {
 
-    public void addInventorySlots();
+	public void addInventorySlots();
 
-    public void addPlayerSlots();
+	public void addPlayerSlots();
 
-    public void setTile(T tile);
+	public void setTile(T tile);
 
-    public @Nullable T getTile();
+	public
+	@Nullable
+	T getTile();
 
-    public void setPlayer(EntityPlayer player);
+	public void setPlayer(EntityPlayer player);
 
-    public @Nullable EntityPlayer getPlayer();
+	public
+	@Nullable
+	EntityPlayer getPlayer();
 
-    public @Nullable List<Integer> getSlotsForSide(EnumFacing facing);
+	public
+	@Nullable
+	List<Integer> getSlotsForSide(EnumFacing facing);
 }

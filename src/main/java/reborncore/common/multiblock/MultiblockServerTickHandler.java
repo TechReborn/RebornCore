@@ -11,14 +11,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  * each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
  * ticks run only on the server, and only when worlds are loaded.
  */
-public class MultiblockServerTickHandler
-{
+public class MultiblockServerTickHandler {
 
 	@SubscribeEvent
-	public void onWorldTick(TickEvent.WorldTickEvent event)
-	{
-		if (event.phase == TickEvent.Phase.START)
-		{
+	public void onWorldTick(TickEvent.WorldTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) {
 			MultiblockRegistry.tickStart(event.world);
 		}
 	}

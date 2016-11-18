@@ -1,12 +1,5 @@
 package reborncore.mcmultipart.block;
 
-import reborncore.mcmultipart.capabilities.ISlottedCapabilityProvider;
-import reborncore.mcmultipart.capabilities.MultipartCapabilityHelper;
-import reborncore.mcmultipart.microblock.IMicroblock;
-import reborncore.mcmultipart.microblock.IMicroblockContainerTile;
-import reborncore.mcmultipart.microblock.MicroblockContainer;
-import reborncore.mcmultipart.multipart.IMultipart;
-import reborncore.mcmultipart.multipart.PartSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -16,6 +9,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import reborncore.mcmultipart.capabilities.ISlottedCapabilityProvider;
+import reborncore.mcmultipart.capabilities.MultipartCapabilityHelper;
+import reborncore.mcmultipart.microblock.IMicroblock;
+import reborncore.mcmultipart.microblock.IMicroblockContainerTile;
+import reborncore.mcmultipart.microblock.MicroblockContainer;
+import reborncore.mcmultipart.multipart.IMultipart;
+import reborncore.mcmultipart.multipart.PartSlot;
 
 /**
  * An implementation of {@link TileMultipartContainer} and {@link IMicroblockContainerTile} that acts as a microblock container.<br/>
@@ -23,137 +23,140 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 public class TileCoverable extends TileEntity implements IMicroblockContainerTile, ISlottedCapabilityProvider {
 
-    private MicroblockContainer container;
+	private MicroblockContainer container;
 
-    public TileCoverable() {
+	public TileCoverable() {
 
-    }
+	}
 
-    @Override
-    public World getWorldIn() {
+	@Override
+	public World getWorldIn() {
 
-        return getWorld();
-    }
+		return getWorld();
+	}
 
-    @Override
-    public BlockPos getPosIn() {
+	@Override
+	public BlockPos getPosIn() {
 
-        return getPos();
-    }
+		return getPos();
+	}
 
-    @Override
-    public MicroblockContainer getMicroblockContainer() {
+	@Override
+	public MicroblockContainer getMicroblockContainer() {
 
-        return container != null ? container : (container = new MicroblockContainer(this));
-    }
+		return container != null ? container : (container = new MicroblockContainer(this));
+	}
 
-    @Override
-    public boolean canAddMicroblock(IMicroblock microblock) {
+	@Override
+	public boolean canAddMicroblock(IMicroblock microblock) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void onMicroblocksChanged() {
+	@Override
+	public void onMicroblocksChanged() {
 
-    }
+	}
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 
-        if (super.hasCapability(capability, facing)) return true;
-        return MultipartCapabilityHelper.hasCapability(container, capability, facing);
-    }
+		if (super.hasCapability(capability, facing))
+			return true;
+		return MultipartCapabilityHelper.hasCapability(container, capability, facing);
+	}
 
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 
-        T impl = super.getCapability(capability, facing);
-        if (impl != null) return impl;
-        return MultipartCapabilityHelper.getCapability(container, capability, facing);
-    }
+		T impl = super.getCapability(capability, facing);
+		if (impl != null)
+			return impl;
+		return MultipartCapabilityHelper.getCapability(container, capability, facing);
+	}
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, PartSlot slot, EnumFacing facing) {
+	@Override
+	public boolean hasCapability(Capability<?> capability, PartSlot slot, EnumFacing facing) {
 
-        return container.hasCapability(capability, slot, facing);
-    }
+		return container.hasCapability(capability, slot, facing);
+	}
 
-    @Override
-    public <T> T getCapability(Capability<T> capability, PartSlot slot, EnumFacing facing) {
+	@Override
+	public <T> T getCapability(Capability<T> capability, PartSlot slot, EnumFacing facing) {
 
-        return container.getCapability(capability, slot, facing);
-    }
+		return container.getCapability(capability, slot, facing);
+	}
 
-    @Override
-    public void onLoad() {
+	@Override
+	public void onLoad() {
 
-        super.onLoad();
-        for (IMultipart part : getMicroblockContainer().getParts())
-            part.onLoaded();
-    }
+		super.onLoad();
+		for (IMultipart part : getMicroblockContainer().getParts())
+			part.onLoaded();
+	}
 
-    @Override
-    public void onChunkUnload() {
+	@Override
+	public void onChunkUnload() {
 
-        super.onChunkUnload();
-        for (IMultipart part : getMicroblockContainer().getParts())
-            part.onUnloaded();
-    }
+		super.onChunkUnload();
+		for (IMultipart part : getMicroblockContainer().getParts())
+			part.onUnloaded();
+	}
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 
-        compound = super.writeToNBT(compound);
-        getMicroblockContainer().getPartContainer().writeToNBT(compound);
-        return compound;
-    }
+		compound = super.writeToNBT(compound);
+		getMicroblockContainer().getPartContainer().writeToNBT(compound);
+		return compound;
+	}
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
 
-        super.readFromNBT(compound);
-        getMicroblockContainer().getPartContainer().readFromNBT(compound);
-    }
+		super.readFromNBT(compound);
+		getMicroblockContainer().getPartContainer().readFromNBT(compound);
+	}
 
-    @Override
-    public NBTTagCompound getUpdateTag() {
+	@Override
+	public NBTTagCompound getUpdateTag() {
 
-        return getMicroblockContainer().getPartContainer().writeToNBT(super.getUpdateTag());
-    }
+		return getMicroblockContainer().getPartContainer().writeToNBT(super.getUpdateTag());
+	}
 
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
 
-        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
-    }
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
+	}
 
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 
-        readFromNBT(pkt.getNbtCompound());
-    }
+		readFromNBT(pkt.getNbtCompound());
+	}
 
-    @Override
-    public boolean canRenderBreaking() {
+	@Override
+	public boolean canRenderBreaking() {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public boolean shouldRenderInPass(int pass) {
+	@Override
+	public boolean shouldRenderInPass(int pass) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
 
-        AxisAlignedBB bounds = super.getRenderBoundingBox().offset(-getPosIn().getX(), -getPosIn().getY(), -getPosIn().getZ());
-        for (IMultipart part : getMicroblockContainer().getParts()) {
-            AxisAlignedBB bb = part.getRenderBoundingBox();
-            if (bb != null) bounds = bounds.union(bb);
-        }
-        return bounds.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ());
-    }
+		AxisAlignedBB bounds = super.getRenderBoundingBox().offset(-getPosIn().getX(), -getPosIn().getY(), -getPosIn().getZ());
+		for (IMultipart part : getMicroblockContainer().getParts()) {
+			AxisAlignedBB bb = part.getRenderBoundingBox();
+			if (bb != null)
+				bounds = bounds.union(bb);
+		}
+		return bounds.offset(getPosIn().getX(), getPosIn().getY(), getPosIn().getZ());
+	}
 }

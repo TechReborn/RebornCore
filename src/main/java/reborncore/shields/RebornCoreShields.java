@@ -13,20 +13,20 @@ import reborncore.shields.api.ShieldRegistry;
  */
 public class RebornCoreShields {
 
-    public static void init() {
-        MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
-    }
+	public static void init() {
+		MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
+	}
 
-    @SubscribeEvent
-    public void craft(PlayerEvent.ItemCraftedEvent event) {
-        if (event.crafting.getItem() == Items.SHIELD) {
-            for (Shield shield : ShieldRegistry.shieldList) {
-                if (shield.name.equalsIgnoreCase(event.player.getName())) {
-                    ItemNBTHelper.setString(event.crafting, "type", shield.name);
-                    ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
-                }
-            }
-        }
-    }
+	@SubscribeEvent
+	public void craft(PlayerEvent.ItemCraftedEvent event) {
+		if (event.crafting.getItem() == Items.SHIELD) {
+			for (Shield shield : ShieldRegistry.shieldList) {
+				if (shield.name.equalsIgnoreCase(event.player.getName())) {
+					ItemNBTHelper.setString(event.crafting, "type", shield.name);
+					ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+				}
+			}
+		}
+	}
 
 }

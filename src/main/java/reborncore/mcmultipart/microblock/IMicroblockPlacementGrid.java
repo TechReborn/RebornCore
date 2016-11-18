@@ -6,10 +6,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IMicroblockPlacementGrid {
 
-    @SideOnly(Side.CLIENT)
-    public void renderGrid();
+	@SideOnly(Side.CLIENT)
+	public void renderGrid();
 
-    @SideOnly(Side.CLIENT)
-    public void glTransform(RayTraceResult hit);
+	@SideOnly(Side.CLIENT)
+	public void glTransform(RayTraceResult hit);
 
 }

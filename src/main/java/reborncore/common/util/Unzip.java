@@ -16,30 +16,28 @@ import java.util.zip.ZipFile;
  */
 public class Unzip {
 
-    //Thanks https://stackoverflow.com/questions/9324933/what-is-a-good-java-library-to-zip-unzip-files
-    public static void unzip(File input, File output) throws IOException {
-        ZipFile zipFile = new ZipFile(input);
-        try {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                File entryDestination = new File(output,  entry.getName());
-                if (entry.isDirectory()) {
-                    entryDestination.mkdirs();
-                } else {
-                    entryDestination.getParentFile().mkdirs();
-                    InputStream in = zipFile.getInputStream(entry);
-                    OutputStream out = new FileOutputStream(entryDestination);
-                    IOUtils.copy(in, out);
-                    IOUtils.closeQuietly(in);
-                    out.close();
-                }
-            }
-        } finally {
-            zipFile.close();
-        }
-    }
-
-
+	//Thanks https://stackoverflow.com/questions/9324933/what-is-a-good-java-library-to-zip-unzip-files
+	public static void unzip(File input, File output) throws IOException {
+		ZipFile zipFile = new ZipFile(input);
+		try {
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				File entryDestination = new File(output, entry.getName());
+				if (entry.isDirectory()) {
+					entryDestination.mkdirs();
+				} else {
+					entryDestination.getParentFile().mkdirs();
+					InputStream in = zipFile.getInputStream(entry);
+					OutputStream out = new FileOutputStream(entryDestination);
+					IOUtils.copy(in, out);
+					IOUtils.closeQuietly(in);
+					out.close();
+				}
+			}
+		} finally {
+			zipFile.close();
+		}
+	}
 
 }

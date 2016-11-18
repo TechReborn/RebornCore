@@ -5,35 +5,35 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class PropertyBlockState implements IUnlistedProperty<IBlockState> {
 
-    private final String name;
+	private final String name;
 
-    public PropertyBlockState(String name) {
+	public PropertyBlockState(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    @Override
-    public boolean isValid(IBlockState value) {
+	@Override
+	public boolean isValid(IBlockState value) {
 
-        return value != null;
-    }
+		return value != null;
+	}
 
-    @Override
-    public Class<IBlockState> getType() {
+	@Override
+	public Class<IBlockState> getType() {
 
-        return IBlockState.class;
-    }
+		return IBlockState.class;
+	}
 
-    @Override
-    public String valueToString(IBlockState value) {
+	@Override
+	public String valueToString(IBlockState value) {
 
-        return value.toString();
-    }
+		return value.toString();
+	}
 
 }

@@ -1,39 +1,39 @@
 package reborncore.mcmultipart.property;
 
-import reborncore.mcmultipart.microblock.IMicroMaterial;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import reborncore.mcmultipart.microblock.IMicroMaterial;
 
 public class PropertyMicroMaterial implements IUnlistedProperty<IMicroMaterial> {
 
-    private final String name;
+	private final String name;
 
-    public PropertyMicroMaterial(String name) {
+	public PropertyMicroMaterial(String name) {
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 
-        return name;
-    }
+		return name;
+	}
 
-    @Override
-    public boolean isValid(IMicroMaterial value) {
+	@Override
+	public boolean isValid(IMicroMaterial value) {
 
-        return value != null;
-    }
+		return value != null;
+	}
 
-    @Override
-    public Class<IMicroMaterial> getType() {
+	@Override
+	public Class<IMicroMaterial> getType() {
 
-        return IMicroMaterial.class;
-    }
+		return IMicroMaterial.class;
+	}
 
-    @Override
-    public String valueToString(IMicroMaterial value) {
+	@Override
+	public String valueToString(IMicroMaterial value) {
 
-        return value.getName();
-    }
+		return value.getName();
+	}
 
 }

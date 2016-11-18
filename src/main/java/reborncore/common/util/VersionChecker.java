@@ -1,5 +1,13 @@
 package reborncore.common.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.IOUtils;
+import reborncore.RebornCore;
+import reborncore.common.IModInfo;
+import reborncore.common.RebornCoreConfig;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,18 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import org.apache.commons.io.IOUtils;
-
-import reborncore.RebornCore;
-import reborncore.common.IModInfo;
-import reborncore.common.RebornCoreConfig;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-public class VersionChecker
-{
+public class VersionChecker {
 
 	public static final String apiAddress = RebornCore.WEB_URL + "api/v1/version.php";
 
@@ -30,16 +27,13 @@ public class VersionChecker
 
 	public boolean isChecking;
 
-	public VersionChecker(String projectName, IModInfo modInfo)
-	{
+	public VersionChecker(String projectName, IModInfo modInfo) {
 		this.projectName = projectName;
 		this.modInfo = modInfo;
 	}
 
-	public void checkVersion() throws IOException
-	{
-		if (!RebornCoreConfig.versionCheck)
-		{
+	public void checkVersion() throws IOException {
+		if (!RebornCoreConfig.versionCheck) {
 			return;
 		}
 		isChecking = true;
@@ -51,56 +45,42 @@ public class VersionChecker
 		String body = IOUtils.toString(in, encoding).replaceAll("<br />", "");
 
 		Gson gson = new Gson();
-		versions = gson.fromJson(body, new TypeToken<ArrayList<ModifacationVersionInfo>>()
-		{
+		versions = gson.fromJson(body, new TypeToken<ArrayList<ModifacationVersionInfo>>() {
 		}.getType());
 		isChecking = false;
 	}
 
-	public void checkVersionThreaded()
-	{
-		new Thread(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
+	public void checkVersionThreaded() {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
 					checkVersion();
-				} catch (IOException e)
-				{
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
 	}
 
-	public boolean isLatestVersion()
-	{
-		if (versions == null || versions.isEmpty())
-		{
+	public boolean isLatestVersion() {
+		if (versions == null || versions.isEmpty()) {
 			return true;
 		}
 		return versions.get(0).version.equals(modInfo.MOD_VERSION());
 	}
 
-	public ModifacationVersionInfo getLatestVersion()
-	{
-		if (versions == null || versions.isEmpty())
-		{
+	public ModifacationVersionInfo getLatestVersion() {
+		if (versions == null || versions.isEmpty()) {
 			return null;
 		}
 		return versions.get(0);
 	}
 
-	public ArrayList<String> getChangeLogSinceCurrentVersion()
-	{
+	public ArrayList<String> getChangeLogSinceCurrentVersion() {
 		ArrayList<String> log = new ArrayList<String>();
-		if (!isLatestVersion())
-		{
-			for (ModifacationVersionInfo version : versions)
-			{
-				if (version.version.equals(modInfo.MOD_VERSION()))
-				{
+		if (!isLatestVersion()) {
+			for (ModifacationVersionInfo version : versions) {
+				if (version.version.equals(modInfo.MOD_VERSION())) {
 					break;
 				}
 				log.addAll(version.changeLog);
@@ -109,8 +89,7 @@ public class VersionChecker
 		return log;
 	}
 
-	static class ModifacationVersionInfo
-	{
+	static class ModifacationVersionInfo {
 		public String version;
 
 		public String minecraftVersion;
@@ -122,8 +101,7 @@ public class VersionChecker
 		public boolean recommended;
 
 		public ModifacationVersionInfo(String version, String minecraftVersion, ArrayList<String> changeLog,
-				String releaseDate, boolean recommended)
-		{
+		                               String releaseDate, boolean recommended) {
 			this.version = version;
 			this.minecraftVersion = minecraftVersion;
 			this.changeLog = changeLog;
@@ -131,14 +109,12 @@ public class VersionChecker
 			this.recommended = recommended;
 		}
 
-		public ModifacationVersionInfo()
-		{
+		public ModifacationVersionInfo() {
 		}
 	}
 
 	// use this to make an example json file
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		System.out.println("Generating example json file");
 		ArrayList<ModifacationVersionInfo> infos = new ArrayList<ModifacationVersionInfo>();
 		ArrayList<String> changelog = new ArrayList<String>();
@@ -150,13 +126,11 @@ public class VersionChecker
 
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String json = gson.toJson(infos);
-		try
-		{
+		try {
 			FileWriter writer = new FileWriter(new File("master.json"));
 			writer.write(json);
 			writer.close();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

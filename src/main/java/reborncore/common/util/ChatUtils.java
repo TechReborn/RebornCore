@@ -12,13 +12,11 @@ import net.minecraft.util.text.ITextComponent;
  * https://github.com/SleepyTrousers/EnderCore/blob/master/src/main/java/com/enderio/core/common/util/ChatUtil.java
  */
 
-public class ChatUtils
-{
+public class ChatUtils {
 	private static final int DELETION_ID = 1337; //MAKE THIS UNIQUE PER MOD THAT USES THIS
 
-	public static void sendNoSpamMessages(int messageID, ITextComponent message)
-	{
-		int deleteID = DELETION_ID+messageID;
+	public static void sendNoSpamMessages(int messageID, ITextComponent message) {
+		int deleteID = DELETION_ID + messageID;
 		GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 		chat.printChatMessageWithOptionalDeletion(message, deleteID);
 	}
