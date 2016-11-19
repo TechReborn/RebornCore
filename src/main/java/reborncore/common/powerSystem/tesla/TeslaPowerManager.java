@@ -67,7 +67,7 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 
 	@Override
 	public String getDisplayableTeslaCount(long tesla) {
-		return TeslaUtils.getDisplayableTeslaCount(tesla * RebornCoreConfig.euPerRF);
+		return TeslaUtils.getDisplayableTeslaCount(tesla * RebornCoreConfig.euPerFU);
 	}
 
 	public static ITeslaPowerManager getPowerManager() {

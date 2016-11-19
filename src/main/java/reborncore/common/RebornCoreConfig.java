@@ -17,11 +17,10 @@ public class RebornCoreConfig {
 	public static String CATEGORY_POWER = "power";
 	public static String CATEGORY_MISC = "misc";
 
-	protected static boolean enableRF;
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
-	public static int euPerRF;
+	public static int euPerFU;
 
 	public static boolean versionCheck;
 
@@ -53,7 +52,6 @@ public class RebornCoreConfig {
 	}
 
 	public static void Configs() {
-		enableRF = config.get(CATEGORY_POWER, "Allow RF", false, "Allow machines to be powered with RF").getBoolean();
 
 		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla").getBoolean();
 
@@ -63,7 +61,7 @@ public class RebornCoreConfig {
 			.get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
 			.getBoolean();
 
-		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
+		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
 
@@ -79,15 +77,6 @@ public class RebornCoreConfig {
 				@Override
 				public boolean eu() {
 					return enableEU;
-				}
-
-				@Override
-				public boolean rf() {
-					if (enableForge) {
-						//Its the same, lets be honest
-						return true;
-					}
-					return enableRF;
 				}
 
 				@Override

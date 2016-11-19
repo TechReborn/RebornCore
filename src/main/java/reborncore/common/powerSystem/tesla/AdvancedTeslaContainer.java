@@ -25,29 +25,29 @@ public class AdvancedTeslaContainer implements ITeslaConsumer, ITeslaHolder, ITe
 	}
 
 	public long getStoredPower() {
-		return (long) tile.getEnergy() * RebornCoreConfig.euPerRF;
+		return (long) tile.getEnergy() * RebornCoreConfig.euPerFU;
 	}
 
 	//Receive
 	public long givePower(long tesla, boolean simulated) {
-		return (long) tile.addEnergy(tesla * RebornCoreConfig.euPerRF);
+		return (long) tile.addEnergy(tesla * RebornCoreConfig.euPerFU);
 	}
 
 	//Take power out
 	public long takePower(long tesla, boolean simulated) {
-		return (int) tile.useEnergy(tesla * RebornCoreConfig.euPerRF);
+		return (int) tile.useEnergy(tesla * RebornCoreConfig.euPerFU);
 	}
 
 	public long getCapacity() {
-		return (long) tile.getMaxPower() * RebornCoreConfig.euPerRF;
+		return (long) tile.getMaxPower() * RebornCoreConfig.euPerFU;
 	}
 
 	public long getInputRate() {
-		return (long) tile.getMaxInput() * RebornCoreConfig.euPerRF;
+		return (long) tile.getMaxInput() * RebornCoreConfig.euPerFU;
 	}
 
 	public long getOutputRate() {
-		return (long) tile.getMaxOutput() * RebornCoreConfig.euPerRF;
+		return (long) tile.getMaxOutput() * RebornCoreConfig.euPerFU;
 	}
 
 	public NBTBase writeNBT() {

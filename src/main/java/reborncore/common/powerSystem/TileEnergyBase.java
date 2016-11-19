@@ -1,7 +1,5 @@
 package reborncore.common.powerSystem;
 
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -38,7 +36,7 @@ import java.util.List;
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
-public abstract class TileEnergyBase extends TileBase implements IEnergyInterfaceTile, IListInfoProvider, ITickable, IEnergyReceiver, IEnergyProvider, IEnergyTile, IEnergySink, IEnergySource {
+public abstract class TileEnergyBase extends TileBase implements IEnergyInterfaceTile, IListInfoProvider, ITickable, IEnergyTile, IEnergySink, IEnergySource {
 
 	/* Power storage Setup */
 	public EnumPowerTier tier;
@@ -237,61 +235,51 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	//		return super.getCapability(capability, facing);
 	//	}
 
-	// COFH
-	@Override
+	// Old methords left over from RF that are still used internally
+	@Deprecated
 	public boolean canConnectEnergy(EnumFacing from) {
-		if (!getPowerConfig().rf())
-			return false;
 		return canAcceptEnergy(from) || canProvideEnergy(from);
 	}
 
-	@Override
+	@Deprecated
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-		if (!getPowerConfig().rf())
-			return 0;
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
-		maxReceive *= RebornCoreConfig.euPerRF;
+		maxReceive *= RebornCoreConfig.euPerFU;
 		int energyReceived = Math.min(getMaxEnergyStored(null) - getEnergyStored(null),
-			Math.min((int) this.getMaxInput() * RebornCoreConfig.euPerRF, maxReceive));
+			Math.min((int) this.getMaxInput() * RebornCoreConfig.euPerFU, maxReceive));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
 		}
-		return energyReceived / RebornCoreConfig.euPerRF;
+		return energyReceived / RebornCoreConfig.euPerFU;
 	}
 
-	@Override
+	@Deprecated
 	public int getEnergyStored(EnumFacing from) {
-		if (!getPowerConfig().rf())
-			return 0;
-		return ((int) getEnergy() * RebornCoreConfig.euPerRF);
+		return ((int) getEnergy() * RebornCoreConfig.euPerFU);
 	}
 
-	@Override
+	@Deprecated
 	public int getMaxEnergyStored(EnumFacing from) {
-		if (!getPowerConfig().rf())
-			return 0;
-		return ((int) getMaxPower() * RebornCoreConfig.euPerRF);
+		return ((int) getMaxPower() * RebornCoreConfig.euPerFU);
 	}
 
-	@Override
+	@Deprecated
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-		if (!getPowerConfig().rf())
-			return 0;
 		if (!canProvideEnergy(from)) {
 			return 0;
 		}
-		maxExtract *= RebornCoreConfig.euPerRF;
+		maxExtract *= RebornCoreConfig.euPerFU;
 		int energyExtracted = Math.min(getEnergyStored(null), Math.min(maxExtract, maxExtract));
 
 		if (!simulate) {
 			setEnergy(energy - energyExtracted);
 		}
-		return energyExtracted * RebornCoreConfig.euPerRF;
+		return energyExtracted * RebornCoreConfig.euPerFU;
 	}
-	// END COFH
+	// END OLD STUFF
 
 	// IC2
 
