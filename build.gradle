@@ -57,7 +57,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "2.8.1"
+version = "2.8.2"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -242,3 +242,4 @@ task updateMappings(dependsOn: sourceJar) {
     }
 }
 
+apply from: 'https://raw.githubusercontent.com/modmuss50/GradleScripts/master/CurseUpload.gradle'
