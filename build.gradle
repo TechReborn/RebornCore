@@ -265,5 +265,9 @@ task curseTools << {
 	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
 
 	logger.lifecycle(":launching CurseTools")
-	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {}
+	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
+        arg(value: jar.archivePath.getAbsolutePath())
+        arg(value: deobfJar.archivePath.getAbsolutePath())
+        arg(value: apiJar.archivePath.getAbsolutePath())
+    }
 }
