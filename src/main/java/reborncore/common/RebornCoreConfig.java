@@ -25,6 +25,7 @@ public class RebornCoreConfig
 	public static int euPerRF;
 
 	public static boolean versionCheck;
+	public static boolean easterEggs;
 
 	public RebornCoreConfig(File configFile)
 	{
@@ -72,6 +73,8 @@ public class RebornCoreConfig
 		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
+
+		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
 
 		//resets this when the config is reloaded
 		powerConfig = null;

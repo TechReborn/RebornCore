@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import reborncore.RebornCore;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.util.CalenderUtils;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class HolidayRenderEvent {
 	@SubscribeEvent
 	public static void holidayRender(RenderPlayerEvent.Pre event) {
 
-		if (!CalenderUtils.christmas) {
+		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
 			return;
 		}
 		Render render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
