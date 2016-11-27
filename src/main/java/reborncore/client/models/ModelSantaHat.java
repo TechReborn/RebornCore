@@ -107,7 +107,7 @@ public class ModelSantaHat extends ModelBase {
 		hatextension4.mirror = true;
 		setRotation(hatextension4, 0F, 0F, 1.264073F);
 		hatball1 = new ModelRenderer(this, 8, 58);
-		hatball1.addBox(2F, -14.4F, -1F, 2, 2, 2);
+		hatball1.addBox(2F, -14.4F, -1.001F, 2, 2, 2);
 		hatball1.setRotationPoint(0F, 0F, 0F);
 		hatball1.setTextureSize(64, 64);
 		hatball1.mirror = true;
