@@ -1,18 +1,18 @@
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+	repositories {
+		jcenter()
 		maven {
-            name = "Modmuss50"
-            url = "http://maven.modmuss50.me/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-    }
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "Modmuss50"
+			url = "http://maven.modmuss50.me/"
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+	}
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
@@ -23,233 +23,254 @@ targetCompatibility = 1.8
 
 
 repositories {
-    maven {
-        name = "Modmuss50"
-        url = "http://maven.modmuss50.me/"
-    }
+	maven {
+		name = "Modmuss50"
+		url = "http://maven.modmuss50.me/"
+	}
 }
 
 
 repositories {
-    maven {
-        name = "Modmuss50"
-        url = "http://maven.modmuss50.me/"
-    }
-    maven {
-        name "tterrag Repo"
-        url "http://maven.tterrag.com/"
-    }
-    maven {
-        name "TiC"
-        url "http://dvs1.progwml6.com/files/maven"
-    }
-    maven {
-        url 'http://maven.epoxide.xyz'
-    }
-    maven {
-        name = "ic2"
-        url = "http://maven.ic2.player.to/"
-    }
+	maven {
+		// JSON-Destroyer
+		name = "Modmuss50"
+		url = "http://maven.modmuss50.me/"
+	}
+
+	maven {
+		//IC2
+		name = "player-ic2"
+		url = "http://maven.ic2.player.to/"
+	}
+
+	maven {
+		// Tesla
+		name = "Dankhax"
+		url = "http://maven.epoxide.xyz"
+	}
+
+	maven {
+		// JEI
+		name = "prog"
+		url = "http://dvs1.progwml6.com/files/maven"
+	}
+
+	maven {
+		// TheOneProbe
+		name = "tterrag"
+		url = "http://maven.tterrag.com/"
+	}
+
+	maven {
+		// HWYLA
+		name "TehNut"
+		url "http://tehnut.info/maven/"
+	}
 }
 
 configurations {
-    shade
-    compile.extendsFrom shade
+	shade
+	compile.extendsFrom shade
 }
 
-version = "2.9.1"
+version = "2.9.2"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
-    version = version + "." + "${System.getenv().BUILD_NUMBER}"
+	version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
 minecraft {
-	version = "1.11-13.19.0.2152"
+	version = "1.11-13.19.0.2154"
 	mappings = "snapshot_20161118"
-    replace "@MODVERSION@", project.version
-    runDir = "run"
-    makeObfSourceJar = false
+	replace "@MODVERSION@", project.version
+	runDir = "run"
+	makeObfSourceJar = false
 }
 
 group = 'RebornCore'
 
 
 dependencies {
-    //THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-    shade 'JSON-Destroyer:JSON-Destroyer-1.11:2.2.2:dev'
-    shade 'org.hjson:hjson:1.1.4'
-   // compile "net.darkhax.tesla:Tesla:1.9.4-1.1.0.24:deobf"
-    shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
+	//THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
+	shade 'JSON-Destroyer:JSON-Destroyer-1.11:2.2.2:dev'
+	shade 'org.hjson:hjson:1.1.4'
+	shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
+
+	compile "mezz.jei:jei_1.11:4.0.4.199"
+	compile "mcp.mobius.waila:Hwyla:1.8.4-B16_1.11"
+	compile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.3-46"
+	compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.41"
 }
 
 processResources
-        {
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
+	{
+		from(sourceSets.main.resources.srcDirs) {
+			include 'mcmod.info'
+			expand 'version': project.version, 'mcversion': project.minecraft.version
+		}
 
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
+		from(sourceSets.main.resources.srcDirs) {
+			exclude 'mcmod.info'
+		}
+	}
 
 
 task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    exclude "**/*.psd"
-    classifier = 'dev'
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            include 'me/modmuss50/jsonDestroyer/'
-            include 'org/hjson/'
-            include 'ic2/api/'
-        }
-    }
+	from sourceSets.main.output
+	exclude "**/*.psd"
+	classifier = 'dev'
+	configurations.shade.each {dep ->
+		from(project.zipTree(dep)) {
+			include 'me/modmuss50/jsonDestroyer/'
+			include 'org/hjson/'
+			include 'ic2/api/'
+		}
+	}
 }
 
 jar {
-    exclude "**/*.psd"
-    classifier = 'universal'
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            include 'me/modmuss50/jsonDestroyer/'
-            include 'org/hjson/'
-        }
-    }
+	exclude "**/*.psd"
+	classifier = 'universal'
+	configurations.shade.each {dep ->
+		from(project.zipTree(dep)) {
+			include 'me/modmuss50/jsonDestroyer/'
+			include 'org/hjson/'
+		}
+	}
 }
 
 task apiJar(type: Jar) {
-    from sourceSets.main.allSource
-    from sourceSets.main.output
-    include 'reborncore/api/**/*'
+	from sourceSets.main.allSource
+	from sourceSets.main.output
+	include 'reborncore/api/**/*'
 
-    classifier = "api"
+	classifier = "api"
 }
 
 apiJar.mustRunAfter deobfJar
 
 artifacts {
-    archives deobfJar
-    archives apiJar
+	archives deobfJar
+	archives apiJar
 }
 
 uploadArchives {
-    repositories {
-        mavenDeployer {
-            //This is used when the build is done on a slave node
-            if (project.hasProperty('mavenPass')) {
-                println 'Uploading to remote Maven Repo'
-                repository(url: "http://mavenupload.modmuss50.me/") {
-                    authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
-                }
-            } else {
-                //this is when the build is executed on the master node
-                println 'Uploading to local Maven Repo'
-                repository(url: "file:///var/www/maven/")
-            }
+	repositories {
+		mavenDeployer {
+			//This is used when the build is done on a slave node
+			if (project.hasProperty('mavenPass')) {
+				println 'Uploading to remote Maven Repo'
+				repository(url: "http://mavenupload.modmuss50.me/") {
+					authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
+				}
+			} else {
+				//this is when the build is executed on the master node
+				println 'Uploading to local Maven Repo'
+				repository(url: "file:///var/www/maven/")
+			}
 
-            pom.whenConfigured {
-                p ->
-                    p.dependencies = p.dependencies.findAll {
-                        dep -> dep.artifactId != "Tesla"
-                    }
-            }
-            
-            pom {
-                groupId = "RebornCore"
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description 'RebornCore'
-                    url 'https://github.com/TechReborn/RebornCore'
-                    scm {
-                        url 'https://github.com/TechReborn/RebornCore'
-                        connection 'scm:git:git@github.com:TechReborn/RebornCore.git'
-                        developerConnection 'scm:git:git@github.com:TechReborn/RebornCore.git'
-                    }
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/TechReborn/RebornCore/issues'
-                    }
-                    licenses {
-                        license {
-                            name 'License'
-                            url 'https://raw.githubusercontent.com/TechReborn/RebornCore/master/LICENSE.md'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'modmuss50'
-                            name 'modmuss50'
-                            roles { role 'developer' }
-                        }
-                        developer {
-                            id 'Gigabit101'
-                            name 'Gigabit101'
-                            roles { role 'developer' }
-                        }
-                    }
-                }
-            }
-        }
-    }
+			pom.whenConfigured {
+				p ->
+					p.dependencies = p.dependencies.findAll {
+						dep -> dep.artifactId != "Tesla"
+					}
+			}
+
+			pom {
+				groupId = "RebornCore"
+				version = project.version
+				artifactId = project.archivesBaseName
+				project {
+					name project.archivesBaseName
+					packaging 'jar'
+					description 'RebornCore'
+					url 'https://github.com/TechReborn/RebornCore'
+					scm {
+						url 'https://github.com/TechReborn/RebornCore'
+						connection 'scm:git:git@github.com:TechReborn/RebornCore.git'
+						developerConnection 'scm:git:git@github.com:TechReborn/RebornCore.git'
+					}
+					issueManagement {
+						system 'github'
+						url 'https://github.com/TechReborn/RebornCore/issues'
+					}
+					licenses {
+						license {
+							name 'License'
+							url 'https://raw.githubusercontent.com/TechReborn/RebornCore/master/LICENSE.md'
+							distribution 'repo'
+						}
+					}
+					developers {
+						developer {
+							id 'modmuss50'
+							name 'modmuss50'
+							roles {role 'developer'}
+						}
+						developer {
+							id 'Gigabit101'
+							name 'Gigabit101'
+							roles {role 'developer'}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 task wrapper(type: Wrapper) {
-    //To update the wrapper change the version bellow then run: gradle wrapper
-    gradleVersion = '2.8'
+	//To update the wrapper change the version bellow then run: gradle wrapper
+	gradleVersion = '2.8'
 }
 
 //Thanks Matthew from #ForgeGradle https://gist.github.com/matthewprenger/108265e3efc83181bd2cc2d2fc31a853
 task updateMappings(dependsOn: sourceJar) {
 
-    def remapped = file('src_remapped/main/java')
-    def methods = file('methods.csv')
-    def fields = file('fields.csv')
+	def remapped = file('src_remapped/main/java')
+	def methods = file('methods.csv')
+	def fields = file('fields.csv')
 
-    doLast {
-        Map<String, String> map = new HashMap<>()
-        methods.eachLine { line ->
-            String[] pts = line.split(",")
-            map.put(pts[0], pts[1])
-        }
-        fields.eachLine { line ->
-            String[] pts = line.split(",")
-            map.put(pts[0], pts[1])
-        }
+	doLast {
+		Map<String, String> map = new HashMap<>()
+		methods.eachLine {line ->
+			String[] pts = line.split(",")
+			map.put(pts[0], pts[1])
+		}
+		fields.eachLine {line ->
+			String[] pts = line.split(",")
+			map.put(pts[0], pts[1])
+		}
 
-        copy {
-            from zipTree(sourceJar.archivePath)
-            into remapped
-            include '**/*.java'
+		copy {
+			from zipTree(sourceJar.archivePath)
+			into remapped
+			include '**/*.java'
 
-            filter { javaLine ->
-                map.entrySet().each { entry ->
-                    javaLine = javaLine.replace(entry.getKey(), entry.getValue())
-                }
-                return javaLine
-            }
+			filter {javaLine ->
+				map.entrySet().each {entry ->
+					javaLine = javaLine.replace(entry.getKey(), entry.getValue())
+				}
+				return javaLine
+			}
 
-            includeEmptyDirs = false
-            eachFile { println "Processing: $it.name" }
-        }
-    }
+			includeEmptyDirs = false
+			eachFile {println "Processing: $it.name"}
+		}
+	}
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
 
-import org.apache.commons.io.FileUtils;
-import groovy.util.XmlSlurper;
-import java.io.File;
+import groovy.util.XmlSlurper
+import org.apache.commons.io.FileUtils
 
 task curseTools << {
 	def cacheFiles = new File(".gradle/curseTools")
-	if (!cacheFiles.exists()) cacheFiles.mkdirs()
+	if (!cacheFiles.exists()) {
+		cacheFiles.mkdirs()
+	}
 
 	def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
 
@@ -266,8 +287,8 @@ task curseTools << {
 
 	logger.lifecycle(":launching CurseTools")
 	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
-        arg(value: jar.archivePath.getAbsolutePath())
-        arg(value: deobfJar.archivePath.getAbsolutePath())
-        arg(value: apiJar.archivePath.getAbsolutePath())
-    }
+		arg(value: jar.archivePath.getAbsolutePath())
+		arg(value: deobfJar.archivePath.getAbsolutePath())
+		arg(value: apiJar.archivePath.getAbsolutePath())
+	}
 }
