@@ -20,7 +20,11 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.IInventoryUpdateable;
 import reborncore.common.util.inventory.Inventory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by Lordmau5 on 09.06.2016.
@@ -95,8 +99,10 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 	}
 
 	private class InventoryItemHandler implements IItemHandler {
+
 		private final EnumFacing facing;
 		private Map<EnumFacing, List<BaseSlot>> slotMap = new HashMap<>();
+
 		InventoryItemHandler(EnumFacing facing) {
 			this.facing = facing;
 
@@ -115,11 +121,6 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 				}
 				slotMap.put(_facing, slotList);
 			}
-		}
-
-		@Override
-		public int getSlotLimit(int slot) {
-			return 64;
 		}
 
 		@Override
