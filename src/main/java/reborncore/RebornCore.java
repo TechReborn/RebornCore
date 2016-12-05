@@ -1,6 +1,5 @@
 package reborncore;
 
-import crystekteam.crysteklib.CrystekLib;
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +41,6 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		CrystekLib.preInit(event);
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
@@ -50,7 +48,6 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
-		CrystekLib.init(event);
 		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets
@@ -69,7 +66,6 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		CrystekLib.postInit(event);
 		proxy.postInit(event);
 	}
 
