@@ -1,6 +1,5 @@
 package reborncore.common.multiblock;
 
-import me.modmuss50.jsonDestroyer.api.IOpaqueBlock;
 import net.minecraft.block.material.Material;
 import reborncore.common.BaseTileBlock;
 

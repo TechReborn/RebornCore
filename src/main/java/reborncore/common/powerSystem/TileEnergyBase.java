@@ -2,11 +2,7 @@ package reborncore.common.powerSystem;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;

@@ -18,13 +18,8 @@ import reborncore.mcmultipart.capabilities.MultipartCapabilityHelper;
 import reborncore.mcmultipart.client.multipart.IFastMSRPart;
 import reborncore.mcmultipart.client.multipart.MultipartRegistryClient;
 import reborncore.mcmultipart.client.multipart.MultipartSpecialRenderer;
-import reborncore.mcmultipart.multipart.IMultipart;
-import reborncore.mcmultipart.multipart.IMultipartContainer;
+import reborncore.mcmultipart.multipart.*;
 import reborncore.mcmultipart.multipart.IMultipartContainer.IMultipartContainerListener;
-import reborncore.mcmultipart.multipart.ISlottedPart;
-import reborncore.mcmultipart.multipart.Multipart;
-import reborncore.mcmultipart.multipart.MultipartContainer;
-import reborncore.mcmultipart.multipart.PartSlot;
 
 import java.util.Collection;
 import java.util.UUID;

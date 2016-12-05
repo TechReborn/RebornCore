@@ -19,12 +19,7 @@ import net.minecraft.world.IInteractionObject;
 import reborncore.mcmultipart.multipart.MultipartRegistry;
 import reborncore.mcmultipart.raytrace.PartMOP;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MicroblockRegistry {
 
