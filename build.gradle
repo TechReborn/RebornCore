@@ -101,7 +101,7 @@ dependencies {
 	compile "mezz.jei:jei_1.11:4.0.4.199"
 	compile "mcp.mobius.waila:Hwyla:1.8.4-B16_1.11"
 	compile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.3-46"
-	compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.41"
+	compile "net.darkhax.tesla:Tesla:1.11-1.3.0.51"
 }
 
 processResources
