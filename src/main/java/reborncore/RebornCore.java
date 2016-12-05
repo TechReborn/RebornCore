@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.cable.BlockCable;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
