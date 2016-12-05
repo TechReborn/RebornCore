@@ -22,6 +22,7 @@ public class InventoryItemHandler implements IItemHandler {
 
 	private final EnumFacing facing;
 	private Map<EnumFacing, List<BaseSlot>> slotMap = new HashMap<>();
+	private int slotLimit = 64;
 
 	public InventoryItemHandler(RebornContainer container, EnumFacing facing) {
 		this.facing = facing;
@@ -118,4 +119,10 @@ public class InventoryItemHandler implements IItemHandler {
 			return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
 		}
 	}
+
+	@Override
+	public int getSlotLimit(int slot) {
+		return slotLimit;
+	}
+
 }

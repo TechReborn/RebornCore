@@ -199,6 +199,11 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 				return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
 			}
 		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
 	}
 
 	//    @Override

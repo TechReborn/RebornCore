@@ -83,6 +83,11 @@ public class CapabilityWrapperItemHandler implements ICapabilityWrapper<IItemHan
 			return null;
 		}
 
+		@Override
+		public int getSlotLimit(int slot) {
+			return 64;
+		}
+
 	}
 
 	private static class WrappedCapabilityItemHandlerModifiable extends WrappedCapabilityItemHandler implements IItemHandlerModifiable {

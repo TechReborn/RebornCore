@@ -23,6 +23,12 @@ public class RebornRegistry {
 		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
 	}
 
+	public static void registerBlock(Block block, ResourceLocation name) {
+		block.setRegistryName(name);
+		GameRegistry.register(block);
+		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+	}
+
 	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
 		block.setRegistryName(name);
 		GameRegistry.register(block);

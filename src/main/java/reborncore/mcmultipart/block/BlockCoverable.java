@@ -666,13 +666,7 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
 
 	public boolean canRenderInLayerDefault(IBlockState state, BlockRenderLayer layer) {
 
-		return canRenderInLayerDefault(layer);
-	}
-
-	@Deprecated
-	public boolean canRenderInLayerDefault(BlockRenderLayer layer) {
-
-		return super.canRenderInLayer(layer);
+		return canRenderInLayerDefault(state, layer);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)

@@ -165,7 +165,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
 	}
 
 	/**
-	 * Gets the hardness of this part. Similar to {@link Block#getHardness(PartMOP)}, not to be confused with
+	 * Gets the hardness of this part. Similar to {@link Block#getBlockHardness(IBlockState, World, BlockPos)}, not to be confused with
 	 * {@link IMultipart#getStrength(EntityPlayer, PartMOP)}.
 	 */
 	public float getHardness(PartMOP hit) {
@@ -203,7 +203,7 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
 		boolean effective = mat == null || mat.isToolNotRequired();
 		if (!effective && stack != null)
 			for (String tool : stack.getItem().getToolClasses(stack))
-				if (effective = isToolEffective(tool, stack.getItem().getHarvestLevel(stack, tool)))
+				if (effective = isToolEffective(tool, stack.getItem().getHarvestLevel(stack, tool, player, getWorld().getBlockState(hit.getBlockPos()))))
 					break;
 
 		float breakSpeed = player.getDigSpeed(getExtendedState(MultipartRegistry.getDefaultState(this).getBaseState()), getPos());

@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.cable.BlockCable;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
@@ -34,6 +35,7 @@ public class RebornCore implements IModInfo {
 	public static RebornCoreConfig config;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
+
 
 	public RebornCore() {
 		logHelper = new LogHelper(this);
