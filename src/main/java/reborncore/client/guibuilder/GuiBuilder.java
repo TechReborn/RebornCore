@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class GuiBuilder {
 	static ResourceLocation resourceLocation;
-	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guiElements.png");
+	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guielements.png");
 
 	public GuiBuilder(ResourceLocation resourceLocation) {
 		this.resourceLocation = resourceLocation;
