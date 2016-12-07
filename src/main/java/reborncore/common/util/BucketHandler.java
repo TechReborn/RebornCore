@@ -23,17 +23,6 @@ public class BucketHandler {
 
 	}
 
-	@SubscribeEvent
-	public void onBucketFill(FillBucketEvent event) {
-		ItemStack result = fillCustomBucket(event.getWorld(), event.getTarget());
-
-		if (result == null)
-			return;
-
-		event.setFilledBucket(result);
-		event.setResult(Event.Result.ALLOW);
-	}
-
 	private ItemStack fillCustomBucket(World world, RayTraceResult pos) {
 		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
 			Block block = world.getBlockState(pos.getBlockPos()).getBlock();
