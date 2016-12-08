@@ -22,6 +22,11 @@ public class RebornCoreConfig {
 	protected static boolean enableForge;
 	public static int euPerFU;
 
+	public static boolean ShowStackInfoHUD;
+	public static boolean stackInfoBottom;
+	public static int stackInfoX;
+	public static int stackInfoY;
+
 	public static boolean versionCheck;
 
 	public RebornCoreConfig(File configFile) {
@@ -64,6 +69,14 @@ public class RebornCoreConfig {
 		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
+
+		ShowStackInfoHUD = config.get(CATEGORY_POWER, "Show Stack Info HUD", true, "Show Stack Info HUD (ClientSideOnly)")
+			.getBoolean(true);
+		stackInfoBottom = config.get(CATEGORY_POWER, "Stack Info Bottom", true, "Reverse the order of the HUD, and calculate it's X and Y positions from the bottom left corner (ClientSideOnly)")
+			.getBoolean(true);
+
+		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X coordinate of the stack hud (ClientSideOnly)").getInt();
+		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y coordinate of the stack hud (ClientSideOnly)").getInt();
 
 		//resets this when the config is reloaded
 		powerConfig = null;
