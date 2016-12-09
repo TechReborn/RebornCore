@@ -30,4 +30,28 @@ public class PowerSystem {
 		}
 	}
 
+	public static EnergySystem getDisplayPower() {
+		int eu = RebornCoreConfig.euPriority;
+		int tesla = RebornCoreConfig.teslaPriority;
+		int fe = RebornCoreConfig.forgePriority;
+		if (eu > tesla && eu > fe && RebornCoreConfig.getRebornPower().eu())
+			return EnergySystem.EU;
+		if (tesla > eu && tesla > fe && TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
+			return EnergySystem.TESLA;
+		return EnergySystem.FE;
+	}
+
+	public enum EnergySystem {
+		TESLA(1421222, "Tesla"),
+		EU(11534340, "EU"),
+		FE(14831371, "FE");
+
+		public int colour;
+		public String abbreviation;
+
+		EnergySystem(int colour, String abbreviation) {
+			this.colour = colour;
+			this.abbreviation = abbreviation;
+		}
+	}
 }
