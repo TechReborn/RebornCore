@@ -112,7 +112,7 @@ public class StackInfoHUD {
 				if (CurrentCharge <= quarter) {
 					color = Color.DARK_RED;
 				}
-				text = color + PowerSystem.getLocaliszedPower(CurrentCharge) + "/" + PowerSystem.getLocaliszedPower(MaxCharge) + grey;
+				text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(CurrentCharge) + "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(MaxCharge) + " " + PowerSystem.getDisplayPower().abbreviation + grey;
 				if (stack.getTagCompound() != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("isActive")) {
 					if (stack.getTagCompound().getBoolean("isActive"))
 						text = text + gold + " (" + I18n.translateToLocal("reborncore.message.active") + ")" + grey;

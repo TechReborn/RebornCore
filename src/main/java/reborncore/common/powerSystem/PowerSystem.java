@@ -1,20 +1,67 @@
 package reborncore.common.powerSystem;
 
+import net.minecraft.client.Minecraft;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class PowerSystem {
 	public static String getLocaliszedPower(double eu) {
 		return getLocaliszedPower((int) eu);
 	}
 
+	public static String getLocaliszedPowerNoSuffix(double eu) {
+		return getLocaliszedPowerNoSuffix((int) eu);
+	}
+
+	public static String getLocaliszedPowerFormatted(double eu) {
+		return getLocaliszedPowerFormatted((int) eu);
+	}
+
+
+	public static String getLocaliszedPowerFormattedNoSuffix(double eu) {
+		return getLocaliszedPowerFormattedNoSuffix((int) eu);
+	}
+
 	public static String getLocaliszedPower(int eu) {
-		if (RebornCoreConfig.getRebornPower().eu()) {
-			return getRoundedString(eu, "EU");
-		} else if (TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())) {
-			return TeslaManager.manager.getDisplayableTeslaCount(eu);
+		if (getDisplayPower().equals(EnergySystem.EU)) {
+			return eu + " " + EnergySystem.EU.abbreviation;
+		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
+			return eu * RebornCoreConfig.euPerFU + " " + EnergySystem.TESLA.abbreviation;
 		} else {
-			return getRoundedString(eu * RebornCoreConfig.euPerFU, "FU");
+			return eu * RebornCoreConfig.euPerFU + " " + EnergySystem.FE.abbreviation;
+		}
+	}
+
+	public static String getLocaliszedPowerFormatted(int eu) {
+		if (getDisplayPower().equals(EnergySystem.EU)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu) + " " + EnergySystem.EU.abbreviation;
+		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
+		} else {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
+		}
+	}
+
+	public static String getLocaliszedPowerFormattedNoSuffix(int eu) {
+		if (getDisplayPower().equals(EnergySystem.EU)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu);
+		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU);
+		} else {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU);
+		}
+	}
+
+	public static String getLocaliszedPowerNoSuffix(int eu) {
+		if (getDisplayPower().equals(EnergySystem.EU)) {
+			return eu + "";
+		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
+			return eu * RebornCoreConfig.euPerFU + "";
+		} else {
+			return eu * RebornCoreConfig.euPerFU + "";
 		}
 	}
 
