@@ -34,9 +34,9 @@ public class PowerSystem {
 		int eu = RebornCoreConfig.euPriority;
 		int tesla = RebornCoreConfig.teslaPriority;
 		int fe = RebornCoreConfig.forgePriority;
-		if (eu > tesla && eu > fe && RebornCoreConfig.getRebornPower().eu())
+		if ((eu > tesla || !TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())) && eu > fe && RebornCoreConfig.getRebornPower().eu())
 			return EnergySystem.EU;
-		if (tesla > eu && tesla > fe && TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
+		if ((tesla > eu || !RebornCoreConfig.getRebornPower().eu()) && tesla > fe && TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
 			return EnergySystem.TESLA;
 		return EnergySystem.FE;
 	}
