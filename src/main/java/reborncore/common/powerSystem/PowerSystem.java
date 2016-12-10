@@ -42,16 +42,20 @@ public class PowerSystem {
 	}
 
 	public enum EnergySystem {
-		TESLA(1421222, "Tesla"),
-		EU(8781824, "EU"),
-		FE(14831371, "FE");
+		TESLA(1421222, "Tesla", 71, 151),
+		EU(8781824, "EU", 43, 151),
+		FE(14831371, "FE", 15, 151);
 
 		public int colour;
 		public String abbreviation;
+		public int xBar;
+		public int yBar;
 
-		EnergySystem(int colour, String abbreviation) {
+		EnergySystem(int colour, String abbreviation, int xBar, int yBar) {
 			this.colour = colour;
 			this.abbreviation = abbreviation;
+			this.xBar = xBar;
+			this.yBar = yBar;
 		}
 	}
 }
