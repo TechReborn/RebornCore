@@ -43,7 +43,7 @@ public class PowerSystem {
 
 	public enum EnergySystem {
 		TESLA(1421222, "Tesla"),
-		EU(11534340, "EU"),
+		EU(8781824, "EU"),
 		FE(14831371, "FE");
 
 		public int colour;
