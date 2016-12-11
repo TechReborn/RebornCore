@@ -37,7 +37,6 @@ public class StackInfoHUD {
 	private int x = 2;
 	private int y = 7;
 
-	@SideOnly(Side.CLIENT)
 	public static void registerElement(StackInfoElement element) {
 		ELEMENTS.add(element);
 	}
