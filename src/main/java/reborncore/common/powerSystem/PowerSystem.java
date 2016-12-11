@@ -20,7 +20,6 @@ public class PowerSystem {
 		return getLocaliszedPowerFormatted((int) eu);
 	}
 
-
 	public static String getLocaliszedPowerFormattedNoSuffix(double eu) {
 		return getLocaliszedPowerFormattedNoSuffix((int) eu);
 	}
@@ -89,20 +88,22 @@ public class PowerSystem {
 	}
 
 	public enum EnergySystem {
-		TESLA(1421222, "Tesla", 71, 151),
-		EU(8781824, "EU", 43, 151),
-		FE(14831371, "FE", 15, 151);
+		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C),
+		EU(0xFF980000, "EU", 43, 151, 0xFF580000),
+		FE(0xFFE14E1C, "FE", 15, 151, 0xFFB3380F);
 
 		public int colour;
+		public int altColour;
 		public String abbreviation;
 		public int xBar;
 		public int yBar;
 
-		EnergySystem(int colour, String abbreviation, int xBar, int yBar) {
+		EnergySystem(int colour, String abbreviation, int xBar, int yBar, int altColour) {
 			this.colour = colour;
 			this.abbreviation = abbreviation;
 			this.xBar = xBar;
 			this.yBar = yBar;
+			this.altColour = altColour;
 		}
 	}
 }
