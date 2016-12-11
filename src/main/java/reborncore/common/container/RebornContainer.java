@@ -16,19 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public abstract class RebornContainer extends Container {
-	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
-
-	@Override
-	protected Slot addSlotToContainer(Slot slotIn) {
-		Slot slot = super.addSlotToContainer(slotIn);
-		if (slot instanceof BaseSlot) {
-			//TODO remove player slots
-			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
-		}
-		return slot;
-	}
-
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
+	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
 	public static
 	@Nullable
@@ -79,9 +68,33 @@ public abstract class RebornContainer extends Container {
 		return null;
 	}
 
+	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
+		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY) {
+			return false;
+		}
+		if (!stack1.isItemEqual(stack2)) {
+			return false;
+		}
+		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
+			return false;
+		}
+		return true;
+
+	}
+
+	@Override
+	protected Slot addSlotToContainer(Slot slotIn) {
+		Slot slot = super.addSlotToContainer(slotIn);
+		if (slot instanceof BaseSlot) {
+			//TODO remove player slots
+			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
+		}
+		return slot;
+	}
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-		ItemStack originalStack = null;
+		ItemStack originalStack = ItemStack.EMPTY;
 		Slot slot = (Slot) inventorySlots.get(slotIndex);
 		int numSlots = inventorySlots.size();
 		if (slot != null && slot.getHasStack()) {
@@ -169,20 +182,6 @@ public abstract class RebornContainer extends Container {
 		return false;
 	}
 
-	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY) {
-			return false;
-		}
-		if (!stack1.isItemEqual(stack2)) {
-			return false;
-		}
-		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
-			return false;
-		}
-		return true;
-
-	}
-
 	public void addPlayersHotbar(EntityPlayer player) {
 		int i;
 		for (i = 0; i < 9; ++i) {
@@ -245,6 +244,6 @@ public abstract class RebornContainer extends Container {
 
 	public void drawPlayersInvAndHotbar(EntityPlayer player, int x, int y) {
 		drawPlayersInv(player, x, y);
-		drawPlayersHotBar(player, x, y);
+		drawPlayersHotBar(player, x, y + 58);
 	}
 }
