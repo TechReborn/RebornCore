@@ -19,6 +19,7 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.util.StringUtils;
 
 import java.util.List;
 
@@ -30,9 +31,11 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	IEnergyTile, IEnergySink, IEnergySource // Ic2
 {
 	public int tier;
+	protected boolean addedToEnet;
+	ForgePowerManager forgePowerManager;
 	private double energy;
 
-	ForgePowerManager forgePowerManager;
+	// IC2
 
 	public TilePowerAcceptor(int tier) {
 		this.tier = tier;
@@ -40,10 +43,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			TeslaManager.manager.created(this);
 		}
 	}
-
-	// IC2
-
-	protected boolean addedToEnet;
 
 	@Override
 	@Optional.Method(modid = "IC2")
@@ -287,17 +286,17 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
-		info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
-			+ PowerSystem.getLocaliszedPower(getMaxPower()));
+		info.add(TextFormatting.GRAY + "Max Energy: " + TextFormatting.GOLD
+			+ PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
 		if (getMaxInput() != 0) {
-			info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
-				+ PowerSystem.getLocaliszedPower(getMaxInput()));
+			info.add(TextFormatting.GRAY + "Input Rate: " + TextFormatting.GOLD
+				+ PowerSystem.getLocaliszedPowerFormatted(getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
-				+ PowerSystem.getLocaliszedPower(getMaxOutput()));
+			info.add(TextFormatting.GRAY + "Output Rate: " + TextFormatting.GOLD
+				+ PowerSystem.getLocaliszedPowerFormatted(getMaxOutput()));
 		}
-		info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
+		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
 		// if(isRealTile){ //TODO sync to client
 		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
 		// TextFormatting.GREEN + getEUString(energy));
