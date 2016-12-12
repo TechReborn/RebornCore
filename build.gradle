@@ -57,7 +57,7 @@ configurations {
     compile.extendsFrom shade
 }
 
-version = "2.8.2"
+version = "2.8.3"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -264,6 +264,10 @@ task curseTools << {
 	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
 
 	logger.lifecycle(":launching CurseTools")
-	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {}
+	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
+		arg(value: jar.archivePath.getAbsolutePath())
+		arg(value: deobfJar.archivePath.getAbsolutePath())
+		arg(value: apiJar.archivePath.getAbsolutePath())
+	}
 }
 tasks.curseTools.dependsOn "build"

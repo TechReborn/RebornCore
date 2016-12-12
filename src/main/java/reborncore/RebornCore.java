@@ -21,6 +21,7 @@ import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.LogHelper;
 import reborncore.common.util.OreUtil;
 import reborncore.common.util.RebornPermissions;
@@ -53,6 +54,7 @@ public class RebornCore implements IModInfo
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
 	}
