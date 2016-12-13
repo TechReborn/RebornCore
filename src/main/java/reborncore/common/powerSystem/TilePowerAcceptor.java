@@ -13,6 +13,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
+import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
@@ -39,6 +40,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public TilePowerAcceptor(int tier) {
 		this.tier = tier;
+		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+			TeslaManager.manager.created(this);
+		}
+	}
+
+	public TilePowerAcceptor(EnumPowerTier tier) {
+		this.tier = tier.getIC2Tier();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.created(this);
 		}
