@@ -4,6 +4,7 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.IEnergyInterfaceTile;
+import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
@@ -308,25 +310,22 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	public void charge(int slot) {
-		// TODO rewrite to use built in power system
-		// if(getStackInSlot(slot) != null)
-		// {
-		// if(getStackInSlot(slot).getItem() instanceof IElectricItem)
-		// {
-		// if(getEnergy() != getMaxPower())
-		// {
-		// ItemStack stack = inventory.getStackInSlot(slot);
-		// double MaxCharge = ((IElectricItem)
-		// stack.getItem()).getMaxCharge(stack);
-		// double CurrentCharge = ElectricItem.manager.getCharge(stack);
-		// if (CurrentCharge != 0)
-		// {
-		// ElectricItem.manager.discharge(stack, 5, 4, false, false, false);
-		// addEnergy(5);
-		// }
-		// }
-		// }
-		// }
+		if (getStackInSlot(slot) != null) {
+			if (getStackInSlot(slot).getItem() instanceof IEnergyItemInfo) {
+				if (getEnergy() != getMaxPower()) {
+					ItemStack stack = getStackInSlot(slot);
+					double maxPower = PoweredItem.getMaxPower(stack);
+					double energy = PoweredItem.getEnergy(stack);
+					if (energy != 0) {
+						if(PoweredItem.canUseEnergy(5, stack)){
+							PoweredItem.useEnergy(5, stack);
+							addEnergy(5);
+						}
+
+					}
+				}
+			}
+		}
 	}
 
 	public int getEnergyScaled(int scale) {
