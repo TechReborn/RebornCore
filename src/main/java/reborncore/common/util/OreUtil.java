@@ -11,10 +11,7 @@ public class OreUtil {
 	public static ArrayList<String> oreNames = new ArrayList<String>();
 
 	public static boolean doesOreExistAndValid(String name) {
-		if (!OreDictionary.getOres(name).isEmpty()) {
-			return false;
-		}
-		return OreDictionary.getOres(name).size() >= 1;
+		return !OreDictionary.getOres(name).isEmpty();
 	}
 
 	public static ItemStack getStackFromName(String name) {
