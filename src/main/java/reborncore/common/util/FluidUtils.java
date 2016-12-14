@@ -18,20 +18,20 @@ public class FluidUtils {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 
-		if (input != null) {
+		if (input != ItemStack.EMPTY) {
 			FluidStack fluidInContainer = getFluidStackInContainer(input);
 			ItemStack emptyItem = input.getItem().getContainerItem(input);
 			if (input.getItem() instanceof UniversalBucket) {
 				emptyItem = ((UniversalBucket) input.getItem()).getEmpty();
 			}
 			if (fluidInContainer != null
-				&& (emptyItem == null || output == null || (output.getCount() < output.getMaxStackSize()
+				&& (emptyItem == ItemStack.EMPTY || output == ItemStack.EMPTY || (output.getCount() < output.getMaxStackSize()
 				&& ItemUtils.isItemEqual(output, emptyItem, true, true)))) {
 				int used = fluidHandler.fill(fluidInContainer, false);
 				if (used >= fluidInContainer.amount && fluidHandler.fill(fluidInContainer, true) > 0) {
 					fluidHandler.fill(fluidInContainer, true);
-					if (emptyItem != null)
-						if (output == null)
+					if (emptyItem != ItemStack.EMPTY)
+						if (output == ItemStack.EMPTY)
 							inv.setInventorySlotContents(outputSlot, emptyItem);
 						else
 							output.setCount(output.getCount() + 1);
@@ -48,7 +48,7 @@ public class FluidUtils {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 		ItemStack filled = getFilledContainer(fluidToFill, input);
-		if (filled != null && (output == ItemStack.EMPTY
+		if ((output == ItemStack.EMPTY
 			|| (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(filled, output, true, true)))) {
 			FluidStack fluidInContainer = getFluidStackInContainer(filled);
 			FluidStack drain = fluidHandler.drain(fluidInContainer, false);
@@ -67,7 +67,7 @@ public class FluidUtils {
 
 	@Deprecated // Use forge one
 	@Nullable
-	public static FluidStack getFluidStackInContainer(ItemStack stack) {
+	public static FluidStack getFluidStackInContainer(@Nonnull ItemStack stack) {
 		return FluidUtil.getFluidContained(stack);
 	}
 
