@@ -318,7 +318,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	public void charge(int slot) {
-		if (getStackInSlot(slot) != null) {
+		if (getStackInSlot(slot) != ItemStack.EMPTY) {
 			if (getStackInSlot(slot).getItem() instanceof IEnergyItemInfo) {
 				if (getEnergy() != 0) {
 					ItemStack stack = getStackInSlot(slot);
