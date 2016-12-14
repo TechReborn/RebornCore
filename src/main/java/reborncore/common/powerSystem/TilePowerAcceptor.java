@@ -320,14 +320,16 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void charge(int slot) {
 		if (getStackInSlot(slot) != null) {
 			if (getStackInSlot(slot).getItem() instanceof IEnergyItemInfo) {
-				if (getEnergy() != getMaxPower()) {
+				if (getEnergy() != 0) {
 					ItemStack stack = getStackInSlot(slot);
 					double maxPower = PoweredItem.getMaxPower(stack);
 					double energy = PoweredItem.getEnergy(stack);
-					if (energy != 0) {
-						if(PoweredItem.canUseEnergy(5, stack)){
-							PoweredItem.useEnergy(5, stack);
-							addEnergy(5);
+					IEnergyItemInfo iEnergyItemInfo = (IEnergyItemInfo) stack.getItem();
+					if (energy < maxPower) {
+						double transfer =  Math.min(Math.min(iEnergyItemInfo.getMaxTransfer(stack), getEnergy()), maxPower - energy);
+						if(PoweredItem.canUseEnergy(transfer, stack)){
+							PoweredItem.useEnergy(transfer, stack);
+							addEnergy(transfer);
 						}
 
 					}
