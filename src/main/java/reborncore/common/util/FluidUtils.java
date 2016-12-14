@@ -14,20 +14,23 @@ import javax.annotation.Nullable;
 
 public class FluidUtils {
 
-	public static boolean drainContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot) {
-		ItemStack input = inv.getStackInSlot(inputSlot);
-		ItemStack output = inv.getStackInSlot(outputSlot);
+	public static boolean drainContainers(final IFluidHandler fluidHandler, final IInventory inv, final int inputSlot,
+	                                      final int outputSlot) {
+		final ItemStack input = inv.getStackInSlot(inputSlot);
+		final ItemStack output = inv.getStackInSlot(outputSlot);
 
 		if (input != ItemStack.EMPTY) {
-			FluidStack fluidInContainer = getFluidStackInContainer(input);
+			final FluidStack fluidInContainer = getFluidStackInContainer(input);
 			ItemStack emptyItem = input.getItem().getContainerItem(input);
 			if (input.getItem() instanceof UniversalBucket) {
 				emptyItem = ((UniversalBucket) input.getItem()).getEmpty();
 			}
-			if (fluidInContainer != null
-				&& (emptyItem == ItemStack.EMPTY || output == ItemStack.EMPTY || (output.getCount() < output.getMaxStackSize()
-				&& ItemUtils.isItemEqual(output, emptyItem, true, true)))) {
-				int used = fluidHandler.fill(fluidInContainer, false);
+
+			if (fluidInContainer != null && (emptyItem == ItemStack.EMPTY || output == ItemStack.EMPTY
+				|| output.getCount() < output.getMaxStackSize()
+				&& ItemUtils.isItemEqual(output, emptyItem, true, true))) {
+
+				final int used = fluidHandler.fill(fluidInContainer, false);
 				if (used >= fluidInContainer.amount && fluidHandler.fill(fluidInContainer, true) > 0) {
 					fluidHandler.fill(fluidInContainer, true);
 					if (emptyItem != ItemStack.EMPTY)
@@ -36,6 +39,7 @@ public class FluidUtils {
 						else
 							output.setCount(output.getCount() + 1);
 					inv.decrStackSize(inputSlot, 1);
+
 					return true;
 				}
 			}
@@ -65,10 +69,19 @@ public class FluidUtils {
 		return false;
 	}
 
-	@Deprecated // Use forge one
 	@Nullable
-	public static FluidStack getFluidStackInContainer(@Nonnull ItemStack stack) {
-		return FluidUtil.getFluidContained(stack);
+	public static FluidStack getFluidStackInContainer(
+		@Nonnull
+			ItemStack container) {
+		if (!container.isEmpty()) {
+			container = container.copy();
+			container.setCount(1);
+			final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(container);
+			if (fluidHandler != null) {
+				return fluidHandler.drain(Fluid.BUCKET_VOLUME, false);
+			}
+		}
+		return null;
 	}
 
 	@Nonnull
