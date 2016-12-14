@@ -55,7 +55,7 @@ public class MultiblockRenderEvent {
 				Multiblock mb = currentMultiblock.getForIndex(0);
 
 				for (MultiblockComponent comp : mb.getComponents()) {
-					renderComponent(comp, anchorPos, event.getPartialTicks(), mc.player);
+					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
 				}
 
 			}
