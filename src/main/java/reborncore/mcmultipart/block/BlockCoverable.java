@@ -115,12 +115,18 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
 
 		return super.getSelectedBoundingBox(state, worldIn, pos);
 	}
+	
+	//1.11 version
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
+	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity ){
+		addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, collidingEntity, false);
+	}
 
-	@Override
+	//1.11.2 version
 	public final void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
-	                                        List<AxisAlignedBB> collidingBoxes, Entity collidingEntity) {
+	                                        List<AxisAlignedBB> collidingBoxes, Entity collidingEntity, boolean moving) {
 
-		addCollisionBoxToListDefault(state, world, pos, entityBox, collidingBoxes, collidingEntity);
+		addCollisionBoxToListDefault(state, world, pos, entityBox, collidingBoxes, collidingEntity, moving);
 		IMicroblockContainerTile tile = getMicroblockTile(world, pos);
 
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
@@ -131,9 +137,9 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
 	}
 
 	public void addCollisionBoxToListDefault(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
-	                                         List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
+	                                         List<AxisAlignedBB> collidingBoxes, Entity entityIn, boolean moving) {
 
-		super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn);
+		super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, moving);
 	}
 
 	@Override

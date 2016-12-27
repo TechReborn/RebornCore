@@ -101,9 +101,15 @@ public final class BlockMultipartContainer extends Block implements ITileEntityP
 		return bounds.offset(pos);
 	}
 
-	@Override
+	//1.11 version
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
-	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity) {
+	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity ){
+		addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, collidingEntity, false);
+	}
+
+	//1.11.2 version
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
+	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity, boolean moving) {
 
 		TileMultipartContainer tile = getMultipartTile(worldIn, pos);
 		if (tile == null)
