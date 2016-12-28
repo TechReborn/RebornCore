@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.commons.lang3.Validate;
+import reborncore.RebornCore;
 
 import java.io.IOException;
 
@@ -51,7 +52,16 @@ public class PacketWrapper implements IMessage {
 
 		@Override
 		public IMessage onMessage(PacketWrapper message, MessageContext ctx) {
-			message.packet.processData(message.packet, ctx);
+			if(message == null || message.packet == null){
+				return null;
+			}
+			try{
+				message.packet.processData(message.packet, ctx);
+			} catch (Exception e){
+				RebornCore.logHelper.error("Packet " + message.packet.getClass() + " could not be handled, it will be ignored, please report to the mod dev.");
+				e.printStackTrace();
+			}
+
 			return null;
 		}
 	}
