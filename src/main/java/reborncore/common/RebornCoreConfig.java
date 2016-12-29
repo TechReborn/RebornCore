@@ -22,7 +22,11 @@ public class RebornCoreConfig
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
+	public static int euPriority;
+	public static int teslaPriority;
+	public static int forgePriority;
 	public static int euPerRF;
+	public static int euPerFU;
 
 	public static boolean versionCheck;
 	public static boolean easterEggs;
@@ -71,10 +75,15 @@ public class RebornCoreConfig
 		 .getBoolean();
 
 		euPerRF = config.get(CATEGORY_POWER, "EU - RF ratio", 4, "The Amount of RF to output from EU").getInt();
+		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
+
+		euPriority = config.get(CATEGORY_POWER, "EU Priority", 1, "Priority of EU for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
+		teslaPriority = config.get(CATEGORY_POWER, "TESLA Priority", 2, "Priority of TESLA for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
+		forgePriority = config.get(CATEGORY_POWER, "Forge Energy Priority", 0, "Priority of FE/FU/Fwhatever for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
 
 		//resets this when the config is reloaded
 		powerConfig = null;

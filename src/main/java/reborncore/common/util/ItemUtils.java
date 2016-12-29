@@ -15,6 +15,8 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ItemUtils
 {
 
+	public static final ItemStack EMPTY = null;
+
 	public static boolean isItemEqual(final ItemStack a, final ItemStack b, final boolean matchDamage,
 			final boolean matchNBT)
 	{
