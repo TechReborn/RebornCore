@@ -81,6 +81,8 @@ dependencies {
     shade 'org.hjson:hjson:1.1.4'
    // compile "net.darkhax.tesla:Tesla:1.9.4-1.1.0.24:deobf"
     shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
+	shade 'org.javassist:javassist:3.22.0-CR1'
+
 }
 
 processResources
@@ -116,8 +118,13 @@ jar {
         from(project.zipTree(dep)) {
             include 'me/modmuss50/jsonDestroyer/'
             include 'org/hjson/'
+			include 'javassist/'
         }
     }
+	manifest {
+		attributes 'FMLCorePlugin': 'reborncore.asm.RebornLoadingCore'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
 }
 
 task apiJar(type: Jar) {

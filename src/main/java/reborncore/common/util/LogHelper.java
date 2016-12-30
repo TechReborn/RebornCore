@@ -16,9 +16,12 @@ public class LogHelper
 		this.modInfo = modInfo;
 	}
 
+	public LogHelper() {
+	}
+
 	public void log(Level logLevel, Object object)
 	{
-		FMLLog.log(modInfo.MOD_NAME(), logLevel, String.valueOf(object));
+		FMLLog.log(modInfo != null ? modInfo.MOD_NAME() : "RebornCore", logLevel, String.valueOf(object));
 	}
 
 	public void all(Object object)
