@@ -20,12 +20,12 @@ public class OreUtil {
 
 	public static ItemStack getStackFromName(String name, int stackSize) {
 		ItemStack stack = OreDictionary.getOres(name).get(0).copy();
-		stack.setCount(1);
+		stack.setCount(stackSize);
 		return stack;
 	}
 
 	public static void scanForOres() {
-		String[] validPrefixes = new String[] { "ingot", "ore", "crushed", "plate", "nugget", "dustSmall", "dust",
+		String[] validPrefixes = new String[] { "ingot", "ore", "gem", "crushed", "plate", "nugget", "dustSmall", "dustTiny", "dust",
 			"block" };
 		for (String oreDicName : OreDictionary.getOreNames()) {
 			for (String prefix : validPrefixes) {
