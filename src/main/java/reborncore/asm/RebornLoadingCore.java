@@ -1,9 +1,7 @@
 package reborncore.asm;
 
 import javassist.NotFoundException;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import reborncore.RebornCore;
 import reborncore.asm.mixin.MixinManager;
 import reborncore.common.util.LogHelper;
 
@@ -20,16 +18,17 @@ public class RebornLoadingCore implements IFMLLoadingPlugin {
 
 	public RebornLoadingCore() throws NotFoundException, ClassNotFoundException {
 		logHelper = new LogHelper();
-		MixinManager.registerMixin("reborncore.mixins.MixinReed", "net.minecraft.block.BlockReed");
-		MixinManager.registerMixin("reborncore.mixins.MixinChestTile", "net.minecraft.tileentity.TileEntityChest");
-		MixinManager.registerMixin("reborncore.mixins.MixinSheep", "net.minecraft.entity.passive.EntitySheep");
-		MixinManager.registerMixin("reborncore.mixins.MixinArrow", "net.minecraft.entity.projectile.EntityArrow");
-		MixinManager.registerMixin("reborncore.mixins.MixinSnowBall", "net.minecraft.entity.projectile.EntitySnowball");
+
+	//	MixinManager.registerMixin("reborncore.mixins.MixinReed", "net.minecraft.block.BlockReed");
+	//	MixinManager.registerMixin("reborncore.mixins.MixinChestTile", "net.minecraft.tileentity.TileEntityChest");
+	//	MixinManager.registerMixin("reborncore.mixins.MixinSheep", "net.minecraft.entity.passive.EntitySheep");
+	//	MixinManager.registerMixin("reborncore.mixins.MixinArrow", "net.minecraft.entity.projectile.EntityArrow");
+	//	MixinManager.registerMixin("reborncore.mixins.MixinSnowBall", "net.minecraft.entity.projectile.EntitySnowball");
 	}
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"reborncore.asm.mixin.MixinTransfomer"};
+		return new String[] {"reborncore.asm.mixin.MixinTransfomer" };
 	}
 
 	@Override

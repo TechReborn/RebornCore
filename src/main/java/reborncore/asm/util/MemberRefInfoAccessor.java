@@ -8,67 +8,68 @@
  * Contributors:
  * Jeff Martin - initial API and implementation
  ******************************************************************************/
+
 package reborncore.asm.util;
 
 import java.lang.reflect.Field;
 
 public class MemberRefInfoAccessor {
 
-    private static Class<?> clazz;
-    private static Field classIndex;
-    private static Field nameAndTypeIndex;
+	private static Class<?> clazz;
+	private static Field classIndex;
+	private static Field nameAndTypeIndex;
 
-    private Object item;
+	private Object item;
 
-    public MemberRefInfoAccessor(Object item) {
-        this.item = item;
-    }
+	public MemberRefInfoAccessor(Object item) {
+		this.item = item;
+	}
 
-    public int getClassIndex() {
-        try {
-            return (Integer) classIndex.get(this.item);
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
+	public int getClassIndex() {
+		try {
+			return (Integer) classIndex.get(this.item);
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 
-    public void setClassIndex(int val) {
-        try {
-            classIndex.set(this.item, val);
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
+	public void setClassIndex(int val) {
+		try {
+			classIndex.set(this.item, val);
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 
-    public int getNameAndTypeIndex() {
-        try {
-            return (Integer) nameAndTypeIndex.get(this.item);
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
+	public int getNameAndTypeIndex() {
+		try {
+			return (Integer) nameAndTypeIndex.get(this.item);
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 
-    public void setNameAndTypeIndex(int val) {
-        try {
-            nameAndTypeIndex.set(this.item, val);
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
+	public void setNameAndTypeIndex(int val) {
+		try {
+			nameAndTypeIndex.set(this.item, val);
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 
-    public static boolean isType(ConstInfoAccessor accessor) {
-        return clazz.isAssignableFrom(accessor.getItem().getClass());
-    }
+	public static boolean isType(ConstInfoAccessor accessor) {
+		return clazz.isAssignableFrom(accessor.getItem().getClass());
+	}
 
-    static {
-        try {
-            clazz = Class.forName("javassist.bytecode.MemberrefInfo");
-            classIndex = clazz.getDeclaredField("classIndex");
-            classIndex.setAccessible(true);
-            nameAndTypeIndex = clazz.getDeclaredField("nameAndTypeIndex");
-            nameAndTypeIndex.setAccessible(true);
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
+	static {
+		try {
+			clazz = Class.forName("javassist.bytecode.MemberrefInfo");
+			classIndex = clazz.getDeclaredField("classIndex");
+			classIndex.setAccessible(true);
+			nameAndTypeIndex = clazz.getDeclaredField("nameAndTypeIndex");
+			nameAndTypeIndex.setAccessible(true);
+		} catch (Exception ex) {
+			throw new Error(ex);
+		}
+	}
 }

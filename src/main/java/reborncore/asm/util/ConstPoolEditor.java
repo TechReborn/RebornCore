@@ -8,6 +8,7 @@
  * Contributors:
  * Jeff Martin - initial API and implementation
  ******************************************************************************/
+
 package reborncore.asm.util;
 
 import javassist.bytecode.ConstPool;
@@ -169,7 +170,7 @@ public class ConstPoolEditor {
 		}
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void changeMemberrefNameAndType(int memberrefIndex, String newName, String newType) {
 		// NOTE: when changing values, we always need to copy-on-write
 		try {
@@ -197,7 +198,7 @@ public class ConstPoolEditor {
 		assert (newType.equals(getMemberrefType(memberrefIndex)));
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void changeClassName(int classNameIndex, String newName) {
 		// NOTE: when changing values, we always need to copy-on-write
 		try {

@@ -1,17 +1,19 @@
 package reborncore.asm.mixin;
 
-import com.google.common.base.Joiner;
 import javassist.*;
 import javassist.bytecode.ConstPool;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import reborncore.asm.RebornLoadingCore;
+import reborncore.asm.util.ClassRenamer;
 import reborncore.asm.util.ConstPoolEditor;
-import reborncore.common.network.PacketWrapper;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Mark on 30/12/2016.
@@ -29,31 +31,31 @@ public class MixinTransfomer implements IClassTransformer {
 			}
 			RebornLoadingCore.logHelper.info("Found mixin " + mixinClass.getName() + " for " + name);
 			ClassPool cp = ClassPool.getDefault();
-			cp.insertClassPath(new ByteArrayClassPath(transformedName, basicClass));
+			cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
 			CtClass target = null;
 			try {
-				target = cp.get(transformedName);
+				target = cp.get(name);
 			} catch (NotFoundException e) {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to apply mixin");
 			}
 			try {
 				List<FieldData> fieldDataList = new ArrayList<>();
-				for(CtField field : mixinClass.getFields()){
-					if(field.hasAnnotation(Remap.class)){
+				for (CtField field : mixinClass.getFields()) {
+					if (field.hasAnnotation(Remap.class)) {
 						Remap remap = (Remap) field.getAnnotation(Remap.class);
 						fieldDataList.add(new FieldData(field, field.getName(), remap.SRG()));
 					}
 				}
-				if(RebornLoadingCore.runtimeDeobfuscationEnabled && !fieldDataList.isEmpty()){
+				if (RebornLoadingCore.runtimeDeobfuscationEnabled && !fieldDataList.isEmpty()) {
 					ConstPool constPool = mixinClass.getClassFile().getConstPool();
 					ConstPoolEditor editor = new ConstPoolEditor(constPool);
 					for (int i = 1; i < constPool.getSize(); i++) {
-						switch (constPool.getTag(i)){
+						switch (constPool.getTag(i)) {
 							case ConstPool.CONST_Fieldref: {
-								for(FieldData fieldData : fieldDataList){
+								for (FieldData fieldData : fieldDataList) {
 									System.out.println(constPool.getFieldrefName(i));
-									if(constPool.getFieldrefName(i).equals(fieldData.name)){
+									if (constPool.getFieldrefName(i).equals(fieldData.name)) {
 										editor.changeMemberrefNameAndType(i, fieldData.srg, fieldData.field.getSignature());
 									}
 								}
@@ -61,70 +63,95 @@ public class MixinTransfomer implements IClassTransformer {
 						}
 					}
 				}
+				ClassRenamer.renameClasses(mixinClass, className -> {
+					System.out.println("Trying to remap " + className);
+					if (!RebornLoadingCore.runtimeDeobfuscationEnabled || !className.startsWith("net/minecraft")) {
+						return null;
+					}
+					System.out.println("Renaming " + className + " to " + FMLDeobfuscatingRemapper.INSTANCE.unmap(className));
+					return FMLDeobfuscatingRemapper.INSTANCE.unmap(className);
+				});
+				if (mixinClass.getClassFile().getSuperclass().startsWith("net.minecraft")) {
+					System.out.println("Superclass name: " + mixinClass.getClassFile().getSuperclass());
+					if (RebornLoadingCore.runtimeDeobfuscationEnabled) {
+						System.out.println("Remapping super " + mixinClass.getClassFile().getSuperclass() + " to " + FMLDeobfuscatingRemapper.INSTANCE.unmap(mixinClass.getClassFile().getSuperclass().replace(".", "/")));
+						mixinClass.setSuperclass(cp.get(FMLDeobfuscatingRemapper.INSTANCE.unmap(mixinClass.getClassFile().getSuperclass().replace(".", "/"))));
+					}
+				}
 				for (CtMethod method : mixinClass.getMethods()) {
 					if (method.hasAnnotation(Rewrite.class)) {
 						Rewrite annotation = (Rewrite) method.getAnnotation(Rewrite.class);
-						CtMethod generatedMethod = new CtMethod(method.getReturnType(), mixinClass.getName().replace(".", "$") + "$"  + method.getName(), method.getParameterTypes(), target);
-						generatedMethod.setBody(method, null);
+						CtMethod generatedMethod = CtNewMethod.copy(method, mixinClass.getName().replace(".", "$") + "$" + method.getName(), target, null);
 						target.addMethod(generatedMethod);
 						CtMethod targetMethod = null;
-						for(CtMethod methodCandidate : target.getMethods()){
-							//TODO check signature and use SRG
-							if(methodCandidate.getName().equals(RebornLoadingCore.runtimeDeobfuscationEnabled && !annotation.targetSRG().isEmpty() ? annotation.targetSRG() : annotation.target())){
-								targetMethod = methodCandidate;
-								break;
+						String targetName = RebornLoadingCore.runtimeDeobfuscationEnabled && !annotation.targetSRG().isEmpty() ? annotation.targetSRG() : annotation.target();
+						String fullTargetName = null;
+						if (RebornLoadingCore.runtimeDeobfuscationEnabled) {
+							Map<String, String> methodMap = getMethodMap(name);
+							for (Map.Entry<String, String> entry : methodMap.entrySet()) {
+								//	System.out.println(entry.getKey() + "/" + entry.getValue());
+								if (entry.getValue().equals(targetName)) {
+									fullTargetName = entry.getKey();
+									targetName = entry.getKey().split("\\(")[0];
+									break;
+								}
 							}
 						}
-						if(targetMethod == null){
+						for (CtMethod methodCandidate : target.getMethods()) {
+							if (fullTargetName == null || fullTargetName.isEmpty()) {
+								if (methodCandidate.getName().equals(targetName)) {
+									targetMethod = methodCandidate;
+									break;
+								}
+							} else {
+								if ((methodCandidate.getName() + methodCandidate.getSignature()).equals(fullTargetName)) {
+									targetMethod = methodCandidate;
+									break;
+								}
+							}
+
+						}
+						if (targetMethod == null) {
 							RebornLoadingCore.logHelper.error("Could not find method to inject into");
-							throw new RuntimeException("Could not find method " + (RebornLoadingCore.runtimeDeobfuscationEnabled && !annotation.targetSRG().isEmpty() ? annotation.targetSRG() : annotation.target()) + " to inject into");
+							throw new RuntimeException("Could not find method " + (RebornLoadingCore.runtimeDeobfuscationEnabled && !annotation.targetSRG().isEmpty() ? annotation.targetSRG()
+							                                                                                                                                          : annotation.target()) + " to inject into");
 						}
-						int pos = Modifier.isStatic(targetMethod.getModifiers()) ? 0 : 1;
-						String[] methodArgs = new String[method.getParameterTypes().length];
-						for (int i = 0; i < method.getParameterTypes().length; i++) {
-							methodArgs[i] = "$" + (i + pos);
-						}
-						String src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "(" + Joiner.on(",").join(methodArgs) + ");";
-						if(annotation.location().equals("START")){
+						String src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
+						if (annotation.location().equals("START")) {
 							targetMethod.insertBefore(src);
-						} else if(annotation.location().equals("END")) {
+						} else if (annotation.location().equals("END")) {
 							targetMethod.insertAfter(src);
-						} else if(annotation.location().equals("RETURN")){
+						} else if (annotation.location().equals("RETURN")) {
 							targetMethod.setBody(src);
 						} else {
 							RebornLoadingCore.logHelper.error("Could not find valid injection location.");
 							throw new RuntimeException("Could not find valid injection location.");
 						}
 					} else if (method.hasAnnotation(Inject.class)) {
-						CtMethod generatedMethod = new CtMethod(method.getReturnType(), method.getName(), method.getParameterTypes(), target);
-						generatedMethod.setBody(method, null);
+						CtMethod generatedMethod = CtNewMethod.copy(method, mixinClass.getName().replace(".", "$") + "$" + method.getName(), target, null);
 						target.addMethod(generatedMethod);
 
-					} else if (method.hasAnnotation(Constructor.class)){
+					} else if (method.hasAnnotation(Constructor.class)) {
 						Constructor constructor = (Constructor) method.getAnnotation(Constructor.class);
-						CtMethod generatedMethod = new CtMethod(method.getReturnType(), mixinClass.getName().replace(".", "$") + "$" + method.getName(), method.getParameterTypes(), target);
-						generatedMethod.setBody(method, null);
+						CtMethod generatedMethod = CtNewMethod.copy(method, mixinClass.getName().replace(".", "$") + "$" + method.getName(), target, null);
 						target.addMethod(generatedMethod);
+
 						CtConstructor targetConstructor = target.getConstructor(constructor.description());
-						String[] methodArgs = new String[method.getParameterTypes().length];
-						for (int i = 0; i < method.getParameterTypes().length; i++) {
-							methodArgs[i] = "$" + (i);
-						}
-						String src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "(" + Joiner.on(",").join(methodArgs) + ");";
+						String src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
 						targetConstructor.insertAfter(src);
 					}
 				}
-				for(CtField field : mixinClass.getFields()){
-					if(field.hasAnnotation(Inject.class)){
+				for (CtField field : mixinClass.getFields()) {
+					if (field.hasAnnotation(Inject.class)) {
 						CtField generatedField = new CtField(field, target);
 						System.out.println("Con:" + field.getConstantValue());
 						target.addField(generatedField);
 					}
 				}
-				for(CtConstructor constructor : mixinClass.getDeclaredConstructors()){
+				for (CtConstructor constructor : mixinClass.getDeclaredConstructors()) {
 					System.out.println(constructor.getSignature());
 				}
-				for(CtClass iterface : mixinClass.getInterfaces()){
+				for (CtClass iterface : mixinClass.getInterfaces()) {
 					target.addInterface(iterface);
 				}
 			} catch (NotFoundException | CannotCompileException | ClassNotFoundException e) {
@@ -139,6 +166,17 @@ public class MixinTransfomer implements IClassTransformer {
 		}
 
 		return basicClass;
+	}
+
+	public Map<String, String> getMethodMap(String className) {
+		try {
+			Method method = FMLDeobfuscatingRemapper.class.getDeclaredMethod("getMethodMap", String.class);
+			method.setAccessible(true);
+			Map<String, String> map = (Map<String, String>) method.invoke(FMLDeobfuscatingRemapper.INSTANCE, className);
+			return map;
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private class FieldData {

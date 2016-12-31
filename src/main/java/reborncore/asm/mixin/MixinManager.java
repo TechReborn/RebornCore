@@ -1,11 +1,9 @@
 package reborncore.asm.mixin;
 
 import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 import net.minecraft.launchwrapper.Launch;
-import reborncore.asm.RebornLoadingCore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +17,10 @@ public class MixinManager {
 	public static List<String> mixinClassList = new ArrayList<>();
 	public static HashMap<String, String> mixinTargetMap = new HashMap<>();
 
-	public static void registerMixin(String mixinName, String targetName){
+	public static void registerMixin(String mixinName, String targetName) {
 		mixinClassList.add(mixinName);
 		mixinTargetMap.put(targetName, mixinName);
 	}
-
 
 	public static void loadMixinData() throws NotFoundException, ClassNotFoundException {
 		ClassPool.getDefault().appendClassPath(new LoaderClassPath(Launch.classLoader));
