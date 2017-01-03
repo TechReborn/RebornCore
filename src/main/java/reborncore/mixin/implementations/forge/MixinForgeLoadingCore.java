@@ -18,7 +18,7 @@ import java.util.Map;
  *          -Dfml.coreMods.load=reborncore.mixin.implementations.forge.MixinForgeLoadingCore
  *
  */
-@IFMLLoadingPlugin.MCVersion("1.11.2")
+@IFMLLoadingPlugin.MCVersion("1.10.2")
 @IFMLLoadingPlugin.Name("RebornCoreASM")
 public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 
