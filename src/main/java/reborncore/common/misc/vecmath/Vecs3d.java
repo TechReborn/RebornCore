@@ -493,9 +493,9 @@ public class Vecs3d
 	private static World getClientWorld(int world)
 	{
 
-		if (Minecraft.getMinecraft().theWorld.provider.getDimension() != world)
+		if (Minecraft.getMinecraft().world.provider.getDimension() != world)
 			return null;
-		return Minecraft.getMinecraft().theWorld;
+		return Minecraft.getMinecraft().world;
 	}
 
 }
