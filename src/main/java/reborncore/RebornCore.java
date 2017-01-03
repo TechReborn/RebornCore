@@ -12,6 +12,7 @@ import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.multiblock.MultiblockEventHandler;
+import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
@@ -65,6 +66,7 @@ public class RebornCore implements IModInfo {
 		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
+		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 
 		proxy.init(event);
 	}
