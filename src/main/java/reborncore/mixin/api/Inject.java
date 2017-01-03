@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * This is used on methods or fields to state that they should be injected as is into the target class. Take note that this will fail if it tries to overwrite an existing one.
  */
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Inject {
 

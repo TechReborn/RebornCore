@@ -138,6 +138,12 @@ public class MixinTransformer implements IClassTransformer {
 				for (CtClass iface : mixinClass.getInterfaces()) {
 					target.addInterface(iface);
 				}
+				for(CtConstructor constructor : mixinClass.getConstructors()){
+					if(constructor.hasAnnotation(Inject.class)){
+						CtConstructor generatedConstructor = CtNewConstructor.copy(constructor, target, null);
+						target.addConstructor(generatedConstructor);
+					}
+				}
 			} catch (NotFoundException | CannotCompileException | ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
