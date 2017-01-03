@@ -227,7 +227,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
 		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().isUseableByPlayer(player);
+			return getInventoryForTile().get().isUsableByPlayer(player);
 		}
 		return false;
 	}
