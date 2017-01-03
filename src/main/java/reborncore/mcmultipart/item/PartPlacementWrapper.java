@@ -101,7 +101,7 @@ public class PartPlacementWrapper {
             if (world.isRemote) return true;
 
             int i = stack.getItem().getMetadata(stack.getMetadata());
-            IBlockState iblockstate1 = placedBlock.onBlockPlaced(world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
+            IBlockState iblockstate1 = placedBlock.getStateForPlacement(world, pos, side, (float) hit.xCoord, (float) hit.yCoord,
                     (float) hit.zCoord, i, player);
 
             if (((ItemBlock) stack.getItem()).placeBlockAt(stack, player, world, pos, side, (float) hit.xCoord, (float) hit.yCoord,

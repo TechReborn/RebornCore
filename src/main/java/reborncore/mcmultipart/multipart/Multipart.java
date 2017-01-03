@@ -158,14 +158,14 @@ public abstract class Multipart implements IMultipart, ICapabilitySerializable<N
             for (ItemStack stack : getDrops()) {
                 EntityItem item = new EntityItem(world, x, y, z, stack);
                 item.setDefaultPickupDelay();
-                world.spawnEntityInWorld(item);
+                world.spawnEntity(item);
             }
         }
         getContainer().removePart(this);
     }
 
     /**
-     * Gets the hardness of this part. Similar to {@link Block#getBlockHardness(World, BlockPos)}, not to be confused with
+     * Gets the hardness of this part. Similar to {@link Block#getBlockHardness(IBlockState, World, BlockPos)} (World, BlockPos)}, not to be confused with
      * {@link IMultipart#getStrength(EntityPlayer, PartMOP)}.
      */
     public float getHardness(PartMOP hit) {

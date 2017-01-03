@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 /**
  * {@link ItemMultiPart} is an {@link Item} that can handle multipart placement.<br/>
- * Implement {@link ItemMultiPart#place(World, BlockPos, EnumFacing, Vec3, ItemStack, EntityPlayer)} and optionally override
+ * Implement {@link ItemMultiPart#place(World, BlockPos, EnumFacing, Vec3d, ItemStack, EntityPlayer)} (World, BlockPos, EnumFacing, Vec3, ItemStack, EntityPlayer)} and optionally override
  * {@link ItemMultiPart#consumeItem(ItemStack)} and {@link ItemMultiPart#getPlacementSound(ItemStack)} to place your part in the world.
  */
 public abstract class ItemMultiPart extends Item implements IItemMultipartFactory {

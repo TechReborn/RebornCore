@@ -28,7 +28,7 @@ public abstract class RFProviderTile extends TileLegacyMachineBase
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if (worldObj.isRemote)
+		if (world.isRemote)
 		{
 			return;
 		}
@@ -45,7 +45,7 @@ public abstract class RFProviderTile extends TileLegacyMachineBase
 		{
 			int extracted = getEnergyStored(direction);
 
-			TileEntity tile = worldObj.getTileEntity(new BlockPos(getPos().getX() + direction.getFrontOffsetX(),
+			TileEntity tile = world.getTileEntity(new BlockPos(getPos().getX() + direction.getFrontOffsetX(),
 					getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ()));
 			if (isPoweredTile(tile, direction))
 			{

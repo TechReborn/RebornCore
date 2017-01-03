@@ -368,7 +368,7 @@ public class InventoryHelper
 		}
 
 		@Override
-		public boolean isUseableByPlayer(EntityPlayer entityplayer)
+		public boolean isUsableByPlayer(EntityPlayer entityplayer)
 		{
 			return true;
 		}

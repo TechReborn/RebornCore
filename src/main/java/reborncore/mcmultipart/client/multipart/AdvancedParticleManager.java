@@ -28,9 +28,9 @@ public class AdvancedParticleManager extends ParticleManager {
 
     public static AdvancedParticleManager getInstance(ParticleManager particleManager) {
 
-        if (instance == null) return instance = new AdvancedParticleManager(Minecraft.getMinecraft().theWorld,
+        if (instance == null) return instance = new AdvancedParticleManager(Minecraft.getMinecraft().world,
                 Minecraft.getMinecraft().renderEngine, particleManager);
-        instance.worldObj = Minecraft.getMinecraft().theWorld;
+        instance.world = Minecraft.getMinecraft().world;
         instance.parent = new WeakReference<ParticleManager>(particleManager);
         return instance;
     }
@@ -59,7 +59,7 @@ public class AdvancedParticleManager extends ParticleManager {
                     double d0 = pos.getX() + (j + 0.5D) / i;
                     double d1 = pos.getY() + (k + 0.5D) / i;
                     double d2 = pos.getZ() + (l + 0.5D) / i;
-                    this.addEffect(new AdvancedEntityDiggingFX(this.worldObj, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D,
+                    this.addEffect(new AdvancedEntityDiggingFX(this.world, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos.getY() - 0.5D,
                             d2 - pos.getZ() - 0.5D, icon).setBlockPos(pos));
                 }
             }
@@ -79,9 +79,9 @@ public class AdvancedParticleManager extends ParticleManager {
         int j = pos.getY();
         int k = pos.getZ();
         float f = 0.1F;
-        double d0 = i + this.worldObj.rand.nextDouble() * (box.maxX - box.minX - f * 2.0F) + f + box.minX;
-        double d1 = j + this.worldObj.rand.nextDouble() * (box.maxY - box.maxY - f * 2.0F) + f + box.minY;
-        double d2 = k + this.worldObj.rand.nextDouble() * (box.maxZ - box.minZ - f * 2.0F) + f + box.minZ;
+        double d0 = i + this.world.rand.nextDouble() * (box.maxX - box.minX - f * 2.0F) + f + box.minX;
+        double d1 = j + this.world.rand.nextDouble() * (box.maxY - box.maxY - f * 2.0F) + f + box.minY;
+        double d2 = k + this.world.rand.nextDouble() * (box.maxZ - box.minZ - f * 2.0F) + f + box.minZ;
 
         if (side == EnumFacing.DOWN) d1 = j + box.minY - f;
         if (side == EnumFacing.UP) d1 = j + box.maxY + f;
@@ -90,7 +90,7 @@ public class AdvancedParticleManager extends ParticleManager {
         if (side == EnumFacing.WEST) d0 = i + box.minX - f;
         if (side == EnumFacing.EAST) d0 = i + box.maxX + f;
 
-        this.addEffect((new AdvancedEntityDiggingFX(this.worldObj, d0, d1, d2, 0.0D, 0.0D, 0.0D, icon)).setBlockPos(pos)
+        this.addEffect((new AdvancedEntityDiggingFX(this.world, d0, d1, d2, 0.0D, 0.0D, 0.0D, icon)).setBlockPos(pos)
                 .multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
     }
 

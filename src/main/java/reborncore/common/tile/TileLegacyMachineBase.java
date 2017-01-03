@@ -40,8 +40,8 @@ import java.util.Optional;
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory {
 
 	public void syncWithAll() {
-		if (!worldObj.isRemote) {
-			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), worldObj);
+		if (!world.isRemote) {
+			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), world);
 		}
 	}
 
@@ -77,32 +77,32 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	public int getFacingInt() {
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos)).getIndex();
+			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
 		}
 		return 0;
 	}
 
 	public EnumFacing getFacingEnum() {
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			return ((BlockMachineBase) block).getFacing(worldObj.getBlockState(pos));
+			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
 		}
 		return null;
 	}
 
 	public void setFacing(EnumFacing enumFacing) {
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			((BlockMachineBase) block).setFacing(enumFacing, worldObj, pos);
+			((BlockMachineBase) block).setFacing(enumFacing, world, pos);
 		}
 	}
 
 	public boolean isActive() {
-		Block block = worldObj.getBlockState(pos).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			return worldObj.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+			return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
 		}
 		return false;
 	}
@@ -225,7 +225,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		if (getInventoryForTile().isPresent()) {
 			return getInventoryForTile().get().isUseableByPlayer(player);
 		}
