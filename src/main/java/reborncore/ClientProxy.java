@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import reborncore.client.models.HolidayRenderEvent;
+import reborncore.common.multiblock.MultiblockClientTickHandler;
 import reborncore.shields.client.RebornItemStackRenderer;
 import reborncore.shields.client.ShieldTextureStore;
 
@@ -32,6 +33,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.postInit(event);
 		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
+		MinecraftForge.EVENT_BUS.register(new MultiblockClientTickHandler());
 	}
 
 	@Override
