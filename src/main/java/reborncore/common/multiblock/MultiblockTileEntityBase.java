@@ -168,7 +168,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	public void validate()
 	{
 		super.validate();
-		MultiblockRegistry.onPartAdded(this.worldObj, this);
+		MultiblockRegistry.onPartAdded(this.getWorld(), this);
 	}
 
 	// Network Communication
@@ -357,16 +357,16 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 		TileEntity te;
 		List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
-		IChunkProvider chunkProvider = worldObj.getChunkProvider();
+		IChunkProvider chunkProvider = getWorld().getChunkProvider();
 		for (CoordTriplet neighbor : neighbors)
 		{
-			if (!WorldUtils.chunkExists(worldObj, neighbor.getChunkX(), neighbor.getChunkZ()))
+			if (!WorldUtils.chunkExists(getWorld(), neighbor.getChunkX(), neighbor.getChunkZ()))
 			{
 				// Chunk not loaded, skip it.
 				continue;
 			}
 
-			te = this.worldObj.getTileEntity(neighbor.toBlockPos());
+			te = this.getWorld().getTileEntity(neighbor.toBlockPos());
 			if (te instanceof IMultiblockPart)
 			{
 				neighborParts.add((IMultiblockPart) te);
@@ -380,18 +380,18 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	public void onOrphaned(MultiblockControllerBase controller, int oldSize, int newSize)
 	{
 		this.markDirty();
-		worldObj.markChunkDirty(getPos(), this);
+		getWorld().markChunkDirty(getPos(), this);
 	}
 
 	// // Helper functions for notifying neighboring blocks
 	protected void notifyNeighborsOfBlockChange()
 	{
-		worldObj.notifyBlockOfStateChange(getPos(), getBlockType());
+		getWorld().notifyBlockOfStateChange(getPos(), getBlockType());
 	}
 
 	protected void notifyNeighborsOfTileChange()
 	{
-		worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+		getWorld().notifyNeighborsOfStateChange(getPos(), getBlockType());
 	}
 
 	// /// Private/Protected Logic Helpers
@@ -411,6 +411,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		}
 
 		// Clean part out of lists in the registry
-		MultiblockRegistry.onPartRemovedFromWorld(worldObj, this);
+		MultiblockRegistry.onPartRemovedFromWorld(getWorld(), this);
 	}
 }
