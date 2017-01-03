@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -412,5 +413,10 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 		// Clean part out of lists in the registry
 		MultiblockRegistry.onPartRemovedFromWorld(getWorld(), this);
+	}
+
+	@Override
+	public IBlockState getBlockState() {
+		return world.getBlockState(pos);
 	}
 }

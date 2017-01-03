@@ -2,6 +2,7 @@ package reborncore.common.multiblock;
 
 import java.util.Set;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -229,4 +230,7 @@ public abstract class IMultiblockPart extends TileEntity
 	 * clear the saved data here.
 	 */
 	public abstract void onMultiblockDataAssimilated();
+
+
+	public abstract IBlockState getBlockState();
 }
