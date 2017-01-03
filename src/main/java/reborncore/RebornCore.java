@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.RebornPackets;
@@ -74,6 +75,8 @@ public class RebornCore implements IModInfo
 		RebornPermissions.init();
 		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
+		// Multiblock events
+		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 
         proxy.init(event);
 	}
