@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -384,14 +385,12 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	// // Helper functions for notifying neighboring blocks
-	protected void notifyNeighborsOfBlockChange()
-	{
-		getWorld().notifyBlockOfStateChange(getPos(), getBlockType());
+	protected void notifyNeighborsOfBlockChange() {
+		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 	}
 
-	protected void notifyNeighborsOfTileChange()
-	{
-		getWorld().notifyNeighborsOfStateChange(getPos(), getBlockType());
+	protected void notifyNeighborsOfTileChange() {
+		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 	}
 
 	// /// Private/Protected Logic Helpers
