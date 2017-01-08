@@ -3,8 +3,10 @@ package reborncore.common.powerSystem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
+import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+import reborncore.mixin.json.JsonUtil;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -121,22 +123,26 @@ public class PowerSystem {
 			writeConfig(new EnergyPriorityConfig());
 		}
 		if (priorityConfig.exists()) {
+			EnergyPriorityConfig config = null;
 			try (Reader reader = new FileReader(priorityConfig)) {
-				Gson gson = new GsonBuilder().create();
-				EnergyPriorityConfig p = gson.fromJson(reader, EnergyPriorityConfig.class);
-				euPriority = p.euPriority;
-				teslaPriority = p.teslaPriority;
-				forgePriority = p.forgePriority;
+				config = JsonUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
 			} catch (Exception e) {
-
+				e.printStackTrace();
+				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
 			}
+			if(config == null){
+				config = new EnergyPriorityConfig();
+				writeConfig(config);
+			}
+			euPriority = config.euPriority;
+			teslaPriority = config.teslaPriority;
+			forgePriority = config.forgePriority;
 		}
 	}
 
 	public static void writeConfig(EnergyPriorityConfig config) {
 		try (Writer writer = new FileWriter(priorityConfig)) {
-			Gson gson = new GsonBuilder().create();
-			gson.toJson(config, writer);
+			JsonUtil.GSON.toJson(config, writer);
 		} catch (Exception e) {
 
 		}
