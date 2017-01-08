@@ -34,7 +34,7 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { "import reborncore.mixin.transformer.MixinTransformer" };
+		return new String[] { "reborncore.mixin.transformer.MixinTransformer" };
 	}
 
 	@Override
