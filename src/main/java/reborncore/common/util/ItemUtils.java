@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -44,6 +45,21 @@ public class ItemUtils {
 					if (inta == intb) {
 						return true;
 					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isInputEqual(Object input, ItemStack other, boolean matchDamage, boolean matchNBT,
+	                                  boolean useOreDic) {
+		if(input instanceof ItemStack){
+			return isItemEqual((ItemStack) input, other, matchDamage, matchNBT, useOreDic);
+		} else if (input instanceof String){
+			NonNullList<ItemStack> ores = OreDictionary.getOres((String) input);
+			for(ItemStack stack : ores){
+				if(isItemEqual(stack, other, matchDamage, matchNBT, false)){
+					return true;
 				}
 			}
 		}

@@ -58,9 +58,11 @@ public class RecipeHandler {
 		// if (!RecipeConfigManager.canLoadRecipe(recipe)) {
 		// return;
 		// }
-		for (ItemStack input : recipe.getInputs()) {
+		for (Object input : recipe.getInputs()) {
 			Validate.notNull(input);
-			Validate.notNull(input.getItem());
+			if(input instanceof ItemStack) {
+				Validate.notNull(((ItemStack) input).getItem());
+			}
 		}
 		for (ItemStack output : recipe.getOutputs()) {
 			Validate.notNull(output);

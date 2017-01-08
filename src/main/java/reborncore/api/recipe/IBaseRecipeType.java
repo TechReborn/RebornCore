@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is the base recipe class implement this to make a recipe handler
@@ -15,7 +16,7 @@ public interface IBaseRecipeType {
 	 *
 	 * @return the List of inputs
 	 */
-	public List<ItemStack> getInputs();
+	public List<Object> getInputs();
 
 	/**
 	 * This gets the output form the array list
