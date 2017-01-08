@@ -44,32 +44,34 @@ public class RecipeHandler {
         return "";
     }
 
-    /**
-     * Add a recipe to the system
-     *
-     * @param recipe The recipe to add to the system.
-     */
-    public static void addRecipe(IBaseRecipeType recipe) {
-        if (recipe == null) {
-            return;
-        }
-        if (recipeList.contains(recipe)) {
-            return;
-        }
-        // if (!RecipeConfigManager.canLoadRecipe(recipe)) {
-        // return;
-        // }
-        for(ItemStack input : recipe.getInputs()){
-            Validate.notNull(input);
-            Validate.notNull(input.getItem());
-        }
-        for(ItemStack output : recipe.getOutputs()){
-            Validate.notNull(output);
-            Validate.notNull(output.getItem());
-        }
-        if (!machineNames.contains(recipe.getRecipeName())) {
-            machineNames.add(recipe.getRecipeName());
-        }
-        recipeList.add(recipe);
-    }
+	/**
+	 * Add a recipe to the system
+	 *
+	 * @param recipe The recipe to add to the system.
+	 */
+	public static void addRecipe(IBaseRecipeType recipe) {
+		if (recipe == null) {
+			return;
+		}
+		if (recipeList.contains(recipe)) {
+			return;
+		}
+		// if (!RecipeConfigManager.canLoadRecipe(recipe)) {
+		// return;
+		// }
+		for (Object input : recipe.getInputs()) {
+			Validate.notNull(input);
+			if(input instanceof ItemStack) {
+				Validate.notNull(((ItemStack) input).getItem());
+			}
+		}
+		for (ItemStack output : recipe.getOutputs()) {
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+		}
+		if (!machineNames.contains(recipe.getRecipeName())) {
+			machineNames.add(recipe.getRecipeName());
+		}
+		recipeList.add(recipe);
+	}
 }
