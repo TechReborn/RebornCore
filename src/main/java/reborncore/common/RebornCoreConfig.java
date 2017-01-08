@@ -12,26 +12,20 @@ import java.io.File;
 public class RebornCoreConfig {
 
 	public static Configuration config;
-
-	private static RebornCoreConfig instance = null;
 	public static String CATEGORY_POWER = "power";
 	public static String CATEGORY_MISC = "misc";
-
-	protected static boolean enableEU;
-	protected static boolean enableTesla;
-	protected static boolean enableForge;
-	public static int euPriority;
-	public static int teslaPriority;
-	public static int forgePriority;
 	public static int euPerFU;
-
 	public static boolean ShowStackInfoHUD;
 	public static boolean stackInfoBottom;
 	public static int stackInfoX;
 	public static int stackInfoY;
-
 	public static boolean versionCheck;
 	public static boolean easterEggs;
+	protected static boolean enableEU;
+	protected static boolean enableTesla;
+	protected static boolean enableForge;
+	private static RebornCoreConfig instance = null;
+	private static IPowerConfig powerConfig = null;
 
 	public RebornCoreConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -82,17 +76,11 @@ public class RebornCoreConfig {
 		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X coordinate of the stack hud (ClientSideOnly)").getInt();
 		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y coordinate of the stack hud (ClientSideOnly)").getInt();
 
-		euPriority = config.get(CATEGORY_POWER, "EU Priority", 1, "Priority of EU for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-		teslaPriority = config.get(CATEGORY_POWER, "TESLA Priority", 2, "Priority of TESLA for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-		forgePriority = config.get(CATEGORY_POWER, "Forge Energy Priority", 0, "Priority of FE/FU/Fwhatever for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
 
 		//resets this when the config is reloaded
 		powerConfig = null;
 	}
-
-	private static IPowerConfig powerConfig = null;
 
 	public static IPowerConfig getRebornPower() {
 		if (powerConfig == null) {
