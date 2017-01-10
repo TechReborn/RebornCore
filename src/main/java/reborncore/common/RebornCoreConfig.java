@@ -22,6 +22,7 @@ public class RebornCoreConfig
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
+	public static boolean ShowStackInfoHUD;
 	public static int euPriority;
 	public static int teslaPriority;
 	public static int forgePriority;
@@ -78,6 +79,9 @@ public class RebornCoreConfig
 		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
+
+		ShowStackInfoHUD = config.get(CATEGORY_POWER, "Show Stack Info HUD", true, "Show Stack Info HUD (ClientSideOnly)")
+			.getBoolean(true);
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
 

@@ -1,10 +1,10 @@
 package reborncore.common.recipes;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by modmuss50 on 08/01/2017.
@@ -18,7 +18,7 @@ public class RecipeTranslator {
 		} else if (object instanceof String){
 			String oreName = (String) object;
 			if(OreDictionary.doesOreNameExist(oreName)){
-				NonNullList<ItemStack> list = OreDictionary.getOres(oreName);
+				List<ItemStack> list = OreDictionary.getOres(oreName);
 				return list.get(0).copy(); //The first entry
 			}
 

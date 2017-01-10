@@ -110,4 +110,16 @@ public class CraftingHelper
 		}
 		GameRegistry.addSmelting(input, output, xp);
 	}
+
+	public static void addSmelting(ItemStack input, ItemStack output) {
+		addSmelting(input, output, 1F);
+	}
+
+	public static void addSmelting(Item input, ItemStack output) {
+		addSmelting(input, output, 1F);
+	}
+
+	public static void addSmelting(Block input, ItemStack output) {
+		addSmelting(input, output, 1F);
+	}
 }
