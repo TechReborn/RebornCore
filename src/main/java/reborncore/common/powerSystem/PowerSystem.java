@@ -1,14 +1,25 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.client.Minecraft;
+import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+import reborncore.mixin.json.JsonUtil;
 
+import java.io.*;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class PowerSystem
 {
+	public static File priorityConfig;
+	private static int euPriority;
+	private static int teslaPriority;
+	private static int forgePriority;
+	private static int euPriorityDefault = 0;
+	private static int teslaPriorityDefault = 2;
+	private static int forgePriorityDefault = 1;
+
 	public static String getLocaliszedPower(double eu) {
 		return getLocaliszedPower((int) eu);
 	}
@@ -88,6 +99,55 @@ public class PowerSystem
 		return EnergySystem.FE;
 	}
 
+	public static void bumpPowerConfig() {
+		EnergyPriorityConfig config = new EnergyPriorityConfig();
+		if (getDisplayPower() == EnergySystem.TESLA) {
+			config.setEuPriority(2);
+			config.setTeslaPriority(0);
+			config.setForgePriority(1);
+		} else if (getDisplayPower() == EnergySystem.EU) {
+			config.setEuPriority(0);
+			config.setTeslaPriority(1);
+			config.setForgePriority(2);
+		} else if (getDisplayPower() == EnergySystem.FE) {
+			config.setEuPriority(1);
+			config.setTeslaPriority(2);
+			config.setForgePriority(0);
+		}
+		writeConfig(config);
+	}
+
+	public static void reloadConfig() {
+		if (!priorityConfig.exists()) {
+			writeConfig(new EnergyPriorityConfig());
+		}
+		if (priorityConfig.exists()) {
+			EnergyPriorityConfig config = null;
+			try (Reader reader = new FileReader(priorityConfig)) {
+				config = JsonUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
+			}
+			if(config == null){
+				config = new EnergyPriorityConfig();
+				writeConfig(config);
+			}
+			euPriority = config.euPriority;
+			teslaPriority = config.teslaPriority;
+			forgePriority = config.forgePriority;
+		}
+	}
+
+	public static void writeConfig(EnergyPriorityConfig config) {
+		try (Writer writer = new FileWriter(priorityConfig)) {
+			JsonUtil.GSON.toJson(config, writer);
+		} catch (Exception e) {
+
+		}
+		reloadConfig();
+	}
+
 
 	public enum EnergySystem {
 		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C),
@@ -106,6 +166,36 @@ public class PowerSystem
 			this.xBar = xBar;
 			this.yBar = yBar;
 			this.altColour = altColour;
+		}
+	}
+
+	public static class EnergyPriorityConfig {
+		public int euPriority = euPriorityDefault;
+		public int teslaPriority = teslaPriorityDefault;
+		public int forgePriority = forgePriorityDefault;
+
+		public int getEuPriority() {
+			return euPriority;
+		}
+
+		public void setEuPriority(int euPriority) {
+			this.euPriority = euPriority;
+		}
+
+		public int getTeslaPriority() {
+			return teslaPriority;
+		}
+
+		public void setTeslaPriority(int teslaPriority) {
+			this.teslaPriority = teslaPriority;
+		}
+
+		public int getForgePriority() {
+			return forgePriority;
+		}
+
+		public void setForgePriority(int forgePriority) {
+			this.forgePriority = forgePriority;
 		}
 	}
 

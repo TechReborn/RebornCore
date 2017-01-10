@@ -4,10 +4,24 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.*;
 
 public class FluidUtils
 {
 
+	//TODO
+	public static boolean drainContainers(net.minecraftforge.fluids.capability.IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot){
+		return false;
+	}
+
+	//TODO
+	public static boolean fillContainers(net.minecraftforge.fluids.capability.IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot,
+	                                     Fluid fluidToFill){
+		return false;
+	}
+
+	@Deprecated
 	public static boolean drainContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot)
 	{
 		ItemStack input = inv.getStackInSlot(inputSlot);
@@ -41,6 +55,7 @@ public class FluidUtils
 		return false;
 	}
 
+	@Deprecated
 	public static boolean fillContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot,
 			Fluid fluidToFill)
 	{
@@ -66,6 +81,7 @@ public class FluidUtils
 		return false;
 	}
 
+	@Deprecated
 	public static FluidStack getFluidStackInContainer(ItemStack stack)
 	{
 		if(stack.getItem() instanceof IFluidContainerItem){
@@ -74,6 +90,7 @@ public class FluidUtils
 		return FluidContainerRegistry.getFluidForFilledItem(stack);
 	}
 
+	@Deprecated
 	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty)
 	{
 		if (fluid == null || empty == null)
