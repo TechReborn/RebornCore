@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +22,6 @@ public class ItemMetadataCL extends ItemCL {
 
 	public ItemMetadataCL(ModCL mod, String name) {
 		this(mod, name, "");
-	}
-
-	public ItemStack getStack(String name) {
-		return getStack(name, 1);
-	}
-
-	public ItemStack getStack(String name, int count) {
-		for (String type : types) {
-			if (type.equalsIgnoreCase(name)) {
-				ItemStack stack = new ItemStack(mod.getRegistry().REGISTRY.get(this.name), count, types.indexOf(name));
-				stack.setCount(count);
-				return stack;
-			}
-		}
-		throw new InvalidParameterException("Stack not found: " + name);
 	}
 
 	@Override

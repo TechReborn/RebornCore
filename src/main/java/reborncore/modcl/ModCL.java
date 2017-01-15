@@ -17,8 +17,6 @@ public abstract class ModCL implements IModInfo {
 	public List<Item> modelsToRegister = new ArrayList<>();
 	public HashMap<ItemMetadataCL, String> customBlockStates = new HashMap<>();
 
-	public abstract RegistryCL getRegistry();
-
 	public CreativeTabs getTab() {
 		return tab;
 	}
