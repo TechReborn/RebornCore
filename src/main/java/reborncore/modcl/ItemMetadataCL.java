@@ -1,6 +1,5 @@
 package reborncore.modcl;
 
-import crystekteam.crystek.init.CrystekItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,7 +32,7 @@ public class ItemMetadataCL extends ItemCL {
 	public ItemStack getStack(String name, int count) {
 		for (String type : types) {
 			if (type.equalsIgnoreCase(name)) {
-				ItemStack stack = new ItemStack(CrystekItems.REGISTRY.get(this.name), count, types.indexOf(name));
+				ItemStack stack = new ItemStack(mod.getRegistry().REGISTRY.get(this.name), count, types.indexOf(name));
 				stack.setCount(count);
 				return stack;
 			}
