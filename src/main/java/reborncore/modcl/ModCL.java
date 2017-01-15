@@ -1,17 +1,24 @@
-package crystekteam.crysteklib;
+package reborncore.modcl;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import reborncore.common.IModInfo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Prospector
  */
 public abstract class ModCL implements IModInfo {
-	public CreativeTabCL TAB = new CreativeTabCL(this);
+	public CreativeTabCL tab = new CreativeTabCL(this);
+	public List<Item> modelsToRegister = new ArrayList<>();
+	public HashMap<ItemMetadataCL, String> customBlockStates = new HashMap<>();
 
 	public CreativeTabs getTab() {
-		return TAB;
+		return tab;
 	}
 
 	public abstract String SERVER_PROXY();
@@ -20,6 +27,10 @@ public abstract class ModCL implements IModInfo {
 
 	public ItemStack getTabStack() {
 		return ItemStack.EMPTY;
+	}
+
+	public String getPrefix() {
+		return MOD_ID() + ":";
 	}
 
 	private class CreativeTabCL extends CreativeTabs {

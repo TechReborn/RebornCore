@@ -1,4 +1,4 @@
-package crystekteam.crysteklib;
+package reborncore.common.recipes;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -8,7 +8,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * Created by Prospector
  */
-public abstract class CLRecipeMethods {
+public abstract class RCRecipeMethods {
 
 	static ItemStack getStack(Item item) {
 		return getStack(item, 1);
