@@ -18,12 +18,12 @@ public class ItemMetadataCL extends ItemCL {
 
 	public ItemMetadataCL(ModCL mod, String name, String blockstateLocation) {
 		super(mod, name);
+		setHasSubtypes(true);
 		mod.customBlockStates.put(this, blockstateLocation);
 	}
 
 	public ItemMetadataCL(ModCL mod, String name) {
-		super(mod, name);
-		mod.customBlockStates.put(this, "");
+		this(mod, name, "");
 	}
 
 	public ItemStack getStack(String name) {
