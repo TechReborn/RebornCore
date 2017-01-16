@@ -26,7 +26,7 @@ public abstract class ItemCL extends Item {
 		this.mod = mod;
 		this.name = name;
 		setUnlocalizedName(mod.getPrefix() + name);
-		setRegistryName(mod.MOD_ID(), name);
+		setRegistryName(mod.getModID(), name);
 		setCreativeTab(mod.getTab());
 	}
 }

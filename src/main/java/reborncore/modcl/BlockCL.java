@@ -15,7 +15,7 @@ public class BlockCL extends Block {
 		this.mod = mod;
 		this.name = name;
 		setUnlocalizedName(mod.getPrefix() + name);
-		setRegistryName(mod.MOD_ID(), name);
+		setRegistryName(mod.getModID(), name);
 	}
 
 	public BlockCL(String name, ModCL mod) {
