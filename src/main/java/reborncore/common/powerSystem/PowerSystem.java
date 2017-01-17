@@ -1,6 +1,7 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Loader;
 import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
@@ -9,16 +10,11 @@ import reborncore.mixin.json.JsonUtil;
 import java.io.*;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.function.Predicate;
 
-public class PowerSystem
-{
+public class PowerSystem {
 	public static File priorityConfig;
-	private static int euPriority;
-	private static int teslaPriority;
-	private static int forgePriority;
-	private static int euPriorityDefault = 0;
-	private static int teslaPriorityDefault = 2;
-	private static int forgePriorityDefault = 1;
+	public static EnergySystem energySystem = EnergySystem.FE;
 
 	public static String getLocaliszedPower(double eu) {
 		return getLocaliszedPower((int) eu);
@@ -41,6 +37,8 @@ public class PowerSystem
 			return eu + " " + EnergySystem.EU.abbreviation;
 		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
 			return eu * RebornCoreConfig.euPerFU + " " + EnergySystem.TESLA.abbreviation;
+		} else if (getDisplayPower().equals(EnergySystem.RF)) {
+			return eu * RebornCoreConfig.euPerRF + " " + EnergySystem.RF.abbreviation;
 		} else {
 			return eu * RebornCoreConfig.euPerFU + " " + EnergySystem.FE.abbreviation;
 		}
@@ -51,6 +49,8 @@ public class PowerSystem
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu) + " " + EnergySystem.EU.abbreviation;
 		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
+		} else if (getDisplayPower().equals(EnergySystem.RF)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerRF) + " " + EnergySystem.RF.abbreviation;
 		} else {
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
 		}
@@ -61,6 +61,8 @@ public class PowerSystem
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu);
 		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU);
+		} else if (getDisplayPower().equals(EnergySystem.RF)) {
+			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerRF);
 		} else {
 			return NumberFormat.getIntegerInstance(Locale.forLanguageTag(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode())).format(eu * RebornCoreConfig.euPerFU);
 		}
@@ -71,6 +73,8 @@ public class PowerSystem
 			return eu + "";
 		} else if (getDisplayPower().equals(EnergySystem.TESLA)) {
 			return eu * RebornCoreConfig.euPerFU + "";
+		} else if (getDisplayPower().equals(EnergySystem.RF)) {
+			return eu * RebornCoreConfig.euPerRF + "";
 		} else {
 			return eu * RebornCoreConfig.euPerFU + "";
 		}
@@ -89,37 +93,29 @@ public class PowerSystem
 	}
 
 	public static EnergySystem getDisplayPower() {
-		int eu = RebornCoreConfig.euPriority;
-		int tesla = RebornCoreConfig.teslaPriority;
-		int fe = RebornCoreConfig.forgePriority;
-		if ((eu > tesla || !TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())) && eu > fe && RebornCoreConfig.getRebornPower().eu())
-			return EnergySystem.EU;
-		if ((tesla > eu || !RebornCoreConfig.getRebornPower().eu()) && tesla > fe && TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
-			return EnergySystem.TESLA;
-		return EnergySystem.FE;
+		return energySystem;
 	}
 
 	public static void bumpPowerConfig() {
-		EnergyPriorityConfig config = new EnergyPriorityConfig();
-		if (getDisplayPower() == EnergySystem.TESLA) {
-			config.setEuPriority(2);
-			config.setTeslaPriority(0);
-			config.setForgePriority(1);
-		} else if (getDisplayPower() == EnergySystem.EU) {
-			config.setEuPriority(0);
-			config.setTeslaPriority(1);
-			config.setForgePriority(2);
-		} else if (getDisplayPower() == EnergySystem.FE) {
-			config.setEuPriority(1);
-			config.setTeslaPriority(2);
-			config.setForgePriority(0);
+		int nextId = 0;
+		if (energySystem.index > EnergySystem.values().length) {
+			nextId = 0;
+		} else {
+			for (EnergySystem system : EnergySystem.values()) {
+				if (system.index > energySystem.index && system.isValid.test(system)) {
+					nextId = system.index;
+					break;
+				}
+			}
 		}
-		writeConfig(config);
+		energySystem = EnergySystem.indexOf(nextId);
+		writeConfig(new EnergyPriorityConfig(energySystem));
 	}
 
 	public static void reloadConfig() {
 		if (!priorityConfig.exists()) {
-			writeConfig(new EnergyPriorityConfig());
+			writeConfig(new EnergyPriorityConfig(EnergySystem.FE));
+			energySystem = EnergySystem.FE;
 		}
 		if (priorityConfig.exists()) {
 			EnergyPriorityConfig config = null;
@@ -128,14 +124,15 @@ public class PowerSystem
 			} catch (Exception e) {
 				e.printStackTrace();
 				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
-			}
-			if(config == null){
-				config = new EnergyPriorityConfig();
+				priorityConfig.delete();
+				config = new EnergyPriorityConfig(EnergySystem.FE);
 				writeConfig(config);
 			}
-			euPriority = config.euPriority;
-			teslaPriority = config.teslaPriority;
-			forgePriority = config.forgePriority;
+			if (config == null) {
+				config = new EnergyPriorityConfig(EnergySystem.FE);
+				writeConfig(config);
+			}
+			energySystem = config.energySystem;
 		}
 	}
 
@@ -143,59 +140,57 @@ public class PowerSystem
 		try (Writer writer = new FileWriter(priorityConfig)) {
 			JsonUtil.GSON.toJson(config, writer);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
-		reloadConfig();
 	}
 
-
 	public enum EnergySystem {
-		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C),
-		EU(0xFF980000, "EU", 43, 151, 0xFF580000),
-		FE(0xFFE14E1C, "FE", 15, 151, 0xFFB3380F);
+		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C, 0, system -> TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())),
+		EU(0xFF980000, "EU", 43, 151, 0xFF580000, 1, system -> RebornCoreConfig.getRebornPower().eu() && Loader.isModLoaded("IC2")),
+		FE(0xFFE14E1C, "FE", 15, 151, 0xFFB3380F, 2, system -> RebornCoreConfig.getRebornPower().forge()),
+		RF(0xFFE14E1C, "RF", 15, 151, 0xFFB3380F, 3, system -> RebornCoreConfig.getRebornPower().rf());
 
 		public int colour;
 		public int altColour;
 		public String abbreviation;
 		public int xBar;
 		public int yBar;
+		private int index;
+		private Predicate<EnergySystem> isValid;
 
-		EnergySystem(int colour, String abbreviation, int xBar, int yBar, int altColour) {
+		EnergySystem(int colour, String abbreviation, int xBar, int yBar, int altColour, int index, Predicate<EnergySystem> isValid) {
 			this.colour = colour;
 			this.abbreviation = abbreviation;
 			this.xBar = xBar;
 			this.yBar = yBar;
 			this.altColour = altColour;
+			this.index = index;
+			this.isValid = isValid;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public void setIndex(int index) {
+			this.index = index;
+		}
+
+		public static EnergySystem indexOf(int index) {
+			for (EnergySystem system : EnergySystem.values()) {
+				if (system.index == index) {
+					return system;
+				}
+			}
+			return FE;
 		}
 	}
 
 	public static class EnergyPriorityConfig {
-		public int euPriority = euPriorityDefault;
-		public int teslaPriority = teslaPriorityDefault;
-		public int forgePriority = forgePriorityDefault;
+		public EnergySystem energySystem;
 
-		public int getEuPriority() {
-			return euPriority;
-		}
-
-		public void setEuPriority(int euPriority) {
-			this.euPriority = euPriority;
-		}
-
-		public int getTeslaPriority() {
-			return teslaPriority;
-		}
-
-		public void setTeslaPriority(int teslaPriority) {
-			this.teslaPriority = teslaPriority;
-		}
-
-		public int getForgePriority() {
-			return forgePriority;
-		}
-
-		public void setForgePriority(int forgePriority) {
-			this.forgePriority = forgePriority;
+		public EnergyPriorityConfig(EnergySystem energySystem) {
+			this.energySystem = energySystem;
 		}
 	}
 

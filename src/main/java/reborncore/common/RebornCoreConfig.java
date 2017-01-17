@@ -23,9 +23,6 @@ public class RebornCoreConfig
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
 	public static boolean ShowStackInfoHUD;
-	public static int euPriority;
-	public static int teslaPriority;
-	public static int forgePriority;
 	public static int euPerRF;
 	public static int euPerFU;
 
@@ -84,11 +81,6 @@ public class RebornCoreConfig
 			.getBoolean(true);
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
-
-		euPriority = config.get(CATEGORY_POWER, "EU Priority", 1, "Priority of EU for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-		teslaPriority = config.get(CATEGORY_POWER, "TESLA Priority", 2, "Priority of TESLA for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-		forgePriority = config.get(CATEGORY_POWER, "Forge Energy Priority", 0, "Priority of FE/FU/Fwhatever for display purposes. Higher number = higher priority (ClientSideOnly)").getInt();
-
 		//resets this when the config is reloaded
 		powerConfig = null;
 	}

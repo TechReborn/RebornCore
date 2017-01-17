@@ -22,6 +22,7 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
+import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.LogHelper;
@@ -30,6 +31,7 @@ import reborncore.common.util.RebornPermissions;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
+import java.io.File;
 import java.io.IOException;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = "required-after:Forge@[12.18.2.2121,);")
@@ -46,6 +48,7 @@ public class RebornCore implements IModInfo
 	public static RebornCoreConfig config;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
+	public static File configDir;
 
 	public RebornCore()
 	{
@@ -55,7 +58,13 @@ public class RebornCore implements IModInfo
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
+		if (!configDir.exists()) {
+			configDir.mkdir();
+		}
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
+		PowerSystem.reloadConfig();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
