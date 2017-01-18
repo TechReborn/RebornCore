@@ -368,7 +368,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
-			if (capability != null) {
+			if (TeslaManager.manager.isTeslaCapability(capability)) {
 				return teslaCap;
 			}
 		}
