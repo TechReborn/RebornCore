@@ -19,14 +19,14 @@ import java.util.Optional;
  */
 public class MixinTransformer implements IClassTransformer {
 
+	public static ClassPool cp = new ClassPool(true);
+
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 
 		if (MixinManager.mixinTargetMap.containsKey(transformedName)) {
-
 			long start = System.currentTimeMillis();
 			//makes a CtClass out of the byte array
-			ClassPool cp = ClassPool.getDefault();
 			cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
 			CtClass target = null;
 			try {
@@ -35,13 +35,17 @@ public class MixinTransformer implements IClassTransformer {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to generate target infomation");
 			}
+			if(!transformedName.startsWith("net.minecraft")){
+				MixinManager.mixinRemaper.remap(target, cp);
+			}
+
 			List<String> mixins = MixinManager.mixinTargetMap.get(transformedName);
-			MixinManager.logger.info("Found " + mixins.size() + " mixins for " + name);
+			MixinManager.logger.info("Found " + mixins.size() + " mixins for " + transformedName);
 			for(String mixinClassName : mixins){
 				CtClass mixinClass = null;
 				try {
 					//loads the mixin class
-					mixinClass = ClassPool.getDefault().get(mixinClassName);
+					mixinClass = cp.get(mixinClassName);
 				} catch (NotFoundException e) {
 					throw new RuntimeException(e);
 				}
