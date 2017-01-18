@@ -3,6 +3,8 @@ package reborncore.common.powerSystem.mixin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import reborncore.api.power.IEnergyInterfaceItem;
+import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.powerSystem.PoweredItem;
 import reborncore.mixin.api.Inject;
 import reborncore.mixin.api.Mixin;
 
@@ -87,6 +89,22 @@ public abstract class BasePowerMixin implements IEnergyInterfaceItem {
 		}
 
 		return tagCompound;
+	}
+
+	@Inject
+	public double getDurabilityForDisplay(ItemStack stack) {
+		double charge = (PoweredItem.getEnergy(stack) / getMaxPower(stack));
+		return 1 - charge;
+	}
+
+	@Inject
+	public boolean showDurabilityBar(ItemStack stack) {
+		return true;
+	}
+
+	@Inject
+	public int getRGBDurabilityForDisplay(ItemStack stack) {
+		return PowerSystem.getDisplayPower().colour;
 	}
 
 }
