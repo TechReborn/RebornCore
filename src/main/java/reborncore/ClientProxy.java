@@ -8,6 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import reborncore.client.RenderEvent;
 import reborncore.client.models.HolidayRenderEvent;
 import reborncore.common.multiblock.MultiblockClientTickHandler;
 import reborncore.shields.client.RebornItemStackRenderer;
@@ -26,6 +27,7 @@ public class ClientProxy extends CommonProxy
 	public void init(FMLInitializationEvent event)
 	{
 		super.init(event);
+		MinecraftForge.EVENT_BUS.register(RenderEvent.class);
 	}
 
 	@Override

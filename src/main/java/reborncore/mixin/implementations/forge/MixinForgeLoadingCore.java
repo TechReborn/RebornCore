@@ -28,6 +28,8 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 	//True when using SRG names
 	public static boolean runtimeDeobfuscationEnabled = true;
 
+	public static boolean mixinsLoaded = false;
+
 	public MixinForgeLoadingCore() throws NotFoundException, ClassNotFoundException {
 		//Adds the launchwrappers class loader to java assist, this allows mixins to be loaded form the mod folder.
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Launch.classLoader));
@@ -55,6 +57,7 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
+		mixinsLoaded = true;
 	}
 
 	@Override
