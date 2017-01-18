@@ -16,7 +16,7 @@ public class ItemMetadataCL extends ItemCL {
 	public List<String> types = new ArrayList<>();
 
 	public ItemMetadataCL(ModCL mod, String name, String blockstateLocation) {
-		super(mod, name);
+		super(mod, name, false);
 		setHasSubtypes(true);
 		mod.customBlockStates.put(this, blockstateLocation);
 	}

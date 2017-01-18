@@ -1,5 +1,6 @@
 package reborncore.modcl;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,8 @@ import java.util.List;
  */
 public abstract class ModCL {
 	public CreativeTabCL tab = new CreativeTabCL(this);
-	public List<Item> modelsToRegister = new ArrayList<>();
+	public List<Item> itemModelsToRegister = new ArrayList<>();
+	public List<Block> blockModelsToRegister = new ArrayList<>();
 	public HashMap<ItemMetadataCL, String> customBlockStates = new HashMap<>();
 
 	public CreativeTabs getTab() {

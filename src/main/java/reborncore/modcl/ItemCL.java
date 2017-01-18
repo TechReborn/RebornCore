@@ -14,7 +14,7 @@ public abstract class ItemCL extends Item {
 		super();
 		setInfo(mod, name);
 		if (registerModel) {
-			mod.modelsToRegister.add(this);
+			mod.itemModelsToRegister.add(this);
 		}
 	}
 
