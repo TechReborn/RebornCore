@@ -33,7 +33,6 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 	public MixinForgeLoadingCore() throws NotFoundException, ClassNotFoundException {
 		//Adds the launchwrappers class loader to java assist, this allows mixins to be loaded form the mod folder.
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Launch.classLoader));
-		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Loader.instance().getModClassLoader()));
 		MixinManager.mixinRemaper = new ForgeRemapper();
 		MixinManager.logger = FMLLog.getLogger();//TODO don't use the FML logger?
 	}
