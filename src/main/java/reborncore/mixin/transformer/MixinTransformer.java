@@ -55,7 +55,6 @@ public class MixinTransformer implements IClassTransformer {
 							//This also renames the methord to contain the classname of the mixin
 							CtMethod generatedMethod = CtNewMethod.copy(method, mixinClass.getName().replace(".", "$") + "$" + method.getName(), target, null);
 							target.addMethod(generatedMethod);
-							System.out.println(generatedMethod.getLongName());
 							CtMethod targetMethod = null;
 							Optional<Pair<String, String>> remappedTargetInfo = MixinManager.mixinRemaper.getFullTargetName(annotation, name);
 							for (CtMethod methodCandidate : target.getMethods()) {
