@@ -36,7 +36,7 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Loader.instance().getModClassLoader()));
 		MixinManager.mixinRemaper = new ForgeRemapper();
 		MixinManager.logger = FMLLog.getLogger();//TODO don't use the FML logger?
-		MixinManager.registerMixin(new MixinTargetData("reborncore.client.mixin.MixinRenderItem", "net.minecraft.client.renderer.RenderItem"));
+		//MixinManager.registerMixin(new MixinTargetData("reborncore.client.mixin.MixinRenderItem", "net.minecraft.client.renderer.RenderItem"));
 	}
 
 	@Override
