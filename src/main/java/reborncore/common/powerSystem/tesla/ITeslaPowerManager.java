@@ -23,4 +23,6 @@ public interface ITeslaPowerManager {
 	void created(TilePowerAcceptor acceptor);
 
 	String getDisplayableTeslaCount(long tesla);
+
+	boolean isTeslaCapability(Capability<?> capability);
 }

@@ -7,7 +7,7 @@ public class MixinFactory {
 	public static boolean debug = false;
 
 	/**
-	 * Makes a mixin with the specified class, and a set of traits.
+	 * Makes a mixin with the specified class, and a set of mixin.
 	 */
 	@SuppressWarnings("unchecked")
 	@SafeVarargs

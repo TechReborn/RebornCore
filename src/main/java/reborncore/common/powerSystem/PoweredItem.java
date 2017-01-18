@@ -4,25 +4,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceItem;
-import reborncore.common.powerSystem.traits.BasePowerTrait;
-import reborncore.common.powerSystem.traits.EUItemPowerTrait;
-import reborncore.jtraits.MixinFactory;
+import reborncore.mixin.MixinManager;
+import reborncore.mixin.json.MixinTargetData;
 
 public abstract class PoweredItem {
 
-	public static Item createItem(Class itemClass) throws IllegalAccessException, InstantiationException {
-		return createItem(itemClass, Loader.isModLoaded("IC2"));
-	}
-
-	public static Item createItem(Class itemClass, boolean ic2) throws IllegalAccessException, InstantiationException {
-		Class baseClass = MixinFactory.mixin(itemClass, BasePowerTrait.class);
-		if (ic2) {
-			return (Item) MixinFactory
-				.mixin(baseClass, /** RFItemPowerTrait.class, **/EUItemPowerTrait.class).newInstance();
+	public static void registerPoweredItem(String itemclass){
+		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
+		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.CapabilityItemPowerMixin", itemclass));
+		if(Loader.isModLoaded("IC2")){
+			MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.EUItemPowerTrait", itemclass));
 		}
-		return (Item) baseClass.newInstance();
-		//		return (Item) MixinFactory
-		//				.mixin(baseClass, RFItemPowerTrait.class).newInstance();
 	}
 
 	public static boolean canUseEnergy(double energy, ItemStack stack) {

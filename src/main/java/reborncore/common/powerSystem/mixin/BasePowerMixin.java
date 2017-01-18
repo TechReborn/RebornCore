@@ -1,13 +1,15 @@
-package reborncore.common.powerSystem.traits;
+package reborncore.common.powerSystem.mixin;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import reborncore.api.power.IEnergyInterfaceItem;
-import reborncore.jtraits.JTrait;
+import reborncore.mixin.api.Inject;
+import reborncore.mixin.api.Mixin;
 
-public abstract class BasePowerTrait extends JTrait<Item> implements IEnergyInterfaceItem {
+@Mixin(target = "")
+public abstract class BasePowerMixin implements IEnergyInterfaceItem {
 
+	@Inject
 	@Override
 	public double getEnergy(ItemStack stack) {
 		NBTTagCompound tagCompound = getOrCreateNbtData(stack);
@@ -17,6 +19,7 @@ public abstract class BasePowerTrait extends JTrait<Item> implements IEnergyInte
 		return 0;
 	}
 
+	@Inject
 	@Override
 	public void setEnergy(double energy, ItemStack stack) {
 		NBTTagCompound tagCompound = getOrCreateNbtData(stack);
@@ -29,11 +32,13 @@ public abstract class BasePowerTrait extends JTrait<Item> implements IEnergyInte
 		}
 	}
 
+	@Inject
 	@Override
 	public double addEnergy(double energy, ItemStack stack) {
 		return addEnergy(energy, false, stack);
 	}
 
+	@Inject
 	@Override
 	public double addEnergy(double energy, boolean simulate, ItemStack stack) {
 		double energyReceived = Math.min(getMaxPower(stack) - energy, Math.min(this.getMaxPower(stack), energy));
@@ -44,16 +49,19 @@ public abstract class BasePowerTrait extends JTrait<Item> implements IEnergyInte
 		return energyReceived;
 	}
 
+	@Inject
 	@Override
 	public boolean canUseEnergy(double input, ItemStack stack) {
 		return input <= getEnergy(stack);
 	}
 
+	@Inject
 	@Override
 	public double useEnergy(double energy, ItemStack stack) {
 		return useEnergy(energy, false, stack);
 	}
 
+	@Inject
 	@Override
 	public double useEnergy(double extract, boolean simulate, ItemStack stack) {
 		double energyExtracted = Math.min(extract, Math.min(this.getMaxTransfer(stack), extract));
@@ -64,11 +72,13 @@ public abstract class BasePowerTrait extends JTrait<Item> implements IEnergyInte
 		return energyExtracted;
 	}
 
+	@Inject
 	@Override
 	public boolean canAddEnergy(double energy, ItemStack stack) {
 		return this.getEnergy(stack) + energy <= getMaxPower(stack);
 	}
 
+	@Inject
 	public NBTTagCompound getOrCreateNbtData(ItemStack itemStack) {
 		NBTTagCompound tagCompound = itemStack.getTagCompound();
 		if (tagCompound == null) {

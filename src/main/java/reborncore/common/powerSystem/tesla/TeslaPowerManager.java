@@ -70,6 +70,11 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 		return TeslaUtils.getDisplayableTeslaCount(tesla * RebornCoreConfig.euPerFU);
 	}
 
+	@Override
+	public boolean isTeslaCapability(Capability<?> capability) {
+		return capability == TeslaCapabilities.CAPABILITY_CONSUMER || capability == TeslaCapabilities.CAPABILITY_PRODUCER || capability == TeslaCapabilities.CAPABILITY_HOLDER;
+	}
+
 	public static ITeslaPowerManager getPowerManager() {
 		return new TeslaPowerManager();
 	}
