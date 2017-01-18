@@ -39,9 +39,14 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 		//MixinManager.registerMixin(new MixinTargetData("reborncore.client.mixin.MixinRenderItem", "net.minecraft.client.renderer.RenderItem"));
 	}
 
+//	@Override
+//	public String[] getASMTransformerClass() {
+//		return new String[] { "reborncore.mixin.transformer.MixinTransformer" };
+//	}
+
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { "reborncore.mixin.transformer.MixinTransformer" };
+		return new String[0];
 	}
 
 	@Override
