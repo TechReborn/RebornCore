@@ -60,7 +60,7 @@ public class PoweredItemContainerProvider implements INBTSerializable<NBTTagComp
 
 	@Override
 	public NBTTagCompound serializeNBT() {
-		return null;
+		return new NBTTagCompound();
 	}
 
 	@Override
