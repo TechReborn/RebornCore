@@ -34,9 +34,9 @@ import java.util.List;
 
 public class MultiblockRenderEvent {
 
+	public static BlockPos anchor;
 	private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
-	public static BlockPos anchor;
 	public Location parent;
 
 	public void setMultiblock(MultiblockSet set) {
@@ -75,8 +75,8 @@ public class MultiblockRenderEvent {
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(pos.getX() - dx, pos.getY() - dy, pos.getZ() - dz);
-		GlStateManager.scale(1.02, 1, 1.02);
-		GlStateManager.translate(-0.01, 0, -0.01);
+		GlStateManager.scale(0.8, 0.8, 0.8);
+		GlStateManager.translate(0.2, 0.2, 0.2);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.color(1f, 1f, 1f, 1f);
