@@ -2,6 +2,7 @@ package reborncore.common.powerSystem.mixin;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import reborncore.api.item.IColoredDamageBar;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PoweredItem;
@@ -9,7 +10,7 @@ import reborncore.mixin.api.Inject;
 import reborncore.mixin.api.Mixin;
 
 @Mixin(target = "")
-public abstract class BasePowerMixin implements IEnergyInterfaceItem {
+public abstract class BasePowerMixin implements IEnergyInterfaceItem, IColoredDamageBar {
 
 	@Inject
 	@Override
@@ -99,12 +100,19 @@ public abstract class BasePowerMixin implements IEnergyInterfaceItem {
 
 	@Inject
 	public boolean showDurabilityBar(ItemStack stack) {
+		return false; //Needs to be false so the custom one renders
+	}
+
+
+	@Inject
+	@Override
+	public boolean showRGBDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
 	@Inject
-	public int getRGBDurabilityForDisplay(ItemStack stack) {
+	@Override
+	public int getRGBDurabilityForBar(ItemStack stack) {
 		return PowerSystem.getDisplayPower().colour;
 	}
-
 }
