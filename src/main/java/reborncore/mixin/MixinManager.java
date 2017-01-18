@@ -13,7 +13,7 @@ import java.util.List;
 public class MixinManager {
 
 	public static List<String> mixinClassList = new ArrayList<>();
-	public static HashMap<String, String> mixinTargetMap = new HashMap<>();
+	public static HashMap<String, List<String>> mixinTargetMap = new HashMap<>();
 
 	//The remapper instance
 	public static IMixinRemap mixinRemaper;
@@ -22,7 +22,13 @@ public class MixinManager {
 
 	public static void registerMixin(MixinTargetData data) {
 		mixinClassList.add(data.mixinClass);
-		mixinTargetMap.put(data.targetClass, data.mixinClass);
+		if (mixinTargetMap.containsKey(data.targetClass)) {
+			mixinTargetMap.get(data.targetClass).add(data.mixinClass);
+		} else {
+			List<String> list = new ArrayList<>();
+			list.add(data.mixinClass);
+			mixinTargetMap.put(data.targetClass, list);
+		}
 	}
 
 	public static void registerMixinConfig(MixinConfiguration configuration){
