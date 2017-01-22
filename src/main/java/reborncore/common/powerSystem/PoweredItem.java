@@ -9,12 +9,16 @@ import reborncore.mixin.json.MixinTargetData;
 
 public abstract class PoweredItem {
 
-	public static void registerPoweredItem(String itemclass){
+	public static void registerPoweredItem(String itemclass, boolean ic2){
 		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
 		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.CapabilityItemPowerMixin", itemclass));
-		if(Loader.isModLoaded("IC2")){
+		if(ic2 && Loader.isModLoaded("IC2")){
 			MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.EUItemPowerTrait", itemclass));
 		}
+	}
+
+	public static void registerPoweredItem(String itemclass){
+		registerPoweredItem(itemclass, true);
 	}
 
 	public static boolean canUseEnergy(double energy, ItemStack stack) {
