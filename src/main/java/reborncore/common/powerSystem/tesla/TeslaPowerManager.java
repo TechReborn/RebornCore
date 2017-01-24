@@ -56,7 +56,7 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 	@Override
 	public void update(TilePowerAcceptor powerAcceptor) {
 		if (powerAcceptor.canProvideEnergy(null)) {
-			//TeslaUtils.distributePowerEqually(powerAcceptor.getWorld(), powerAcceptor.getPos(), (long) powerAcceptor.getMaxOutput(), false);
+			TeslaUtils.distributePowerToAllFaces(powerAcceptor.getWorld(), powerAcceptor.getPos(), (long) powerAcceptor.getMaxOutput(), false);
 		}
 	}
 
