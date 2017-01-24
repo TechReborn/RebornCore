@@ -6,9 +6,13 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
+import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,6 +26,9 @@ import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.util.StringUtils;
+import techreborn.compat.CompatManager;
 
 import java.util.List;
 
@@ -33,6 +40,8 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	IEnergyTile, IEnergySink, IEnergySource // Ic2
 {
 	public int tier;
+	protected boolean addedToEnet;
+	ForgePowerManager forgePowerManager;
 	private double energy;
 
 	ForgePowerManager forgePowerManager;
@@ -44,18 +53,44 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		}
 	}
 
-	// IC2
-
-	protected boolean addedToEnet;
+	public TilePowerAcceptor(EnumPowerTier tier) {
+		this.tier = tier.getIC2Tier();
+		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+			TeslaManager.manager.created(this);
+		}
+	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
 	public void update() {
 		super.update();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.update(this);
+		} else if(!getPowerConfig().eu() && !CompatManager.isIC2Loaded && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+			for(EnumFacing side : EnumFacing.values()){
+				if(canProvideEnergy(side)){
+					TileEntity tile = world.getTileEntity(pos.offset(side));
+					if(tile instanceof IEnergyInterfaceTile){
+						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
+						if(eFace.getTier().ordinal() < getTier().ordinal()){
+							for (int j = 0; j < 2; ++j) {
+								double d3 = (double)pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+								double d8 = (double)pos.getY() + world.rand.nextDouble() + 1;
+								double d13 = (double)pos.getZ() + world.rand.nextDouble()+ (side.getFrontOffsetZ() / 2);
+								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
+							}
+						} else {
+							if(eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))){
+								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
+							}
+						}
+					}
+				}
+			}
 		}
-		onLoaded();
+
+		if(CompatManager.isIC2Loaded){
+			onLoaded();
+		}
 	}
 
 	@Optional.Method(modid = "IC2")
@@ -300,17 +335,17 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
-		info.add(TextFormatting.LIGHT_PURPLE + "Energy buffer Size " + TextFormatting.GREEN
-			+ PowerSystem.getLocaliszedPower(getMaxPower()));
+		info.add(TextFormatting.GRAY + "Max Energy: " + TextFormatting.GOLD
+			+ PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
 		if (getMaxInput() != 0) {
-			info.add(TextFormatting.LIGHT_PURPLE + "Max Input " + TextFormatting.GREEN
-				+ PowerSystem.getLocaliszedPower(getMaxInput()));
+			info.add(TextFormatting.GRAY + "Input Rate: " + TextFormatting.GOLD
+				+ PowerSystem.getLocaliszedPowerFormatted(getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(TextFormatting.LIGHT_PURPLE + "Max Output " + TextFormatting.GREEN
-				+ PowerSystem.getLocaliszedPower(getMaxOutput()));
+			info.add(TextFormatting.GRAY + "Output Rate: " + TextFormatting.GOLD
+				+ PowerSystem.getLocaliszedPowerFormatted(getMaxOutput()));
 		}
-		info.add(TextFormatting.LIGHT_PURPLE + "Tier " + TextFormatting.GREEN + getTier());
+		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
 		// if(isRealTile){ //TODO sync to client
 		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
 		// TextFormatting.GREEN + getEUString(energy));
