@@ -37,7 +37,7 @@ public class ItemUtils {
 		if (isItemEqual(a, b, matchDamage, matchNBT)) {
 			return true;
 		}
-		if (a == ItemStack.EMPTY || b == ItemStack.EMPTY)
+		if (a.isEmpty() || b.isEmpty())
 			return false;
 		if (useOreDic) {
 			for (int inta : OreDictionary.getOreIDs(a)) {
