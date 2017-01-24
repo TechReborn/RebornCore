@@ -4,13 +4,11 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
-import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,7 +25,6 @@ import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
-import techreborn.compat.CompatManager;
 
 import java.util.List;
 
@@ -64,7 +61,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		super.update();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.update(this);
-		} else if(!getPowerConfig().eu() && !CompatManager.isIC2Loaded && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+		} else if(!getPowerConfig().eu() && !Info.isIc2Available() && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for(EnumFacing side : EnumFacing.values()){
 				if(canProvideEnergy(side)){
 					TileEntity tile = world.getTileEntity(pos.offset(side));
@@ -87,7 +84,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 
-		if(CompatManager.isIC2Loaded){
+		if(Info.isIc2Available()){
 			onLoaded();
 		}
 	}
