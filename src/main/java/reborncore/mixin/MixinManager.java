@@ -15,6 +15,8 @@ public class MixinManager {
 	public static List<String> mixinClassList = new ArrayList<>();
 	public static HashMap<String, List<String>> mixinTargetMap = new HashMap<>();
 
+	public static List<String> transformedClasses = new ArrayList<>();
+
 	//The remapper instance
 	public static IMixinRemap mixinRemaper;
 	//The logger
