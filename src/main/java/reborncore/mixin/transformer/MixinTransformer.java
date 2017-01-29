@@ -1,17 +1,16 @@
 package reborncore.mixin.transformer;
 
 import javassist.*;
+import net.minecraft.launchwrapper.IClassTransformer;
+import org.apache.commons.lang3.tuple.Pair;
 import reborncore.mixin.MixinManager;
 import reborncore.mixin.api.Constructor;
 import reborncore.mixin.api.Inject;
 import reborncore.mixin.api.Rewrite;
 import reborncore.mixin.implementations.forge.MixinForgeLoadingCore;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -25,6 +24,24 @@ public class MixinTransformer implements IClassTransformer {
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 
 		if (MixinManager.mixinTargetMap.containsKey(transformedName)) {
+			//Start of support for sponge mixins
+			//This fixes a crash when a reborn core mixin, mixes the same thing that sponge wants to.
+			try {
+				MixinManager.logger.trace("Mixin Transformer being called by " + Thread.currentThread().getStackTrace()[3].getClassName());
+				if(Thread.currentThread().getStackTrace()[3].getClassName().equals("org.spongepowered.asm.mixin.transformer.TreeInfo")){ //TODO check for repackages of the sponge mixin lib
+					MixinManager.logger.trace("Skipping mixin transformer as it is being called by Sponge.");
+					return basicClass;
+				}
+			} catch (Exception e){
+
+			}
+			//This should not happen, just stop it from doing it anyway.
+			if(MixinManager.transformedClasses.contains(name)){
+				MixinManager.logger.trace("Skipping mixin transformer as the transformer has already transformed this class");
+				return basicClass;
+			}
+			//End support
+
 			long start = System.currentTimeMillis();
 			//makes a CtClass out of the byte array
 			cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
@@ -35,7 +52,10 @@ public class MixinTransformer implements IClassTransformer {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to generate target infomation");
 			}
-			if(!transformedName.startsWith("net.minecraft")){
+			if(target.isFrozen()){
+				target.defrost();
+			}
+			if (!transformedName.startsWith("net.minecraft")) {
 				MixinManager.mixinRemaper.remap(target, cp);
 			}
 
@@ -59,7 +79,6 @@ public class MixinTransformer implements IClassTransformer {
 							//This also renames the methord to contain the classname of the mixin
 							CtMethod generatedMethod = CtNewMethod.copy(method, mixinClass.getName().replace(".", "$") + "$" + method.getName(), target, null);
 							target.addMethod(generatedMethod);
-							System.out.println(generatedMethod.getLongName());
 							CtMethod targetMethod = null;
 							Optional<Pair<String, String>> remappedTargetInfo = MixinManager.mixinRemaper.getFullTargetName(annotation, name);
 							for (CtMethod methodCandidate : target.getMethods()) {
@@ -159,7 +178,8 @@ public class MixinTransformer implements IClassTransformer {
 				MixinManager.logger.info("Successfully applied " + mixinClassName +  " to " + name );
 			}
 			try {
-				MixinManager.logger.info("Successfully applied " + mixins.size() +  " mixins to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
+				MixinManager.logger.info("Successfully applied " + mixins.size() + " mixins to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
+				MixinManager.transformedClasses.add(name);
 				return target.toBytecode();
 			} catch (IOException | CannotCompileException e) {
 				throw new RuntimeException(e);
@@ -168,7 +188,4 @@ public class MixinTransformer implements IClassTransformer {
 
 		return basicClass;
 	}
-
-
-
 }
