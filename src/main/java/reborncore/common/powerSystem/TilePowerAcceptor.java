@@ -19,6 +19,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
+import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
@@ -29,7 +30,6 @@ import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
-import techreborn.compat.CompatManager;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		super.update();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.update(this);
-		} else if(!getPowerConfig().eu() && !CompatManager.isIC2Loaded && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+		} else if(!getPowerConfig().eu() && !RebornCore.isIC2Loaded && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for(EnumFacing side : EnumFacing.values()){
 				if(canProvideEnergy(side)){
 					TileEntity tile = world.getTileEntity(pos.offset(side));
@@ -81,7 +81,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 			}
 		}
 
-		if(CompatManager.isIC2Loaded){
+		if(RebornCore.isIC2Loaded){
 			onLoaded();
 		}
 	}

@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -50,6 +51,8 @@ public class RebornCore implements IModInfo
 	public static CommonProxy proxy;
 	public static File configDir;
 
+	public static boolean isIC2Loaded;
+
 	public RebornCore()
 	{
 		logHelper = new LogHelper(this);
@@ -73,6 +76,7 @@ public class RebornCore implements IModInfo
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
 	{
+		isIC2Loaded = Loader.isModLoaded("IC2");
 		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets
