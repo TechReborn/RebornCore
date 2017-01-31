@@ -61,7 +61,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		super.update();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.update(this);
-		} else if(!getPowerConfig().eu() && !Info.isIc2Available() && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+			//TODO ic2 check this else if
+		} else if(getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for(EnumFacing side : EnumFacing.values()){
 				if(canProvideEnergy(side)){
 					TileEntity tile = world.getTileEntity(pos.offset(side));
@@ -84,9 +85,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 
-		if(Info.isIc2Available()){
-			onLoaded();
-		}
+		//TODO ic2 check
+//		if(Info.isIc2Available()){
+//			onLoaded();
+//		}
 	}
 
 	@Optional.Method(modid = "IC2")
