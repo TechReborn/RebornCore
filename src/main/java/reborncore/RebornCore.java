@@ -69,8 +69,6 @@ public class RebornCore implements IModInfo
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
-		throw new RuntimeException();
-
 	}
 
 	@Mod.EventHandler
