@@ -25,10 +25,7 @@ import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
-import reborncore.common.util.CalenderUtils;
-import reborncore.common.util.LogHelper;
-import reborncore.common.util.OreUtil;
-import reborncore.common.util.RebornPermissions;
+import reborncore.common.util.*;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
@@ -61,6 +58,7 @@ public class RebornCore implements IModInfo
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		FMLCommonHandler.instance().registerCrashCallable(new CrashHandler());
 		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
 		if (!configDir.exists()) {
 			configDir.mkdir();
@@ -71,6 +69,8 @@ public class RebornCore implements IModInfo
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
+		throw new RuntimeException();
+
 	}
 
 	@Mod.EventHandler
