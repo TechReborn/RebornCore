@@ -35,6 +35,8 @@ public @interface Rewrite {
 
 	ReturnBehavior returnBehavor() default ReturnBehavior.NONE;
 
+	boolean isStatic() default false;
+
 	/**
 	 * Start: Gets applied before all instructions in the target method.
 	 * End: Get added after all instructions in the method.
