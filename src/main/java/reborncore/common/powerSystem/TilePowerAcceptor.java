@@ -1,5 +1,9 @@
 package reborncore.common.powerSystem;
 
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
@@ -21,12 +25,11 @@ import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
-
-import java.util.List;
 
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -324,20 +327,16 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
 		info.add(TextFormatting.GRAY + "Max Energy: " + TextFormatting.GOLD
-			+ PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
+			+ getLocaliszedPowerFormatted((int) getMaxPower()));
 		if (getMaxInput() != 0) {
 			info.add(TextFormatting.GRAY + "Input Rate: " + TextFormatting.GOLD
-				+ PowerSystem.getLocaliszedPowerFormatted(getMaxInput()));
+				+ getLocaliszedPowerFormatted((int) getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
 			info.add(TextFormatting.GRAY + "Output Rate: " + TextFormatting.GOLD
-				+ PowerSystem.getLocaliszedPowerFormatted(getMaxOutput()));
+				+ getLocaliszedPowerFormatted((int) getMaxOutput()));
 		}
 		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
-		// if(isRealTile){ //TODO sync to client
-		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
-		// TextFormatting.GREEN + getEUString(energy));
-		// }
 	}
 
 	public double getFreeSpace() {
@@ -373,6 +372,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return RebornCoreConfig.getRebornPower();
 	}
 
+    private String getLocaliszedPowerFormatted(final int eu) {
+        switch (PowerSystem.getDisplayPower()) {
+            case EU:
+                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US")).format(eu) + " "
+                + EnergySystem.EU.abbreviation;
+            case TESLA:
+                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
+                        .format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
+            default:
+                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
+                        .format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
+        }
+    }
+	
 	//Tesla
 
 	@Override
