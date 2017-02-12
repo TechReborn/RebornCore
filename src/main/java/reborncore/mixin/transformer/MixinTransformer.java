@@ -115,6 +115,10 @@ public class MixinTransformer implements IClassTransformer {
 									if (!method.getReturnType().getName().equals("boolean")) {
 										throw new RuntimeException(method.getName() + " does not return a boolean");
 									}
+									if(targetMethod.getReturnType().getName().equals("boolean")){
+										src = "if(" + mCall + generatedMethod.getName() + "($$)" + "){return true;}";
+										break;
+									}
 									src = "if(" + mCall + generatedMethod.getName() + "($$)" + "){return;}";
 									break;
 								default:
