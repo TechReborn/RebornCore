@@ -103,21 +103,26 @@ public class MixinTransformer implements IClassTransformer {
 							//This generates the one line of code that calls the new method that was just injected above
 
 							String src = null;
-							switch (annotation.returnBehavor()){
+							String mCall = annotation.isStatic() ? "" : "this.";
+							switch (annotation.returnBehavor()) {
 								case NONE:
-									src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
+									src = mCall + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
 									break;
 								case OBJECT_NONE_NULL:
-									src = "Object mixinobj = " + "this." + generatedMethod.getName() + "($$);" + "if(mixinobj != null){return ($w)mixinobj;}";
+									src = "Object mixinobj = " + mCall + generatedMethod.getName() + "($$);" + "if(mixinobj != null){return ($w)mixinobj;}";
 									break;
 								case BOOL_TRUE:
-									if(!method.getReturnType().getName().equals("boolean")){
+									if (!method.getReturnType().getName().equals("boolean")) {
 										throw new RuntimeException(method.getName() + " does not return a boolean");
 									}
-									src = "if(" + "this." + generatedMethod.getName() + "($$)" + "){return;}";
+									if(targetMethod.getReturnType().getName().equals("boolean")){
+										src = "if(" + mCall + generatedMethod.getName() + "($$)" + "){return true;}";
+										break;
+									}
+									src = "if(" + mCall + generatedMethod.getName() + "($$)" + "){return;}";
 									break;
 								default:
-									src = "this." + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
+									src = mCall + mixinClass.getName().replace(".", "$") + "$" + method.getName() + "($$);";
 									break;
 							}
 
