@@ -38,7 +38,7 @@ public class VersionChecker
 
 	public void checkVersion() throws IOException
 	{
-		if (!RebornCoreConfig.versionCheck)
+		if (!RebornCoreConfig.versionCheck || true) //Disabled version check
 		{
 			return;
 		}
