@@ -32,8 +32,10 @@ public class VersionChecker {
 		this.modInfo = modInfo;
 	}
 
-	public void checkVersion() throws IOException {
-		if (!RebornCoreConfig.versionCheck) {
+	public void checkVersion() throws IOException
+	{
+		if (!RebornCoreConfig.versionCheck || true) //Disabled version check
+		{
 			return;
 		}
 		isChecking = true;

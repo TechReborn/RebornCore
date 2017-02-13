@@ -1,8 +1,6 @@
 package reborncore.common.util;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.ICrashCallable;
-import net.minecraftforge.fml.common.Loader;
 import reborncore.RebornCore;
 
 import java.util.ArrayList;
@@ -28,9 +26,7 @@ public class CrashHandler implements ICrashCallable {
 
 	public List<String> getInfo(){
 		List<String> str = new ArrayList<>();
-		str.add("RenderEngine: " +  (FMLClientHandler.instance().hasOptifine()? "1" : "0"));
-		str.add("PluginEngine: " +  (Loader.isModLoaded("sponge")? "1" : "0"));
-		str.add("RebornCore Version: " +  RebornCore.MOD_VERSION);
+		RebornCore.proxy.getCrashData(str);
 		return str;
 	}
 }
