@@ -2,6 +2,10 @@ package reborncore.common.powerSystem;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
@@ -343,6 +347,10 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 				+ getLocaliszedPowerFormatted((int) getMaxOutput()));
 		}
 		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
+		// if(isRealTile){ //TODO sync to client
+		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
+		// TextFormatting.GREEN + getEUString(energy));
+		// }
 	}
 
 	public double getFreeSpace() {
