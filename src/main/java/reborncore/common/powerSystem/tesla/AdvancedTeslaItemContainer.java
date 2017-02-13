@@ -4,12 +4,9 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PoweredItem;
-import reborncore.common.powerSystem.TilePowerAcceptor;
 
 /**
  * Created by modmuss50 on 06/05/2016.
@@ -21,7 +18,7 @@ public class AdvancedTeslaItemContainer implements ITeslaConsumer, ITeslaHolder,
 
 	public AdvancedTeslaItemContainer(ItemStack stack) {
 		this.stack = stack;
-		if(stack.getItem() instanceof IEnergyItemInfo){
+		if (stack.getItem() instanceof IEnergyItemInfo) {
 			itemPowerInfo = (IEnergyItemInfo) stack.getItem();
 		}
 	}

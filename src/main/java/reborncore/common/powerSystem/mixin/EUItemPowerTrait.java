@@ -34,7 +34,7 @@ public class EUItemPowerTrait implements IElectricItem {
 	}
 
 	@Inject
-	public IEnergyInterfaceItem getInterface(){
-		return (IEnergyInterfaceItem)this;
+	public IEnergyInterfaceItem getInterface() {
+		return (IEnergyInterfaceItem) this;
 	}
 }

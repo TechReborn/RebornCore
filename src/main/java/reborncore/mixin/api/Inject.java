@@ -14,6 +14,7 @@ public @interface Inject {
 
 	/**
 	 * When true the method will be renamed the same as @rewrite does it
+	 *
 	 * @return
 	 */
 	boolean rename() default false;

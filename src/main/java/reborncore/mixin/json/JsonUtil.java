@@ -19,7 +19,7 @@ public class JsonUtil {
 		return mixinConfigurationFromString(FileUtils.readFileToString(file));
 	}
 
-	public static MixinConfiguration mixinConfigurationFromString(String json){
+	public static MixinConfiguration mixinConfigurationFromString(String json) {
 		return GSON.fromJson(json, MixinConfiguration.class);
 	}
 

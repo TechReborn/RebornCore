@@ -7,7 +7,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
-import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.powerSystem.tesla.AdvancedTeslaItemContainer;
@@ -33,10 +32,10 @@ public class PoweredItemContainerProvider implements INBTSerializable<NBTTagComp
 			Capability<?> capability,
 		@Nullable
 			EnumFacing facing) {
-		if(TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()) && TeslaManager.manager.isTeslaCapability(capability)){
+		if (TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()) && TeslaManager.manager.isTeslaCapability(capability)) {
 			return true;
 		}
-		if(RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY){
+		if (RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return false;
@@ -49,10 +48,10 @@ public class PoweredItemContainerProvider implements INBTSerializable<NBTTagComp
 			Capability<T> capability,
 		@Nullable
 			EnumFacing facing) {
-		if(TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()) && TeslaManager.manager.isTeslaCapability(capability)){
+		if (TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()) && TeslaManager.manager.isTeslaCapability(capability)) {
 			return (T) new AdvancedTeslaItemContainer(stack);
 		}
-		if(RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY){
+		if (RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY) {
 			return (T) new ForgePowerItemManager(stack);
 		}
 		return null;

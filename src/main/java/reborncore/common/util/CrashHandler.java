@@ -18,13 +18,13 @@ public class CrashHandler implements ICrashCallable {
 	@Override
 	public String call() throws Exception {
 		StringBuilder builder = new StringBuilder();
-		for(String str : getInfo()){
-			builder.append("\n" +"\t\t" + str);
+		for (String str : getInfo()) {
+			builder.append("\n" + "\t\t" + str);
 		}
 		return builder.toString();
 	}
 
-	public List<String> getInfo(){
+	public List<String> getInfo() {
 		List<String> str = new ArrayList<>();
 		RebornCore.proxy.getCrashData(str);
 		return str;

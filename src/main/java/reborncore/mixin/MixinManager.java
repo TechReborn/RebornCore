@@ -1,6 +1,5 @@
 package reborncore.mixin;
 
-
 import org.apache.logging.log4j.Logger;
 import reborncore.mixin.json.MixinConfiguration;
 import reborncore.mixin.json.MixinTargetData;
@@ -33,8 +32,8 @@ public class MixinManager {
 		}
 	}
 
-	public static void registerMixinConfig(MixinConfiguration configuration){
-		for(MixinTargetData mixindata : configuration.mixinData){
+	public static void registerMixinConfig(MixinConfiguration configuration) {
+		for (MixinTargetData mixindata : configuration.mixinData) {
 			registerMixin(mixindata);
 		}
 	}

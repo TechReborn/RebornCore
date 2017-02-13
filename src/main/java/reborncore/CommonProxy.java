@@ -37,9 +37,9 @@ public class CommonProxy {
 		return null;
 	}
 
-	public void getCrashData(List<String> list){
-		list.add("Plugin Engine: " +  (Loader.isModLoaded("sponge") ? "1" : "0"));
-		list.add("RebornCore Version: " +  RebornCore.MOD_VERSION);
+	public void getCrashData(List<String> list) {
+		list.add("Plugin Engine: " + (Loader.isModLoaded("sponge") ? "1" : "0"));
+		list.add("RebornCore Version: " + RebornCore.MOD_VERSION);
 		list.add("Mixin Status: " + (MixinForgeLoadingCore.mixinsLoaded ? "1" : "0"));
 		list.add("Runtime Debofucsation " + (FMLForgePlugin.RUNTIME_DEOBF ? "1" : "0"));
 	}

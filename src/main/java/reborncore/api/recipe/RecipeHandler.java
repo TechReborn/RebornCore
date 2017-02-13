@@ -60,7 +60,7 @@ public class RecipeHandler {
 		// }
 		for (Object input : recipe.getInputs()) {
 			Validate.notNull(input);
-			if(input instanceof ItemStack) {
+			if (input instanceof ItemStack) {
 				Validate.notNull(((ItemStack) input).getItem());
 			}
 		}

@@ -220,7 +220,7 @@ public class RecipeCrafter {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
 					useOreDict)) {
 					ItemStack stack = RecipeTranslator.getStackFromObject(input);
-					if(!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()){
+					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
 						hasItem = true;
 					}
 				}
@@ -243,7 +243,7 @@ public class RecipeCrafter {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
 					useOreDict)) {
 					ItemStack stack = RecipeTranslator.getStackFromObject(input);
-					if(!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()){
+					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
 						hasItem = true;
 					}
 
@@ -264,7 +264,7 @@ public class RecipeCrafter {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputSlot), true, true,
 					currentRecipe.useOreDic())) {
 					int count = 1;
-					if(input instanceof ItemStack){
+					if (input instanceof ItemStack) {
 						count = RecipeTranslator.getStackFromObject(input).getCount();
 					}
 					inventory.decrStackSize(inputSlot, count);

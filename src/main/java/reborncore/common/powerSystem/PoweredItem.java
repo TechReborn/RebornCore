@@ -1,6 +1,5 @@
 package reborncore.common.powerSystem;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceItem;
@@ -9,15 +8,15 @@ import reborncore.mixin.json.MixinTargetData;
 
 public abstract class PoweredItem {
 
-	public static void registerPoweredItem(String itemclass, boolean ic2){
+	public static void registerPoweredItem(String itemclass, boolean ic2) {
 		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
 		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.CapabilityItemPowerMixin", itemclass));
-		if(ic2 && Loader.isModLoaded("IC2")){
+		if (ic2 && Loader.isModLoaded("IC2")) {
 			MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.EUItemPowerTrait", itemclass));
 		}
 	}
 
-	public static void registerPoweredItem(String itemclass){
+	public static void registerPoweredItem(String itemclass) {
 		registerPoweredItem(itemclass, true);
 	}
 

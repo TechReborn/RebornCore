@@ -1,14 +1,11 @@
 package reborncore.mixin.implementations.forge;
 
-import javassist.ClassPool;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
-import net.minecraftforge.fml.common.Loader;
-import reborncore.mixin.MixinManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import reborncore.mixin.json.MixinTargetData;
+import reborncore.mixin.MixinManager;
 import reborncore.mixin.transformer.MixinTransformer;
 
 import java.util.Map;
@@ -18,8 +15,7 @@ import java.util.Map;
 /**
  * To run this in dev you need to add the following to the *VM* Options in the run config
  *
- *          -Dfml.coreMods.load=reborncore.mixin.implementations.forge.MixinForgeLoadingCore
- *
+ * -Dfml.coreMods.load=reborncore.mixin.implementations.forge.MixinForgeLoadingCore
  */
 @IFMLLoadingPlugin.MCVersion("1.11.2")
 @IFMLLoadingPlugin.Name("RebornCoreASM")

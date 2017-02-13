@@ -2,15 +2,14 @@ package reborncore.mixin.implementations.forge;
 
 import javassist.*;
 import javassist.bytecode.ConstPool;
-import reborncore.mixin.api.Remap;
-import reborncore.mixin.api.Rewrite;
-
-import reborncore.mixin.transformer.util.ClassRenamer;
-import reborncore.mixin.transformer.util.ConstPoolEditor;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import reborncore.mixin.api.Remap;
+import reborncore.mixin.api.Rewrite;
 import reborncore.mixin.transformer.IMixinRemap;
+import reborncore.mixin.transformer.util.ClassRenamer;
+import reborncore.mixin.transformer.util.ConstPoolEditor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

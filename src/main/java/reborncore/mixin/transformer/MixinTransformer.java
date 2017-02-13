@@ -28,15 +28,15 @@ public class MixinTransformer implements IClassTransformer {
 			//This fixes a crash when a reborn core mixin, mixes the same thing that sponge wants to.
 			try {
 				MixinManager.logger.trace("Mixin Transformer being called by " + Thread.currentThread().getStackTrace()[3].getClassName());
-				if(Thread.currentThread().getStackTrace()[3].getClassName().equals("org.spongepowered.asm.mixin.transformer.TreeInfo")){ //TODO check for repackages of the sponge mixin lib
+				if (Thread.currentThread().getStackTrace()[3].getClassName().equals("org.spongepowered.asm.mixin.transformer.TreeInfo")) { //TODO check for repackages of the sponge mixin lib
 					MixinManager.logger.trace("Skipping mixin transformer as it is being called by Sponge.");
 					return basicClass;
 				}
-			} catch (Exception e){
+			} catch (Exception e) {
 
 			}
 			//This should not happen, just stop it from doing it anyway.
-			if(MixinManager.transformedClasses.contains(name)){
+			if (MixinManager.transformedClasses.contains(name)) {
 				MixinManager.logger.trace("Skipping mixin transformer as the transformer has already transformed this class");
 				return basicClass;
 			}
@@ -52,7 +52,7 @@ public class MixinTransformer implements IClassTransformer {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to generate target infomation");
 			}
-			if(target.isFrozen()){
+			if (target.isFrozen()) {
 				target.defrost();
 			}
 			if (!transformedName.startsWith("net.minecraft")) {
@@ -61,7 +61,7 @@ public class MixinTransformer implements IClassTransformer {
 
 			List<String> mixins = MixinManager.mixinTargetMap.get(transformedName);
 			MixinManager.logger.info("Found " + mixins.size() + " mixins for " + transformedName);
-			for(String mixinClassName : mixins){
+			for (String mixinClassName : mixins) {
 				CtClass mixinClass = null;
 				try {
 					//loads the mixin class
@@ -115,7 +115,7 @@ public class MixinTransformer implements IClassTransformer {
 									if (!method.getReturnType().getName().equals("boolean")) {
 										throw new RuntimeException(method.getName() + " does not return a boolean");
 									}
-									if(targetMethod.getReturnType().getName().equals("boolean")){
+									if (targetMethod.getReturnType().getName().equals("boolean")) {
 										src = "if(" + mCall + generatedMethod.getName() + "($$)" + "){return true;}";
 										break;
 									}
@@ -143,8 +143,8 @@ public class MixinTransformer implements IClassTransformer {
 							//Just copys and adds the method stright into the target class
 							String methodName = method.getName();
 							Inject inject = (Inject) method.getAnnotation(Inject.class);
-							if(inject.rename()){
-								methodName =  mixinClass.getName().replace(".", "$") + "$" + method.getName();
+							if (inject.rename()) {
+								methodName = mixinClass.getName().replace(".", "$") + "$" + method.getName();
 							}
 							CtMethod generatedMethod = CtNewMethod.copy(method, methodName, target, null);
 							target.addMethod(generatedMethod);
@@ -171,8 +171,8 @@ public class MixinTransformer implements IClassTransformer {
 					for (CtClass iface : mixinClass.getInterfaces()) {
 						target.addInterface(iface);
 					}
-					for(CtConstructor constructor : mixinClass.getConstructors()){
-						if(constructor.hasAnnotation(Inject.class)){
+					for (CtConstructor constructor : mixinClass.getConstructors()) {
+						if (constructor.hasAnnotation(Inject.class)) {
 							CtConstructor generatedConstructor = CtNewConstructor.copy(constructor, target, null);
 							target.addConstructor(generatedConstructor);
 						}
@@ -180,7 +180,7 @@ public class MixinTransformer implements IClassTransformer {
 				} catch (NotFoundException | CannotCompileException | ClassNotFoundException e) {
 					throw new RuntimeException(e);
 				}
-				MixinManager.logger.info("Successfully applied " + mixinClassName +  " to " + name );
+				MixinManager.logger.info("Successfully applied " + mixinClassName + " to " + name);
 			}
 			try {
 				MixinManager.logger.info("Successfully applied " + mixins.size() + " mixins to " + name + " in " + (System.currentTimeMillis() - start) + "ms");

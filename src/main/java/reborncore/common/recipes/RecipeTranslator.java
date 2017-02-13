@@ -11,13 +11,14 @@ import javax.annotation.Nullable;
  */
 public class RecipeTranslator {
 
-	public static @Nullable
-	ItemStack getStackFromObject(Object object){
-		if(object instanceof ItemStack){
+	public static
+	@Nullable
+	ItemStack getStackFromObject(Object object) {
+		if (object instanceof ItemStack) {
 			return (ItemStack) object;
-		} else if (object instanceof String){
+		} else if (object instanceof String) {
 			String oreName = (String) object;
-			if(OreDictionary.doesOreNameExist(oreName)){
+			if (OreDictionary.doesOreNameExist(oreName)) {
 				NonNullList<ItemStack> list = OreDictionary.getOres(oreName);
 				return list.get(0).copy(); //The first entry
 			}

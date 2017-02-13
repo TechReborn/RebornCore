@@ -1,7 +1,5 @@
 package reborncore.common.powerSystem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.client.Minecraft;
 import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
@@ -130,7 +128,7 @@ public class PowerSystem {
 				e.printStackTrace();
 				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
 			}
-			if(config == null){
+			if (config == null) {
 				config = new EnergyPriorityConfig();
 				writeConfig(config);
 			}

@@ -22,5 +22,4 @@ public abstract class CapabilityItemPowerMixin extends Item {
 		return new PoweredItemContainerProvider(stack);
 	}
 
-
 }

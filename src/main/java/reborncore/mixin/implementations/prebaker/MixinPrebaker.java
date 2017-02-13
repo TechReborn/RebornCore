@@ -19,16 +19,16 @@ package reborncore.mixin.implementations.prebaker;
 import com.google.common.io.ByteStreams;
 import javassist.ClassPool;
 import javassist.CtClass;
-import reborncore.mixin.MixinManager;
-import reborncore.mixin.api.Rewrite;
-import reborncore.mixin.json.JsonUtil;
-import reborncore.mixin.transformer.IMixinRemap;
-import reborncore.mixin.transformer.MixinTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.objectweb.asm.*;
+import reborncore.mixin.MixinManager;
+import reborncore.mixin.api.Rewrite;
+import reborncore.mixin.json.JsonUtil;
+import reborncore.mixin.transformer.IMixinRemap;
+import reborncore.mixin.transformer.MixinTransformer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -141,7 +141,7 @@ public class MixinPrebaker {
 
 		MixinTransformer mixinTransformer = new MixinTransformer();
 
-		if(outputJar.exists()){
+		if (outputJar.exists()) {
 			outputJar.delete();
 		}
 		try {
@@ -190,7 +190,6 @@ public class MixinPrebaker {
 			return Optional.empty();
 		}
 	}
-
 
 	public void addFile(File file) throws IOException {
 		URLClassLoader sysloader = (URLClassLoader) this.getClass().getClassLoader();

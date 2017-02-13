@@ -2,6 +2,7 @@ package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -44,8 +45,7 @@ public class RebornCore implements IModInfo {
 	}
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().registerCrashCallable(new CrashHandler());
 		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
 		if (!configDir.exists()) {

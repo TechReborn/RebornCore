@@ -1,9 +1,5 @@
 package reborncore.common.powerSystem;
 
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
@@ -30,6 +26,10 @@ import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -65,21 +65,21 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.update(this);
 			//TODO ic2 check this else if
-		} else if(getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
-			for(EnumFacing side : EnumFacing.values()){
-				if(canProvideEnergy(side)){
+		} else if (getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+			for (EnumFacing side : EnumFacing.values()) {
+				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
-					if(tile instanceof IEnergyInterfaceTile){
+					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if(eFace.getTier().ordinal() < getTier().ordinal()){
+						if (eFace.getTier().ordinal() < getTier().ordinal()) {
 							for (int j = 0; j < 2; ++j) {
-								double d3 = (double)pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
-								double d8 = (double)pos.getY() + world.rand.nextDouble() + 1;
-								double d13 = (double)pos.getZ() + world.rand.nextDouble()+ (side.getFrontOffsetZ() / 2);
+								double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
+								double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
-							if(eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))){
+							if (eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))) {
 								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
 							}
 						}
@@ -89,9 +89,9 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 
 		//TODO ic2 check
-//		if(Info.isIc2Available()){
-//			onLoaded();
-//		}
+		//		if(Info.isIc2Available()){
+		//			onLoaded();
+		//		}
 	}
 
 	@Optional.Method(modid = "IC2")
@@ -352,8 +352,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					double energy = PoweredItem.getEnergy(stack);
 					IEnergyItemInfo iEnergyItemInfo = (IEnergyItemInfo) stack.getItem();
 					if (energy < maxPower) {
-						double transfer =  Math.min(Math.min(iEnergyItemInfo.getMaxTransfer(stack), getEnergy()), maxPower - energy);
-						if(PoweredItem.canUseEnergy(transfer, stack)){
+						double transfer = Math.min(Math.min(iEnergyItemInfo.getMaxTransfer(stack), getEnergy()), maxPower - energy);
+						if (PoweredItem.canUseEnergy(transfer, stack)) {
 							PoweredItem.useEnergy(transfer, stack);
 							addEnergy(transfer);
 						}
@@ -372,20 +372,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return RebornCoreConfig.getRebornPower();
 	}
 
-    private String getLocaliszedPowerFormatted(final int eu) {
-        switch (PowerSystem.getDisplayPower()) {
-            case EU:
-                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US")).format(eu) + " "
-                + EnergySystem.EU.abbreviation;
-            case TESLA:
-                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
-                        .format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
-            default:
-                return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
-                        .format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
-        }
-    }
-	
+	private String getLocaliszedPowerFormatted(final int eu) {
+		switch (PowerSystem.getDisplayPower()) {
+			case EU:
+				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US")).format(eu) + " "
+					+ EnergySystem.EU.abbreviation;
+			case TESLA:
+				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
+					.format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
+			default:
+				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
+					.format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
+		}
+	}
+
 	//Tesla
 
 	@Override

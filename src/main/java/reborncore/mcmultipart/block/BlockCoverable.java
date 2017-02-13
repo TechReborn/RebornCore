@@ -115,10 +115,10 @@ public class BlockCoverable extends Block implements ITileEntityProvider {
 
 		return super.getSelectedBoundingBox(state, worldIn, pos);
 	}
-	
+
 	//1.11 version
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
-	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity ){
+	                                  List<AxisAlignedBB> collidingBoxes, Entity collidingEntity) {
 		addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, collidingEntity, false);
 	}
 
