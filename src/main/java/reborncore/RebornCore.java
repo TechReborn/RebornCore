@@ -1,8 +1,6 @@
 package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
-import net.minecraft.init.Items;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -11,16 +9,14 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.RebornPackets;
 import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
@@ -30,7 +26,6 @@ import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.File;
-import java.io.IOException;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.10.2]", dependencies = "required-after:Forge@[12.18.2.2121,);")
 public class RebornCore implements IModInfo
@@ -69,6 +64,9 @@ public class RebornCore implements IModInfo
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
+		if(Loader.isModLoaded("MineTweaker3")){
+			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
+		}
 	}
 
 	@Mod.EventHandler
