@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
@@ -57,6 +58,9 @@ public class RebornCore implements IModInfo {
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
+		if(Loader.isModLoaded("MineTweaker3")){
+			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
+		}
 	}
 
 	@Mod.EventHandler
