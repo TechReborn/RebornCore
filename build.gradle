@@ -75,11 +75,19 @@ task deobfJar(type: Jar) {
 	from sourceSets.main.output
 	exclude "**/*.psd"
 	classifier = 'dev'
+	manifest {
+		attributes 'FMLCorePlugin': 'teamreborn.reborncore.RebornCoreLoadingPlugin'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
 }
 
 jar {
 	exclude "**/*.psd"
 	classifier = 'universal'
+	manifest {
+		attributes 'FMLCorePlugin': 'teamreborn.reborncore.RebornCoreLoadingPlugin'
+		attributes 'FMLCorePluginContainsFMLMod': 'true'
+	}
 }
 
 task apiJar(type: Jar) {
