@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
-import teamreborn.reborncore.api.registry.BlockRegistry;
+import teamreborn.reborncore.api.registry.impl.BlockRegistry;
 import teamreborn.reborncore.api.registry.RebornRegistry;
 
 @RebornRegistry(modID = "testmod")

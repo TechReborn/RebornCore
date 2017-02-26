@@ -8,9 +8,8 @@ import teamreborn.reborncore.init.RegistrationManager;
 public class RebornCore {
 
 	@Mod.EventHandler
-	public void preInit(FMLPreInitializationEvent event){
+	public void preInit(FMLPreInitializationEvent event) {
 		RegistrationManager.load(event);
 	}
-
 
 }

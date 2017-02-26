@@ -8,9 +8,9 @@ public interface IRegistryFactory {
 
 	Class<? extends Annotation> getAnnotation();
 
-	public default void handleField(Field field){}
+	public default void handleField(Field field) {}
 
-	public default void handleMethod(Method method){}
+	public default void handleMethod(Method method) {}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.TYPE)
