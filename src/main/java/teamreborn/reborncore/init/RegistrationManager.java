@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import teamreborn.reborncore.api.registry.IRegistryFactory;
 import teamreborn.reborncore.api.registry.RebornRegistry;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,6 +55,15 @@ public class RegistrationManager {
 			}
 		}
 		setActieModContainer(activeMod);
+	}
+
+	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory){
+		for(Annotation annotation : annotations){
+			if(annotation.annotationType() == factory.getAnnotation()){
+				return annotation;
+			}
+		}
+		return null;
 	}
 
 	private static void loadFactorys(ASMDataTable dataTable){

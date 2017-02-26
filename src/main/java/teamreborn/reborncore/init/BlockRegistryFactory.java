@@ -7,6 +7,7 @@ import teamreborn.reborncore.block.RebornBlockRegistry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 @IRegistryFactory.RegistryFactory
@@ -23,11 +24,18 @@ public class BlockRegistryFactory  implements IRegistryFactory {
 			throw new RuntimeException("Field must be static when used with RebornBlockRegistry");
 		}
 		try {
-			//TODO constrcutor check
-			Block block = (Block) clazz.newInstance();
+			Block block = null;
+			BlockRegistry annotation = (BlockRegistry) RegistrationManager.getAnnoationFromArray(field.getAnnotations(), this);
+			if(annotation != null && !annotation.param().isEmpty()){
+				String param = annotation.param();
+				block = (Block) clazz.getDeclaredConstructor(String.class).newInstance(param);
+			}
+			if(block == null){
+				block = (Block) clazz.newInstance();
+			}
 			RebornBlockRegistry.registerBlock(block);
 			field.set(null, block);
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}

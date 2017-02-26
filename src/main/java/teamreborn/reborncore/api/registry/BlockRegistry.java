@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface BlockRegistry {
 
-	String name() default "";
+	String param() default "";
 }

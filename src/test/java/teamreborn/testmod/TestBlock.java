@@ -13,8 +13,8 @@ public class TestBlock extends Block {
 	@BlockRegistry
 	public static TestBlock instance;
 
-//	@RebornBlockRegistry(name = "test2")
-//	public static TestBlock instance2;
+	@BlockRegistry(param = "test2")
+	public static TestBlock instance2;
 
 	public TestBlock(String name) {
 		super(Material.GROUND);
