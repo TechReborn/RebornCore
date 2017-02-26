@@ -1,3 +1,0 @@
-net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer, need to add custom rendering for it here to allow us to have custom textures
-
-net.minecraft.client.renderer.RenderItem:1003, need to be register, can be done without core mod
