@@ -9,9 +9,9 @@
 /dep
 /build
 
-RebornCore.iws
-RebornCore.ipr
-RebornCore.iml
+*.iws
+*.ipr
+*.iml
 Thumbs.db
 changelog.txt
 *.log
