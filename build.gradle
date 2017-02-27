@@ -27,6 +27,10 @@ repositories {
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
 	}
+	maven { // Concrete
+		name = "elytradev"
+		url = "http://repo.elytradev.com"
+	}
 }
 
 
@@ -55,7 +59,7 @@ group = 'RebornCore'
 
 
 dependencies {
-
+	compile "com.elytradev:concrete:0.1.0"
 }
 
 processResources
