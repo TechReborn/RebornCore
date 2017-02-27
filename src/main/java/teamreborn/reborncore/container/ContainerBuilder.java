@@ -1,18 +1,17 @@
 package teamreborn.reborncore.container;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import org.apache.commons.lang3.Range;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import org.apache.commons.lang3.Range;
 import teamreborn.reborncore.container.slot.ListenerSlot;
 import teamreborn.reborncore.container.sync.SyncableProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The ContainerBuilder allow the declaration of a minecraft container with chaining.
@@ -23,105 +22,110 @@ import teamreborn.reborncore.container.sync.SyncableProperty;
  *              .slot(0, 80, 43)
  *              .syncIntegerValue(this::getHeat, this::setHeat)
  *              .addInventory().create();</pre></blockquote>
- *
  */
 public class ContainerBuilder
 {
 
-    private final String                    name;
+	private final String name;
 
-    private final EntityPlayer              player;
-    private Predicate<EntityPlayer>         canInteract = player -> true;
+	private final EntityPlayer player;
+	private Predicate<EntityPlayer> canInteract = player -> true;
 
-    final List<ListenerSlot>                slots;
-    final List<Range<Integer>>              playerInventoryRanges, tileInventoryRanges;
+	final List<ListenerSlot>   slots;
+	final List<Range<Integer>> playerInventoryRanges, tileInventoryRanges;
 
-    List<SyncableProperty<?>>               syncables;
+	List<SyncableProperty<?>> syncables;
 
-    final List<Consumer<InventoryCrafting>> craftEvents;
+	final List<Consumer<InventoryCrafting>> craftEvents;
 
-    List<IInventory>                        inventories;
+	List<IInventory> inventories;
 
-    /**
-     * 
-     * @param name is a name that must be unique to this type of container, two containers from the same inventory can share the same name.
-     * @param player the current EntityPlayer opening the container.
-     */
-    public ContainerBuilder(final String name, final EntityPlayer player)
-    {
+	/**
+	 * @param name is a name that must be unique to this type of container, two containers from the same inventory can share the same name.
+	 * @param player the current EntityPlayer opening the container.
+	 */
+	public ContainerBuilder(final String name, final EntityPlayer player)
+	{
 
-        this.name = name;
+		this.name = name;
 
-        this.player = player;
+		this.player = player;
 
-        this.slots = new ArrayList<>();
-        this.playerInventoryRanges = new ArrayList<>();
-        this.tileInventoryRanges = new ArrayList<>();
+		this.slots = new ArrayList<>();
+		this.playerInventoryRanges = new ArrayList<>();
+		this.tileInventoryRanges = new ArrayList<>();
 
-        this.syncables = new ArrayList<>();
+		this.syncables = new ArrayList<>();
 
-        this.craftEvents = new ArrayList<>();
+		this.craftEvents = new ArrayList<>();
 
-        this.inventories = new ArrayList<>();
-    }
+		this.inventories = new ArrayList<>();
+	}
 
-    /**
-     * Allow specification of a custom predicate to check if the player can open the container.
-     * @param canInteract
-     * @return
-     */
-    public ContainerBuilder interact(final Predicate<EntityPlayer> canInteract)
-    {
-        this.canInteract = canInteract;
-        return this;
-    }
+	/**
+	 * Allow specification of a custom predicate to check if the player can open the container.
+	 *
+	 * @param canInteract
+	 * @return
+	 */
+	public ContainerBuilder interact(final Predicate<EntityPlayer> canInteract)
+	{
+		this.canInteract = canInteract;
+		return this;
+	}
 
-    /**
-     * Start of an InventoryPlayer adding block.
-     * @param player
-     * @return a ContainerPlayerInventoryBuilder that will return to this with ContainerPlayerInventoryBuilder#addInventory
-     */
-    public ContainerPlayerInventoryBuilder player(final InventoryPlayer player)
-    {
-        return new ContainerPlayerInventoryBuilder(this, player);
-    }
+	/**
+	 * Start of an InventoryPlayer adding block.
+	 *
+	 * @param player
+	 * @return a ContainerPlayerInventoryBuilder that will return to this with ContainerPlayerInventoryBuilder#addInventory
+	 */
+	public ContainerPlayerInventoryBuilder player(final InventoryPlayer player)
+	{
+		return new ContainerPlayerInventoryBuilder(this, player);
+	}
 
-    /**
-     * Start of an IInventory adding block. Generally used for inventories provided by tileentities.
-     * @param player
-     * @return a ContainerTileInventoryBuilder that will return to this with ContainerTileInventoryBuilder#addInventory
-     */
-    public ContainerTileInventoryBuilder tile(final IInventory tile)
-    {
-        return new ContainerTileInventoryBuilder(this, tile);
-    }
+	/**
+	 * Start of an IInventory adding block. Generally used for inventories provided by tileentities.
+	 *
+	 * @param player
+	 * @return a ContainerTileInventoryBuilder that will return to this with ContainerTileInventoryBuilder#addInventory
+	 */
+	public ContainerTileInventoryBuilder tile(final IInventory tile)
+	{
+		return new ContainerTileInventoryBuilder(this, tile);
+	}
 
-    void addPlayerInventoryRange(final Range<Integer> range)
-    {
-        this.playerInventoryRanges.add(range);
-    }
+	void addPlayerInventoryRange(final Range<Integer> range)
+	{
+		this.playerInventoryRanges.add(range);
+	}
 
-    void addTileInventoryRange(final Range<Integer> range)
-    {
-        this.tileInventoryRanges.add(range);
-    }
+	void addTileInventoryRange(final Range<Integer> range)
+	{
+		this.tileInventoryRanges.add(range);
+	}
 
-    /**
-     * Close the builder
-     * @return the BuiltContainer generated by the specified parameters.
-     */
-    public BuiltContainer create()
-    {
-        final BuiltContainer built = new BuiltContainer(this.name, this.player, this.inventories, this.canInteract,
-                this.playerInventoryRanges, this.tileInventoryRanges);
-        if (!this.syncables.isEmpty())
-            built.setSyncables(this.syncables);
-        if (!this.craftEvents.isEmpty())
-            built.addCraftEvents(this.craftEvents);
+	/**
+	 * Close the builder
+	 *
+	 * @return the BuiltContainer generated by the specified parameters.
+	 */
+	public BuiltContainer create()
+	{
+		final BuiltContainer built = new BuiltContainer(this.name, this.player, this.inventories, this.canInteract, this.playerInventoryRanges, this.tileInventoryRanges);
+		if (!this.syncables.isEmpty())
+		{
+			built.setSyncables(this.syncables);
+		}
+		if (!this.craftEvents.isEmpty())
+		{
+			built.addCraftEvents(this.craftEvents);
+		}
 
-        this.slots.forEach(built::addSlot);
+		this.slots.forEach(built::addSlot);
 
-        this.slots.clear();
-        return built;
-    }
+		this.slots.clear();
+		return built;
+	}
 }

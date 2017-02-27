@@ -17,78 +17,105 @@ import java.util.Set;
 /**
  * Created by Mark on 26/02/2017.
  */
-public class RegistrationManager {
+public class RegistrationManager
+{
 
 	static List<IRegistryFactory> factoryList = new ArrayList<>();
 
-	public static void load(FMLPreInitializationEvent event) {
+	public static void load(FMLPreInitializationEvent event)
+	{
 		final ModContainer activeMod = Loader.instance().activeModContainer();
 		ASMDataTable asmDataTable = event.getAsmData();
 		loadFactorys(asmDataTable);
 		Set<ASMDataTable.ASMData> asmDataSet = asmDataTable.getAll(RebornRegistry.class.getName());
-		for (ASMDataTable.ASMData data : asmDataSet) {
-			if (!data.getAnnotationInfo().isEmpty()) {
+		for (ASMDataTable.ASMData data : asmDataSet)
+		{
+			if (!data.getAnnotationInfo().isEmpty())
+			{
 				String modId = (String) data.getAnnotationInfo().get("modID");
-				if (!activeMod.getModId().equals(modId)) {
+				if (!activeMod.getModId().equals(modId))
+				{
 					setActiveMod(modId);
 				}
 			}
-			try {
+			try
+			{
 				Class clazz = Class.forName(data.getClassName());
-				for (Field field : clazz.getDeclaredFields()) {
-					for (IRegistryFactory regFactory : factoryList) {
-						if (field.isAnnotationPresent(regFactory.getAnnotation())) {
+				for (Field field : clazz.getDeclaredFields())
+				{
+					for (IRegistryFactory regFactory : factoryList)
+					{
+						if (field.isAnnotationPresent(regFactory.getAnnotation()))
+						{
 							regFactory.handleField(field);
 						}
 					}
 				}
-				for (Method method : clazz.getDeclaredMethods()) {
-					for (IRegistryFactory regFactory : factoryList) {
-						if (method.isAnnotationPresent(regFactory.getAnnotation())) {
+				for (Method method : clazz.getDeclaredMethods())
+				{
+					for (IRegistryFactory regFactory : factoryList)
+					{
+						if (method.isAnnotationPresent(regFactory.getAnnotation()))
+						{
 							regFactory.handleMethod(method);
 						}
 					}
 				}
-			} catch (ClassNotFoundException e) {
+			}
+			catch (ClassNotFoundException e)
+			{
 				e.printStackTrace();
 			}
 		}
 		setActieModContainer(activeMod);
 	}
 
-	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
-		for (Annotation annotation : annotations) {
-			if (annotation.annotationType() == factory.getAnnotation()) {
+	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory)
+	{
+		for (Annotation annotation : annotations)
+		{
+			if (annotation.annotationType() == factory.getAnnotation())
+			{
 				return annotation;
 			}
 		}
 		return null;
 	}
 
-	private static void loadFactorys(ASMDataTable dataTable) {
+	private static void loadFactorys(ASMDataTable dataTable)
+	{
 		Set<ASMDataTable.ASMData> asmDataSet = dataTable.getAll(IRegistryFactory.RegistryFactory.class.getName());
-		for (ASMDataTable.ASMData data : asmDataSet) {
-			try {
+		for (ASMDataTable.ASMData data : asmDataSet)
+		{
+			try
+			{
 				Object object = Class.forName(data.getClassName()).newInstance();
-				if (object instanceof IRegistryFactory) {
+				if (object instanceof IRegistryFactory)
+				{
 					factoryList.add((IRegistryFactory) object);
 				}
-			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			}
+			catch (ClassNotFoundException | IllegalAccessException | InstantiationException e)
+			{
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private static void setActiveMod(String modID) {
-		for (ModContainer modContainer : Loader.instance().getActiveModList()) {
-			if (modContainer.getModId().equals(modID)) {
+	private static void setActiveMod(String modID)
+	{
+		for (ModContainer modContainer : Loader.instance().getActiveModList())
+		{
+			if (modContainer.getModId().equals(modID))
+			{
 				setActieModContainer(modContainer);
 				break;
 			}
 		}
 	}
 
-	private static void setActieModContainer(ModContainer container) {
+	private static void setActieModContainer(ModContainer container)
+	{
 		Loader.instance().setActiveModContainer(container);
 	}
 

@@ -242,3 +242,5 @@ task curseTools << {
 		arg(value: apiJar.archivePath.getAbsolutePath())
 	}
 }
+
+apply from: 'http://techreborn.ovh/files/ideaFormatter.gradle'

@@ -4,26 +4,29 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
-import teamreborn.reborncore.api.registry.impl.BlockRegistry;
 import teamreborn.reborncore.api.registry.RebornRegistry;
+import teamreborn.reborncore.api.registry.impl.BlockRegistry;
 
-@RebornRegistry(modID = "testmod")
-public class TestBlock extends Block {
+@RebornRegistry (modID = "testmod")
+public class TestBlock extends Block
+{
 
 	@BlockRegistry
 	public static TestBlock instance;
 
-	@BlockRegistry(param = "test2")
+	@BlockRegistry (param = "test2")
 	public static TestBlock instance2;
 
-	public TestBlock(String name) {
+	public TestBlock(String name)
+	{
 		super(Material.GROUND);
 		setRegistryName(new ResourceLocation("testmod", name));
 		setUnlocalizedName(getRegistryName().toString());
 		setCreativeTab(CreativeTabs.MISC);
 	}
 
-	public TestBlock() {
+	public TestBlock()
+	{
 		this("test1");
 	}
 }

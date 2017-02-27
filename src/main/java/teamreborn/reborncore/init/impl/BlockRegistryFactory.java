@@ -12,31 +12,41 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 @IRegistryFactory.RegistryFactory
-public class BlockRegistryFactory implements IRegistryFactory {
+public class BlockRegistryFactory implements IRegistryFactory
+{
+
 	@Override
-	public Class<? extends Annotation> getAnnotation() {
+	public Class<? extends Annotation> getAnnotation()
+	{
 		return BlockRegistry.class;
 	}
 
 	@Override
-	public void handleField(Field field) {
+	public void handleField(Field field)
+	{
 		Class clazz = field.getType();
-		if (!Modifier.isStatic(field.getModifiers())) {
+		if (!Modifier.isStatic(field.getModifiers()))
+		{
 			throw new RuntimeException("Field must be static when used with RebornBlockRegistry");
 		}
-		try {
+		try
+		{
 			Block block = null;
 			BlockRegistry annotation = (BlockRegistry) RegistrationManager.getAnnoationFromArray(field.getAnnotations(), this);
-			if (annotation != null && !annotation.param().isEmpty()) {
+			if (annotation != null && !annotation.param().isEmpty())
+			{
 				String param = annotation.param();
 				block = (Block) clazz.getDeclaredConstructor(String.class).newInstance(param);
 			}
-			if (block == null) {
+			if (block == null)
+			{
 				block = (Block) clazz.newInstance();
 			}
 			RebornBlockRegistry.registerBlock(block);
 			field.set(null, block);
-		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+		}
+		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
+		{
 			e.printStackTrace();
 		}
 	}
