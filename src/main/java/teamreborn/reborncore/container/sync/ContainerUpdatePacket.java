@@ -1,14 +1,14 @@
 package teamreborn.reborncore.container.sync;
 
-import com.elytradev.concrete.Message;
-import com.elytradev.concrete.NetworkContext;
-import com.elytradev.concrete.annotation.field.MarshalledAs;
-import com.elytradev.concrete.annotation.type.ReceivedOn;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import teamreborn.reborncore.RebornCore;
+import teamreborn.reborncore.concrete.Message;
+import teamreborn.reborncore.concrete.NetworkContext;
+import teamreborn.reborncore.concrete.annotation.field.MarshalledAs;
+import teamreborn.reborncore.concrete.annotation.type.ReceivedOn;
 import teamreborn.reborncore.container.BuiltContainer;
 
 @ReceivedOn(Side.CLIENT)
