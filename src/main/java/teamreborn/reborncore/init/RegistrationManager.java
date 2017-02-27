@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import teamreborn.reborncore.api.registry.IRegistryFactory;
 import teamreborn.reborncore.api.registry.RebornRegistry;
+import teamreborn.reborncore.api.registry.RegistryTarget;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -45,6 +46,10 @@ public class RegistrationManager
 				{
 					for (IRegistryFactory regFactory : factoryList)
 					{
+						if (!regFactory.getTargets().contains(RegistryTarget.FIELD))
+						{
+							continue;
+						}
 						if (field.isAnnotationPresent(regFactory.getAnnotation()))
 						{
 							regFactory.handleField(field);
@@ -55,6 +60,10 @@ public class RegistrationManager
 				{
 					for (IRegistryFactory regFactory : factoryList)
 					{
+						if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD))
+						{
+							continue;
+						}
 						if (method.isAnnotationPresent(regFactory.getAnnotation()))
 						{
 							regFactory.handleMethod(method);
@@ -67,7 +76,40 @@ public class RegistrationManager
 				e.printStackTrace();
 			}
 		}
-		setActieModContainer(activeMod);
+		setActiveModContainer(activeMod);
+		for (IRegistryFactory registryFactory : factoryList)
+		{
+			if (registryFactory.getTargets().contains(RegistryTarget.CLASS))
+			{
+				Set<ASMDataTable.ASMData> asmDataFactorySet = asmDataTable.getAll(registryFactory.getAnnotation().getName());
+				for (ASMDataTable.ASMData data : asmDataFactorySet)
+				{
+					try
+					{
+						ModContainer activeContainer = Loader.instance().activeModContainer();
+						Class factoryClazz = Class.forName(data.getClassName());
+						//Check to see if it also has a reborn registry annoation that specifyes a custom mod id
+						Annotation annotation = getRegistryAnnoation(factoryClazz.getAnnotations());
+						if (annotation instanceof RebornRegistry)
+						{
+							RebornRegistry registryAnnotation = (RebornRegistry) annotation;
+							String modId = registryAnnotation.modID();
+							if (!activeContainer.getModId().equals(modId))
+							{
+								setActiveMod(modId);
+							}
+						}
+						registryFactory.handleClass(factoryClazz);
+						setActiveModContainer(activeContainer);
+					}
+					catch (ClassNotFoundException e)
+					{
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
 	}
 
 	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory)
@@ -75,6 +117,18 @@ public class RegistrationManager
 		for (Annotation annotation : annotations)
 		{
 			if (annotation.annotationType() == factory.getAnnotation())
+			{
+				return annotation;
+			}
+		}
+		return null;
+	}
+
+	private static Annotation getRegistryAnnoation(Annotation[] annotations)
+	{
+		for (Annotation annotation : annotations)
+		{
+			if (annotation.annotationType() == RebornRegistry.class)
 			{
 				return annotation;
 			}
@@ -108,13 +162,13 @@ public class RegistrationManager
 		{
 			if (modContainer.getModId().equals(modID))
 			{
-				setActieModContainer(modContainer);
+				setActiveModContainer(modContainer);
 				break;
 			}
 		}
 	}
 
-	private static void setActieModContainer(ModContainer container)
+	private static void setActiveModContainer(ModContainer container)
 	{
 		Loader.instance().setActiveModContainer(container);
 	}

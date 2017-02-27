@@ -2,6 +2,7 @@ package teamreborn.reborncore.init.impl;
 
 import net.minecraft.block.Block;
 import teamreborn.reborncore.api.registry.IRegistryFactory;
+import teamreborn.reborncore.api.registry.RegistryTarget;
 import teamreborn.reborncore.api.registry.impl.BlockRegistry;
 import teamreborn.reborncore.block.RebornBlockRegistry;
 import teamreborn.reborncore.init.RegistrationManager;
@@ -10,6 +11,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.List;
 
 @IRegistryFactory.RegistryFactory
 public class BlockRegistryFactory implements IRegistryFactory
@@ -49,5 +52,11 @@ public class BlockRegistryFactory implements IRegistryFactory
 		{
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<RegistryTarget> getTargets()
+	{
+		return Collections.singletonList(RegistryTarget.FIELD);
 	}
 }
