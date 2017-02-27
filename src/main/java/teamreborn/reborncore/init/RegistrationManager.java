@@ -1,5 +1,6 @@
 package teamreborn.reborncore.init;
 
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -25,6 +26,7 @@ public class RegistrationManager
 
 	public static void load(FMLPreInitializationEvent event)
 	{
+		long start = System.currentTimeMillis();
 		final ModContainer activeMod = Loader.instance().activeModContainer();
 		ASMDataTable asmDataTable = event.getAsmData();
 		loadFactorys(asmDataTable);
@@ -110,6 +112,7 @@ public class RegistrationManager
 				}
 			}
 		}
+		FMLLog.info("Loaded all registrys in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory)

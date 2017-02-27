@@ -25,7 +25,6 @@ public class TileRegistryFactory implements IRegistryFactory
 	{
 		TileRegistry tileRegistry = (TileRegistry) RegistrationManager.getAnnoationFromArray(clazz.getAnnotations(), this);
 		GameRegistry.registerTileEntity(clazz, tileRegistry.name());
-		System.out.println(tileRegistry.name());
 	}
 
 	@Override
