@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import teamreborn.reborncore.RebornCore;
+import teamreborn.reborncore.api.registry.impl.PacketRegistry;
 import teamreborn.reborncore.concrete.Message;
 import teamreborn.reborncore.concrete.NetworkContext;
 import teamreborn.reborncore.concrete.annotation.field.MarshalledAs;
@@ -11,6 +12,7 @@ import teamreborn.reborncore.concrete.annotation.type.ReceivedOn;
 import teamreborn.reborncore.container.BuiltContainer;
 
 @ReceivedOn (Side.CLIENT)
+@PacketRegistry
 public class ContainerUpdatePacket extends Message
 {
 
