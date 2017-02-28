@@ -91,7 +91,7 @@ public class RegistrationManager
 						ModContainer activeContainer = Loader.instance().activeModContainer();
 						Class factoryClazz = Class.forName(data.getClassName());
 						//Check to see if it also has a reborn registry annoation that specifyes a custom mod id
-						Annotation annotation = getRegistryAnnoation(factoryClazz.getAnnotations());
+						Annotation annotation = getAnnoation(factoryClazz.getAnnotations(), RebornRegistry.class);
 						if (annotation instanceof RebornRegistry)
 						{
 							RebornRegistry registryAnnotation = (RebornRegistry) annotation;
@@ -127,11 +127,11 @@ public class RegistrationManager
 		return null;
 	}
 
-	private static Annotation getRegistryAnnoation(Annotation[] annotations)
+	private static Annotation getAnnoation(Annotation[] annotations, Class annoation)
 	{
 		for (Annotation annotation : annotations)
 		{
-			if (annotation.annotationType() == RebornRegistry.class)
+			if (annotation.annotationType() == annoation)
 			{
 				return annotation;
 			}
@@ -146,7 +146,17 @@ public class RegistrationManager
 		{
 			try
 			{
-				Object object = Class.forName(data.getClassName()).newInstance();
+				Class clazz = Class.forName(data.getClassName());
+				IRegistryFactory.RegistryFactory registryFactory = (IRegistryFactory.RegistryFactory) getAnnoation(clazz.getAnnotations(), IRegistryFactory.RegistryFactory.class);
+				if (!registryFactory.side().canExcetue())
+				{
+					continue;
+				}
+				if (!Loader.isModLoaded(registryFactory.modID()))
+				{
+					continue;
+				}
+				Object object = clazz.newInstance();
 				if (object instanceof IRegistryFactory)
 				{
 					factoryList.add((IRegistryFactory) object);

@@ -1,5 +1,7 @@
 package teamreborn.reborncore.api.registry;
 
+import teamreborn.reborncore.Constants;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,6 +20,6 @@ public @interface RebornRegistry
 	 *
 	 * @return mod id
 	 */
-	public String modID() default "reborncore";
+	public String modID() default Constants.MODID;
 
 }

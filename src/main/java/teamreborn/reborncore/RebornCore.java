@@ -5,7 +5,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import teamreborn.reborncore.concrete.NetworkContext;
 import teamreborn.reborncore.init.RegistrationManager;
 
-@Mod (name = "RebornCore", modid = "reborncore", version = "@MODVERSION@")
+@Mod (name = "RebornCore", modid = Constants.MODID, version = "@MODVERSION@")
 public class RebornCore
 {
 
@@ -14,7 +14,7 @@ public class RebornCore
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		network = NetworkContext.forChannel("reborncore");
+		network = NetworkContext.forChannel(Constants.MODID);
 
 		RegistrationManager.load(event);
 	}

@@ -1,5 +1,8 @@
 package teamreborn.reborncore.api.registry;
 
+import teamreborn.reborncore.Constants;
+import teamreborn.reborncore.api.ExecutionSide;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -70,6 +73,19 @@ public interface IRegistryFactory
 	public @interface RegistryFactory
 	{
 
+		/**
+		 * The side that this registry factyory should run on
+		 *
+		 * @return a side
+		 */
+		ExecutionSide side() default ExecutionSide.COMMON;
+
+		/**
+		 * A mod id that must be loaded for the registry factory to be ran
+		 *
+		 * @return a mod id
+		 */
+		String modID() default Constants.MODID;
 	}
 
 }
