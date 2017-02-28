@@ -1,6 +1,5 @@
 package teamreborn.reborncore.multipart;
 
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,27 +16,21 @@ public abstract class BasePart implements IPart
 {
 
 	@Override
-	public BlockStateContainer createBlockState(IPartContainer container)
-	{
-		return null;
-	}
-
-	@Override
 	public IBlockState getDefaultState(IPartContainer container)
 	{
-		return null;
+		return container.getState();
 	}
 
 	@Override
 	public IBlockState getExtendedState(IPartContainer container)
 	{
-		return null;
+		return container.getState();
 	}
 
 	@Override
 	public IBlockState getActualState(IPartContainer container)
 	{
-		return null;
+		return container.getState();
 	}
 
 	@Override

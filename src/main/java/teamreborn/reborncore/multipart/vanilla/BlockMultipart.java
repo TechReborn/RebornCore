@@ -29,16 +29,19 @@ public class BlockMultipart extends BlockContainer
 
 	IPart part;
 
-	public BlockMultipart()
+	public BlockMultipart(IPart part)
 	{
 		super(Material.IRON);
+		this.part = part;
 	}
 
 	@Nullable
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta)
 	{
-		return new TileMultipart();
+		TileMultipart tileMultipart = new TileMultipart();
+		tileMultipart.setPart(part);
+		return tileMultipart;
 	}
 
 	public IPartContainer getContainer(IBlockAccess world, BlockPos pos)

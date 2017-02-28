@@ -1,6 +1,5 @@
 package teamreborn.reborncore.api.multipart;
 
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -18,6 +17,13 @@ import java.util.List;
 public interface IPart
 {
 
+	/**
+	 * Must be lower case
+	 *
+	 * @return
+	 */
+	public String getIdenteifyer();
+
 	public List<AxisAlignedBB> getCollisonBoxes(IPartContainer container, Entity entity);
 
 	public List<AxisAlignedBB> getSelectionBoxes(IPartContainer container);
@@ -25,8 +31,6 @@ public interface IPart
 	public List<AxisAlignedBB> getOcculusionBoxes(IPartContainer container);
 
 	public void update(IPartContainer container);
-
-	public BlockStateContainer createBlockState(IPartContainer container);
 
 	public IBlockState getDefaultState(IPartContainer container);
 
