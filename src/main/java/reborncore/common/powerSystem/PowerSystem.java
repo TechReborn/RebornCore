@@ -148,7 +148,7 @@ public class PowerSystem {
 		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C, 0, system -> TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())),
 		EU(0xFF980000, "EU", 43, 151, 0xFF580000, 1, system -> RebornCoreConfig.getRebornPower().eu() && Loader.isModLoaded("IC2")),
 		FE(0xFFE14E1C, "FE", 15, 151, 0xFFB3380F, 2, system -> RebornCoreConfig.getRebornPower().forge()),
-		RF(0xFFE14E1C, "RF", 15, 151, 0xFFB3380F, 3, system -> RebornCoreConfig.getRebornPower().rf());
+		RF(0xFFB3380F, "RF", 140, 151, 0xFF930000, 3, system -> RebornCoreConfig.getRebornPower().rf());
 
 		public int colour;
 		public int altColour;
@@ -168,14 +168,6 @@ public class PowerSystem {
 			this.isValid = isValid;
 		}
 
-		public int getIndex() {
-			return index;
-		}
-
-		public void setIndex(int index) {
-			this.index = index;
-		}
-
 		public static EnergySystem indexOf(int index) {
 			for (EnergySystem system : EnergySystem.values()) {
 				if (system.index == index) {
@@ -183,6 +175,14 @@ public class PowerSystem {
 				}
 			}
 			return FE;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public void setIndex(int index) {
+			this.index = index;
 		}
 	}
 
