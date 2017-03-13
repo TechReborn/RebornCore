@@ -1,10 +1,10 @@
 package reborncore.common;
 
-import java.io.File;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IPowerConfig;
+
+import java.io.File;
 
 /**
  * Created by Mark on 20/02/2016.
@@ -28,6 +28,7 @@ public class RebornCoreConfig
 
 	public static boolean versionCheck;
 	public static boolean easterEggs;
+	public static boolean mtDocGen;
 
 	public RebornCoreConfig(File configFile)
 	{
@@ -81,6 +82,7 @@ public class RebornCoreConfig
 			.getBoolean(true);
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
+		mtDocGen = config.get(CATEGORY_MISC, "mtDocGen", false, "Enable automatic generation of MT docs at runtime (Beta)").getBoolean();
 		//resets this when the config is reloaded
 		powerConfig = null;
 	}
