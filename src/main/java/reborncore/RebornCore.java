@@ -58,7 +58,7 @@ public class RebornCore implements IModInfo {
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
-		if(Loader.isModLoaded("MineTweaker3")){
+		if(RebornCoreConfig.mtDocGen && Loader.isModLoaded("MineTweaker3")){
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 	}
