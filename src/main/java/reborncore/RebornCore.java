@@ -3,6 +3,7 @@ package reborncore;
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -58,7 +59,7 @@ public class RebornCore implements IModInfo {
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
-		if(RebornCoreConfig.mtDocGen && Loader.isModLoaded("MineTweaker3")){
+		if(RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")){
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 	}
