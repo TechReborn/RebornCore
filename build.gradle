@@ -70,7 +70,7 @@ repositories {
 	ivy {
 		// CraftTweaker
 		name "CraftTweaker"
-		artifactPattern "https://addons-origin.cursecdn.com/files/2338/490/[module]-[revision](-[classifier]).[ext]"
+		artifactPattern "https://addons-origin.cursecdn.com/files/2392/421/[module]-[revision](-[classifier]).[ext]"
 	}
 }
 
