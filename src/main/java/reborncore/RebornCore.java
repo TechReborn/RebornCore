@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
@@ -22,6 +24,7 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.*;
+import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
@@ -38,6 +41,8 @@ public class RebornCore implements IModInfo {
 	public static LogHelper logHelper;
 	public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
 	public static RebornCoreConfig config;
+	@Mod.Instance
+	public static RebornCore INSTANCE;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
 	public static File configDir;
@@ -48,6 +53,7 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		INSTANCE = this;
 		FMLCommonHandler.instance().registerCrashCallable(new CrashHandler());
 		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
 		if (!configDir.exists()) {
@@ -59,7 +65,7 @@ public class RebornCore implements IModInfo {
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
-		if(RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")){
+		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 	}
@@ -81,6 +87,11 @@ public class RebornCore implements IModInfo {
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
+
+		if (false) {
+			GameRegistry.register(new ItemTeamRebornManual());
+			NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new ManualGuiHandler());
+		}
 
 		proxy.init(event);
 	}
