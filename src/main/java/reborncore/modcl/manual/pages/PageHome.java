@@ -1,5 +1,6 @@
 package reborncore.modcl.manual.pages;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.translation.I18n;
 import reborncore.modcl.manual.GuiTeamRebornManual;
 
@@ -13,7 +14,12 @@ public class PageHome extends ManualPage {
 	}
 
 	@Override
-	public void draw(GuiTeamRebornManual manual) {
+	public void draw(Minecraft mc, GuiTeamRebornManual manual) {
 
+	}
+
+	@Override
+	public ManualPage nextPage() {
+		return null;
 	}
 }

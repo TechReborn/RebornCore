@@ -14,6 +14,8 @@ import reborncore.RebornCore;
  * Created by Prospector
  */
 public class ItemTeamRebornManual extends Item {
+	public static boolean isManualEnabled = false;
+
 	public ItemTeamRebornManual() {
 		setUnlocalizedName("reborncore:manual");
 		setRegistryName(RebornCore.MOD_ID, "manual");
