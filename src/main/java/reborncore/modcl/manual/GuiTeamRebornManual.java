@@ -17,8 +17,8 @@ import java.util.List;
  * Created by Prospector
  */
 public class GuiTeamRebornManual extends GuiScreen {
-	public static int xSize = 350;
-	public static int ySize = 201;
+	public static int xSize = 0;
+	public static int ySize = 0;
 	public int guiLeft;
 	public int guiTop;
 	ManualBuilder builder = new ManualBuilder();
@@ -26,6 +26,9 @@ public class GuiTeamRebornManual extends GuiScreen {
 	ManualPage currentPage;
 	ManualPage previousPage;
 	ManualPage nextPage;
+	GuiSmallButton backButton;
+	GuiSmallButton nextButton;
+	GuiInvisibutton homeButton;
 
 	public GuiTeamRebornManual() {
 
@@ -34,6 +37,8 @@ public class GuiTeamRebornManual extends GuiScreen {
 	@Override
 	public void initGui() {
 		super.initGui();
+		xSize = 350;
+		ySize = 201;
 		this.guiLeft = this.width / 2 - this.xSize / 2;
 		this.guiTop = this.height / 2 - this.ySize / 2;
 		PageDescription desc = new PageDescription();
@@ -44,34 +49,31 @@ public class GuiTeamRebornManual extends GuiScreen {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		buttonList.clear();
-		GuiSmallButton backButton = new GuiSmallButton(0, guiLeft + 6, guiTop + 6, 0, 12, "< Back");
-		GuiSmallButton nextButton = new GuiSmallButton(1, 0, guiTop + 6, 0, 12, "Next >");
-		GuiInvisibutton homeButton = new GuiInvisibutton(2, guiLeft + (xSize / 2 - mc.fontRendererObj.getStringWidth(currentPage.title()) / 2) - 1, guiTop + 7, mc.fontRendererObj.getStringWidth(currentPage.title()) + 2, 10);
-
+	public void drawBackground(int tint) {
+		super.drawBackground(tint);
 		drawDefaultBackground();
 		builder.drawDefaultBackground(this, guiLeft, guiTop, xSize, ySize);
-		drawGradientRect(guiLeft + 6, 6 + guiTop, 344 + guiLeft, guiTop + 18, 0xFFA1A1A1, 0xFFA1A1A1);
+		drawGradientRect(guiLeft + 6, 6 + guiTop, xSize - 6 + guiLeft, guiTop + 18, 0xFFA1A1A1, 0xFFA1A1A1);
+
+		backButton = new GuiSmallButton(0, guiLeft + 6, guiTop + 6, 0, 12, "< Back");
+		nextButton = new GuiSmallButton(1, 0, guiTop + 6, 0, 12, "Next >");
+		homeButton = new GuiInvisibutton(2, guiLeft + (xSize / 2 - mc.fontRendererObj.getStringWidth(currentPage.title()) / 2) - 1, guiTop + 7, mc.fontRendererObj.getStringWidth(currentPage.title()) + 2, 10);
+
+		backButton.setWidth(mc.fontRendererObj.getStringWidth(backButton.displayString) + 8);
+		nextButton.width = mc.fontRendererObj.getStringWidth(nextButton.displayString) + 8;
+		nextButton.xPosition = guiLeft + xSize - 5 - nextButton.width;
+	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
 
 		if (previousPage.equals(currentPage)) {
 			backButton.enabled = false;
 		}
-		backButton.setWidth(mc.fontRendererObj.getStringWidth(backButton.displayString) + 8);
-		backButton.drawButton(mc, mouseX, mouseY);
-		buttonList.add(backButton);
-
 		if (currentPage.nextPage() == null) {
 			nextButton.enabled = false;
 		}
-		nextButton.width = mc.fontRendererObj.getStringWidth(nextButton.displayString) + 8;
-		nextButton.xPosition = guiLeft + 345 - nextButton.width;
-		nextButton.drawButton(mc, mouseX, mouseY);
-		buttonList.add(nextButton);
-
-		homeButton.drawButton(mc, mouseX, mouseY);
-		buttonList.add(homeButton);
 
 		if (homeButton.isMouseOver()) {
 			List<String> list = new ArrayList<>();
@@ -80,6 +82,9 @@ public class GuiTeamRebornManual extends GuiScreen {
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
+
+		backButton.drawButton(mc, mouseX, mouseY);
+
 		drawCentredStringShadow(currentPage.title(), 8, 0xFFFFFFFF);
 
 		currentPage.draw(mc, this);
