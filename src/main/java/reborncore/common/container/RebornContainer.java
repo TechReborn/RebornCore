@@ -10,28 +10,17 @@ import reborncore.api.tile.IContainerLayout;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public abstract class RebornContainer extends Container {
+	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
-	@Override
-	protected Slot addSlotToContainer(Slot slotIn) {
-		Slot slot = super.addSlotToContainer(slotIn);
-		if (slot instanceof BaseSlot) {
-			//TODO remove player slots
-			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
-		}
-		return slot;
-	}
-
-	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
-
-	public static @Nullable
+	public static
+	@Nullable
 	RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, TileEntity tileEntity) {
 		return createContainer(clazz, tileEntity, RebornCore.proxy.getPlayer());
 	}
@@ -79,10 +68,33 @@ public abstract class RebornContainer extends Container {
 		return null;
 	}
 
+	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
+		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY) {
+			return false;
+		}
+		if (!stack1.isItemEqual(stack2)) {
+			return false;
+		}
+		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
+			return false;
+		}
+		return true;
+
+	}
+
 	@Override
-	@Nonnull
+	protected Slot addSlotToContainer(Slot slotIn) {
+		Slot slot = super.addSlotToContainer(slotIn);
+		if (slot instanceof BaseSlot) {
+			//TODO remove player slots
+			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
+		}
+		return slot;
+	}
+
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-		@Nonnull ItemStack originalStack = ItemStack.EMPTY;
+		ItemStack originalStack = ItemStack.EMPTY;
 		Slot slot = (Slot) inventorySlots.get(slotIndex);
 		int numSlots = inventorySlots.size();
 		if (slot != null && slot.getHasStack()) {
@@ -115,25 +127,22 @@ public abstract class RebornContainer extends Container {
 		return originalStack;
 	}
 
-	protected boolean shiftItemStack(
-		@Nonnull
-			ItemStack stackToShift, int start, int end) {
+	protected boolean shiftItemStack(ItemStack stackToShift, int start, int end) {
 		boolean changed = false;
 		if (stackToShift.isStackable()) {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (!stackInSlot.isEmpty() && canStacksMerge(stackInSlot, stackToShift)) {
+				if (stackInSlot != ItemStack.EMPTY && canStacksMerge(stackInSlot, stackToShift)) {
 					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					if (resultingStackSize <= max) {
-
-						stackToShift = ItemStack.EMPTY;
+						stackToShift.setCount(0);
 						stackInSlot.setCount(resultingStackSize);
 						slot.onSlotChanged();
 						changed = true;
 					} else if (stackInSlot.getCount() < max) {
-						stackToShift.shrink(max - stackInSlot.getCount());
+						stackToShift.setCount(-(max - stackInSlot.getCount()));
 						stackInSlot.setCount(max);
 						slot.onSlotChanged();
 						changed = true;
@@ -141,15 +150,15 @@ public abstract class RebornContainer extends Container {
 				}
 			}
 		}
-		if (stackToShift.isEmpty()) {
+		if (stackToShift.getCount() > 0) {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot.isEmpty()) {
+				if (stackInSlot == ItemStack.EMPTY) {
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					stackInSlot = stackToShift.copy();
 					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.shrink(stackInSlot.getCount());
+					stackToShift.setCount(-stackInSlot.getCount());
 					slot.putStack(stackInSlot);
 					slot.onSlotChanged();
 					changed = true;
@@ -159,9 +168,7 @@ public abstract class RebornContainer extends Container {
 		return changed;
 	}
 
-	private boolean tryShiftItem(
-		@Nonnull
-			ItemStack stackToShift, int numSlots) {
+	private boolean tryShiftItem(ItemStack stackToShift, int numSlots) {
 		for (int machineIndex = 0; machineIndex < numSlots - 9 * 4; machineIndex++) {
 			Slot slot = (Slot) inventorySlots.get(machineIndex);
 			if (slot instanceof SlotFake) {
@@ -173,20 +180,6 @@ public abstract class RebornContainer extends Container {
 				return true;
 		}
 		return false;
-	}
-
-	public static boolean canStacksMerge(@Nonnull ItemStack stack1, @Nonnull ItemStack stack2) {
-		if (stack1.isEmpty() || stack2.isEmpty()) {
-			return false;
-		}
-		if (!stack1.isItemEqual(stack2)) {
-			return false;
-		}
-		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
-			return false;
-		}
-		return true;
-
 	}
 
 	public void addPlayersHotbar(EntityPlayer player) {
@@ -251,6 +244,6 @@ public abstract class RebornContainer extends Container {
 
 	public void drawPlayersInvAndHotbar(EntityPlayer player, int x, int y) {
 		drawPlayersInv(player, x, y);
-		drawPlayersHotBar(player, x, y);
+		drawPlayersHotBar(player, x, y + 58);
 	}
 }
