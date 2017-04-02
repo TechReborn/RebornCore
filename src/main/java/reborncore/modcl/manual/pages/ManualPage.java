@@ -1,8 +1,9 @@
 package reborncore.modcl.manual.pages;
 
-import com.sun.istack.internal.Nullable;
 import net.minecraft.client.Minecraft;
 import reborncore.modcl.manual.GuiTeamRebornManual;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Prospector
