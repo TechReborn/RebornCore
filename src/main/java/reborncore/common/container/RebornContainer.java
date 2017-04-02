@@ -69,7 +69,7 @@ public abstract class RebornContainer extends Container {
 	}
 
 	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-		if (stack1 == ItemStack.EMPTY || stack2 == ItemStack.EMPTY) {
+		if (stack1.isEmpty() || stack2.isEmpty()) {
 			return false;
 		}
 		if (!stack1.isItemEqual(stack2)) {
@@ -133,7 +133,7 @@ public abstract class RebornContainer extends Container {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot != ItemStack.EMPTY && canStacksMerge(stackInSlot, stackToShift)) {
+				if (!stackInSlot.isEmpty()&& canStacksMerge(stackInSlot, stackToShift)) {
 					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					if (resultingStackSize <= max) {
@@ -154,7 +154,7 @@ public abstract class RebornContainer extends Container {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot == ItemStack.EMPTY) {
+				if (stackInSlot.isEmpty()) {
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					stackInSlot = stackToShift.copy();
 					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
