@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import reborncore.RebornCore;
 import reborncore.RebornRegistry;
 
 /**
@@ -34,10 +35,17 @@ public class AdvancedUtils
         return null;
     }
 
-
     public static void registerAdvanced(Block block, AdvancedTileEntity advancedTileEntity)
     {
         RebornRegistry.registerBlock(block, advancedTileEntity.getName());
         GameRegistry.registerTileEntity(advancedTileEntity.getClass(), advancedTileEntity.getName());
+    }
+
+    public static void openGui(EntityPlayer player, AdvancedTileEntity machine)
+    {
+        if (!player.isSneaking())
+        {
+            player.openGui(RebornCore.INSTANCE, 0, machine.getWorld(), machine.getPos().getX(), machine.getPos().getY(), machine.getPos().getZ());
+        }
     }
 }

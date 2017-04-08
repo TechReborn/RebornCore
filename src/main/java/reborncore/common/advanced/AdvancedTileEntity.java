@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import reborncore.RebornCore;
 import reborncore.client.guibuilder.GuiBuilder;
 import reborncore.common.network.VanillaPacketDispatcher;
 
@@ -75,7 +76,7 @@ public abstract class AdvancedTileEntity extends TileEntity
     public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY, int guiLeft, int guiTop, int xSize, int ySize, AdvancedGui gui)
     {
         getBuilder().drawDefaultBackground(gui, guiLeft, guiTop, xSize, ySize);
-        getBuilder().drawPlayerSlots(gui, guiLeft + xSize / 2, guiTop + 93, true);
+        getBuilder().drawPlayerSlots(gui, guiLeft + xSize / 2, guiTop + 84, true);
         if (getSlots() != null)
         {
             for (Slot s : getSlots())
@@ -98,7 +99,7 @@ public abstract class AdvancedTileEntity extends TileEntity
 
     public int inventoryOffsetY()
     {
-        return 94;
+        return 85;
     }
 
     //Block
@@ -187,5 +188,13 @@ public abstract class AdvancedTileEntity extends TileEntity
     public void sync()
     {
         VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
+    }
+
+    public static void openGui(EntityPlayer player, AdvancedTileEntity machine)
+    {
+        if (!player.isSneaking())
+        {
+            player.openGui(RebornCore.INSTANCE, 0, machine.world, machine.pos.getX(), machine.pos.getY(), machine.pos.getZ());
+        }
     }
 }
