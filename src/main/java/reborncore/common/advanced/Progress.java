@@ -33,6 +33,26 @@ public class Progress implements INBTSerializable<NBTTagCompound>
         return maxProgress;
     }
 
+    public void addProgress(int amount)
+    {
+        this.progress += amount;
+    }
+
+    public void setProgress(int amount)
+    {
+        this.progress = amount;
+    }
+
+    public void resetProgress()
+    {
+        this.progress = 0;
+    }
+
+    public void incrementProgress()
+    {
+        ++this.progress;
+    }
+
     public boolean isProgressCompleate()
     {
         if(progress >= getMaxProgress())
