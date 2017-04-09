@@ -75,7 +75,7 @@ public class RebornCore implements IModInfo {
 		ShieldJsonLoader.load(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
 		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
-//			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
+			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 		registerCapabilitys();
 		RegistrationManager.load(event);
