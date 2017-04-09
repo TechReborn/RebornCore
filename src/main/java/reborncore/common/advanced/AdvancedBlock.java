@@ -29,6 +29,8 @@ public class AdvancedBlock extends BlockContainer
     {
         super(Material.IRON);
         this.advancedTileEntity = advancedTileEntity;
+        this.setUnlocalizedName(advancedTileEntity.getName());
+        this.advancedTileEntity.initBlock(this);
     }
 
     @Nullable

@@ -34,9 +34,17 @@ import java.util.List;
 public abstract class AdvancedTileEntity extends TileEntity
 {
     //Inv
-    public abstract String getName();
+    String name;
 
-    public ItemStackHandler inv = new ItemStackHandler(getInvSize());
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public ItemStackHandler inv = new ItemStackHandler(getInvSize());
 
     public abstract int getInvSize();
 
@@ -103,9 +111,19 @@ public abstract class AdvancedTileEntity extends TileEntity
     }
 
     //Block
-    public abstract TileEntity createNewTileEntity(World world, int meta);
+    public TileEntity createNewTileEntity(World world, int meta){
+	    try {
+		    return this.getClass().newInstance();
+	    } catch (InstantiationException | IllegalAccessException e) {
+		    e.printStackTrace();
+	    }
+	    return null;
+    }
 
-    public abstract boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ);
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
+	    openGui(playerIn, (AdvancedTileEntity) worldIn.getTileEntity(pos));
+	    return true;
+    }
 
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
@@ -188,6 +206,10 @@ public abstract class AdvancedTileEntity extends TileEntity
     public void sync()
     {
         VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
+    }
+
+    public void initBlock(AdvancedBlock block){
+
     }
 
     public static void openGui(EntityPlayer player, AdvancedTileEntity machine)
