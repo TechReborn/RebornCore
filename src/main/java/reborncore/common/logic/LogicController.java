@@ -1,4 +1,4 @@
-package reborncore.common.advanced;
+package reborncore.common.logic;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 08/04/2017.
  */
-public abstract class AdvancedTileEntity extends TileEntity
+public abstract class LogicController extends TileEntity
 {
     //Inv
     String name;
@@ -81,7 +81,7 @@ public abstract class AdvancedTileEntity extends TileEntity
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY, int guiLeft, int guiTop, int xSize, int ySize, AdvancedGui gui)
+    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY, int guiLeft, int guiTop, int xSize, int ySize, LogicGui gui)
     {
         getBuilder().drawDefaultBackground(gui, guiLeft, guiTop, xSize, ySize);
         getBuilder().drawPlayerSlots(gui, guiLeft + xSize / 2, guiTop + 84, true);
@@ -121,7 +121,7 @@ public abstract class AdvancedTileEntity extends TileEntity
     }
 
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ){
-	    openGui(playerIn, (AdvancedTileEntity) worldIn.getTileEntity(pos));
+	    openGui(playerIn, (LogicController) worldIn.getTileEntity(pos));
 	    return true;
     }
 
@@ -208,11 +208,11 @@ public abstract class AdvancedTileEntity extends TileEntity
         VanillaPacketDispatcher.dispatchTEToNearbyPlayers(this);
     }
 
-    public void initBlock(AdvancedBlock block){
+    public void initBlock(LogicBlock block){
 
     }
 
-    public static void openGui(EntityPlayer player, AdvancedTileEntity machine)
+    public static void openGui(EntityPlayer player, LogicController machine)
     {
         if (!player.isSneaking())
         {

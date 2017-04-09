@@ -1,4 +1,4 @@
-package reborncore.common.advanced;
+package reborncore.common.logic;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;

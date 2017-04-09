@@ -1,4 +1,4 @@
-package reborncore.common.advanced;
+package reborncore.common.logic;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -21,25 +21,26 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 08/04/2017.
  */
-public class AdvancedBlock extends BlockContainer
+public class LogicBlock extends BlockContainer
 {
-    @Nonnull AdvancedTileEntity advancedTileEntity;
+    @Nonnull
+    LogicController logicController;
 
-    public AdvancedBlock(AdvancedTileEntity advancedTileEntity)
+    public LogicBlock(LogicController logicController)
     {
         super(Material.IRON);
-        this.advancedTileEntity = advancedTileEntity;
-        this.setUnlocalizedName(advancedTileEntity.getName());
-        this.advancedTileEntity.initBlock(this);
+        this.logicController = logicController;
+        this.setUnlocalizedName(logicController.getName());
+        this.logicController.initBlock(this);
     }
 
     @Nullable
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        if(advancedTileEntity != null)
+        if(logicController != null)
         {
-            return advancedTileEntity.createNewTileEntity(worldIn, meta);
+            return logicController.createNewTileEntity(worldIn, meta);
         }
         return null;
     }
@@ -47,22 +48,22 @@ public class AdvancedBlock extends BlockContainer
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        return advancedTileEntity.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+        return logicController.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
     {
         super.addInformation(stack, player, tooltip, advanced);
-        advancedTileEntity.addInformation(stack, player, tooltip, advanced);
+        logicController.addInformation(stack, player, tooltip, advanced);
     }
 
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        if(advancedTileEntity != null)
+        if(logicController != null)
         {
-            advancedTileEntity.getRenderType(state);
+            logicController.getRenderType(state);
         }
         return super.getRenderType(state);
     }
@@ -70,9 +71,9 @@ public class AdvancedBlock extends BlockContainer
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
-        if(advancedTileEntity != null)
+        if(logicController != null)
         {
-            return advancedTileEntity.getBoundingBox(state, source, pos);
+            return logicController.getBoundingBox(state, source, pos);
         }
         return super.getBoundingBox(state, source, pos);
     }
