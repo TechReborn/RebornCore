@@ -1,7 +1,8 @@
-package teamreborn.reborncore.api.registry;
+package reborncore.common.registration;
 
-import teamreborn.reborncore.Constants;
-import teamreborn.reborncore.api.ExecutionSide;
+
+
+import reborncore.RebornCore;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -85,7 +86,7 @@ public interface IRegistryFactory
 		 *
 		 * @return a mod id
 		 */
-		String modID() default Constants.MODID;
+		String modID() default RebornCore.MOD_ID;
 	}
 
 }

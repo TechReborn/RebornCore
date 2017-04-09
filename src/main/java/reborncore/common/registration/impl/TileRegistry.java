@@ -1,4 +1,4 @@
-package teamreborn.reborncore.api.registry.impl;
+package reborncore.common.registration.impl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

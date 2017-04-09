@@ -1,6 +1,6 @@
-package teamreborn.reborncore.api.registry;
+package reborncore.common.registration;
 
-import teamreborn.reborncore.Constants;
+import reborncore.RebornCore;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,6 +20,6 @@ public @interface RebornRegistry
 	 *
 	 * @return mod id
 	 */
-	public String modID() default Constants.MODID;
+	public String modID() default RebornCore.MOD_ID;
 
 }

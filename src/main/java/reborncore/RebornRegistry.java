@@ -41,6 +41,15 @@ public class RebornRegistry {
 		}
 	}
 
+	public static void registerBlock(Block block) {
+		GameRegistry.register(block);
+		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+	}
+
+	public static void registerItem(Item item) {
+		GameRegistry.register(item);
+	}
+
 	public static void registerItem(Item item, ResourceLocation name) {
 		GameRegistry.register(item, name);
 	}

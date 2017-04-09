@@ -1,4 +1,4 @@
-package teamreborn.reborncore.api.registry;
+package reborncore.common.registration;
 
 /**
  * Created by modmuss50 on 27/02/2017.

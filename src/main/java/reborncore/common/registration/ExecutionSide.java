@@ -1,4 +1,4 @@
-package teamreborn.reborncore.api;
+package reborncore.common.registration;
 
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;

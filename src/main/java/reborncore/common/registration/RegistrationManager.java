@@ -1,13 +1,10 @@
-package teamreborn.reborncore.init;
+package reborncore.common.registration;
 
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import teamreborn.reborncore.api.registry.IRegistryFactory;
-import teamreborn.reborncore.api.registry.RebornRegistry;
-import teamreborn.reborncore.api.registry.RegistryTarget;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
