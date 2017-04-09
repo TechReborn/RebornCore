@@ -22,7 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import reborncore.RebornCore;
+import reborncore.api.rcpower.implementation.BasePowerContainer;
 import reborncore.client.guibuilder.GuiBuilder;
+import reborncore.common.capabilitys.PowerCapabilities;
 import reborncore.common.network.VanillaPacketDispatcher;
 
 import javax.annotation.Nullable;
@@ -170,6 +172,14 @@ public abstract class LogicController extends TileEntity
         {
             return true;
         }
+        if(isConsumer() && capability == PowerCapabilities.CAPABILITY_CONSUMER || capability == PowerCapabilities.CAPABILITY_HOLDER)
+        {
+            return true;
+        }
+        if(isProducer() && capability == PowerCapabilities.CAPABILITY_HOLDER || capability == PowerCapabilities.CAPABILITY_PRODUCER)
+        {
+            return true;
+        }
         return super.hasCapability(capability, facing);
     }
 
@@ -180,6 +190,14 @@ public abstract class LogicController extends TileEntity
         if(hasInv() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInv());
+        }
+        if(isConsumer() && capability == PowerCapabilities.CAPABILITY_CONSUMER || capability == PowerCapabilities.CAPABILITY_HOLDER)
+        {
+            return PowerCapabilities.CAPABILITY_CONSUMER.cast(getPowerContainer());
+        }
+        if(isProducer() && capability == PowerCapabilities.CAPABILITY_HOLDER || capability == PowerCapabilities.CAPABILITY_PRODUCER)
+        {
+            return PowerCapabilities.CAPABILITY_HOLDER.cast(getPowerContainer());
         }
         return super.getCapability(capability, facing);
     }
@@ -218,5 +236,51 @@ public abstract class LogicController extends TileEntity
         {
             player.openGui(RebornCore.INSTANCE, 0, machine.world, machine.pos.getX(), machine.pos.getY(), machine.pos.getZ());
         }
+    }
+
+    //Power
+    public BasePowerContainer powerContainer = new BasePowerContainer(getMaxCapacity(), getMaxInput(), getMaxOutput(), getTier());
+
+    public BasePowerContainer getPowerContainer()
+    {
+        return powerContainer;
+    }
+
+    public boolean hasPowerContainer()
+    {
+        return true;
+    }
+
+    //Will add IPowerHolder and IPowerConsumer
+    public boolean isConsumer()
+    {
+        return true;
+    }
+
+    //Will add IPowerHolder and IPowerProducer
+    public boolean isProducer()
+    {
+        return true;
+    }
+
+    public int getMaxCapacity()
+    {
+        return 1000;
+    }
+
+    public int getMaxInput()
+    {
+        return 20;
+    }
+
+    public int getMaxOutput()
+    {
+        return 20;
+    }
+
+    //TODO ENUM
+    public int getTier()
+    {
+        return 1;
     }
 }
