@@ -285,7 +285,7 @@ apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig
 import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
 
-task curseTools << {
+task curseTools {
 	def cacheFiles = new File(".gradle/curseTools")
 	if (!cacheFiles.exists()) {
 		cacheFiles.mkdirs()
