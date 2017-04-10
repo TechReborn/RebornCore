@@ -23,6 +23,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
+import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
@@ -37,7 +38,9 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory {
+public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable {
+
+	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
@@ -162,6 +165,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().readFromNBT(tagCompound);
 		}
+		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
 
 	@Override
@@ -173,6 +177,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
+		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
 	}
 
@@ -378,5 +383,15 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			return (T) new SidedInvWrapper(this, facing);
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public IInventory getUpgradeInvetory() {
+		return upgradeInventory;
+	}
+
+	@Override
+	public int getUpgradeSlotCount() {
+		return 4;
 	}
 }
