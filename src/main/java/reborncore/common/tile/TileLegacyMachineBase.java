@@ -23,6 +23,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
+import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
@@ -70,6 +71,17 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public void update() {
 		updateEntity();
 		if (getCrafterForTile().isPresent()) {
+			if(canBeUpgraded()){
+				RecipeCrafter crafter = getCrafterForTile().get();
+				crafter.resetPowerMulti();
+				crafter.resetSpeedMulti();
+				for (int i = 0; i < getUpgradeSlotCount(); i++) {
+					ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
+					if(!stack.isEmpty() && stack.getItem() instanceof IUpgrade){
+						((IUpgrade) stack.getItem()).process(this, crafter, stack);
+					}
+				}
+			}
 			getCrafterForTile().get().updateEntity();
 		}
 	}
