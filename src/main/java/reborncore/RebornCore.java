@@ -22,7 +22,7 @@ import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.capabilitys.PowerCapabilities;
 import reborncore.common.logic.LogicControllerGuiHandler;
-//import reborncore.common.minetweaker.MinetweakerDocGen;
+import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
