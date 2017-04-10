@@ -286,6 +286,7 @@ import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
 
 task curseTools {
+	doLast{
 	def cacheFiles = new File(".gradle/curseTools")
 	if (!cacheFiles.exists()) {
 		cacheFiles.mkdirs()
@@ -309,5 +310,6 @@ task curseTools {
 		arg(value: jar.archivePath.getAbsolutePath())
 		arg(value: deobfJar.archivePath.getAbsolutePath())
 		arg(value: apiJar.archivePath.getAbsolutePath())
+	}
 	}
 }
