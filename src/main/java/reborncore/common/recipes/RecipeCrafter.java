@@ -426,4 +426,23 @@ public class RecipeCrafter {
 			((reborncore.common.util.Inventory) inventory).hasChanged = isDiry;
 		}
 	}
+
+	public boolean isStackValidInput(ItemStack stack){
+		if(stack.isEmpty()){
+			return false;
+		}
+		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
+			for (Object input : recipe.getInputs()) {
+				boolean hasItem = false;
+				boolean useOreDict = input instanceof String || recipe.useOreDic();
+				boolean checkSize = input instanceof ItemStack;
+				if (ItemUtils.isInputEqual(input, stack, true, true,
+						useOreDict)) {
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
 }

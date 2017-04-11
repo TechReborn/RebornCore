@@ -26,14 +26,14 @@ public class InventoryHelper {
 	public static void tryInsertStack(IInventory targetInventory, int slot, ItemStack stack, boolean canMerge) {
 		if (targetInventory.isItemValidForSlot(slot, stack)) {
 			ItemStack targetStack = targetInventory.getStackInSlot(slot);
-			if (targetStack == ItemStack.EMPTY) {
+			if (targetStack.isEmpty()) {
 				int space = targetInventory.getInventoryStackLimit();
 				int mergeAmount = Math.min(space, stack.getCount());
 
 				ItemStack copy = stack.copy();
 				copy.setCount(mergeAmount);
 				targetInventory.setInventorySlotContents(slot, copy);
-				stack.setCount(-mergeAmount);
+				stack.shrink(mergeAmount);
 			} else if (canMerge) {
 				if (targetInventory.isItemValidForSlot(slot, stack) && areMergeCandidates(stack, targetStack)) {
 					int space = Math.min(targetInventory.getInventoryStackLimit(), targetStack.getMaxStackSize())
@@ -41,9 +41,9 @@ public class InventoryHelper {
 					int mergeAmount = Math.min(space, stack.getCount());
 
 					ItemStack copy = targetStack.copy();
-					copy.setCount(mergeAmount);
+					copy.grow(mergeAmount);
 					targetInventory.setInventorySlotContents(slot, copy);
-					stack.setCount(-mergeAmount);
+					stack.shrink(mergeAmount);
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public class InventoryHelper {
 
 	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side, int intoSlot,
 	                                           boolean doMove, boolean canStack) {
-		if (stack == ItemStack.EMPTY)
+		if (stack.isEmpty())
 			return;
 
 		IInventory targetInventory = inventory;
@@ -114,7 +114,7 @@ public class InventoryHelper {
 	}
 
 	public static int testInventoryInsertion(IInventory inventory, ItemStack item, EnumFacing side) {
-		if (item == ItemStack.EMPTY || item.getCount() == 0)
+		if (item.isEmpty() || item.getCount() == 0)
 			return 0;
 		item = item.copy();
 
@@ -126,7 +126,7 @@ public class InventoryHelper {
 		int itemSizeCounter = item.getCount();
 		int[] availableSlots = new int[0];
 
-		if (inventory instanceof ISidedInventory)
+		if (inventory instanceof ISidedInventory && side != null)
 			availableSlots = ((ISidedInventory) inventory).getSlotsForFace(side);
 		else {
 			availableSlots = buildSlotsForLinearInventory(inventory);
@@ -144,7 +144,7 @@ public class InventoryHelper {
 					continue;
 
 			ItemStack inventorySlot = inventory.getStackInSlot(i);
-			if (inventorySlot == ItemStack.EMPTY)
+			if (inventorySlot.isEmpty())
 				itemSizeCounter -= Math.min(Math.min(itemSizeCounter, inventory.getInventoryStackLimit()),
 					item.getMaxStackSize());
 			else if (areMergeCandidates(item, inventorySlot)) {
@@ -236,7 +236,7 @@ public class InventoryHelper {
 
 		@Override
 		public ItemStack decrStackSize(int par1, int par2) {
-			if (inventoryContents[par1] != ItemStack.EMPTY) {
+			if (!inventoryContents[par1].isEmpty()) {
 				ItemStack itemstack;
 
 				if (inventoryContents[par1].getCount() <= par2) {
@@ -288,7 +288,7 @@ public class InventoryHelper {
 			if (i >= inventoryContents.length)
 				return ItemStack.EMPTY;
 
-			if (inventoryContents[i] != ItemStack.EMPTY) {
+			if (!inventoryContents[i].isEmpty()) {
 				ItemStack itemstack = inventoryContents[i];
 				inventoryContents[i] = ItemStack.EMPTY;
 				return itemstack;
@@ -298,7 +298,7 @@ public class InventoryHelper {
 		}
 
 		public boolean isItem(int slot, Item item) {
-			return inventoryContents[slot] != ItemStack.EMPTY && inventoryContents[slot].getItem() == item;
+			return !inventoryContents[slot].isEmpty() && inventoryContents[slot].getItem() == item;
 		}
 
 		@Override
@@ -364,7 +364,7 @@ public class InventoryHelper {
 		public void setInventorySlotContents(int i, ItemStack itemstack) {
 			inventoryContents[i] = itemstack;
 
-			if (itemstack != ItemStack.EMPTY && itemstack.getCount() > getInventoryStackLimit())
+			if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit())
 				itemstack.setCount(getInventoryStackLimit());
 		}
 
@@ -386,7 +386,7 @@ public class InventoryHelper {
 			for (int i = 0; i < inventory.getSizeInventory(); i++)
 				if (i < getSizeInventory()) {
 					ItemStack stack = inventory.getStackInSlot(i);
-					if (stack != ItemStack.EMPTY)
+					if (!stack.isEmpty())
 						setInventorySlotContents(i, stack.copy());
 					else
 						setInventorySlotContents(i, ItemStack.EMPTY);
