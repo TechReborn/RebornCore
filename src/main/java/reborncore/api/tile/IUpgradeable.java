@@ -5,7 +5,7 @@ import net.minecraft.inventory.IInventory;
 public interface IUpgradeable {
 
 	public default boolean canBeUpgraded() {
-		return false;
+		return true;
 	}
 
 	public IInventory getUpgradeInvetory();

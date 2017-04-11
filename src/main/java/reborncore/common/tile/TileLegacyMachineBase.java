@@ -71,7 +71,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public void update() {
 		updateEntity();
 		if (getCrafterForTile().isPresent()) {
-			if(canBeUpgraded()){
+			if(canBeUpgraded() && world.getTotalWorldTime() % 20 == 0){
 				RecipeCrafter crafter = getCrafterForTile().get();
 				crafter.resetPowerMulti();
 				crafter.resetSpeedMulti();
