@@ -425,4 +425,33 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	//End Tesla
+
+
+	public abstract double getBaseMaxPower();
+
+	public abstract double getBaseMaxOutput();
+
+	public abstract double getBaseMaxInput();
+
+	public abstract EnumPowerTier getBaseTier();
+
+	@Override
+	public double getMaxPower() {
+		return getBaseMaxPower();
+	}
+
+	@Override
+	public double getMaxOutput() {
+		return getBaseMaxOutput();
+	}
+
+	@Override
+	public double getMaxInput() {
+		return getBaseMaxInput();
+	}
+
+	@Override
+	public EnumPowerTier getTier() {
+		return getBaseTier();
+	}
 }
