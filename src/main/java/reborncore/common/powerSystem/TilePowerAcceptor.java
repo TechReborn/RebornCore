@@ -43,6 +43,12 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	ForgePowerManager forgePowerManager;
 	private double energy;
 
+	public double extraPowerStoage;
+
+	public void setExtraPowerStoage(double extraPowerStoage) {
+		this.extraPowerStoage = extraPowerStoage;
+	}
+
 	// IC2
 
 	public TilePowerAcceptor(int tier) {
@@ -437,7 +443,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public double getMaxPower() {
-		return getBaseMaxPower();
+		return getBaseMaxPower() + extraPowerStoage;
 	}
 
 	@Override
@@ -453,5 +459,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public EnumPowerTier getTier() {
 		return getBaseTier();
+	}
+
+	@Override
+	public void resetUpgrades() {
+		super.resetUpgrades();
+		extraPowerStoage = 0;
+		if(getEnergy() > getMaxPower()){ //Makes sure we do not have too much power, and voids it
+			setEnergy(getMaxPower());
+		}
 	}
 }
