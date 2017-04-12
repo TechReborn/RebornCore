@@ -197,4 +197,8 @@ public class Inventory implements IInventory {
 	public ITextComponent getDisplayName() {
 		return new TextComponentString(this.getName());
 	}
+
+	public TileBase getTileBase() {
+		return tileBase;
+	}
 }

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
+import reborncore.common.tile.TileBase;
 
 public class Inventory implements IInventory {
 
@@ -200,5 +201,9 @@ public class Inventory implements IInventory {
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TextComponentString(name);
+	}
+
+	public TileEntity getTileBase() {
+		return tile;
 	}
 }
