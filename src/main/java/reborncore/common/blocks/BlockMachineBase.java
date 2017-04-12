@@ -25,8 +25,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
+import reborncore.api.tile.IUpgrade;
+import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
+import reborncore.common.util.InventoryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,22 +155,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 
 		List<ItemStack> items = new ArrayList<ItemStack>();
 
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
-
-			if (itemStack == ItemStack.EMPTY) {
-				continue;
-			}
-			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0) {
-				if (itemStack.getItem() instanceof ItemBlock) {
-					if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase
-						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid
-						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
-						continue;
-					}
-				}
-			}
-			items.add(itemStack.copy());
+		addItemsToList(inventory, items);
+		if(tileEntity instanceof IUpgradeable){
+			addItemsToList(((IUpgradeable) tileEntity).getUpgradeInvetory(), items);
 		}
 
 		for (ItemStack itemStack : items) {
@@ -192,6 +182,27 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 			itemStack.setCount(0);
 		}
 	}
+
+	private void addItemsToList(IInventory inventory, List<ItemStack> items){
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack itemStack = inventory.getStackInSlot(i);
+
+			if (itemStack == ItemStack.EMPTY) {
+				continue;
+			}
+			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0) {
+				if (itemStack.getItem() instanceof ItemBlock) {
+					if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase
+						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid
+						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
+						continue;
+					}
+				}
+			}
+			items.add(itemStack.copy());
+		}
+	}
+
 
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
@@ -224,6 +235,21 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 	                                EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (fillBlockWithFluid(worldIn, pos, playerIn)) {
 			return true;
+		}
+		if(playerIn.isSneaking()){
+			ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
+			if(!stack.isEmpty() && stack.getItem() instanceof IUpgrade){
+				TileEntity tileEntity = worldIn.getTileEntity(pos);
+				if(tileEntity instanceof IUpgradeable){
+					if(((IUpgradeable) tileEntity).canBeUpgraded()){
+						if(InventoryHelper.testInventoryInsertion(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack, null) > 0){
+							InventoryHelper.insertItemIntoInventory(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack);
+							playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+							return true;
+						}
+					}
+				}
+			}
 		}
 		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ)) {
 			return true;
