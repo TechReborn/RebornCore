@@ -70,9 +70,13 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public void update() {
 		updateEntity();
-		if (!world.isRemote && getCrafterForTile().isPresent()) {
+		if (!world.isRemote) {
+			@Nullable RecipeCrafter crafter = null;
+			if(getCrafterForTile().isPresent()){
+				crafter = getCrafterForTile().get();
+			}
 			if(canBeUpgraded()){
-				RecipeCrafter crafter = getCrafterForTile().get();
+
 				resetUpgrades();
 				for (int i = 0; i < getUpgradeSlotCount(); i++) {
 					ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
@@ -81,7 +85,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 					}
 				}
 			}
-			getCrafterForTile().get().updateEntity();
+			if(crafter != null){
+				crafter.updateEntity();
+			}
 		}
 	}
 

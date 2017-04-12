@@ -18,6 +18,6 @@ public interface IUpgrade {
 		RecipeCrafter crafter, @Nonnull ItemStack stack);
 
 	//Called on both sides
-	public void handleRightClick(TileEntity tile, ItemStack stack, BuiltContainer container);
+	public void handleRightClick(TileEntity tile, ItemStack stack, BuiltContainer container, int slotID);
 
 }
