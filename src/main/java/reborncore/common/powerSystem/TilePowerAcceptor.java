@@ -44,6 +44,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	private double energy;
 
 	public double extraPowerStoage;
+	public int extraTeir;
 
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
@@ -458,6 +459,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public EnumPowerTier getTier() {
+		if(extraTeir > 0){
+			for(EnumPowerTier tier : EnumPowerTier.values()){
+				if(tier.getIC2Tier() == getBaseTier().getIC2Tier() + extraTeir){
+					return tier;
+				}
+			}
+			return EnumPowerTier.INSANE;
+		}
 		return getBaseTier();
 	}
 
@@ -465,6 +474,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void resetUpgrades() {
 		super.resetUpgrades();
 		extraPowerStoage = 0;
+		extraTeir = 0;
 		if(getEnergy() > getMaxPower()){ //Makes sure we do not have too much power, and voids it
 			setEnergy(getMaxPower());
 		}
