@@ -9,9 +9,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import reborncore.mixin.implementations.forge.MixinForgeLoadingCore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommonProxy {
+
+	public List<String> invalidFingerprints = new ArrayList<>();
 
 	public void preInit(FMLPreInitializationEvent event) {
 
@@ -42,5 +45,6 @@ public class CommonProxy {
 		list.add("RebornCore Version: " + RebornCore.MOD_VERSION);
 		list.add("Mixin Status: " + (MixinForgeLoadingCore.mixinsLoaded ? "1" : "0"));
 		list.add("Runtime Debofucsation " + (FMLForgePlugin.RUNTIME_DEOBF ? "1" : "0"));
+		list.addAll(invalidFingerprints);
 	}
 }
