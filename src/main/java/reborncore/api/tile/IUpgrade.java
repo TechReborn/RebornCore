@@ -1,10 +1,10 @@
 package reborncore.api.tile;
 
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.tile.TileLegacyMachineBase;
-import techreborn.client.container.builder.BuiltContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +18,6 @@ public interface IUpgrade {
 		RecipeCrafter crafter, @Nonnull ItemStack stack);
 
 	//Called on both sides
-	public void handleRightClick(TileEntity tile, ItemStack stack, BuiltContainer container, int slotID);
+	public void handleRightClick(TileEntity tile, ItemStack stack, Container container, int slotID);
 
 }
