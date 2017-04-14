@@ -65,7 +65,7 @@ public class LogicBlock extends BlockContainer
         {
             logicController.getRenderType(state);
         }
-        return EnumBlockRenderType.MODEL;
+        return super.getRenderType(state);
     }
 
     @Override

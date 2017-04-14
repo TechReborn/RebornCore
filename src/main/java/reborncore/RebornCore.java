@@ -2,23 +2,21 @@ package reborncore;
 
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import reborncore.api.rcpower.IPowerConsumer;
-import reborncore.api.rcpower.IPowerHolder;
-import reborncore.api.rcpower.IPowerProducer;
-import reborncore.api.rcpower.implementation.BasePowerContainer;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.capabilitys.PowerCapabilities;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
@@ -75,7 +73,6 @@ public class RebornCore implements IModInfo {
 		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
-		registerCapabilitys();
 		RegistrationManager.load(event);
 	}
 
@@ -108,13 +105,6 @@ public class RebornCore implements IModInfo {
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
-	}
-
-	private void registerCapabilitys()
-	{
-		CapabilityManager.INSTANCE.register(IPowerConsumer.class, new PowerCapabilities.CapabilityPowerConsumer<IPowerConsumer>(), BasePowerContainer.class);
-		CapabilityManager.INSTANCE.register(IPowerProducer.class, new PowerCapabilities.CapabilityPowerProducer<IPowerProducer>(), BasePowerContainer.class);
-		CapabilityManager.INSTANCE.register(IPowerHolder.class, new PowerCapabilities.CapabilityPowerHolder<IPowerHolder>(), BasePowerContainer.class);
 	}
 
 	@Mod.EventHandler
