@@ -26,7 +26,7 @@ public abstract class ModCL {
 
 	public abstract String getClientProxy();
 
-	public abstract RegistryCL getItemRegistry();
+	public abstract RegistryCL getRegistry();
 
 	public ItemStack getTabStack() {
 		return ItemStack.EMPTY;

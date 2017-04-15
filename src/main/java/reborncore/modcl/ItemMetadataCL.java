@@ -32,7 +32,7 @@ public class ItemMetadataCL extends ItemCL {
 	public ItemStack getStack(String name, int count) {
 		for (String type : types) {
 			if (type.equalsIgnoreCase(name)) {
-				ItemStack stack = new ItemStack(mod.getItemRegistry().registry.get(this.name), count, types.indexOf(name));
+				ItemStack stack = new ItemStack(mod.getRegistry().itemRegistry.get(this.name), count, types.indexOf(name));
 				stack.setCount(count);
 				return stack;
 			}
