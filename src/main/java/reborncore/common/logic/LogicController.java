@@ -157,6 +157,11 @@ public abstract class LogicController extends TileEntity
 
     public void actionPerformed(int buttonID){}
 
+    public boolean dropInv()
+    {
+        return false;
+    }
+
     //NBT
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
