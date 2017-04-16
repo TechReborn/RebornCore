@@ -216,7 +216,6 @@ public abstract class LogicController extends TileEntity
     }
 
     public void initBlock(LogicBlock block){
-        registerItemModel(block);
     }
 
     public static void openGui(EntityPlayer player, LogicController machine)
