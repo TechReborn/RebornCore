@@ -19,6 +19,7 @@ import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.minetweaker.MinetweakerDocGen;
+import reborncore.common.logic.Packets;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
@@ -70,7 +71,9 @@ public class RebornCore implements IModInfo {
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
-		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
+        MinecraftForge.EVENT_BUS.register(Packets.class);
+
+        if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 		RegistrationManager.load(event);

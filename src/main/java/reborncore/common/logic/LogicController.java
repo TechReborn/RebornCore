@@ -2,6 +2,7 @@ package reborncore.common.logic;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -100,6 +101,12 @@ public abstract class LogicController extends TileEntity
     @SideOnly(Side.CLIENT)
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY, GuiContainer gui, int guiLeft, int guiTop) {}
 
+    @SideOnly(Side.CLIENT)
+    public List<GuiButton> getButtons()
+    {
+        return null;
+    }
+
     //Container
     public abstract List<Slot> getSlots();
 
@@ -147,6 +154,8 @@ public abstract class LogicController extends TileEntity
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {}
 
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {}
+
+    public void actionPerformed(int buttonID){}
 
     //NBT
     @Override
