@@ -5,15 +5,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
+import reborncore.common.registration.impl.PacketRegistry;
 
 import java.io.IOException;
 
-/**
- * Created by modmuss50 on 20/09/2016.
- */
+
+@PacketRegistry(proccessingSide = Side.CLIENT)
 public class CustomDescriptionPacket implements INetworkPacket<CustomDescriptionPacket> {
 
 	private BlockPos blockPos;
