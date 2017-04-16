@@ -46,6 +46,7 @@ public class LogicBlock extends BlockContainer
         this.logicController = logicController;
         this.setUnlocalizedName(logicController.getName());
         this.logicController.initBlock(this);
+        this.setHardness(logicController.getHardness());
     }
 
     @Nullable

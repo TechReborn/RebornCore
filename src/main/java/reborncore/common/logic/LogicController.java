@@ -162,6 +162,11 @@ public abstract class LogicController extends TileEntity
         return false;
     }
 
+    public float getHardness()
+    {
+        return 2.0F;
+    }
+
     //NBT
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
