@@ -1,7 +1,10 @@
 package reborncore.common.logic;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -22,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import reborncore.RebornCore;
+import reborncore.RebornRegistry;
 import reborncore.client.guibuilder.GuiBuilder;
 import reborncore.common.network.VanillaPacketDispatcher;
 
@@ -97,6 +101,12 @@ public abstract class LogicController extends TileEntity
     @SideOnly(Side.CLIENT)
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY, GuiContainer gui, int guiLeft, int guiTop) {}
 
+    @SideOnly(Side.CLIENT)
+    public List<GuiButton> getButtons()
+    {
+        return null;
+    }
+
     //Container
     public abstract List<Slot> getSlots();
 
@@ -140,6 +150,22 @@ public abstract class LogicController extends TileEntity
     public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {}
 
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced){}
+
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {}
+
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {}
+
+    public void actionPerformed(int buttonID){}
+
+    public boolean dropInv()
+    {
+        return false;
+    }
+
+    public float getHardness()
+    {
+        return 2.0F;
+    }
 
     //NBT
     @Override
@@ -209,7 +235,6 @@ public abstract class LogicController extends TileEntity
     }
 
     public void initBlock(LogicBlock block){
-
     }
 
     public static void openGui(EntityPlayer player, LogicController machine)
@@ -218,5 +243,10 @@ public abstract class LogicController extends TileEntity
         {
             player.openGui(RebornCore.INSTANCE, 0, machine.world, machine.pos.getX(), machine.pos.getY(), machine.pos.getZ());
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerItemModel(Block block) {
+        RebornRegistry.registerItemModel(block, 0);
     }
 }
