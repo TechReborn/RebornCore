@@ -3,6 +3,7 @@ package reborncore.common.logic;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -77,4 +78,20 @@ public class LogicBlock extends BlockContainer
         }
         return super.getBoundingBox(state, source, pos);
     }
+
+    @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
+    {
+        logicController.onBlockAdded(worldIn, pos, state);
+        super.onBlockAdded(worldIn, pos, state);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        logicController.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    }
+
+    //States
 }

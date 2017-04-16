@@ -1,11 +1,15 @@
 package reborncore;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.LootManager;
 import reborncore.common.util.CraftingHelper;
 
@@ -75,5 +79,23 @@ public class RebornRegistry {
 
 	public static void addLoot(Item item, int ordinal, int minSize, int maxSize, double chance, ResourceLocation list) {
 		lp.addItem(LootManager.createLootEntry(item, ordinal, minSize, maxSize, chance, list));
+	}
+
+    @SideOnly(Side.CLIENT)
+	public static void registerItemModel(Item i, int meta) {
+		ResourceLocation loc = i.getRegistryName();
+		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "inventory"));
+	}
+
+    @SideOnly(Side.CLIENT)
+	public static void registerItemModel(Block b, int meta)
+	{
+		registerItemModel(Item.getItemFromBlock(b), meta);
+	}
+
+    @SideOnly(Side.CLIENT)
+    public static void registerItemModel(Item i, int meta, String variant) {
+		ResourceLocation loc = i.getRegistryName();
+		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "type=" + variant));
 	}
 }
