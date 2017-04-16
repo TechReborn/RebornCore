@@ -66,7 +66,7 @@ public class LogicBlock extends BlockContainer
         {
             logicController.getRenderType(state);
         }
-        return super.getRenderType(state);
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override
@@ -92,6 +92,4 @@ public class LogicBlock extends BlockContainer
         logicController.onBlockPlacedBy(worldIn, pos, state, placer, stack);
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     }
-
-    //States
 }
