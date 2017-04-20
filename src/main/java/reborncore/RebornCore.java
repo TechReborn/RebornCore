@@ -4,10 +4,6 @@ import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -37,7 +33,7 @@ import java.io.File;
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.11]", dependencies = "required-after:forge@[12.18.2.2121,);", certificateFingerprint = "8727a3141c8ec7f173b87aa78b9b9807867c4e6b")
 public class RebornCore implements IModInfo {
 
-	public static final String MOD_NAME = "RebornCore";
+	public static final String MOD_NAME = "Reborn Core";
 	public static final String MOD_ID = "reborncore";
 	public static final String MOD_VERSION = "@MODVERSION@";
 	public static final String WEB_URL = "http://files.modmuss50.me/";
@@ -71,7 +67,7 @@ public class RebornCore implements IModInfo {
 		ShieldJsonLoader.load(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
 
-        if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
+		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 		RegistrationManager.load(event);

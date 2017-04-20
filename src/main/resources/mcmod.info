@@ -1,17 +1,17 @@
 [
 {
   "modid": "reborncore",
-  "name": "RebornCore",
-  "description": "RebornCore, A core set of classes.",
+  "name": "Reborn Core",
+  "description": "Reborn Core is a library used for many of the Tech Reborn team's mods, including Tech Reborn, Quantum Storage, Fluxed Redstone, Hardcore Map Reset, and many more.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/TechReborn/RebornCore",
   "updateUrl": "",
   "authorList": [
-    "modmuss50", "Gigabit101"
+    "modmuss50", "Gigabit101", "Prospector"
   ],
   "credits": "",
-  "logoFile": "",
+  "logoFile": "logo.png",
   "screenshots": [
   ],
   "parent":"",
