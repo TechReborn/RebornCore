@@ -29,9 +29,9 @@ import java.util.List;
 /**
  * Created by Lordmau5 on 08.06.2016.
  */
-@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
+@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
+	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
+	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "ic2") })
 public abstract class TileEnergyBase extends TileBase implements IEnergyInterfaceTile, IListInfoProvider, ITickable, IEnergyTile, IEnergySink, IEnergySource {
 
 	/* Power storage Setup */
@@ -281,7 +281,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 
 	protected boolean addedToEnet;
 
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void onLoaded() {
 		if (getPowerConfig().eu() && !addedToEnet &&
 			!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
@@ -299,7 +299,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void onChunkUnload() {
 		super.onChunkUnload();
 		if (getPowerConfig().eu()) {
@@ -312,7 +312,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double getDemandedEnergy() {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return 0;
@@ -320,20 +320,20 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public int getSinkTier() {
 		return tier.ordinal();
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
 		setEnergy(getEnergy() + amount);
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public boolean acceptsEnergyFrom(IEnergyEmitter iEnergyEmitter, EnumFacing enumFacing) {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return false;
@@ -341,7 +341,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public boolean emitsEnergyTo(IEnergyAcceptor iEnergyAcceptor, EnumFacing enumFacing) {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return false;
@@ -349,7 +349,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double getOfferedEnergy() {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return 0;
@@ -357,13 +357,13 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void drawEnergy(double amount) {
 		useEnergy((int) amount);
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public int getSourceTier() {
 		return tier.ordinal();
 	}

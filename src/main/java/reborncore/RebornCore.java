@@ -75,6 +75,7 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+		RebornCoreConfig.isIC2Loaded = Loader.isModLoaded("ic2");
 		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets

@@ -88,7 +88,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.11.2-13.20.0.2222"
+	version = "1.11.2-13.20.0.2282"
 	mappings = "snapshot_20161118"
 	replace "@MODVERSION@", project.version
 	runDir = "run"
@@ -102,7 +102,7 @@ dependencies {
 	//THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
 	shade 'JSON-Destroyer:JSON-Destroyer-1.11:2.2.3:dev'
 	shade 'org.hjson:hjson:1.1.4'
-	shade 'net.industrial-craft:industrialcraft-2:2.6.58-ex110:api'
+	shade 'net.industrial-craft:industrialcraft-2:2.7.5-ex111:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
 	compile "mezz.jei:jei_1.11.2:4.2.10.250"

@@ -1,7 +1,6 @@
 package reborncore.common;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IPowerConfig;
 
 import java.io.File;
@@ -27,6 +26,7 @@ public class RebornCoreConfig {
 	private static RebornCoreConfig instance = null;
 	private static IPowerConfig powerConfig = null;
 	public static boolean mtDocGen;
+	public static boolean isIC2Loaded = false;
 
 	public RebornCoreConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -62,7 +62,7 @@ public class RebornCoreConfig {
 		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system").getBoolean();
 
 		enableEU = config
-			.get(CATEGORY_POWER, "Allow EU", Loader.isModLoaded("IC2"), "Allow machines to be powered with EU")
+			.get(CATEGORY_POWER, "Allow IC2 EU", true, "Allow machines to be powered with EU")
 			.getBoolean();
 
 		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();

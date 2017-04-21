@@ -31,9 +31,9 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "IC2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2") })
+@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
+	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
+	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "ic2") })
 public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	IEnergyInterfaceTile, IListInfoProvider, // TechReborn
 	IEnergyTile, IEnergySink, IEnergySource // Ic2
@@ -95,13 +95,12 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 
-		//TODO ic2 check
-		//		if(Info.isIc2Available()){
-		//			onLoaded();
-		//		}
+		if(RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()){
+			onLoaded();
+		}
 	}
 
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void onLoaded() {
 		if (getPowerConfig().eu() && !addedToEnet &&
 			!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
@@ -119,7 +118,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void onChunkUnload() {
 		super.onChunkUnload();
 		if (getPowerConfig().eu()) {
@@ -132,7 +131,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double getDemandedEnergy() {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return 0;
@@ -140,20 +139,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public int getSinkTier() {
 		return tier;
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
 		setEnergy(getEnergy() + amount);
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public boolean acceptsEnergyFrom(IEnergyEmitter iEnergyEmitter, EnumFacing enumFacing) {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return false;
@@ -161,7 +160,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public boolean emitsEnergyTo(IEnergyAcceptor iEnergyAcceptor, EnumFacing enumFacing) {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return false;
@@ -169,7 +168,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public double getOfferedEnergy() {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return 0;
@@ -177,13 +176,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public void drawEnergy(double amount) {
 		useEnergy((int) amount);
 	}
 
 	@Override
-	@Optional.Method(modid = "IC2")
+	@Optional.Method(modid = "ic2")
 	public int getSourceTier() {
 		return tier;
 	}
