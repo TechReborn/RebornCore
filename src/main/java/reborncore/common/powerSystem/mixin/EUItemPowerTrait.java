@@ -9,7 +9,6 @@ import reborncore.mixin.api.Mixin;
 @Mixin(target = "")
 public class EUItemPowerTrait implements IElectricItem {
 
-	@Inject
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack) {
 		return getInterface().canAcceptEnergy(itemStack);
