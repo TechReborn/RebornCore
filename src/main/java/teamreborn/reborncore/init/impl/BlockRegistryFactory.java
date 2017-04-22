@@ -50,7 +50,7 @@ public class BlockRegistryFactory implements IRegistryFactory
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException("Failed to load Block", e);
 		}
 	}
 
