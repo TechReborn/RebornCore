@@ -1,5 +1,6 @@
 package teamreborn.reborncore.grid;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import teamreborn.reborncore.api.power.IGridConnection;
 import teamreborn.reborncore.api.power.IGridProvider;
@@ -30,10 +31,27 @@ public class PowerGrid {
 		}
 	}
 
-	public void tick(TickEvent.WorldTickEvent event){
+	public void remove(IGridConnection connection){
+		connections.remove(connection);
+	}
+
+
+	public void tick(TickEvent.WorldTickEvent event, GridWorldManager worldManager){
 		double providedPower = 0;
 		double requestedPower = 0;
 		HashMap<IGridReciever, Double> recieverHashMap = new HashMap<>();
+		//Check's every 2 seconds to see if any of the tiles are invalid, and if they are remove them.
+		//Might need spreading out over the ticks so you dont have 1 in 40 ticks being slow
+		if(event.world.getTotalWorldTime() % 40 == 0){
+			for(IGridConnection connection : new ArrayList<>(connections)){
+				if(connection instanceof TileEntity){
+					if(((TileEntity) connection).isInvalid()){
+						worldManager.removeConnection(connection);
+					}
+				}
+			}
+
+		}
 		for(IGridConnection connection : connections){
 			if(connection instanceof IGridProvider){
 				providedPower += ((IGridProvider) connection).providePower();
@@ -46,7 +64,8 @@ public class PowerGrid {
 		}
 
 		for(Map.Entry<IGridReciever, Double> gridRecieverEntry : recieverHashMap.entrySet()){
-			gridRecieverEntry.getKey().handlePower(Math.min(providedPower / requestedPower * gridRecieverEntry.getValue(), gridRecieverEntry.getValue()), 0);
+			double power = Math.min(providedPower / requestedPower * gridRecieverEntry.getValue(), gridRecieverEntry.getValue());
+			gridRecieverEntry.getKey().handlePower(power, power / gridRecieverEntry.getValue());
 		}
 	}
 

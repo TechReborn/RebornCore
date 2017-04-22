@@ -6,6 +6,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import teamreborn.reborncore.api.power.GridJoinEvent;
+import teamreborn.reborncore.api.power.GridLeaveEvent;
 import teamreborn.reborncore.api.power.IGridConnection;
 import teamreborn.reborncore.api.registry.RebornRegistry;
 import teamreborn.reborncore.api.registry.impl.EventRegistry;
@@ -39,6 +40,10 @@ public class GridEventHandler {
 		joinOrCreatePowerGrid(event.getWorld(), event.getPos(), event.getConnection());
 	}
 
+	@SubscribeEvent
+	public void gridLeave(GridLeaveEvent event){
+		leaveAndSplit(event.getWorld(), event.getPos(), event.getConnection());
+	}
 
 	public static GridWorldManager getWorldManagerFromID(int worldID){
 		if(worldManagerHashMap.containsKey(worldID)){
@@ -53,6 +58,11 @@ public class GridEventHandler {
 	public PowerGrid joinOrCreatePowerGrid(World world, BlockPos pos, IGridConnection gridConnection){
 		GridWorldManager gridWorldManager = getWorldManagerFromID(world.provider.getDimension());
 		return  gridWorldManager.joinOrCreatePowerGrid(world, pos, gridConnection);
+	}
+
+	public void leaveAndSplit(World world, BlockPos pos, IGridConnection gridConnection){
+		GridWorldManager gridWorldManager = getWorldManagerFromID(world.provider.getDimension());
+		gridWorldManager.leaveAndSplit(world, pos, gridConnection);
 	}
 
 

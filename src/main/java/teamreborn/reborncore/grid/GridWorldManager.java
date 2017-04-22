@@ -21,8 +21,9 @@ public class GridWorldManager {
 
 	public void tick(TickEvent.WorldTickEvent event){
 		for(Map.Entry<String, PowerGrid> entry : powerGridHashMap.entrySet()){
-			entry.getValue().tick(event);
+			entry.getValue().tick(event, this);
 		}
+		//TODO cahce things to be removed, and do them in the tick, not on another thread
 	}
 
 	public PowerGrid createNewPowerGrid(){
@@ -88,6 +89,22 @@ public class GridWorldManager {
 			}
 		}
 		return master.getPowerGrid();
+	}
+
+	protected void leaveAndSplit(World world, BlockPos pos, IGridConnection gridConnection){
+		removeConnection(gridConnection);
+		//TODO check blocks around and do a full connection check
+	}
+
+
+	protected void removeConnection(IGridConnection connection){
+		if(connection.getPowerGrid() == null){
+			return;
+		}
+		connection.getPowerGrid().remove(connection);
+		if(connection.getPowerGrid().connections.isEmpty()){
+			powerGridHashMap.remove(connection.getPowerGrid().name);
+		}
 	}
 
 	public void merge(IGridConnection master, IGridConnection old){
