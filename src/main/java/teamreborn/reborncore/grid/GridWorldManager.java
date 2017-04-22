@@ -19,14 +19,21 @@ public class GridWorldManager {
 
 	HashMap<String, PowerGrid> powerGridHashMap = new HashMap<>();
 
-	public void tick(TickEvent.WorldTickEvent event){
-		for(Map.Entry<String, PowerGrid> entry : powerGridHashMap.entrySet()){
+	List<String> removeQueue = new ArrayList<>();
+
+	public void tick(TickEvent.WorldTickEvent event) {
+		if(!removeQueue.isEmpty()){
+			for(String removeName : removeQueue){
+				powerGridHashMap.remove(removeName);
+			}
+			removeQueue.clear();
+		}
+		for (Map.Entry<String, PowerGrid> entry : powerGridHashMap.entrySet()) {
 			entry.getValue().tick(event, this);
 		}
-		//TODO cahce things to be removed, and do them in the tick, not on another thread
 	}
 
-	public PowerGrid createNewPowerGrid(){
+	public PowerGrid createNewPowerGrid() {
 		PowerGrid powerGrid = new PowerGrid(getNewGridName());
 		powerGridHashMap.put(powerGrid.name, powerGrid);
 		return powerGrid;
@@ -36,6 +43,7 @@ public class GridWorldManager {
 		Random random = new Random();
 		return genHash(LocalDateTime.now().toString() + random.nextFloat() + System.nanoTime());
 	}
+
 	private static String genHash(String md5) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -50,22 +58,22 @@ public class GridWorldManager {
 		return null;
 	}
 
-	protected PowerGrid joinOrCreatePowerGrid(World world, BlockPos pos, IGridConnection gridConnection){
+	protected PowerGrid joinOrCreatePowerGrid(World world, BlockPos pos, IGridConnection gridConnection) {
 		List<IGridConnection> possibleConnections = new ArrayList<>();
-		for(EnumFacing facing : EnumFacing.VALUES){
+		for (EnumFacing facing : EnumFacing.VALUES) {
 			BlockPos offsetPos = pos.offset(facing);
-			if(world.isBlockLoaded(offsetPos)){
+			if (world.isBlockLoaded(offsetPos)) {
 				TileEntity tileEntity = world.getTileEntity(offsetPos);
-				if(tileEntity instanceof IGridConnection){
-					if(gridConnection.getPowerGrid() == null || gridConnection.getPowerGrid() != null && gridConnection.getPowerGrid() != ((IGridConnection) tileEntity).getPowerGrid()){
-						if(!possibleConnections.contains(tileEntity)){
+				if (tileEntity instanceof IGridConnection) {
+					if (gridConnection.getPowerGrid() == null || gridConnection.getPowerGrid() != null && gridConnection.getPowerGrid() != ((IGridConnection) tileEntity).getPowerGrid()) {
+						if (!possibleConnections.contains(tileEntity)) {
 							possibleConnections.add((IGridConnection) tileEntity);
 						}
 					}
 				}
 			}
 		}
-		if(possibleConnections.isEmpty()){
+		if (possibleConnections.isEmpty()) {
 			//We need to make a new powernet here
 			PowerGrid powerGrid = createNewPowerGrid();
 			powerGrid.addConnection(gridConnection);
@@ -74,59 +82,56 @@ public class GridWorldManager {
 
 		}
 		IGridConnection master = null;
-		for(IGridConnection connection : possibleConnections){
-			if(connection.getPowerGrid() != null){
-				if(master == null || connection.getPowerGrid().connections.size() > master.getPowerGrid().connections.size()){
+		for (IGridConnection connection : possibleConnections) {
+			if (connection.getPowerGrid() != null) {
+				if (master == null || connection.getPowerGrid().connections.size() > master.getPowerGrid().connections.size()) {
 					master = connection;
 				}
 			}
 		}
 		master.getPowerGrid().addConnection(gridConnection);
 		gridConnection.setPowerGrid(master.getPowerGrid());
-		for(IGridConnection connection : possibleConnections){
-			if(connection != master){
+		for (IGridConnection connection : possibleConnections) {
+			if (connection != master) {
 				merge(master, connection);
 			}
 		}
 		return master.getPowerGrid();
 	}
 
-	protected void leaveAndSplit(World world, BlockPos pos, IGridConnection gridConnection){
+	protected void leaveAndSplit(World world, BlockPos pos, IGridConnection gridConnection) {
 		removeConnection(gridConnection);
 		//TODO check blocks around and do a full connection check
 	}
 
-
-	protected void removeConnection(IGridConnection connection){
-		if(connection.getPowerGrid() == null){
+	protected void removeConnection(IGridConnection connection) {
+		if (connection.getPowerGrid() == null) {
 			return;
 		}
 		connection.getPowerGrid().remove(connection);
-		if(connection.getPowerGrid().connections.isEmpty()){
-			powerGridHashMap.remove(connection.getPowerGrid().name);
+		if (connection.getPowerGrid().connections.isEmpty()) {
+			removeQueue.add(connection.getPowerGrid().name);
 		}
 	}
 
-	public void merge(IGridConnection master, IGridConnection old){
-		if(master == old){
+	public void merge(IGridConnection master, IGridConnection old) {
+		if (master == old) {
 			return;
 		}
 		merge(master.getPowerGrid(), old.getPowerGrid());
 		old.setPowerGrid(master.getPowerGrid());
 	}
 
-
-	public void merge(PowerGrid master, PowerGrid old){
-		if(master == old){
+	public void merge(PowerGrid master, PowerGrid old) {
+		if (master == old) {
 			return;
 		}
-		for(IGridConnection connection : old.connections){
-			if(!master.connections.contains(connection)){
+		for (IGridConnection connection : old.connections) {
+			if (!master.connections.contains(connection)) {
 				master.addConnection(connection);
 			}
 		}
-		powerGridHashMap.remove(old.name);
+		removeQueue.add(old.name);
 	}
-
 
 }
