@@ -10,10 +10,7 @@ import teamreborn.reborncore.api.power.IGridConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Mark on 22/04/2017.
@@ -23,16 +20,16 @@ public class GridWorldManager {
 	HashMap<String, PowerGrid> powerGridHashMap = new HashMap<>();
 
 	public void tick(TickEvent.WorldTickEvent event){
-
+		for(Map.Entry<String, PowerGrid> entry : powerGridHashMap.entrySet()){
+			entry.getValue().tick(event);
+		}
 	}
-
 
 	public PowerGrid createNewPowerGrid(){
 		PowerGrid powerGrid = new PowerGrid(getNewGridName());
 		powerGridHashMap.put(powerGrid.name, powerGrid);
 		return powerGrid;
 	}
-
 
 	public static String getNewGridName() {
 		Random random = new Random();
@@ -63,7 +60,6 @@ public class GridWorldManager {
 						if(!possibleConnections.contains(tileEntity)){
 							possibleConnections.add((IGridConnection) tileEntity);
 						}
-
 					}
 				}
 			}
@@ -84,6 +80,7 @@ public class GridWorldManager {
 				}
 			}
 		}
+		master.getPowerGrid().addConnection(gridConnection);
 		gridConnection.setPowerGrid(master.getPowerGrid());
 		for(IGridConnection connection : possibleConnections){
 			if(connection != master){
@@ -111,6 +108,7 @@ public class GridWorldManager {
 				master.addConnection(connection);
 			}
 		}
+		powerGridHashMap.remove(old.name);
 	}
 
 

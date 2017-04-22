@@ -25,7 +25,9 @@ public class GridEventHandler {
 	@SubscribeEvent
 	public void worldTick(TickEvent.WorldTickEvent event){
 		if(event.phase == TickEvent.Phase.START){
+			event.world.theProfiler.startSection("TechReborn Powernet");
 			getWorldManagerFromID(event.world.provider.getDimension()).tick(event);
+			event.world.theProfiler.endSection();
 		}
 	}
 
