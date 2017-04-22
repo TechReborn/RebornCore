@@ -1,0 +1,15 @@
+[{
+  "modid": "reborncore",
+  "name": "Reborn Core",
+  "description": "Reborn Core is a library used for many of Team Reborn's mods.",
+  "version": "$version",
+  "mcversion": "$mcversion",
+  "url": "https://github.com/TechReborn/RebornCore",
+  "updateUrl": "",
+  "authorList": [ "modmuss50", "Gigabit101", "Ourten", "Prospector" ],
+  "credits": "",
+  "logoFile": "logo.png",
+  "screenshots": [ ],
+  "parent":"",
+  "dependencies": [ ]
+}]

@@ -17,6 +17,7 @@ public class RebornCore
 		network = NetworkContext.forChannel(Constants.MODID);
 
 		RegistrationManager.load(event);
+
 	}
 
 }
