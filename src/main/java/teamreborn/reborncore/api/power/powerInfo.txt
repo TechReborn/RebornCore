@@ -1,0 +1,34 @@
+TechReborn v3 power spec:
+
+TechReborn v3's power is based of a lot of ideas that factorio has provided, so thanks :)
+
+All machines will be connected into a grid using cables, or each other. The grid will not store power, but will look for the amount of power advalible from all of the IGridProvider's. Next it will as
+all th IGridReciever's how much power they would like. No power is stored in the grid or in machines. Only in power storage banks.
+
+
+
+The power will then be split between the Reviever's based on how much they asked for. For example:
+
+Generator A provided 25 watts of power.
+Generator B also provided 25 watts of power.
+
+The grid has a toal of 50 watts of power that must be used or detroyed.
+
+Machine A wants to use 50 watts of power
+Machine B and C also want to use 25 watts of power each.
+
+All machines on the grid want 100 watts of power between them, but there is only 50.
+
+Becuase machine A asked for 1/2 of required power (100) the power it will get 1/2 of the provided power (50).
+
+Machine A gets 25 watts of power.
+Machine B and C get 12.5 watts of power.
+
+So all 50 watts of power was used.
+
+Excess power will just be lost.
+
+
+Power storage:
+
+Power storage will be able to only take in exccess power, and will only provide extra power when there is a need.
