@@ -1,6 +1,7 @@
 package teamreborn.reborncore.init.impl;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import teamreborn.reborncore.api.registry.IRegistryFactory;
 import teamreborn.reborncore.api.registry.RegistryTarget;
 import teamreborn.reborncore.api.registry.impl.BlockRegistry;
@@ -45,10 +46,16 @@ public class BlockRegistryFactory implements IRegistryFactory
 			{
 				block = (Block) clazz.newInstance();
 			}
-			RebornBlockRegistry.registerBlock(block);
+			if(annotation.itemBlock().isEmpty()){
+				RebornBlockRegistry.registerBlock(block);
+			} else {
+				Class<? extends ItemBlock> itemBlock = (Class<? extends ItemBlock>) Class.forName(annotation.itemBlock());
+				RebornBlockRegistry.registerBlock(block, itemBlock);
+			}
+
 			field.set(null, block);
 		}
-		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
+		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e)
 		{
 			throw new RuntimeException("Failed to load Block", e);
 		}

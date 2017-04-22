@@ -18,14 +18,13 @@ public class RebornBlockRegistry
 		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
 	}
 
-	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name)
+	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass)
 	{
-		block.setRegistryName(name);
 		GameRegistry.register(block);
 		try
 		{
 			ItemBlock itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
-			itemBlock.setRegistryName(name);
+			itemBlock.setRegistryName(block.getRegistryName());
 			GameRegistry.register(itemBlock);
 		}
 		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)

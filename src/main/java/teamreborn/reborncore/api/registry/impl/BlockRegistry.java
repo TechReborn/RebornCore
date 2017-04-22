@@ -11,4 +11,6 @@ public @interface BlockRegistry
 {
 
 	String param() default "";
+
+	String itemBlock() default "";
 }
