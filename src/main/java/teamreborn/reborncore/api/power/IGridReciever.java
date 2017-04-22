@@ -3,7 +3,7 @@ package teamreborn.reborncore.api.power;
 /**
  * Used on a tile that can recieve power from the grid.
  */
-public interface IGridReciever {
+public interface IGridReciever extends IGridConnection {
 
 	/**
 	 * This is called from the power grid, this is where the progress should be updated, but do not handle things like inventory interaction from here.

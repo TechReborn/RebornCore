@@ -3,7 +3,7 @@ package teamreborn.reborncore.api.power;
 /**
  * Used on a tile entity that should provide power to the grid.
  */
-public interface IGridProvider {
+public interface IGridProvider extends IGridConnection {
 
 	/**
 	 *

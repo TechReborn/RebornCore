@@ -1,16 +1,17 @@
 package teamreborn.reborncore.api.power;
 
+import teamreborn.reborncore.grid.PowerGrid;
+
+import javax.annotation.Nullable;
+
 /**
- * Used on a block to indicate that it should be connected to the power grid.
+ * Used on a tile to indicate that it should be connected to the power grid.
  */
 public interface IGridConnection {
 
-	/**
-	 * Set to false if the block does not have a tile that needs processing
-	 * @return If the block's tile needs handling.
-	 */
-	public default boolean handleLogic() {
-		return true;
-	}
+	@Nullable
+	public PowerGrid getPowerGrid();
+
+	public void setPowerGrid(@Nullable PowerGrid powerGrid);
 
 }
