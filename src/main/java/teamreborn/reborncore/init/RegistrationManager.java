@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
 import teamreborn.reborncore.api.registry.IRegistryFactory;
+import teamreborn.reborncore.api.registry.LoadOrderedRegistry;
 import teamreborn.reborncore.api.registry.RebornRegistry;
 import teamreborn.reborncore.api.registry.RegistryTarget;
 
@@ -35,13 +36,18 @@ public class RegistrationManager {
 		for (ASMDataTable.ASMData data : asmDataSet) {
 			try {
 				Class clazz = Class.forName(data.getClassName());
+				LoadOrderedRegistry loadOrderAnnotation = (LoadOrderedRegistry) getAnnoation(clazz.getAnnotations(), LoadOrderedRegistry.class);
+				String loadOrder = "";
+				if (loadOrderAnnotation != null) {
+					loadOrder = loadOrderAnnotation.value();
+				}
 				for (Field field : clazz.getDeclaredFields()) {
 					for (IRegistryFactory regFactory : factoryList) {
 						if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
 							continue;
 						}
 						if (field.isAnnotationPresent(regFactory.getAnnotation())) {
-							RegistryFactoryInfo info = new RegistryFactoryInfo(regFactory, field, getModID(clazz));
+							RegistryFactoryInfo info = new RegistryFactoryInfo(regFactory, field, getModID(clazz), loadOrder, data.getClassName());
 							factoryStateList.add(info);
 						}
 					}
@@ -52,7 +58,7 @@ public class RegistrationManager {
 							continue;
 						}
 						if (method.isAnnotationPresent(regFactory.getAnnotation())) {
-							RegistryFactoryInfo info = new RegistryFactoryInfo(regFactory, method, getModID(clazz));
+							RegistryFactoryInfo info = new RegistryFactoryInfo(regFactory, method, getModID(clazz), loadOrder, data.getClassName());
 							factoryStateList.add(info);
 						}
 					}
@@ -67,13 +73,18 @@ public class RegistrationManager {
 				for (ASMDataTable.ASMData data : asmDataFactorySet) {
 					try {
 						Class handleClazz = Class.forName(data.getClassName());
+						LoadOrderedRegistry loadOrderAnnotation = (LoadOrderedRegistry) getAnnoation(handleClazz.getAnnotations(), LoadOrderedRegistry.class);
+						String loadOrder = "";
+						if (loadOrderAnnotation != null) {
+							loadOrder = loadOrderAnnotation.value();
+						}
 						Annotation annotation = getAnnoation(handleClazz.getAnnotations(), RebornRegistry.class);
 						String modId = Loader.instance().activeModContainer().getModId();
 						if (annotation instanceof RebornRegistry) {
 							RebornRegistry registryAnnotation = (RebornRegistry) annotation;
 							modId = registryAnnotation.value();
 						}
-						RegistryFactoryInfo info = new RegistryFactoryInfo(registryFactory, handleClazz, modId);
+						RegistryFactoryInfo info = new RegistryFactoryInfo(registryFactory, handleClazz, modId, loadOrder, data.getClassName());
 						factoryStateList.add(info);
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
@@ -89,26 +100,35 @@ public class RegistrationManager {
 	public static void handle(FMLStateEvent event) {
 		long start = System.currentTimeMillis();
 		String modIDCache = Loader.instance().activeModContainer().getModId();
-		for(RegistryFactoryInfo info : factoryStateList){
-			if(info.registryFactory.getProccessEvent().equals(event.getClass())){
-				setActiveMod(info.modId);
-				for(RegistryTarget target : info.registryFactory.getTargets()){
-					switch (target) {
-						case CLASS:
-							info.registryFactory.handleClass((Class) info.handleObject);
-							break;
-						case FIELD:
-							info.registryFactory.handleField((Field) info.handleObject);
-							break;
-						case MEHTOD:
-							info.registryFactory.handleMethod((Method) info.handleObject);
-							break;
-					}
+		for (RegistryFactoryInfo info : getFactoryListForEvent(event)) {
+			setActiveMod(info.modId);
+			for (RegistryTarget target : info.registryFactory.getTargets()) {
+				switch (target) {
+					case CLASS:
+						info.registryFactory.handleClass((Class) info.handleObject);
+						break;
+					case FIELD:
+						info.registryFactory.handleField((Field) info.handleObject);
+						break;
+					case MEHTOD:
+						info.registryFactory.handleMethod((Method) info.handleObject);
+						break;
 				}
 			}
 		}
 		setActiveMod(modIDCache);
 		FMLLog.info("Loaded RebornCore " + event.getClass().getSimpleName() + " registry in: " + (System.currentTimeMillis() - start) + "ms");
+	}
+
+	public static List<RegistryFactoryInfo> getFactoryListForEvent(FMLStateEvent event) {
+		List<RegistryFactoryInfo> registrationManagerList = new ArrayList<>();
+		for (RegistryFactoryInfo info : factoryStateList) {
+			if (info.registryFactory.getProccessEvent().equals(event.getClass())) {
+				registrationManagerList.add(info);
+			}
+		}
+		RegistrationSorter.sort(registrationManagerList);
+		return registrationManagerList;
 	}
 
 	public static String getModID(Class clazz) {
@@ -174,7 +194,7 @@ public class RegistrationManager {
 		Loader.instance().setActiveModContainer(container);
 	}
 
-	private static class RegistryFactoryInfo {
+	public static class RegistryFactoryInfo {
 
 		IRegistryFactory registryFactory;
 
@@ -182,10 +202,16 @@ public class RegistrationManager {
 
 		String modId;
 
-		public RegistryFactoryInfo(IRegistryFactory registryFactory, Object handleObject, String modId) {
+		String loadOrder;
+
+		String registredClassName;
+
+		public RegistryFactoryInfo(IRegistryFactory registryFactory, Object handleObject, String modId, String loadOrder, String registredClassName) {
 			this.registryFactory = registryFactory;
 			this.handleObject = handleObject;
 			this.modId = modId;
+			this.loadOrder = loadOrder;
+			this.registredClassName = registredClassName.replace("/", ".");
 		}
 	}
 
