@@ -2,6 +2,7 @@ package teamreborn.reborncore.init;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -11,6 +12,8 @@ public class RegistrationSorter {
 
 	//TODO fix this as its the most janky thing that works ever
 	public static void sort(List<RegistrationManager.RegistryFactoryInfo> list){
+		Collections.sort(list, Comparator.comparing(o -> o.registredClassName));
+
 		Collections.sort(list, (o1, o2) -> {
 			if(!o1.loadOrder.isEmpty() && o1.loadOrder.startsWith("before:")){
 				String className = o1.loadOrder.replace("before:", "");
