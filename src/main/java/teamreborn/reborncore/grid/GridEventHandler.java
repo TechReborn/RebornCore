@@ -9,13 +9,14 @@ import teamreborn.reborncore.api.power.GridLeaveEvent;
 import teamreborn.reborncore.api.power.IGridConnection;
 import teamreborn.reborncore.api.registry.RebornRegistry;
 import teamreborn.reborncore.api.registry.impl.EventRegistry;
+import teamreborn.techreborn.TRConstants;
 
 import java.util.HashMap;
 
 /**
  * Created by Mark on 22/04/2017.
  */
-@RebornRegistry
+@RebornRegistry(TRConstants.MOD_ID)
 @EventRegistry
 public class GridEventHandler {
 

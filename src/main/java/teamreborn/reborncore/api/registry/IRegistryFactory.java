@@ -1,5 +1,7 @@
 package teamreborn.reborncore.api.registry;
 
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLStateEvent;
 import teamreborn.reborncore.Constants;
 import teamreborn.reborncore.api.ExecutionSide;
 
@@ -63,6 +65,11 @@ public interface IRegistryFactory
 	public default List<RegistryTarget> getTargets()
 	{
 		return Arrays.asList(RegistryTarget.CLASS, RegistryTarget.MEHTOD, RegistryTarget.FIELD);
+	}
+
+
+	public default Class<? extends FMLStateEvent> getProccessEvent() {
+		return FMLPreInitializationEvent.class;
 	}
 
 	/**
