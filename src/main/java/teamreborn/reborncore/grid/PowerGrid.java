@@ -38,18 +38,17 @@ public class PowerGrid {
 		double providedPower = 0;
 		double requestedPower = 0;
 		HashMap<IGridReciever, Double> recieverHashMap = new HashMap<>();
-		//Check's every 2 seconds to see if any of the tiles are invalid, and if they are remove them.
-		//Might need spreading out over the ticks so you dont have 1 in 40 ticks being slow
-		if (event.world.getTotalWorldTime() % 40 == 0) {
-			for (IGridConnection connection : new ArrayList<>(connections)) {
-				if (connection instanceof TileEntity) {
-					if (((TileEntity) connection).isInvalid()) {
-						worldManager.removeConnection(connection);
-					}
-				}
-			}
-
-		}
+		//Should not be needed, but if mods stop removing their tiles from the gird this will need adding back.
+//		if (event.world.getTotalWorldTime() % 40 == 0) {
+//			for (IGridConnection connection : new ArrayList<>(connections)) {
+//				if (connection instanceof TileEntity) {
+//					if (((TileEntity) connection).isInvalid()) {
+//						worldManager.removeConnection(connection);
+//					}
+//				}
+//			}
+//
+//		}
 		for (IGridConnection connection : connections) {
 			if (connection instanceof IGridProvider) {
 				providedPower += ((IGridProvider) connection).providePower();

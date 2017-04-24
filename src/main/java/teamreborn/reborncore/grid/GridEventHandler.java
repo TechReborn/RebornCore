@@ -41,6 +41,9 @@ public class GridEventHandler {
 
 	@SubscribeEvent
 	public void gridLeave(GridLeaveEvent event) {
+		if (event.getWorld().isRemote) {
+			return;
+		}
 		leaveAndSplit(event.getWorld(), event.getPos(), event.getConnection());
 	}
 
