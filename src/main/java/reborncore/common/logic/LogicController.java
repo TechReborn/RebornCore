@@ -167,6 +167,11 @@ public abstract class LogicController extends TileEntity
         return 2.0F;
     }
 
+    public boolean hasRotation()
+    {
+        return false;
+    }
+
     //NBT
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)

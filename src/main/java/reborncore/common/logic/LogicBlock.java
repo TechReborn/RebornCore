@@ -1,14 +1,17 @@
 package reborncore.common.logic;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,8 +27,6 @@ import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import reborncore.api.tile.IUpgradeable;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,6 +38,9 @@ import java.util.Random;
  */
 public class LogicBlock extends BlockContainer
 {
+    public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static PropertyBool ACTIVE = PropertyBool.create("active");
+
     @Nonnull
     LogicController logicController;
 
@@ -47,6 +51,8 @@ public class LogicBlock extends BlockContainer
         this.setUnlocalizedName(logicController.getName());
         this.logicController.initBlock(this);
         this.setHardness(logicController.getHardness());
+        if(logicController.hasRotation())
+            this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
     }
 
     @Nullable
@@ -97,6 +103,10 @@ public class LogicBlock extends BlockContainer
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
     {
         logicController.onBlockAdded(worldIn, pos, state);
+        if(logicController.hasRotation())
+        {
+            this.setDefaultFacing(worldIn, pos, state);
+        }
         super.onBlockAdded(worldIn, pos, state);
     }
 
@@ -104,6 +114,10 @@ public class LogicBlock extends BlockContainer
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
         logicController.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        if(logicController.hasRotation())
+        {
+            setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
+        }
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     }
 
@@ -178,5 +192,74 @@ public class LogicBlock extends BlockContainer
             }
             items.add(itemStack.copy());
         }
+    }
+
+    protected BlockStateContainer createBlockState()
+    {
+        FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+        ACTIVE = PropertyBool.create("active");
+        return new BlockStateContainer(this, FACING, ACTIVE);
+    }
+
+    private void setDefaultFacing(World worldIn, BlockPos pos, IBlockState state) {
+        if (logicController.hasRotation())
+        {
+            if (!worldIn.isRemote)
+            {
+                IBlockState sate = worldIn.getBlockState(pos.north());
+                Block block = sate.getBlock();
+                IBlockState state1 = worldIn.getBlockState(pos.south());
+                Block block1 = state1.getBlock();
+                IBlockState state2 = worldIn.getBlockState(pos.west());
+                Block block2 = state2.getBlock();
+                IBlockState state3 = worldIn.getBlockState(pos.east());
+                Block block3 = state3.getBlock();
+                EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
+
+                if (enumfacing == EnumFacing.NORTH && block.isFullBlock(state) && !block1.isFullBlock(state1))
+                {
+                    enumfacing = EnumFacing.SOUTH;
+                } else if (enumfacing == EnumFacing.SOUTH && block1.isFullBlock(state1) && !block.isFullBlock(state))
+                {
+                    enumfacing = EnumFacing.NORTH;
+                } else if (enumfacing == EnumFacing.WEST && block2.isFullBlock(state2) && !block3.isFullBlock(state2))
+                {
+                    enumfacing = EnumFacing.EAST;
+                } else if (enumfacing == EnumFacing.EAST && block3.isFullBlock(state3) && !block2.isFullBlock(state2))
+                {
+                    enumfacing = EnumFacing.WEST;
+                }
+                worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
+            }
+        }
+    }
+
+    public void setFacing(EnumFacing facing, World world, BlockPos pos) {
+        if (logicController.hasRotation())
+        {
+            world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, facing));
+        }
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        int facingInt = getSideFromEnum(state.getValue(FACING));
+        int activeInt = state.getValue(ACTIVE) ? 0 : 4;
+        return facingInt + activeInt;
+    }
+
+    public int getSideFromEnum(EnumFacing facing)
+    {
+        if (facing == EnumFacing.NORTH) {
+            return 0;
+        } else if (facing == EnumFacing.SOUTH) {
+            return 1;
+        } else if (facing == EnumFacing.EAST) {
+            return 2;
+        } else if (facing == EnumFacing.WEST) {
+            return 3;
+        }
+        return 0;
     }
 }
