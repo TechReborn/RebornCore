@@ -18,6 +18,10 @@ public class RebornBlockRegistry {
 		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
 	}
 
+	public static void registerBlockNoItemBlock(Block block) {
+		GameRegistry.register(block);
+	}
+
 	public static FluidFactoryContainer registerFluid(FluidFactoryContainer fluidFactoryContainer) {
 		FluidRegistry.registerFluid(fluidFactoryContainer.fluid);
 		fluidFactoryContainer.block = new FluidBlockBase(fluidFactoryContainer.fluid, fluidFactoryContainer.material);
