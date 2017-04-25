@@ -4,6 +4,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import teamreborn.reborncore.api.power.IGridConnection;
 
@@ -22,8 +23,8 @@ public class GridWorldManager {
 	List<String> removeQueue = new ArrayList<>();
 
 	public void tick(TickEvent.WorldTickEvent event) {
-		if(!removeQueue.isEmpty()){
-			for(String removeName : removeQueue){
+		if (!removeQueue.isEmpty()) {
+			for (String removeName : removeQueue) {
 				powerGridHashMap.remove(removeName);
 			}
 			removeQueue.clear();
@@ -101,8 +102,62 @@ public class GridWorldManager {
 
 	protected void leaveAndSplit(World world, BlockPos pos, IGridConnection gridConnection) {
 		removeConnection(gridConnection);
-		//TODO check blocks around and do a full connection check
+
+		Map<EnumFacing, Map<BlockPos, IGridConnection>> gridFaceMap = new HashMap<>();
+		long start = System.currentTimeMillis();
+		//Builds a list of all the blocks connected to a grid surrounding the tile that just requested to leave
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			BlockPos posOffset = pos.offset(facing);
+			TileEntity tileEntity = world.getTileEntity(posOffset);
+			if (tileEntity instanceof IGridConnection) {
+				Map<BlockPos, IGridConnection> connectionMap = findAttatchedConnections(world, posOffset, (IGridConnection) tileEntity);
+				gridFaceMap.put(facing, connectionMap);
+				System.out.println(connectionMap.size());
+			}
+		}
+		//A list to store all the blocks that have been connected to a new grid
+		List<IGridConnection> connected = new ArrayList<>();
+		//Joins all the new ones up to the new grid.
+		for(Map.Entry<EnumFacing, Map<BlockPos, IGridConnection>> facingMapEntry : gridFaceMap.entrySet()){
+			Map<BlockPos, IGridConnection> connectionMap = facingMapEntry.getValue();
+			PowerGrid newGrid = createNewPowerGrid();
+			System.out.println(newGrid.name);
+			for(Map.Entry<BlockPos, IGridConnection> gridConnectionEntry : connectionMap.entrySet()){
+				if(!connected.contains(gridConnectionEntry.getValue())){
+					gridConnectionEntry.getValue().setPowerGrid(newGrid);
+					newGrid.addConnection(gridConnectionEntry.getValue());
+					connected.add(gridConnectionEntry.getValue());
+				}
+			}
+		}
+		FMLLog.info("Rebuilt grid in " + (System.currentTimeMillis() - start) + "ms");
 	}
+
+	protected Map<BlockPos, IGridConnection> findAttatchedConnections(World world, BlockPos startPos, IGridConnection startConnection) {
+		List<BlockPos> visited = new ArrayList<>();
+		Map<BlockPos, IGridConnection> connectionMap = new HashMap<>();
+		Queue<BlockPos> queue = new PriorityQueue<>();
+		queue.add(startPos);
+		visited.add(startPos);
+		connectionMap.put(startPos, startConnection);
+
+		while (!queue.isEmpty()) {
+			BlockPos element = queue.poll();
+			for (EnumFacing facing : EnumFacing.VALUES) {
+				BlockPos target = element.offset(facing);
+				if (!visited.contains(target)) {
+					visited.add(target);
+					TileEntity tileEntity = world.getTileEntity(target);
+					if (tileEntity instanceof IGridConnection) {
+						queue.add(target);
+						connectionMap.put(target, (IGridConnection) tileEntity);
+					}
+				}
+			}
+		}
+		return connectionMap;
+	}
+
 
 	protected void removeConnection(IGridConnection connection) {
 		if (connection.getPowerGrid() == null) {
