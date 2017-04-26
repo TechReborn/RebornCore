@@ -30,12 +30,26 @@ public class AdvancedTeslaContainer implements ITeslaConsumer, ITeslaHolder, ITe
 
 	//Receive
 	public long givePower(long tesla, boolean simulated) {
-		return (long) tile.addEnergy(tesla * RebornCoreConfig.euPerFU);
+		double euToAdd = tesla * RebornCoreConfig.euPerFU;
+
+		if (tile.canAddEnergy(euToAdd)) {
+			double euAdded = tile.addEnergy(euToAdd);
+			return (long) (euAdded / RebornCoreConfig.euPerFU);
+		} else {
+			return 0;
+		}
 	}
 
 	//Take power out
 	public long takePower(long tesla, boolean simulated) {
-		return (int) tile.useEnergy(tesla * RebornCoreConfig.euPerFU);
+		double euToTake = tesla * RebornCoreConfig.euPerFU;
+
+		if (tile.canUseEnergy(euToTake)) {
+			double euTaken = tile.useEnergy(euToTake);
+			return (long) (euTaken / RebornCoreConfig.euPerFU);
+		} else {
+			return 0;
+		}
 	}
 
 	public long getCapacity() {
