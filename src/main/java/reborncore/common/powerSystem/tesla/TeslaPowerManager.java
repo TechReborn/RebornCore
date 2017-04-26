@@ -1,5 +1,6 @@
 package reborncore.common.powerSystem.tesla;
 
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,6 +8,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.TilePowerAcceptor;
+
+import java.util.List;
 
 /**
  * Created by modmuss50 on 06/05/2016.
@@ -56,7 +59,15 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 	@Override
 	public void update(TilePowerAcceptor powerAcceptor) {
 		if (powerAcceptor.canProvideEnergy(null)) {
-			TeslaUtils.distributePowerToAllFaces(powerAcceptor.getWorld(), powerAcceptor.getPos(), (long) powerAcceptor.getMaxOutput(), false);
+			List<ITeslaConsumer> connectedConsumers = TeslaUtils.getConnectedCapabilities(TeslaCapabilities.CAPABILITY_CONSUMER, powerAcceptor.getWorld(), powerAcceptor.getPos());
+
+			for (ITeslaConsumer consumer : connectedConsumers) {
+				double euToTransfer = Math.min(powerAcceptor.getEnergy(), powerAcceptor.getMaxOutput());
+				long teslaTransferred = consumer.givePower((long) (euToTransfer / RebornCoreConfig.euPerFU), false);
+				powerAcceptor.useEnergy(teslaTransferred * RebornCoreConfig.euPerFU);
+
+				if (powerAcceptor.getEnergy() <= 0) break;
+			}
 		}
 	}
 
