@@ -1,6 +1,5 @@
 package teamreborn.reborncore;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -10,9 +9,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import teamreborn.reborncore.concrete.NetworkContext;
 import teamreborn.reborncore.init.RegistrationManager;
 import teamreborn.reborncore.proxy.RebornCoreServer;
-import teamreborn.reborncore.rip.RIPHud;
-import teamreborn.techreborn.TRConstants;
-import teamreborn.techreborn.proxy.TechRebornServer;
 
 @Mod(name = "RebornCore", modid = Constants.MODID, version = "@MODVERSION@")
 public class RebornCore {

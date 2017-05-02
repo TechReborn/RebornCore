@@ -39,7 +39,7 @@ public class RegistrationSorter {
 		info.add(new RegistrationManager.RegistryFactoryInfo(null, null, null, "", "test"));
 		info.add(new RegistrationManager.RegistryFactoryInfo(null, null, null, "before:test", "123"));
 
-		//list(info);
+		//elements(info);
 		sort(info);
 		System.out.println();
 		System.out.println();

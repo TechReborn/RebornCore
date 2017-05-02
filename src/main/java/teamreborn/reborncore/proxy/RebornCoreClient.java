@@ -1,22 +1,13 @@
 package teamreborn.reborncore.proxy;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import teamreborn.reborncore.rip.RIPHud;
-import teamreborn.techreborn.TRConstants;
-import teamreborn.techreborn.TechReborn;
-import teamreborn.techreborn.fluids.TechRebornFluids;
+import teamreborn.reborncore.reborninfoprovider.RebornInfoProviderHUD;
+import teamreborn.reborncore.reborninfoprovider.elements.BlockDisplayElement;
+import teamreborn.reborncore.reborninfoprovider.elements.StringDisplayElement;
+import teamreborn.reborncore.reborninfoprovider.elements.WeatherDisplayElement;
 
 /**
  * Created by Prospector
@@ -28,7 +19,10 @@ public class RebornCoreClient extends RebornCoreServer {
 	}
 
 	public void init(FMLInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new RIPHud());
+		RebornInfoProviderHUD.addElement(new StringDisplayElement("This is a RIP element! woohoo!"));
+		RebornInfoProviderHUD.addElement(new WeatherDisplayElement());
+		RebornInfoProviderHUD.addElement(new BlockDisplayElement());
+		MinecraftForge.EVENT_BUS.register(new RebornInfoProviderHUD());
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
