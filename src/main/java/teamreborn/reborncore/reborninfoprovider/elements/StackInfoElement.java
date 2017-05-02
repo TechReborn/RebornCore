@@ -2,16 +2,27 @@ package teamreborn.reborncore.reborninfoprovider.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.item.ItemStack;
 import teamreborn.reborncore.reborninfoprovider.RebornInfoElement;
 import teamreborn.reborncore.reborninfoprovider.RebornInfoProviderHUD;
 
 /**
  * File Created by Prospector.
  */
-public class WeatherDisplayElement extends RebornInfoElement {
+public class StackInfoElement extends RebornInfoElement {
+	public ItemStack stack = ItemStack.EMPTY;
 	public String string = "";
 	private int width = 0;
 	private int height = 0;
+
+	public StackInfoElement(ItemStack stack, String text) {
+		this.stack = stack;
+		this.string = text;
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
 
 	@Override
 	public int getWidth() {
@@ -26,29 +37,26 @@ public class WeatherDisplayElement extends RebornInfoElement {
 	@Override
 	public void preRender(Minecraft mc) {
 		reset();
-		if (mc.world.isRaining()) {
-			string = "Looks wet to me, moron";
-		} else {
-			string = "Mighty fine weather!";
-		}
-		width += mc.fontRendererObj.getStringWidth(string);
-		height += mc.fontRendererObj.FONT_HEIGHT;
+		if (string.isEmpty())
+			string = stack.getDisplayName();
+		width += mc.fontRendererObj.getStringWidth(string) + 20;
+		height += mc.fontRendererObj.FONT_HEIGHT + 7;
 	}
 
 	public void reset() {
 		width = 0;
 		height = 0;
-		string = "";
 	}
 
 	@Override
 	public void render(int x, int y, RebornInfoProviderHUD gui, FontRenderer fontRendererObj) {
-		gui.drawString(fontRendererObj, string, x, y, 0xFFFFFFFF);
+		gui.renderItemStack(stack, x, y);
+		gui.drawString(fontRendererObj, string, x + 20, y + 4, 0xFFFFFFFF);
 	}
 
 	@Override
 	public boolean isVisible() {
-		if (string.isEmpty())
+		if (stack.isEmpty())
 			return false;
 		return true;
 	}

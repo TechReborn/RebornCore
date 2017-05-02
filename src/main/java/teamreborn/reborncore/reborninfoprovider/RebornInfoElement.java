@@ -7,6 +7,8 @@ import net.minecraft.client.gui.FontRenderer;
  * File Created by Prospector.
  */
 public abstract class RebornInfoElement {
+	public String meta = "none";
+
 	public abstract int getWidth();
 
 	public abstract int getHeight();

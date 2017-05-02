@@ -17,6 +17,10 @@ public class StringDisplayElement extends RebornInfoElement {
 		this.string = text;
 	}
 
+	public void setString(String string) {
+		this.string = string;
+	}
+
 	@Override
 	public int getWidth() {
 		return width;

@@ -1,0 +1,11 @@
+package teamreborn.reborncore.reborninfoprovider.elements;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+/**
+ * File Created by Prospector.
+ */
+public interface IStackDisplayProvider {
+	public String getElementString(EntityPlayer player, ItemStack stack);
+}

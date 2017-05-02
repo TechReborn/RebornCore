@@ -7,12 +7,15 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import teamreborn.reborncore.reborninfoprovider.elements.IStackDisplayProvider;
+import teamreborn.reborncore.reborninfoprovider.elements.StackInfoElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +33,10 @@ public class RebornInfoProviderHUD extends Gui {
 	public void onRenderGameOverlay(RenderGameOverlayEvent event) {
 		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
 			return;
-
-		if (mc.inGameHasFocus || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
+		if (mc.gameSettings.showDebugInfo) {
+			return;
+		}
+		if (mc.inGameHasFocus) {
 			drawRebornInfoProviderHUD(event.getResolution());
 		}
 	}
@@ -48,7 +53,49 @@ public class RebornInfoProviderHUD extends Gui {
 		return elements;
 	}
 
+	public void addDefaultElements() {
+		boolean mainhandShouldHaveElement = false;
+		ItemStack mainhandStack = mc.player.getHeldItemMainhand();
+		if (mainhandStack.getItem() instanceof IStackDisplayProvider) {
+			StackInfoElement element = new StackInfoElement(mainhandStack, ((IStackDisplayProvider) mainhandStack.getItem()).getElementString(mc.player, mainhandStack));
+			element.meta = "auto.mainhand";
+			if (!elements.contains(element)) {
+				removeHandElements(EnumHand.MAIN_HAND);
+				addElement(element);
+			}
+			mainhandShouldHaveElement = true;
+		}
+		boolean offhandShouldHaveElement = false;
+		ItemStack offhandStack = mc.player.getHeldItemOffhand();
+		if (offhandStack.getItem() instanceof IStackDisplayProvider) {
+			StackInfoElement element = new StackInfoElement(offhandStack, ((IStackDisplayProvider) offhandStack.getItem()).getElementString(mc.player, offhandStack));
+			element.meta = "auto.offhand";
+			if (!elements.contains(element)) {
+				removeHandElements(EnumHand.OFF_HAND);
+				addElement(element);
+			}
+			offhandShouldHaveElement = true;
+		}
+		if (!mainhandShouldHaveElement)
+			removeHandElements(EnumHand.MAIN_HAND);
+		if (!offhandShouldHaveElement)
+			removeHandElements(EnumHand.OFF_HAND);
+	}
+
+	public void removeHandElements(EnumHand hand) {
+		String string = "auto.mainhand";
+		if (hand == EnumHand.OFF_HAND)
+			string = "auto.offhand";
+		for (RebornInfoElement e : elements) {
+			if (e.meta.equals(string)) {
+				removeElement(e);
+				break;
+			}
+		}
+	}
+
 	public void drawRebornInfoProviderHUD(ScaledResolution res) {
+		addDefaultElements();
 		boolean active = false;
 		int x = 5;
 		int y = 5;
@@ -70,8 +117,8 @@ public class RebornInfoProviderHUD extends Gui {
 				if (width < element.getWidth() + defaultWidth)
 					width = element.getWidth() + defaultWidth;
 				height += element.getHeight();
-				//				if (element != (elements.get(elements.size() - 1)))
-				height += paddingBetweenElements;
+				if (!isLastVisible(element))
+					height += paddingBetweenElements;
 				active = true;
 			}
 		}
@@ -85,12 +132,25 @@ public class RebornInfoProviderHUD extends Gui {
 			for (RebornInfoElement element : elements) {
 				if (element.isVisible()) {
 					element.render(x + paddingX, currentRenderY, this, mc.fontRendererObj);
-					//					if (element != (elements.get(elements.size() - 1)))
-					currentRenderY += element.getHeight() + paddingBetweenElements;
+					if (!isLastVisible(element))
+						currentRenderY += element.getHeight() + paddingBetweenElements;
 				}
 			}
 		}
 		displayActive = active;
+	}
+
+	private boolean isLastVisible(RebornInfoElement element) {
+		RebornInfoElement lastVisible = null;
+		for (RebornInfoElement e : elements) {
+			if (e.isVisible()) {
+				lastVisible = e;
+			}
+		}
+		if (lastVisible != null && lastVisible == element) {
+			return true;
+		}
+		return false;
 	}
 
 	public void renderItemStack(ItemStack stack, int x, int y) {
