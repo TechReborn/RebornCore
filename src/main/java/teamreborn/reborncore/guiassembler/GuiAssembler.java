@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * File Created by Prospector.
  */
-public abstract class GuiAssembler {
+public class GuiAssembler {
 	public static final ResourceLocation BACKGROUND_SHEET = new ResourceLocation("reborncore", "textures/gui/assembler_background.png");
 	public static final ResourceLocation DEFAULT_ELEMENTS = new ResourceLocation("reborncore", "textures/gui/assembler_elements.png");
 	public final ResourceLocation customElementSheet;
