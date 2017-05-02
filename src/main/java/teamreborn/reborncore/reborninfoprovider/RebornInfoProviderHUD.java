@@ -13,9 +13,11 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import teamreborn.reborncore.RebornCore;
 import teamreborn.reborncore.reborninfoprovider.elements.IStackDisplayProvider;
 import teamreborn.reborncore.reborninfoprovider.elements.StackInfoElement;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +25,57 @@ import java.util.List;
  * File Created by Prospector.
  */
 public class RebornInfoProviderHUD extends Gui {
+	public static File ripConfig;
+	public static int x = 5;
+	public static int y = 5;
 	private static Minecraft mc = Minecraft.getMinecraft();
 	private static List<RebornInfoElement> elements = new ArrayList<>();
 	public boolean displayActive = false;
+
+	public static void addElement(RebornInfoElement element) {
+		elements.add(element);
+	}
+
+	public static void removeElement(RebornInfoElement element) {
+		elements.remove(element);
+	}
+
+	public static void clearElements() {
+		elements.clear();
+	}
+
+	public static List<RebornInfoElement> getElements() {
+		return elements;
+	}
+
+	public static void reloadConfig() {
+		if (!ripConfig.exists()) {
+			writeConfig(new RIPConfig());
+		}
+		if (ripConfig.exists()) {
+			RIPConfig config = null;
+			try (Reader reader = new FileReader(ripConfig)) {
+				config = RebornCore.GSON.fromJson(reader, RIPConfig.class);
+				x = config.getX();
+				y = config.getY();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (config == null) {
+				config = new RIPConfig();
+				writeConfig(config);
+			}
+		}
+	}
+
+	public static void writeConfig(RIPConfig config) {
+		try (Writer writer = new FileWriter(ripConfig)) {
+			RebornCore.GSON.toJson(config, writer);
+		} catch (Exception e) {
+
+		}
+		reloadConfig();
+	}
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOW)
@@ -36,20 +86,9 @@ public class RebornInfoProviderHUD extends Gui {
 			return;
 		}
 		if (mc.inGameHasFocus) {
+			reloadConfig();
 			drawRebornInfoProviderHUD(event.getResolution());
 		}
-	}
-
-	public static void addElement(RebornInfoElement element) {
-		elements.add(element);
-	}
-
-	public static void removeElement(RebornInfoElement element) {
-		elements.remove(element);
-	}
-
-	public static List<RebornInfoElement> getElements() {
-		return elements;
 	}
 
 	public void addDefaultElements() {
@@ -87,8 +126,6 @@ public class RebornInfoProviderHUD extends Gui {
 	public void drawRebornInfoProviderHUD(ScaledResolution res) {
 		addDefaultElements();
 		boolean active = false;
-		int x = 5;
-		int y = 5;
 		int defaultWidth = 0;
 		int defaultHeight = 0;
 		int width = 0;
@@ -155,6 +192,27 @@ public class RebornInfoProviderHUD extends Gui {
 
 			GlStateManager.disableLighting();
 			GlStateManager.popMatrix();
+		}
+	}
+
+	public static class RIPConfig {
+		public int x = 5;
+		public int y = 5;
+
+		public int getX() {
+			return x;
+		}
+
+		public void setX(int x) {
+			this.x = x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public void setY(int y) {
+			this.y = y;
 		}
 	}
 }

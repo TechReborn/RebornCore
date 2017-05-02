@@ -15,6 +15,17 @@ public class GuiAssembler {
 		this.customElementSheet = elementSheet;
 	}
 
+	public static void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
+		x = adjustX(gui, x);
+		y = adjustY(gui, x);
+		gui.mc.getTextureManager().bindTexture(BACKGROUND_SHEET);
+
+		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
+		gui.drawTexturedModalRect(x + width / 2, y, 256 - width / 2, 0, width / 2, height / 2);
+		gui.drawTexturedModalRect(x, y + height / 2, 0, 256 - height / 2, width / 2, height / 2);
+		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 256 - width / 2, 256 - height / 2, width / 2, height / 2);
+	}
+
 	public static int adjustX(GuiScreen gui, int x) {
 		if (gui instanceof IDynamicAdjustmentGUI) {
 			return ((IDynamicAdjustmentGUI) gui).getOffsetFactorX() + x;
@@ -59,16 +70,5 @@ public class GuiAssembler {
 
 	public static void drawString(GuiScreen gui, String string, int x, int y) {
 		drawString(gui, string, x, y, 16777215);
-	}
-
-	public static void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
-		x = adjustX(gui, x);
-		y = adjustY(gui, x);
-		gui.mc.getTextureManager().bindTexture(BACKGROUND_SHEET);
-
-		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y, 256 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x, y + height / 2, 0, 256 - height / 2, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 256 - width / 2, 256 - height / 2, width / 2, height / 2);
 	}
 }
