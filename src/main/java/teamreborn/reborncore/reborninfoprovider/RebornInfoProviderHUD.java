@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -54,40 +53,31 @@ public class RebornInfoProviderHUD extends Gui {
 	}
 
 	public void addDefaultElements() {
-		boolean mainhandShouldHaveElement = false;
-		ItemStack mainhandStack = mc.player.getHeldItemMainhand();
-		if (mainhandStack.getItem() instanceof IStackDisplayProvider) {
-			StackInfoElement element = new StackInfoElement(mainhandStack, ((IStackDisplayProvider) mainhandStack.getItem()).getElementString(mc.player, mainhandStack));
-			element.meta = "auto.mainhand";
-			if (!elements.contains(element)) {
-				removeHandElements(EnumHand.MAIN_HAND);
-				addElement(element);
-			}
-			mainhandShouldHaveElement = true;
+		handleEquiptmentStacks("auto.mainhand", mc.player.getHeldItemMainhand());
+		handleEquiptmentStacks("auto.offhand", mc.player.getHeldItemOffhand());
+		int i = 0;
+		for (ItemStack stack : mc.player.getArmorInventoryList()) {
+			handleEquiptmentStacks("auto.armor." + i, stack);
+			i++;
 		}
-		boolean offhandShouldHaveElement = false;
-		ItemStack offhandStack = mc.player.getHeldItemOffhand();
-		if (offhandStack.getItem() instanceof IStackDisplayProvider) {
-			StackInfoElement element = new StackInfoElement(offhandStack, ((IStackDisplayProvider) offhandStack.getItem()).getElementString(mc.player, offhandStack));
-			element.meta = "auto.offhand";
-			if (!elements.contains(element)) {
-				removeHandElements(EnumHand.OFF_HAND);
-				addElement(element);
-			}
-			offhandShouldHaveElement = true;
-		}
-		if (!mainhandShouldHaveElement)
-			removeHandElements(EnumHand.MAIN_HAND);
-		if (!offhandShouldHaveElement)
-			removeHandElements(EnumHand.OFF_HAND);
 	}
 
-	public void removeHandElements(EnumHand hand) {
-		String string = "auto.mainhand";
-		if (hand == EnumHand.OFF_HAND)
-			string = "auto.offhand";
+	public void handleEquiptmentStacks(String meta, ItemStack stack) {
+		if (stack.getItem() instanceof IStackDisplayProvider) {
+			StackInfoElement element = new StackInfoElement(stack, ((IStackDisplayProvider) stack.getItem()).getElementString(mc.player, stack));
+			element.meta = meta;
+			if (!elements.contains(element)) {
+				removeHandElements(meta);
+				addElement(element);
+			}
+		} else {
+			removeHandElements(meta);
+		}
+	}
+
+	public void removeHandElements(String meta) {
 		for (RebornInfoElement e : elements) {
-			if (e.meta.equals(string)) {
+			if (e.meta.equals(meta)) {
 				removeElement(e);
 				break;
 			}
