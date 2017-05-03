@@ -2,7 +2,7 @@ package teamreborn.reborncore.api.registry;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
-import teamreborn.reborncore.Constants;
+import teamreborn.reborncore.RCConstants;
 import teamreborn.reborncore.api.ExecutionSide;
 
 import java.lang.annotation.Annotation;
@@ -92,7 +92,7 @@ public interface IRegistryFactory
 		 *
 		 * @return a mod id
 		 */
-		String modID() default Constants.MODID;
+		String modID() default RCConstants.MOD_ID;
 	}
 
 }

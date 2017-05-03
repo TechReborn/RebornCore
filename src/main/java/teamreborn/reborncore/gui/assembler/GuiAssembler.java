@@ -1,6 +1,10 @@
-package teamreborn.reborncore.guiassembler;
+package teamreborn.reborncore.gui.assembler;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -15,15 +19,58 @@ public class GuiAssembler {
 		this.customElementSheet = elementSheet;
 	}
 
+	public GuiAssembler() {
+		this.customElementSheet = null;
+	}
+
 	public static void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
 		x = adjustX(gui, x);
-		y = adjustY(gui, x);
+		y = adjustY(gui, y);
 		gui.mc.getTextureManager().bindTexture(BACKGROUND_SHEET);
 
 		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y, 256 - width / 2, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x, y + height / 2, 0, 256 - height / 2, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 256 - width / 2, 256 - height / 2, width / 2, height / 2);
+	}
+
+	public static void drawRect(GuiScreen gui, int x, int y, int width, int height, int colour) {
+		drawGradientRect(gui, x, y, width, height, colour, colour);
+	}
+
+	public static void drawGradientRect(GuiScreen gui, int x, int y, int width, int height, int startColor, int endColor) {
+		x = adjustX(gui, x);
+		y = adjustY(gui, y);
+
+		int left = x;
+		int top = y;
+		int right = x + width;
+		int bottom = y + height;
+		float f = (float) (startColor >> 24 & 255) / 255.0F;
+		float f1 = (float) (startColor >> 16 & 255) / 255.0F;
+		float f2 = (float) (startColor >> 8 & 255) / 255.0F;
+		float f3 = (float) (startColor & 255) / 255.0F;
+		float f4 = (float) (endColor >> 24 & 255) / 255.0F;
+		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
+		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
+		float f7 = (float) (endColor & 255) / 255.0F;
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.shadeModel(7425);
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		vertexbuffer.pos((double) right, (double) top, (double) 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos((double) left, (double) top, (double) 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).endVertex();
+		vertexbuffer.pos((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).endVertex();
+		tessellator.draw();
+		GlStateManager.shadeModel(7424);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
 	}
 
 	public static int adjustX(GuiScreen gui, int x) {

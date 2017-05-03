@@ -1,4 +1,4 @@
-package teamreborn.reborncore.guiassembler;
+package teamreborn.reborncore.gui.assembler;
 
 /**
  * File Created by Prospector.
