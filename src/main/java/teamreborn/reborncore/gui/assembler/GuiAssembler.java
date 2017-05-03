@@ -38,6 +38,7 @@ public class GuiAssembler {
 		drawGradientRect(gui, x, y, width, height, colour, colour);
 	}
 
+	// TAKEN FROM MINECRAFT'S GUI CLASS
 	public static void drawGradientRect(GuiScreen gui, int x, int y, int width, int height, int startColor, int endColor) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
@@ -108,7 +109,7 @@ public class GuiAssembler {
 		posY = adjustY(gui, posY);
 		gui.mc.getTextureManager().bindTexture(BACKGROUND_SHEET);
 
-		gui.drawTexturedModalRect(posX, posY, 150, 0, 18, 18);
+		gui.drawTexturedModalRect(posX, posY, 0, 0, 18, 18);
 	}
 
 	public static void drawString(GuiScreen gui, String string, int x, int y, int color) {
