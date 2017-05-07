@@ -25,6 +25,7 @@ public class RebornCore {
 	@SidedProxy(clientSide = "teamreborn.reborncore.proxy.RebornCoreClient", serverSide = "teamreborn.reborncore.proxy.RebornCoreServer")
 	public static RebornCoreServer PROXY;
 	public static File configDir;
+	public static File manualDir;
 	public static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public RebornCore() {

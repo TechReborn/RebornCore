@@ -40,13 +40,18 @@ public class GuiManual extends GuiScreen implements IDynamicAdjustmentGUI {
 	}
 
 	@Override
+	public boolean doesGuiPauseGame() {
+		return false;
+	}
+
+	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		xFactor = guiLeft;
 		yFactor = guiTop;
 		drawDefaultBackground();
 		assembler.drawDefaultBackground(this, 0, 0, xSize, ySize);
-		assembler.drawRect(this, 6, 6, xSize - 12, 18 - 6, 0xFFA1A1A1);
+		assembler.drawRect(this, 6, 6, xSize - 12, 12, 0xFFA1A1A1);
 
 	}
 

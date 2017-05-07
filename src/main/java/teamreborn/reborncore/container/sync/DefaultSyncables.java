@@ -65,14 +65,14 @@ public class DefaultSyncables
 		@Override
 		public NBTTagCompound toNBT(final NBTTagCompound tag)
 		{
-			tag.setString("string", this.stored);
+			tag.setString("strings", this.stored);
 			return tag;
 		}
 
 		@Override
 		public void fromNBT(final NBTTagCompound tag)
 		{
-			this.stored = tag.getString("string");
+			this.stored = tag.getString("strings");
 		}
 	}
 
