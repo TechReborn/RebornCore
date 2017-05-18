@@ -213,14 +213,12 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
-		maxReceive *= RebornCoreConfig.euPerFU;
-		int energyReceived = Math.min(getMaxEnergyStored(null) - getEnergyStored(null),
-			Math.min((int) this.getMaxInput() * RebornCoreConfig.euPerFU, maxReceive));
+		int energyReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxOutput() * RebornCoreConfig.euPerFU, maxReceive));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
 		}
-		return energyReceived / RebornCoreConfig.euPerFU;
+		return energyReceived;
 	}
 
 	@Deprecated
@@ -239,12 +237,12 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			return 0;
 		}
 		maxExtract *= RebornCoreConfig.euPerFU;
-		int energyExtracted = Math.min(getEnergyStored(null), Math.min(maxExtract, maxExtract));
+		int energyExtracted = Math.min(getEnergyStored(null), maxExtract);
 
 		if (!simulate) {
 			setEnergy(energy - energyExtracted);
 		}
-		return energyExtracted * RebornCoreConfig.euPerFU;
+		return energyExtracted / RebornCoreConfig.euPerFU;
 	}
 	// END COFH
 
