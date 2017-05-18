@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
@@ -69,13 +70,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public void update() {
 		super.update();
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.update(this);
-			//TODO ic2 check this else if
-		} else if (getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+
+		if (getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (EnumFacing side : EnumFacing.values()) {
 				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
+					if(tile == null){
+						continue;
+					}
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
 						if (eFace.getTier().ordinal() < getTier().ordinal()) {
@@ -90,6 +92,18 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
 							}
 						}
+					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)){
+						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side);
+						if(forgePowerManager != null && energyStorage != null){
+							int drain = forgePowerManager.extractEnergy((int) getMaxOutput(), true);
+							if(drain > 0){
+								int filled = energyStorage.receiveEnergy(drain, false);
+								forgePowerManager.extractEnergy(filled, false);
+								return;
+							}
+						}
+					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+						TeslaManager.manager.update(this);
 					}
 				}
 			}
