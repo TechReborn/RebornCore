@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.RebornCore;
@@ -64,26 +65,40 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 	@Override
 	public void update() {
 		super.update();
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.update(this);
-		} else if(!getPowerConfig().eu() && !RebornCore.isIC2Loaded && getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
-			for(EnumFacing side : EnumFacing.values()){
-				if(canProvideEnergy(side)){
+
+		if (getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+			for (EnumFacing side : EnumFacing.values()) {
+				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
-					if(tile instanceof IEnergyInterfaceTile){
+					if(tile == null){
+						continue;
+					}
+					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if(eFace.getTier().ordinal() < getTier().ordinal()){
+						if (eFace.getTier().ordinal() < getTier().ordinal()) {
 							for (int j = 0; j < 2; ++j) {
-								double d3 = (double)pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
-								double d8 = (double)pos.getY() + world.rand.nextDouble() + 1;
-								double d13 = (double)pos.getZ() + world.rand.nextDouble()+ (side.getFrontOffsetZ() / 2);
+								double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
+								double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
-							if(eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))){
+							if (eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))) {
 								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
 							}
 						}
+					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)){
+						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side);
+						if(forgePowerManager != null && energyStorage != null){
+							int drain = forgePowerManager.extractEnergy((int) getMaxOutput(), true);
+							if(drain > 0){
+								int filled = energyStorage.receiveEnergy(drain, false);
+								forgePowerManager.extractEnergy(filled, false);
+								return;
+							}
+						}
+					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+						TeslaManager.manager.update(this);
 					}
 				}
 			}
@@ -347,10 +362,6 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 				+ getLocaliszedPowerFormatted((int) getMaxOutput()));
 		}
 		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
-		// if(isRealTile){ //TODO sync to client
-		// info.add(TextFormatting.LIGHT_PURPLE + "Stored energy " +
-		// TextFormatting.GREEN + getEUString(energy));
-		// }
 	}
 
 	public double getFreeSpace() {
