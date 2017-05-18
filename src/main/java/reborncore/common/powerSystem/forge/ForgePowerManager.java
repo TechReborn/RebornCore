@@ -4,12 +4,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 
+import javax.annotation.Nullable;
+
 public class ForgePowerManager implements IEnergyStorage {
 
 	TilePowerAcceptor acceptor;
+	@Nullable
 	EnumFacing facing;
 
-	public ForgePowerManager(TilePowerAcceptor acceptor, EnumFacing facing) {
+	public ForgePowerManager(TilePowerAcceptor acceptor, @Nullable EnumFacing facing) {
 		this.acceptor = acceptor;
 		this.facing = facing;
 	}
@@ -44,7 +47,7 @@ public class ForgePowerManager implements IEnergyStorage {
 		return acceptor.canAcceptEnergy(facing);
 	}
 
-	public void setFacing(EnumFacing facing) {
+	public void setFacing(@Nullable EnumFacing facing) {
 		this.facing = facing;
 	}
 }

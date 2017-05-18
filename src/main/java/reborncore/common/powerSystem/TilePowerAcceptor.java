@@ -41,7 +41,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 {
 	public int tier;
 	protected boolean addedToEnet;
-	ForgePowerManager forgePowerManager;
+	ForgePowerManager forgePowerManager = new ForgePowerManager(this, null);
 	private double energy;
 
 	public double extraPowerStoage;
