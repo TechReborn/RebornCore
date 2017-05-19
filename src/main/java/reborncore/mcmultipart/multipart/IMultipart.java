@@ -32,6 +32,7 @@ import java.util.Random;
  * Interface that represents a multipart. This has all the methods required for a multipart to work properly.<br/>
  * For a simple, default implementation of most of these methods and some helpers, you can extend {@link Multipart} directly.
  */
+@Deprecated
 public interface IMultipart {
 
 	/**

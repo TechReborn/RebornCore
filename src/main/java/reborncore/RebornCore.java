@@ -39,6 +39,7 @@ public class RebornCore implements IModInfo {
 	public static final String WEB_URL = "http://files.modmuss50.me/";
 
 	public static LogHelper logHelper;
+	@Deprecated
 	public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
 	public static RebornCoreConfig config;
 	@Mod.Instance

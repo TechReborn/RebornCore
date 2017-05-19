@@ -6,6 +6,7 @@ import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.mixin.MixinManager;
 import reborncore.mixin.json.MixinTargetData;
 
+@Deprecated
 public abstract class PoweredItem {
 
 	public static void registerPoweredItem(String itemclass, boolean ic2) {

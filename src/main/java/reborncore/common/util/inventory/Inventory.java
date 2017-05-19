@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.Constants;
 import reborncore.common.tile.TileBase;
 import reborncore.common.util.IInventoryUpdateable;
 
+@Deprecated
 public class Inventory implements IInventory {
 
 	private final String inventoryName;

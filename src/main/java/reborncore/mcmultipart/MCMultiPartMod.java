@@ -15,6 +15,7 @@ import reborncore.mcmultipart.block.TileMultipartContainer;
 import reborncore.mcmultipart.network.MultipartNetworkHandler;
 import reborncore.mcmultipart.util.MCMPEventHandler;
 
+@Deprecated
 @Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.11]")
 public class MCMultiPartMod {
 

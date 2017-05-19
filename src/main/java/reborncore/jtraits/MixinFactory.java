@@ -2,6 +2,7 @@ package reborncore.jtraits;
 
 import reborncore.jtraits.Annotation.ClosingTrait;
 
+@Deprecated
 public class MixinFactory {
 
 	public static boolean debug = false;

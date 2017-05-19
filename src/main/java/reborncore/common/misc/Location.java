@@ -7,6 +7,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+@Deprecated
 public class Location implements Comparable<Location> {
 	public int x;
 	public int y;

@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+@Deprecated
 public class VersionChecker {
 
 	public static final String apiAddress = RebornCore.WEB_URL + "api/v1/version.php";

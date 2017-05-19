@@ -1,5 +1,6 @@
 package reborncore.jtraits;
 
+@Deprecated
 public class JTrait<T> {
 
 	/**

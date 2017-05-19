@@ -2,6 +2,7 @@ package reborncore.api.power;
 
 import net.minecraft.item.ItemStack;
 
+@Deprecated
 public interface IEnergyItemInfo {
 
 	/**

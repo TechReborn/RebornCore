@@ -10,6 +10,7 @@ import java.util.ListIterator;
 
 import static org.objectweb.asm.Opcodes.*;
 
+@Deprecated
 public class Mixin<T> {
 
 	public static final String getName(Class<?> clazz, Class<?> trait) {

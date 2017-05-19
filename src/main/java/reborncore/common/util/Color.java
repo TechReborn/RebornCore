@@ -4,6 +4,7 @@ package reborncore.common.util;
  * @author TeamC4
  */
 
+@Deprecated
 public enum Color {
 	BLACK("\u00A70"), //
 	DARK_BLUE("\u00A71"), //

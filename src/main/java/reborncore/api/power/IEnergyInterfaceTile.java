@@ -2,6 +2,7 @@ package reborncore.api.power;
 
 import net.minecraft.util.EnumFacing;
 
+@Deprecated
 public interface IEnergyInterfaceTile {
 
 	/**

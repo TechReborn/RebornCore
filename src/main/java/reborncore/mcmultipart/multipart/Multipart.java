@@ -49,6 +49,7 @@ import java.util.Random;
  * {@link MultipartRegistry}, though custom types can be used if your part is created by a custom {@link IPartFactory} or
  * {@link IAdvancedPartFactory}.
  */
+@Deprecated
 public abstract class Multipart implements IMultipart, ICapabilitySerializable<NBTTagCompound> {
 
 	protected static final AxisAlignedBB DEFAULT_RENDER_BOUNDS = new AxisAlignedBB(0, 0, 0, 1, 1, 1);

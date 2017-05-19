@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ClassLoadingHelper {
 
 	public static ClassLoadingHelper instance = new ClassLoadingHelper();

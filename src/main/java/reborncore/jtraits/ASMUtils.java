@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
+@Deprecated
 public class ASMUtils {
 
 	private static Map<Integer, String> opcodes = new HashMap<Integer, String>();
