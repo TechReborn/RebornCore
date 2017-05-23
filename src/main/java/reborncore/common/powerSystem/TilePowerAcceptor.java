@@ -2,21 +2,15 @@ package reborncore.common.powerSystem;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
-import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,7 +20,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.IPowerConfig;
@@ -34,7 +27,6 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
-import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
 
 import java.text.NumberFormat;
@@ -50,7 +42,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 {
 	public int tier;
 	protected boolean addedToEnet;
-	ForgePowerManager forgePowerManager;
+	ForgePowerManager forgePowerManager = new ForgePowerManager(this, null);
 	private double energy;
 
 	// IC2
@@ -89,8 +81,8 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 						}
 					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)){
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side);
-						if(forgePowerManager != null && energyStorage != null){
-							int drain = forgePowerManager.extractEnergy((int) getMaxOutput(), true);
+						if(forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)){
+							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() / RebornCoreConfig.euPerFU), true);
 							if(drain > 0){
 								int filled = energyStorage.receiveEnergy(drain, false);
 								forgePowerManager.extractEnergy(filled, false);
@@ -212,14 +204,12 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
-		maxReceive *= RebornCoreConfig.euPerRF;
-		int energyReceived = Math.min(getMaxEnergyStored(null) - getEnergyStored(null),
-			Math.min((int) this.getMaxInput() * RebornCoreConfig.euPerRF, maxReceive));
+		int energyReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxOutput() * RebornCoreConfig.euPerFU, maxReceive));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
 		}
-		return energyReceived / RebornCoreConfig.euPerRF;
+		return energyReceived;
 	}
 
 	@Override
@@ -244,12 +234,12 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 			return 0;
 		}
 		maxExtract *= RebornCoreConfig.euPerRF;
-		int energyExtracted = Math.min(getEnergyStored(null), Math.min(maxExtract, maxExtract));
+		int energyExtracted = Math.min(getEnergyStored(null), maxExtract);
 
 		if (!simulate) {
 			setEnergy(energy - energyExtracted);
 		}
-		return energyExtracted * RebornCoreConfig.euPerRF;
+		return energyExtracted / RebornCoreConfig.euPerRF;
 	}
 	// END COFH
 
