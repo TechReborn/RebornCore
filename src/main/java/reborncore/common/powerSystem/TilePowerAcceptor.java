@@ -204,7 +204,7 @@ public abstract class TilePowerAcceptor extends RFProviderTile implements IEnerg
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
-		int energyReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxOutput() * RebornCoreConfig.euPerFU, maxReceive));
+		int energyReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxInput() * RebornCoreConfig.euPerFU, maxReceive));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
