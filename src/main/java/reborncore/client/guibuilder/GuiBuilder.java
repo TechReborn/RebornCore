@@ -26,6 +26,7 @@ public class GuiBuilder
 
     public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height)
     {
+	    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
         gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
         gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
