@@ -11,6 +11,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 import reborncore.common.tile.TileBase;
 
+import javax.annotation.Nonnull;
+
 public class Inventory implements IInventory {
 
 	public ItemStack[] contents;
@@ -45,6 +47,7 @@ public class Inventory implements IInventory {
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getStackInSlot(int slotId) {
 		return contents[slotId];
 	}
