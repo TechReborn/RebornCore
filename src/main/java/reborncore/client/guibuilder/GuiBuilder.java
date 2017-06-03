@@ -6,8 +6,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.client.RenderUtil;
 
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 08/08/2016.
  */
-@SideOnly(Side.CLIENT)
 public class GuiBuilder {
 	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guielements.png");
 	static ResourceLocation resourceLocation;
