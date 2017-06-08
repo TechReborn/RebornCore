@@ -23,6 +23,7 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
+import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
@@ -60,6 +61,9 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
+		ConfigRegistryFactory.setConfigDir(configDir);
+		RegistrationManager.load(event);
+		ConfigRegistryFactory.saveAll();
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
 		PowerSystem.reloadConfig();
@@ -71,7 +75,6 @@ public class RebornCore implements IModInfo {
 		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
-		RegistrationManager.load(event);
 	}
 
 	@Mod.EventHandler

@@ -124,7 +124,7 @@ public class RegistrationManager
 		return null;
 	}
 
-	private static Annotation getAnnoation(Annotation[] annotations, Class annoation)
+	public static Annotation getAnnoation(Annotation[] annotations, Class annoation)
 	{
 		for (Annotation annotation : annotations)
 		{
