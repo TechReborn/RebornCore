@@ -5,13 +5,12 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLStateEvent;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Mark on 26/02/2017.
@@ -19,64 +18,25 @@ import java.util.Set;
 public class RegistrationManager
 {
 
-	static List<IRegistryFactory> factoryList = new ArrayList<>();
+	static HashMap<Class<? extends FMLStateEvent>, IRegistryFactory> factoryList = new HashMap<>();
+	static List<Class> registryClasses = new ArrayList<>();
 
-	public static void load(FMLPreInitializationEvent event)
-	{
+	public static void init(FMLPreInitializationEvent event) {
 		long start = System.currentTimeMillis();
-		final ModContainer activeMod = Loader.instance().activeModContainer();
 		ASMDataTable asmDataTable = event.getAsmData();
 		loadFactorys(asmDataTable);
+
 		Set<ASMDataTable.ASMData> asmDataSet = asmDataTable.getAll(RebornRegistry.class.getName());
-		for (ASMDataTable.ASMData data : asmDataSet)
-		{
-			if (!data.getAnnotationInfo().isEmpty())
-			{
-				String modId = (String) data.getAnnotationInfo().get("modID");
-				if (!activeMod.getModId().equals(modId))
-				{
-					setActiveMod(modId);
-				}
-			}
-			try
-			{
+		for (ASMDataTable.ASMData data : asmDataSet) {
+			try {
 				Class clazz = Class.forName(data.getClassName());
-				for (Field field : clazz.getDeclaredFields())
-				{
-					for (IRegistryFactory regFactory : factoryList)
-					{
-						if (!regFactory.getTargets().contains(RegistryTarget.FIELD))
-						{
-							continue;
-						}
-						if (field.isAnnotationPresent(regFactory.getAnnotation()))
-						{
-							regFactory.handleField(field);
-						}
-					}
-				}
-				for (Method method : clazz.getDeclaredMethods())
-				{
-					for (IRegistryFactory regFactory : factoryList)
-					{
-						if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD))
-						{
-							continue;
-						}
-						if (method.isAnnotationPresent(regFactory.getAnnotation()))
-						{
-							regFactory.handleMethod(method);
-						}
-					}
-				}
-			}
-			catch (ClassNotFoundException e)
-			{
+				registryClasses.add(clazz);
+			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		setActiveModContainer(activeMod);
-		for (IRegistryFactory registryFactory : factoryList)
+
+		for (IRegistryFactory registryFactory : getFactorysForSate(event.getClass()))
 		{
 			if (registryFactory.getTargets().contains(RegistryTarget.CLASS))
 			{
@@ -109,7 +69,68 @@ public class RegistrationManager
 				}
 			}
 		}
-		FMLLog.info("Loaded all registrys in " + (System.currentTimeMillis() - start) + "ms");
+		FMLLog.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
+	}
+
+	public static void load(FMLStateEvent event)
+	{
+		long start = System.currentTimeMillis();
+		final ModContainer activeMod = Loader.instance().activeModContainer();
+
+		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
+		if(!factoryList.isEmpty()){
+			for (Class clazz : registryClasses)
+			{
+				RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
+				if(annotation != null){
+					if (!activeMod.getModId().equals(annotation.modID()))
+					{
+						setActiveMod(annotation.modID());
+					}
+				}
+				for (Field field : clazz.getDeclaredFields())
+				{
+					for (IRegistryFactory regFactory : factoryList)
+					{
+						if (!regFactory.getTargets().contains(RegistryTarget.FIELD))
+						{
+							continue;
+						}
+						if (field.isAnnotationPresent(regFactory.getAnnotation()))
+						{
+							regFactory.handleField(field);
+						}
+					}
+				}
+				for (Method method : clazz.getDeclaredMethods())
+				{
+					for (IRegistryFactory regFactory : factoryList)
+					{
+						if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD))
+						{
+							continue;
+						}
+						if (method.isAnnotationPresent(regFactory.getAnnotation()))
+						{
+							regFactory.handleMethod(method);
+						}
+					}
+				}
+			}
+			setActiveModContainer(activeMod);
+		}
+
+		FMLLog.info("Loaded registrys for "+ event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
+	}
+
+	private static List<IRegistryFactory> getFactorysForSate(Class<? extends FMLStateEvent> event){
+		List<IRegistryFactory> factorySateList = new ArrayList<>();
+		for(Map.Entry<Class<? extends FMLStateEvent>, IRegistryFactory> entry : factoryList.entrySet()){
+			if(entry.getKey() == event){
+				factorySateList.add(entry.getValue());
+			}
+		}
+		return factorySateList;
 	}
 
 	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory)
@@ -156,7 +177,8 @@ public class RegistrationManager
 				Object object = clazz.newInstance();
 				if (object instanceof IRegistryFactory)
 				{
-					factoryList.add((IRegistryFactory) object);
+					IRegistryFactory factory = (IRegistryFactory) object;
+					factoryList.put(((IRegistryFactory) object).getProcessSate(), factory);
 				}
 			}
 			catch (ClassNotFoundException | IllegalAccessException | InstantiationException e)

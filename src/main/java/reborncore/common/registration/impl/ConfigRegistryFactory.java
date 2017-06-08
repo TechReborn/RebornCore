@@ -2,10 +2,8 @@ package reborncore.common.registration.impl;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import reborncore.common.registration.IRegistryFactory;
-import reborncore.common.registration.RebornRegistry;
-import reborncore.common.registration.RegistrationManager;
-import reborncore.common.registration.RegistryTarget;
+import net.minecraftforge.fml.common.event.FMLStateEvent;
+import reborncore.common.registration.*;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -122,5 +120,10 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	@Override
 	public List<RegistryTarget> getTargets() {
 		return Collections.singletonList(RegistryTarget.FIELD);
+	}
+
+	@Override
+	public Class<? extends FMLStateEvent> getProcessSate() {
+		return RegistryConstructionEvent.class;
 	}
 }

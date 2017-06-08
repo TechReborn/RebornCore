@@ -3,10 +3,7 @@ package reborncore;
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.client.gui.ManualGuiHandler;
@@ -23,6 +20,7 @@ import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
+import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
@@ -62,7 +60,8 @@ public class RebornCore implements IModInfo {
 			configDir.mkdir();
 		}
 		ConfigRegistryFactory.setConfigDir(configDir);
-		RegistrationManager.load(event);
+		RegistrationManager.init(event);
+		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
@@ -75,6 +74,7 @@ public class RebornCore implements IModInfo {
 		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
+		RegistrationManager.load(event);
 	}
 
 	@Mod.EventHandler
@@ -102,11 +102,13 @@ public class RebornCore implements IModInfo {
 		}
 
 		proxy.init(event);
+		RegistrationManager.load(event);
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
+		RegistrationManager.load(event);
 	}
 
 	@Mod.EventHandler
