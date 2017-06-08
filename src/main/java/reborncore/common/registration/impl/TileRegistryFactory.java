@@ -10,25 +10,21 @@ import java.util.Collections;
 import java.util.List;
 
 @IRegistryFactory.RegistryFactory
-public class TileRegistryFactory implements IRegistryFactory
-{
+public class TileRegistryFactory implements IRegistryFactory {
 
 	@Override
-	public Class<? extends Annotation> getAnnotation()
-	{
+	public Class<? extends Annotation> getAnnotation() {
 		return TileRegistry.class;
 	}
 
 	@Override
-	public void handleClass(Class clazz)
-	{
+	public void handleClass(Class clazz) {
 		TileRegistry tileRegistry = (TileRegistry) RegistrationManager.getAnnoationFromArray(clazz.getAnnotations(), this);
 		GameRegistry.registerTileEntity(clazz, tileRegistry.name());
 	}
 
 	@Override
-	public List<RegistryTarget> getTargets()
-	{
+	public List<RegistryTarget> getTargets() {
 		return Collections.singletonList(RegistryTarget.CLASS);
 	}
 }

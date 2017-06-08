@@ -14,48 +14,38 @@ import java.util.Collections;
 import java.util.List;
 
 @IRegistryFactory.RegistryFactory
-public class ItemRegistryFactory implements IRegistryFactory
-{
+public class ItemRegistryFactory implements IRegistryFactory {
 
 	@Override
-	public Class<? extends Annotation> getAnnotation()
-	{
+	public Class<? extends Annotation> getAnnotation() {
 		return ItemRegistry.class;
 	}
 
 	@Override
-	public void handleField(Field field)
-	{
+	public void handleField(Field field) {
 		Class clazz = field.getType();
-		if (!Modifier.isStatic(field.getModifiers()))
-		{
+		if (!Modifier.isStatic(field.getModifiers())) {
 			throw new RuntimeException("Field must be static when used with RebornBlockRegistry");
 		}
-		try
-		{
+		try {
 			Item item = null;
 			ItemRegistry annotation = (ItemRegistry) RegistrationManager.getAnnoationFromArray(field.getAnnotations(), this);
-			if (annotation != null && !annotation.param().isEmpty())
-			{
+			if (annotation != null && !annotation.param().isEmpty()) {
 				String param = annotation.param();
 				item = (Item) clazz.getDeclaredConstructor(String.class).newInstance(param);
 			}
-			if (item == null)
-			{
+			if (item == null) {
 				item = (Item) clazz.newInstance();
 			}
 			RebornRegistry.registerItem(item);
 			field.set(null, item);
-		}
-		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
-		{
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public List<RegistryTarget> getTargets()
-	{
+	public List<RegistryTarget> getTargets() {
 		return Collections.singletonList(RegistryTarget.FIELD);
 	}
 }

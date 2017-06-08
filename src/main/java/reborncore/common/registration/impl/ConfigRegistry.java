@@ -11,24 +11,28 @@ public @interface ConfigRegistry {
 
 	/**
 	 * This the category of the config
+	 *
 	 * @return
 	 */
 	String category() default "config";
 
 	/**
 	 * This is the key for the config, the default is the field name.
+	 *
 	 * @return
 	 */
 	String key() default "";
 
 	/**
 	 * This is a comment that will be supplied along with the config, use this to explain what the config does
+	 *
 	 * @return
 	 */
 	String comment() default "";
 
 	/**
 	 * this is the config file name, the default is just config.cgf, use this is you whish to split the config into more than one file.
+	 *
 	 * @return
 	 */
 	String config() default "";

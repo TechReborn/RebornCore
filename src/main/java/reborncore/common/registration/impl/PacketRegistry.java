@@ -10,10 +10,9 @@ import java.lang.annotation.Target;
 /**
  * Created by modmuss50 on 27/02/2017.
  */
-@Retention (RetentionPolicy.RUNTIME)
-@Target (ElementType.TYPE)
-public @interface PacketRegistry
-{
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface PacketRegistry {
 
 	Side proccessingSide();
 }

@@ -11,25 +11,21 @@ import java.util.Collections;
 import java.util.List;
 
 @IRegistryFactory.RegistryFactory
-public class PacketRegistryFactory implements IRegistryFactory
-{
+public class PacketRegistryFactory implements IRegistryFactory {
 
 	@Override
-	public Class<? extends Annotation> getAnnotation()
-	{
+	public Class<? extends Annotation> getAnnotation() {
 		return PacketRegistry.class;
 	}
 
 	@Override
-	public void handleClass(Class clazz)
-	{
+	public void handleClass(Class clazz) {
 		PacketRegistry packetRegistry = (PacketRegistry) RegistrationManager.getAnnoationFromArray(clazz.getAnnotations(), this);
 		RebornPackets.packetList.add(Pair.of(packetRegistry.proccessingSide(), clazz));
 	}
 
 	@Override
-	public List<RegistryTarget> getTargets()
-	{
+	public List<RegistryTarget> getTargets() {
 		return Collections.singletonList(RegistryTarget.CLASS);
 	}
 }

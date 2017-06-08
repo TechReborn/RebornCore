@@ -10,10 +10,9 @@ import java.lang.annotation.Target;
 /**
  * This anoation gets applied to any class that contains
  */
-@Retention (RetentionPolicy.RUNTIME)
-@Target (ElementType.TYPE)
-public @interface RebornRegistry
-{
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface RebornRegistry {
 
 	/**
 	 * The mod id that should be active when the annotion is being proccessed.
