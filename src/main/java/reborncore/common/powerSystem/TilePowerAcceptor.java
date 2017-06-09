@@ -39,7 +39,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	IEnergyInterfaceTile, IListInfoProvider, // TechReborn
 	IEnergyTile, IEnergySink, IEnergySource // Ic2
 {
-	public int tier;
+	private EnumPowerTier tier;
 	protected boolean addedToEnet;
 	ForgePowerManager forgePowerManager = new ForgePowerManager(this, null);
 	private double energy;
@@ -53,17 +53,32 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	// IC2
 
-	public TilePowerAcceptor(int tier) {
-		this.tier = tier;
+	@Deprecated
+	public TilePowerAcceptor(int i) {
+		this();
+	}
+
+	public TilePowerAcceptor() {
+		checkTeir();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.created(this);
 		}
 	}
 
 	public TilePowerAcceptor(EnumPowerTier tier) {
-		this.tier = tier.getIC2Tier();
+		checkTeir();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.created(this);
+		}
+	}
+
+	public void checkTeir(){
+		if(getBaseTier() == null){
+			if(this.getMaxInput() == 0){
+				tier = EnumPowerTier.getTeir((int) this.getBaseMaxOutput());
+			} else {
+				tier = EnumPowerTier.getTeir((int) this.getBaseMaxInput());
+			}
 		}
 	}
 
@@ -156,7 +171,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	@Optional.Method(modid = "ic2")
 	public int getSinkTier() {
-		return tier;
+		return getTier().getIC2Tier();
 	}
 
 	@Override
@@ -199,7 +214,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	@Optional.Method(modid = "ic2")
 	public int getSourceTier() {
-		return tier;
+		return getTier().getIC2Tier();
 	}
 	// END IC2
 
@@ -452,7 +467,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public abstract double getBaseMaxInput();
 
-	public abstract EnumPowerTier getBaseTier();
+	@Deprecated //Dont set the tier any where
+	public EnumPowerTier getBaseTier(){
+		return null;
+	}
 
 	@Override
 	public double getMaxPower() {
@@ -471,15 +489,22 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public EnumPowerTier getTier() {
+		EnumPowerTier baseTier = getBaseTier();
+		if(baseTier == null){
+			if(tier == null){
+				checkTeir();
+			}
+			baseTier = tier;
+		}
 		if(extraTeir > 0){
 			for(EnumPowerTier tier : EnumPowerTier.values()){
-				if(tier.getIC2Tier() == getBaseTier().getIC2Tier() + extraTeir){
+				if(tier.getIC2Tier() == baseTier.getIC2Tier() + extraTeir){
 					return tier;
 				}
 			}
 			return EnumPowerTier.INSANE;
 		}
-		return getBaseTier();
+		return baseTier;
 	}
 
 	@Override

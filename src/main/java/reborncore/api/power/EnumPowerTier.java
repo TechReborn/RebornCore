@@ -33,4 +33,22 @@ public enum EnumPowerTier {
 	public int getIC2Tier() {
 		return ic2Tier;
 	}
+
+	public static int getIntTeir(int power){
+		for(EnumPowerTier tier : EnumPowerTier.values()){
+			if(tier.maxInput >= power){
+				return tier.getIC2Tier();
+			}
+		}
+		return EnumPowerTier.INFINITE.getIC2Tier();
+	}
+
+	public static EnumPowerTier getTeir(int power){
+		for(EnumPowerTier tier : EnumPowerTier.values()){
+			if(tier.maxInput >= power){
+				return tier;
+			}
+		}
+		return EnumPowerTier.INFINITE;
+	}
 }
