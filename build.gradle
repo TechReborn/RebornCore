@@ -29,7 +29,6 @@ repositories {
 	}
 }
 
-
 repositories {
 	maven {
 		// JSON-Destroyer
