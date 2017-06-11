@@ -29,7 +29,7 @@ import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.File;
 
-@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.11]", dependencies = "required-after:forge@[12.18.2.2121,);", certificateFingerprint = "8727a3141c8ec7f173b87aa78b9b9807867c4e6b")
+@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.12]", dependencies = "required-after:forge@[12.18.2.2121,);", certificateFingerprint = "8727a3141c8ec7f173b87aa78b9b9807867c4e6b")
 public class RebornCore implements IModInfo {
 
 	public static final String MOD_NAME = "Reborn Core";

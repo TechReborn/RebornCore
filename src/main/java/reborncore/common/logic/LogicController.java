@@ -149,7 +149,7 @@ public abstract class LogicController extends TileEntity
 
     public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {}
 
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced){}
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, boolean advanced){}
 
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {}
 

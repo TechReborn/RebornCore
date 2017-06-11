@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -56,7 +56,7 @@ public final class MultipartContainerSpecialRenderer {
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		rendererDispatcher.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -94,7 +94,7 @@ public final class MultipartContainerSpecialRenderer {
 	}
 
 	public static boolean renderMultipartContainerFast(IMultipartContainer container, double x, double y, double z, float partialTicks,
-	                                                   int destroyStage, TileEntityRendererDispatcher rendererDispatcher, VertexBuffer buffer) {
+	                                                   int destroyStage, TileEntityRendererDispatcher rendererDispatcher, BufferBuilder buffer) {
 
 		for (IMultipart part : container.getParts()) {
 			MultipartSpecialRenderer<IMultipart> renderer = MultipartRegistryClient.getSpecialRenderer(part);
@@ -187,78 +187,78 @@ public final class MultipartContainerSpecialRenderer {
 
 	public static final class TileMultipartSpecialRenderer extends TileEntitySpecialRenderer<TileMultipartContainer> {
 
-		@Override
-		public void renderTileEntityAt(TileMultipartContainer te, double x, double y, double z, float partialTicks, int destroyStage) {
-
-			renderMultipartContainerAt(te, x, y, z, partialTicks, destroyStage, rendererDispatcher);
-		}
-
-		@Override
-		public void renderTileEntityFast(TileMultipartContainer te, double x, double y, double z, float partialTicks, int destroyStage,
-		                                 VertexBuffer buffer) {
-
-			renderMultipartContainerFast(te, x, y, z, partialTicks, destroyStage, rendererDispatcher, buffer);
-		}
+//		@Override
+//		public void renderTileEntityAt(TileMultipartContainer te, double x, double y, double z, float partialTicks, int destroyStage) {
+//
+//			renderMultipartContainerAt(te, x, y, z, partialTicks, destroyStage, rendererDispatcher);
+//		}
+//
+//		@Override
+//		public void renderTileEntityFast(TileMultipartContainer te, double x, double y, double z, float partialTicks, int destroyStage,
+//		                                 BufferBuilder buffer) {
+//
+//			renderMultipartContainerFast(te, x, y, z, partialTicks, destroyStage, rendererDispatcher, buffer);
+//		}
 
 	}
 
 	public static class TileCoverableSpecialRenderer<T extends TileCoverable> extends TileEntitySpecialRenderer<T> {
 
-		@Override
-		public void renderTileEntityAt(T te, double x, double y, double z, float partialTicks, int destroyStage) {
-
-			if (destroyStage >= 0) {
-				if (MinecraftForgeClient.getRenderPass() != 1)
-					return;
-
-				RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
-				if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK && mop.getBlockPos() != null
-					&& mop.getBlockPos().equals(te.getPosIn()) && !(mop instanceof PartMOP)) {
-					IVertexConsumer consumer = new VertexBufferConsumer(Tessellator.getInstance().getBuffer());
-					startBreaking(rendererDispatcher);
-					if (canRenderBreaking()) {
-						renderTileEntityAtDefault(te, x, y, z, partialTicks, destroyStage);
-					} else {
-						IBlockState state = te.getWorldIn().getBlockState(te.getPosIn());
-						IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
-							.getModelForState(te.getBlockType().getActualState(state, te.getWorldIn(), te.getPosIn()));
-						if (model != null && model instanceof ModelMultipartContainer)
-							model = ((ModelMultipartContainer) model).model;
-						if (model != null) {
-							model = (new SimpleBakedModel.Builder(state, model,
-								Minecraft.getMinecraft().getTextureMapBlocks()
-									.getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage),
-								te.getPosIn())).makeBakedModel();
-							startTessellating(x, y, z);
-							renderBreaking(state, model, consumer);
-							finishTessellating();
-						}
-					}
-
-					finishBreaking();
-					return;
-				}
-			}
-
-			if (renderMultipartContainerAt(te.getMicroblockContainer(), x, y, z, partialTicks, destroyStage, rendererDispatcher))
-				return;
-			renderTileEntityAtDefault(te, x, y, z, partialTicks, destroyStage);
-		}
+//		@Override
+//		public void renderTileEntityAt(T te, double x, double y, double z, float partialTicks, int destroyStage) {
+//
+//			if (destroyStage >= 0) {
+//				if (MinecraftForgeClient.getRenderPass() != 1)
+//					return;
+//
+//				RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
+//				if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK && mop.getBlockPos() != null
+//					&& mop.getBlockPos().equals(te.getPosIn()) && !(mop instanceof PartMOP)) {
+//					IVertexConsumer consumer = new VertexBufferConsumer(Tessellator.getInstance().getBuffer());
+//					startBreaking(rendererDispatcher);
+//					if (canRenderBreaking()) {
+//						renderTileEntityAtDefault(te, x, y, z, partialTicks, destroyStage);
+//					} else {
+//						IBlockState state = te.getWorldIn().getBlockState(te.getPosIn());
+//						IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
+//							.getModelForState(te.getBlockType().getActualState(state, te.getWorldIn(), te.getPosIn()));
+//						if (model != null && model instanceof ModelMultipartContainer)
+//							model = ((ModelMultipartContainer) model).model;
+//						if (model != null) {
+//							model = (new SimpleBakedModel.Builder(state, model,
+//								Minecraft.getMinecraft().getTextureMapBlocks()
+//									.getAtlasSprite("minecraft:blocks/destroy_stage_" + destroyStage),
+//								te.getPosIn())).makeBakedModel();
+//							startTessellating(x, y, z);
+//							renderBreaking(state, model, consumer);
+//							finishTessellating();
+//						}
+//					}
+//
+//					finishBreaking();
+//					return;
+//				}
+//			}
+//
+//			if (renderMultipartContainerAt(te.getMicroblockContainer(), x, y, z, partialTicks, destroyStage, rendererDispatcher))
+//				return;
+//			renderTileEntityAtDefault(te, x, y, z, partialTicks, destroyStage);
+//		}
 
 		public void renderTileEntityAtDefault(T te, double x, double y, double z, float partialTicks, int destroyStage) {
 
 		}
 
-		@Override
-		public void renderTileEntityFast(T te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer) {
-
-			if (renderMultipartContainerFast(te.getMicroblockContainer(), x, y, z, partialTicks, destroyStage, rendererDispatcher, buffer))
-				return;
-			renderTileEntityFastDefault(te, x, y, z, partialTicks, destroyStage, buffer);
-		}
+//		@Override
+//		public void renderTileEntityFast(T te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
+//
+//			if (renderMultipartContainerFast(te.getMicroblockContainer(), x, y, z, partialTicks, destroyStage, rendererDispatcher, buffer))
+//				return;
+//			renderTileEntityFastDefault(te, x, y, z, partialTicks, destroyStage, buffer);
+//		}
 
 		public void renderTileEntityFastDefault(T te, double x, double y, double z, float partialTicks, int destroyStage,
-		                                        VertexBuffer buffer) {
+		                                        BufferBuilder buffer) {
 
 		}
 

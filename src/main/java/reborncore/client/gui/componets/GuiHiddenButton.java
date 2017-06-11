@@ -17,7 +17,7 @@ public class GuiHiddenButton extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_) {
+	public void func_191745_a(Minecraft p_146112_1_, int p_146112_2_, int p_146112_3_, float ticks) {
 		if (this.visible) {
 			FontRenderer fontrenderer = p_146112_1_.fontRendererObj;
 			p_146112_1_.getTextureManager().bindTexture(BUTTON_TEXTURES);

@@ -1,5 +1,6 @@
 package reborncore.common.misc;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -71,7 +72,7 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("X", data.left).add("Z", data.right).toString();
+		return MoreObjects.toStringHelper(this).add("X", data.left).add("Z", data.right).toString();
 	}
 
 	@Override

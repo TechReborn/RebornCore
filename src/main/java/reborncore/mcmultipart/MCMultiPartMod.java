@@ -16,7 +16,7 @@ import reborncore.mcmultipart.network.MultipartNetworkHandler;
 import reborncore.mcmultipart.util.MCMPEventHandler;
 
 @Deprecated
-@Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.11]")
+@Mod(modid = MCMultiPartMod.MODID, name = MCMultiPartMod.NAME, version = MCMultiPartMod.VERSION, acceptedMinecraftVersions = "[1.12]")
 public class MCMultiPartMod {
 
 	public static final String MODID = "reborncore-mcmultipart", NAME = "reborncore-MCMultiPart", VERSION = "@MODVERSION@";

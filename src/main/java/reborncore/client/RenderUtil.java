@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -86,7 +86,7 @@ public class RenderUtil {
 				double maxV = icon.getMaxV();
 
 				Tessellator tessellator = Tessellator.getInstance();
-				VertexBuffer tes = tessellator.getBuffer();
+				BufferBuilder tes = tessellator.getBuffer();
 				tes.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 				tes.pos(drawX, drawY + drawHeight, 0).tex(minU, minV + (maxV - minV) * drawHeight / 16F).endVertex();
 				tes.pos(drawX + drawWidth, drawY + drawHeight, 0)
@@ -125,7 +125,7 @@ public class RenderUtil {
 		GlStateManager.popMatrix();
 	}
 
-	public static void drawBar(VertexBuffer renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+	public static void drawBar(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
 		renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		renderer.pos((double) (x), (double) (y), 0.0D).color(red, green, blue, alpha).endVertex();
 		renderer.pos((double) (x), (double) (y + height), 0.0D).color(red, green, blue, alpha).endVertex();

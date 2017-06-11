@@ -1,7 +1,7 @@
 package reborncore.mcmultipart.client.multipart;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +20,7 @@ public abstract class MultipartSpecialRenderer<T extends IMultipart> {
 
 	public abstract void renderMultipartAt(T part, double x, double y, double z, float partialTicks, int destroyStage);
 
-	public void renderMultipartFast(T part, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer) {
+	public void renderMultipartFast(T part, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer) {
 
 	}
 

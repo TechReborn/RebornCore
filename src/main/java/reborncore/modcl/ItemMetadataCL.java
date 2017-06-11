@@ -41,9 +41,9 @@ public class ItemMetadataCL extends ItemCL {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 		for (int meta = 0; meta < types.size(); meta++) {
-			list.add(new ItemStack(item, 1, meta));
+			list.add(new ItemStack(this, 1, meta));
 		}
 	}
 

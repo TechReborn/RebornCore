@@ -9,7 +9,7 @@ public class PartAttachCapabilitiesEvent extends AttachCapabilitiesEvent {
 
 	public PartAttachCapabilitiesEvent(IMultipart part) {
 
-		super(part);
+		super(IMultipart.class, part);
 		this.part = part;
 	}
 

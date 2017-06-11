@@ -14,26 +14,24 @@ public class RecipeRemover {
 	}
 
 	public static void removeAnyRecipe(ItemStack resultItem) {
-		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-		for (int i = 0; i < recipes.size(); i++) {
-			IRecipe tmpRecipe = recipes.get(i);
+		for(IRecipe tmpRecipe : CraftingManager.field_193380_a){
 			ItemStack recipeResult = tmpRecipe.getRecipeOutput();
 			if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
-				recipes.remove(i--);
+				//TODO 1.12
+				//recipes.remove(i--);
 			}
 		}
 	}
 
 	public static void removeShapedRecipe(ItemStack resultItem) {
-		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
-		for (int i = 0; i < recipes.size(); i++) {
-			IRecipe tmpRecipe = recipes.get(i);
+		for(IRecipe tmpRecipe : CraftingManager.field_193380_a){
 			if (tmpRecipe instanceof ShapedRecipes) {
 				ShapedRecipes recipe = (ShapedRecipes) tmpRecipe;
 				ItemStack recipeResult = recipe.getRecipeOutput();
 
 				if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
-					recipes.remove(i++);
+					//TODO 1.12
+					//recipes.remove(i++);
 				}
 			}
 		}

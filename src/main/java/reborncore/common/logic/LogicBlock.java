@@ -9,6 +9,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,10 +74,10 @@ public class LogicBlock extends BlockContainer
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced)
     {
-        super.addInformation(stack, player, tooltip, advanced);
-        logicController.addInformation(stack, player, tooltip, advanced);
+        super.addInformation(stack, world, tooltip, advanced);
+        logicController.addInformation(stack, world, tooltip, advanced.func_194127_a());
     }
 
     @Override
