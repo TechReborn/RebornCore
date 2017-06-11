@@ -105,9 +105,6 @@ dependencies {
 	shade 'net.industrial-craft:industrialcraft-2:2.7.5-ex111:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
-	compile "mezz.jei:jei_1.12.2:4.6.0.59"
-	compile "mcp.mobius.waila:Hwyla:1.8.16-B30_1.12"
-	compile "mcjty.theoneprobe:TheOneProbe:1.12-+"
 	provided "net.darkhax.tesla:Tesla:1.11-1.3.0.51"
 	provided "CraftTweaker:CraftTweaker:1.11.2-3.0.24"
 }
