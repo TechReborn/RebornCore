@@ -300,7 +300,6 @@ apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig
 
 import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
-import scala.tools.nsc.io.Jar
 
 task curseTools {
 	doLast{
