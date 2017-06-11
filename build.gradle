@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 	}
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -140,7 +140,6 @@ task deobfJar(type: Jar) {
 	manifest {
 		attributes 'FMLCorePlugin': 'reborncore.mixin.implementations.forge.MixinForgeLoadingCore'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
-		attributes 'FMLAT': 'reborncore_at.cfg'
 	}
 }
 
@@ -157,7 +156,6 @@ jar {
 	manifest {
 		attributes 'FMLCorePlugin': 'reborncore.mixin.implementations.forge.MixinForgeLoadingCore'
 		attributes 'FMLCorePluginContainsFMLMod': 'true'
-		attributes 'FMLAT': 'reborncore_at.cfg'
 	}
 }
 
@@ -305,6 +303,7 @@ apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig
 
 import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
+import scala.tools.nsc.io.Jar
 
 task curseTools {
 	doLast{
