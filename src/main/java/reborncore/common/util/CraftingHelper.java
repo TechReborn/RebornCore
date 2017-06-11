@@ -29,9 +29,9 @@ public class CraftingHelper {
 	}
 
 	public static void addShapedOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
-		ResourceLocation location = getNameForRecipe(outputItemStack);
-		ShapedOreRecipe recipe = new ShapedOreRecipe(location, outputItemStack, objectInputs);
-		CraftingManager.func_193372_a(location, recipe);
+//		ResourceLocation location = getNameForRecipe(outputItemStack);
+//		ShapedOreRecipe recipe = new ShapedOreRecipe(location, outputItemStack, objectInputs);
+//		CraftingManager.func_193372_a(location, recipe);
 	}
 
 	public static void addShapelessOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
