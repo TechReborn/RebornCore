@@ -20,6 +20,7 @@ public class RebornPackets {
 	@SubscribeEvent
 	public void loadPackets(RegisterPacketEvent event) {
 		packetList.forEach(pair -> event.registerPacket(pair.getRight(), pair.getLeft()));
+		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		RebornCore.logHelper.info("Registered " + packetList.size() + " packet(s)");
 	}
 
