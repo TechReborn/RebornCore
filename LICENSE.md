@@ -1,4 +1,4 @@
-Copyright (c) 2015 modmuss50 and Gigabit101
+Copyright (c) 2017 modmuss50 and Gigabit101
 
 
 
