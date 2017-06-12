@@ -33,10 +33,4 @@ public interface IEnergyItemInfo {
 	 * @return Max amount of energy that can be transfered in one tick.
 	 */
 	double getMaxTransfer(ItemStack stack);
-
-	/**
-	 * @param stack The {@link ItemStack} that contains the power
-	 * @return The ic2 tier that the stack should be.
-	 */
-	int getStackTier(ItemStack stack);
 }

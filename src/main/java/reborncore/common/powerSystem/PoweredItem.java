@@ -10,7 +10,6 @@ public abstract class PoweredItem {
 
 	public static void registerPoweredItem(String itemclass, boolean ic2) {
 		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
-		MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.CapabilityItemPowerMixin", itemclass));
 		if (ic2 && Loader.isModLoaded("ic2")) {
 			MixinManager.registerMixin(new MixinTargetData("reborncore.common.powerSystem.mixin.EUItemPowerTrait", itemclass));
 		}

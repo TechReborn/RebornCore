@@ -2,11 +2,15 @@ package reborncore.common.powerSystem.mixin;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PoweredItem;
+import reborncore.common.powerSystem.PoweredItemContainerProvider;
 import reborncore.mixin.api.Inject;
 import reborncore.mixin.api.Mixin;
+
+import javax.annotation.Nullable;
 
 @Mixin(target = "")
 public abstract class BasePowerMixin implements IEnergyInterfaceItem {
@@ -105,6 +109,14 @@ public abstract class BasePowerMixin implements IEnergyInterfaceItem {
 	@Inject
 	public int getRGBDurabilityForDisplay(ItemStack stack) {
 		return PowerSystem.getDisplayPower().colour;
+	}
+
+	@Inject
+	@Nullable
+	public ICapabilityProvider initCapabilities(ItemStack stack,
+	                                            @Nullable
+		                                            NBTTagCompound nbt) {
+		return new PoweredItemContainerProvider(stack);
 	}
 
 }

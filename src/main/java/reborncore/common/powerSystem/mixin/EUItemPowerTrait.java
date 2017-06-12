@@ -2,6 +2,7 @@ package reborncore.common.powerSystem.mixin;
 
 import ic2.api.item.IElectricItem;
 import net.minecraft.item.ItemStack;
+import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.mixin.api.Inject;
 import reborncore.mixin.api.Mixin;
@@ -23,7 +24,7 @@ public class EUItemPowerTrait implements IElectricItem {
 	@Inject
 	@Override
 	public int getTier(ItemStack itemStack) {
-		return getInterface().getStackTier(itemStack);
+		return EnumPowerTier.getTeir((int) getInterface().getMaxTransfer(itemStack)).getIC2Tier();
 	}
 
 	@Inject

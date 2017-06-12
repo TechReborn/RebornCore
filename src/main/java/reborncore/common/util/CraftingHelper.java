@@ -61,6 +61,8 @@ public class CraftingHelper {
 			return Ingredient.func_193369_a(new ItemStack((Block) object));
 		} else if (object instanceof ItemStack) {
 			return Ingredient.func_193369_a((ItemStack) object);
+		} else if(object == null){
+			return Ingredient.field_193370_a;
 		}
 
 		throw new IllegalArgumentException("Cannot convert object of type " + object.getClass() + " to an Ingredient!");
