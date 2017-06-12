@@ -100,7 +100,6 @@ group = 'RebornCore'
 dependencies {
 	//THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
 	shade 'JSON-Destroyer:JSON-Destroyer-1.11:2.2.3:dev'
-	shade 'org.hjson:hjson:1.1.4'
 	shade 'net.industrial-craft:industrialcraft-2:2.7.5-ex111:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
@@ -128,7 +127,6 @@ task deobfJar(type: Jar) {
 	configurations.shade.each {dep ->
 		from(project.zipTree(dep)) {
 			include 'me/modmuss50/jsonDestroyer/'
-			include 'org/hjson/'
 			include 'ic2/api/'
 			include 'javassist/'
 		}
@@ -145,7 +143,6 @@ jar {
 	configurations.shade.each {dep ->
 		from(project.zipTree(dep)) {
 			include 'me/modmuss50/jsonDestroyer/'
-			include 'org/hjson/'
 			include 'javassist/'
 		}
 	}
