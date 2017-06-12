@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Deprecated
 public class MixinManager {
 
 	public static List<String> mixinClassList = new ArrayList<>();

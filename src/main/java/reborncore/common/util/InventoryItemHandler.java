@@ -1,4 +1,4 @@
-package reborncore.common.util.inventory;
+package reborncore.common.util;
 
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

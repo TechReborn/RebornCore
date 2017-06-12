@@ -18,7 +18,7 @@ import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.IInventoryUpdateable;
-import reborncore.common.util.inventory.Inventory;
+import reborncore.common.util.Inventory;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 	                            String inventoryName, int inventorySize, int inventoryStackLimit) {
 		super(tier, capacity, costPerTick, ticksNeeded);
 
-		this.inventoryBase = new Inventory(inventoryName, inventorySize, inventoryStackLimit, this);
+		this.inventoryBase = new Inventory(inventorySize, inventoryName, inventoryStackLimit, this);
 
 		for (EnumFacing facing : EnumFacing.VALUES) {
 			sidedHandlers.put(facing, new InventoryItemHandler(facing));
@@ -69,7 +69,6 @@ public abstract class TileMachineInventory extends TileMachineBase implements II
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		getInventory().isDirty = false;
 	}
 
 	@Override

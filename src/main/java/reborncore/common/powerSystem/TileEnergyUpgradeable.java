@@ -2,7 +2,7 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.nbt.NBTTagCompound;
 import reborncore.api.power.EnumPowerTier;
-import reborncore.common.util.inventory.Inventory;
+import reborncore.common.util.Inventory;
 
 /**
  * Created by Lordmau5 on 12.06.2016.
@@ -16,7 +16,7 @@ public abstract class TileEnergyUpgradeable extends TileEnergyBase {
 	public TileEnergyUpgradeable(EnumPowerTier tier, int capacity) {
 		super(tier, capacity);
 
-		this.inventoryUpgrades = new Inventory("Upgrades", 4, 64, this);
+		this.inventoryUpgrades = new Inventory(4,"Upgrades",  64, this);
 	}
 
 	@Override

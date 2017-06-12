@@ -8,7 +8,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,7 +28,8 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
-import reborncore.common.packets.PacketHandler;
+import reborncore.common.network.NetworkManager;
+import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 
@@ -45,7 +46,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
-			PacketHandler.sendPacketToAllPlayers(getUpdatePacket(), world);
+			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
 		}
 	}
 
@@ -60,11 +61,6 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
 		writeToNBT(compound);
 		return compound;
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
-		readFromNBT(packet.getNbtCompound());
 	}
 
 	@Override

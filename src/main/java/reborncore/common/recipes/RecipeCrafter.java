@@ -10,9 +10,8 @@ import reborncore.api.recipe.IBaseRecipeType;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.recipe.RecipeHandler;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
-import reborncore.common.util.inventory.Inventory;
 
 import java.util.ArrayList;
 
@@ -81,36 +80,7 @@ public class RecipeCrafter {
 	double powerMultiplier = 1;
 	int ticksSinceLastChange;
 
-	/**
-	 * This is the constructor, not a lot to say here :P
-	 *
-	 * @param recipeName The recipe name that should be crafted
-	 * @param parentTile The tile that wil be using this recipe crafter
-	 * @param inputs The amount of input slots
-	 * @param outputs The amount of output slots
-	 * @param inventory The inventory of the machine
-	 * @param inputSlots A list of the input slot ids
-	 * @param outputSlots A list of output slot ids
-	 */
-	public RecipeCrafter(String recipeName, TileMachineBase parentTile, int inputs, int outputs, Inventory inventory,
-	                     int[] inputSlots, int[] outputSlots) {
-		this.recipeName = recipeName;
-		this.parentTile = parentTile;
-		if (parentTile instanceof IEnergyInterfaceTile) {
-			energy = (IEnergyInterfaceTile) parentTile;
-		}
-		this.inputs = inputs;
-		this.outputs = outputs;
-		this.inventory = inventory;
-		this.inputSlots = inputSlots;
-		this.outputSlots = outputSlots;
-		if (!(parentTile instanceof IRecipeCrafterProvider)) {
-			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
-		}
-	}
-
-	@Deprecated
-	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, reborncore.common.util.Inventory inventory,
+	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, Inventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeName = recipeName;
 		this.parentTile = parentTile;

@@ -3,7 +3,10 @@ package reborncore;
 import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.client.gui.ManualGuiHandler;
@@ -16,7 +19,6 @@ import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.RebornPackets;
-import reborncore.common.packets.PacketHandler;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
@@ -83,7 +85,6 @@ public class RebornCore implements IModInfo {
 		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets
-		PacketHandler.setChannels(NetworkRegistry.INSTANCE.newChannel(MOD_ID + "_packets", new PacketHandler()));
 		OreUtil.scanForOres();
 		MinecraftForge.EVENT_BUS.register(new RebornPackets());
 		NetworkManager.load();

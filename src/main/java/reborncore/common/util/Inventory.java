@@ -9,7 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
-import reborncore.common.tile.TileBase;
 
 public class Inventory implements IInventory {
 
@@ -18,6 +17,7 @@ public class Inventory implements IInventory {
 	private final int stackLimit;
 	private TileEntity tile;
 	public boolean hasChanged = false;
+	public boolean isDirty = false;
 
 	public Inventory(int size, String invName, int invStackLimit, TileEntity tileEntity) {
 		contents = new ItemStack[size];
