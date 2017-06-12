@@ -16,21 +16,20 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 19/02/2017.
  */
-public interface IGuiTile
-{
-    @SideOnly(Side.CLIENT)
-    void drawGuiContainerForegroundLayer(GuiScreen gui, int guiLeft, int guiTop, int mouseX, int mouseY);
+public interface IGuiTile {
+	@SideOnly(Side.CLIENT)
+	void drawGuiContainerForegroundLayer(GuiScreen gui, int guiLeft, int guiTop, int mouseX, int mouseY);
 
-    @SideOnly(Side.CLIENT)
-    void drawGuiContainerBackgroundLayer(GuiScreen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
+	@SideOnly(Side.CLIENT)
+	void drawGuiContainerBackgroundLayer(GuiScreen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
 
-    @SideOnly(Side.CLIENT)
-    GuiContainer getGui(EntityPlayer player);
+	@SideOnly(Side.CLIENT)
+	GuiContainer getGui(EntityPlayer player);
 
-    void opengui(EntityPlayer player, Object mod, World world, BlockPos pos);
+	void opengui(EntityPlayer player, Object mod, World world, BlockPos pos);
 
-    Container getContainer(EntityPlayer player);
+	Container getContainer(EntityPlayer player);
 
-    @Nullable
-    List<Slot> getSlots();
+	@Nullable
+	List<Slot> getSlots();
 }

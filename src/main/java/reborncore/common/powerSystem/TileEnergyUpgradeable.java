@@ -16,7 +16,7 @@ public abstract class TileEnergyUpgradeable extends TileEnergyBase {
 	public TileEnergyUpgradeable(EnumPowerTier tier, int capacity) {
 		super(tier, capacity);
 
-		this.inventoryUpgrades = new Inventory(4,"Upgrades",  64, this);
+		this.inventoryUpgrades = new Inventory(4, "Upgrades", 64, this);
 	}
 
 	@Override

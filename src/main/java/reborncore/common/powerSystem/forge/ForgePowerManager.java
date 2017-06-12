@@ -12,7 +12,9 @@ public class ForgePowerManager implements IEnergyStorage {
 	@Nullable
 	EnumFacing facing;
 
-	public ForgePowerManager(TilePowerAcceptor acceptor, @Nullable EnumFacing facing) {
+	public ForgePowerManager(TilePowerAcceptor acceptor,
+	                         @Nullable
+		                         EnumFacing facing) {
 		this.acceptor = acceptor;
 		this.facing = facing;
 	}
@@ -47,7 +49,9 @@ public class ForgePowerManager implements IEnergyStorage {
 		return acceptor.canAcceptEnergy(facing);
 	}
 
-	public void setFacing(@Nullable EnumFacing facing) {
+	public void setFacing(
+		@Nullable
+			EnumFacing facing) {
 		this.facing = facing;
 	}
 }

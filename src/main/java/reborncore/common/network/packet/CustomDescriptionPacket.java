@@ -13,7 +13,6 @@ import reborncore.common.registration.impl.PacketRegistry;
 
 import java.io.IOException;
 
-
 @PacketRegistry(proccessingSide = Side.CLIENT)
 public class CustomDescriptionPacket implements INetworkPacket<CustomDescriptionPacket> {
 

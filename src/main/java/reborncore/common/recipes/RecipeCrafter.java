@@ -397,8 +397,8 @@ public class RecipeCrafter {
 		}
 	}
 
-	public boolean isStackValidInput(ItemStack stack){
-		if(stack.isEmpty()){
+	public boolean isStackValidInput(ItemStack stack) {
+		if (stack.isEmpty()) {
 			return false;
 		}
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
@@ -407,7 +407,7 @@ public class RecipeCrafter {
 				boolean useOreDict = input instanceof String || recipe.useOreDic();
 				boolean checkSize = input instanceof ItemStack;
 				if (ItemUtils.isInputEqual(input, stack, true, true,
-						useOreDict)) {
+					useOreDict)) {
 					return true;
 				}
 

@@ -72,9 +72,9 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 	}
 
-	public void checkTeir(){
-		if(getBaseTier() == null){
-			if(this.getMaxInput() == 0){
+	public void checkTeir() {
+		if (getBaseTier() == null) {
+			if (this.getMaxInput() == 0) {
 				tier = EnumPowerTier.getTeir((int) this.getBaseMaxOutput());
 			} else {
 				tier = EnumPowerTier.getTeir((int) this.getBaseMaxInput());
@@ -90,7 +90,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			for (EnumFacing side : EnumFacing.values()) {
 				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
-					if(tile == null){
+					if (tile == null) {
 						continue;
 					}
 					if (tile instanceof IEnergyInterfaceTile) {
@@ -108,11 +108,11 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
 							}
 						}
-					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)){
+					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)) {
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side);
-						if(forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)){
+						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
 							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() / RebornCoreConfig.euPerFU), true);
-							if(drain > 0){
+							if (drain > 0) {
 								int filled = energyStorage.receiveEnergy(drain, false);
 								forgePowerManager.extractEnergy(filled, false);
 								return;
@@ -125,7 +125,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 
-		if(RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()){
+		if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()) {
 			onLoaded();
 		}
 	}
@@ -460,7 +460,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	//End Tesla
 
-
 	public abstract double getBaseMaxPower();
 
 	public abstract double getBaseMaxOutput();
@@ -468,7 +467,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public abstract double getBaseMaxInput();
 
 	@Deprecated //Dont set the tier any where
-	public EnumPowerTier getBaseTier(){
+	public EnumPowerTier getBaseTier() {
 		return null;
 	}
 
@@ -490,15 +489,15 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public EnumPowerTier getTier() {
 		EnumPowerTier baseTier = getBaseTier();
-		if(baseTier == null){
-			if(tier == null){
+		if (baseTier == null) {
+			if (tier == null) {
 				checkTeir();
 			}
 			baseTier = tier;
 		}
-		if(extraTeir > 0){
-			for(EnumPowerTier tier : EnumPowerTier.values()){
-				if(tier.getIC2Tier() == baseTier.getIC2Tier() + extraTeir){
+		if (extraTeir > 0) {
+			for (EnumPowerTier tier : EnumPowerTier.values()) {
+				if (tier.getIC2Tier() == baseTier.getIC2Tier() + extraTeir) {
 					return tier;
 				}
 			}
@@ -512,12 +511,12 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		super.resetUpgrades();
 		extraPowerStoage = 0;
 		extraTeir = 0;
-		if(getEnergy() > getMaxPower()){ //Makes sure we do not have too much power, and voids it
+		if (getEnergy() > getMaxPower()) { //Makes sure we do not have too much power, and voids it
 			setEnergy(getMaxPower());
 		}
 	}
 
-	public boolean handleTierWithPower(){
+	public boolean handleTierWithPower() {
 		return true;
 	}
 }

@@ -66,7 +66,8 @@ public class TeslaPowerManager implements ITeslaPowerManager {
 				long teslaTransferred = consumer.givePower((long) (euToTransfer / RebornCoreConfig.euPerFU), false);
 				powerAcceptor.useEnergy(teslaTransferred * RebornCoreConfig.euPerFU);
 
-				if (powerAcceptor.getEnergy() <= 0) break;
+				if (powerAcceptor.getEnergy() <= 0)
+					break;
 			}
 		}
 	}

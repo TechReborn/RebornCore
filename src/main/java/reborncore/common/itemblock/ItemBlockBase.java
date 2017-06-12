@@ -8,5 +8,4 @@ public class ItemBlockBase extends ItemMultiTexture {
 		super(p_i45346_1_, p_i45346_2_, p_i45346_3_);
 	}
 
-
 }

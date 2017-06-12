@@ -81,20 +81,19 @@ public class RebornRegistry {
 		lp.addItem(LootManager.createLootEntry(item, ordinal, minSize, maxSize, chance, list));
 	}
 
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public static void registerItemModel(Item i, int meta) {
 		ResourceLocation loc = i.getRegistryName();
 		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "inventory"));
 	}
 
-    @SideOnly(Side.CLIENT)
-	public static void registerItemModel(Block b, int meta)
-	{
+	@SideOnly(Side.CLIENT)
+	public static void registerItemModel(Block b, int meta) {
 		registerItemModel(Item.getItemFromBlock(b), meta);
 	}
 
-    @SideOnly(Side.CLIENT)
-    public static void registerItemModel(Item i, int meta, String variant) {
+	@SideOnly(Side.CLIENT)
+	public static void registerItemModel(Item i, int meta, String variant) {
 		ResourceLocation loc = i.getRegistryName();
 		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "type=" + variant));
 	}

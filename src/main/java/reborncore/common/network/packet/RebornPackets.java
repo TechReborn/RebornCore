@@ -9,7 +9,6 @@ import reborncore.common.network.RegisterPacketEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Created by modmuss50 on 20/09/2016.
@@ -20,7 +19,7 @@ public class RebornPackets {
 
 	@SubscribeEvent
 	public void loadPackets(RegisterPacketEvent event) {
-		packetList.forEach(pair -> event.registerPacket(pair.getRight() , pair.getLeft()));
+		packetList.forEach(pair -> event.registerPacket(pair.getRight(), pair.getLeft()));
 		RebornCore.logHelper.info("Registered " + packetList.size() + " packet(s)");
 	}
 

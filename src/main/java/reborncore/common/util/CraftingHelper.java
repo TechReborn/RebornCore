@@ -10,9 +10,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.apache.commons.lang3.Validate;
 import reborncore.RebornCore;
 
 public class CraftingHelper {
@@ -29,9 +27,9 @@ public class CraftingHelper {
 	}
 
 	public static void addShapedOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
-//		ResourceLocation location = getNameForRecipe(outputItemStack);
-//		ShapedOreRecipe recipe = new ShapedOreRecipe(location, outputItemStack, objectInputs);
-//		CraftingManager.func_193372_a(location, recipe);
+		//		ResourceLocation location = getNameForRecipe(outputItemStack);
+		//		ShapedOreRecipe recipe = new ShapedOreRecipe(location, outputItemStack, objectInputs);
+		//		CraftingManager.func_193372_a(location, recipe);
 	}
 
 	public static void addShapelessOreRecipe(ItemStack outputItemStack, Object... objectInputs) {

@@ -156,7 +156,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		List<ItemStack> items = new ArrayList<ItemStack>();
 
 		addItemsToList(inventory, items);
-		if(tileEntity instanceof IUpgradeable){
+		if (tileEntity instanceof IUpgradeable) {
 			addItemsToList(((IUpgradeable) tileEntity).getUpgradeInvetory(), items);
 		}
 
@@ -183,7 +183,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		}
 	}
 
-	private void addItemsToList(IInventory inventory, List<ItemStack> items){
+	private void addItemsToList(IInventory inventory, List<ItemStack> items) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack itemStack = inventory.getStackInSlot(i);
 
@@ -202,7 +202,6 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 			items.add(itemStack.copy());
 		}
 	}
-
 
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
@@ -236,13 +235,13 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		if (fillBlockWithFluid(worldIn, pos, playerIn)) {
 			return true;
 		}
-		if(playerIn.isSneaking()){
+		if (playerIn.isSneaking()) {
 			ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
-			if(!stack.isEmpty() && stack.getItem() instanceof IUpgrade){
+			if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
 				TileEntity tileEntity = worldIn.getTileEntity(pos);
-				if(tileEntity instanceof IUpgradeable){
-					if(((IUpgradeable) tileEntity).canBeUpgraded()){
-						if(InventoryHelper.testInventoryInsertion(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack, null) > 0){
+				if (tileEntity instanceof IUpgradeable) {
+					if (((IUpgradeable) tileEntity).canBeUpgraded()) {
+						if (InventoryHelper.testInventoryInsertion(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack, null) > 0) {
 							InventoryHelper.insertItemIntoInventory(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack);
 							playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 							return true;

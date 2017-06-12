@@ -18,35 +18,35 @@ import java.util.Set;
  */
 public class MinetweakerDocGen {
 
-	public static void gen(ASMDataTable dataTable, File exportFile){
+	public static void gen(ASMDataTable dataTable, File exportFile) {
 		long start = System.currentTimeMillis();
-		if(exportFile.exists()){
+		if (exportFile.exists()) {
 			exportFile.delete();
 		}
 		StringBuilder builder = new StringBuilder();
 		String newline = System.getProperty("line.separator");
 		List<String> lines = new ArrayList<>();
 		Set<ASMDataTable.ASMData> asmDataSet = dataTable.getAll(ZenClass.class.getCanonicalName());
-		for(ASMDataTable.ASMData asmData : asmDataSet){
-			if(asmData.getAnnotationInfo().size() != 0) {
+		for (ASMDataTable.ASMData asmData : asmDataSet) {
+			if (asmData.getAnnotationInfo().size() != 0) {
 				String prefix = (String) asmData.getAnnotationInfo().get("value");
-				if(prefix.startsWith("minetweaker")){
+				if (prefix.startsWith("minetweaker")) {
 					//Skipping MT as it contains a bunch of useless info, use their wiki for this.
 					continue;
 				}
 				try {
 					Class clazz = Class.forName(asmData.getClassName());
-					if(clazz.getMethods().length == 0){ //TODO check zen methods
+					if (clazz.getMethods().length == 0) { //TODO check zen methods
 						continue;
 					}
-					for(Method method : clazz.getMethods()){
-						if(method.isAnnotationPresent(ZenMethod.class)){
+					for (Method method : clazz.getMethods()) {
+						if (method.isAnnotationPresent(ZenMethod.class)) {
 							StringBuilder parameter = new StringBuilder();
 							parameter.append("(");
 							for (int i = 0; i < method.getParameterTypes().length; i++) {
 								Class param = method.getParameterTypes()[i];
 								parameter.append(param.getSimpleName());
-								if(i + 1 != method.getParameterTypes().length){
+								if (i + 1 != method.getParameterTypes().length) {
 									parameter.append(", ");
 								}
 							}
@@ -60,7 +60,7 @@ public class MinetweakerDocGen {
 			}
 		}
 		Collections.sort(lines);
-		for(String line : lines){
+		for (String line : lines) {
 			builder.append(line);
 			builder.append(newline);
 		}
@@ -72,7 +72,5 @@ public class MinetweakerDocGen {
 			e.printStackTrace();
 		}
 	}
-
-
 
 }

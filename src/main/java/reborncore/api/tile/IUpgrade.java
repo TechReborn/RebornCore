@@ -16,8 +16,13 @@ import javax.annotation.Nullable;
  */
 public interface IUpgrade {
 
-	public void process(@Nonnull TileLegacyMachineBase machineBase, @Nullable
-		RecipeCrafter crafter, @Nonnull ItemStack stack);
+	public void process(
+		@Nonnull
+			TileLegacyMachineBase machineBase,
+		@Nullable
+			RecipeCrafter crafter,
+		@Nonnull
+			ItemStack stack);
 
 	@SideOnly(Side.CLIENT)
 	public void handleRightClick(TileEntity tile, ItemStack stack, Container container, int slotID);

@@ -133,7 +133,7 @@ public abstract class RebornContainer extends Container {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) inventorySlots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (!stackInSlot.isEmpty()&& canStacksMerge(stackInSlot, stackToShift)) {
+				if (!stackInSlot.isEmpty() && canStacksMerge(stackInSlot, stackToShift)) {
 					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					if (resultingStackSize <= max) {
