@@ -101,7 +101,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
-								break;
 							}
 						} else {
 							if (eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))) {
@@ -115,7 +114,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 							if (drain > 0) {
 								int filled = energyStorage.receiveEnergy(drain, false);
 								forgePowerManager.extractEnergy(filled, false);
-								return;
 							}
 						}
 					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
