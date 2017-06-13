@@ -51,13 +51,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		this.extraPowerStoage = extraPowerStoage;
 	}
 
-	// IC2
-
-	@Deprecated
-	public TilePowerAcceptor(int i) {
-		this();
-	}
-
 	public TilePowerAcceptor() {
 		checkTeir();
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
