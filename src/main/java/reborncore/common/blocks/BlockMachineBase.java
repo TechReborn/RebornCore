@@ -1,6 +1,5 @@
 package reborncore.common.blocks;
 
-import me.modmuss50.jsonDestroyer.api.IFakeTexturedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTexturedBlock {
+public abstract class BlockMachineBase extends BaseTileBlock {
 
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static PropertyBool ACTIVE = PropertyBool.create("active");
@@ -56,6 +55,20 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		if (!hasCustomStates) {
 			this.setDefaultState(
 				this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+		}
+	}
+
+	public static ItemStack consumeItem(ItemStack stack) {
+		if (stack.getCount() == 1) {
+			if (stack.getItem().hasContainerItem(stack)) {
+				return stack.getItem().getContainerItem(stack);
+			} else {
+				return ItemStack.EMPTY;
+			}
+		} else {
+			stack.splitStack(1);
+
+			return stack;
 		}
 	}
 
@@ -262,11 +275,6 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		return false;
 	}
 
-	//TODO 1.11 rewrite when I have something to test with
-	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer) {
-		return false;
-	}
-
 	//	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer)
 	//	{
 	//		ItemStack current = entityplayer.inventory.getCurrentItem();
@@ -388,49 +396,9 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 	//		return false;
 	//	}
 
-	public static ItemStack consumeItem(ItemStack stack) {
-		if (stack.getCount() == 1) {
-			if (stack.getItem().hasContainerItem(stack)) {
-				return stack.getItem().getContainerItem(stack);
-			} else {
-				return ItemStack.EMPTY;
-			}
-		} else {
-			stack.splitStack(1);
-
-			return stack;
-		}
-	}
-
-	@Override
-	public String getTextureNameFromState(IBlockState blockState, EnumFacing facing) {
-		if (this instanceof IRotationTexture) {
-			IRotationTexture rotationTexture = (IRotationTexture) this;
-			if (getFacing(blockState) == facing) {
-				return isActive(blockState) ? rotationTexture.getFrontOn() : rotationTexture.getFrontOff();
-			}
-			if (facing == EnumFacing.UP) {
-				return rotationTexture.getTop();
-			}
-			if (facing == EnumFacing.DOWN) {
-				return rotationTexture.getBottom();
-			}
-			return rotationTexture.getSide();
-		}
-		if (this instanceof IAdvancedRotationTexture) {
-			IAdvancedRotationTexture advancedRotationTexture = (IAdvancedRotationTexture) this;
-			if (getFacing(blockState) == facing) {
-				return advancedRotationTexture.getFront(isActive(blockState));
-			}
-			if (facing == EnumFacing.UP) {
-				return advancedRotationTexture.getTop(isActive(blockState));
-			}
-			if (facing == EnumFacing.DOWN) {
-				return advancedRotationTexture.getBottom(isActive(blockState));
-			}
-			return advancedRotationTexture.getSide(isActive(blockState));
-		}
-		return "techreborn:blocks/machine/machine_side";
+	//TODO 1.11 rewrite when I have something to test with
+	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer) {
+		return false;
 	}
 
 	@Override
@@ -474,11 +442,6 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 		EnumFacing facing = world.getBlockState(pos).getValue(FACING);
 		IBlockState state = world.getBlockState(pos).withProperty(ACTIVE, active).withProperty(FACING, facing);
 		world.setBlockState(pos, state, 3);
-	}
-
-	@Override
-	public int amountOfStates() {
-		return 9; // 0-3 off nsew, 4-8 on nsew
 	}
 
 	public EnumFacing getSideFromint(int i) {

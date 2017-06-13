@@ -6,12 +6,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import reborncore.RebornCore;
 
 public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
 	protected BaseTileBlock(Material materialIn) {
 		super(materialIn);
-		RebornCore.jsonDestroyer.registerObject(this);
 		setHardness(1F);
 	}
 

@@ -1,6 +1,5 @@
 package reborncore;
 
-import me.modmuss50.jsonDestroyer.JsonDestroyer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
@@ -40,8 +39,6 @@ public class RebornCore implements IModInfo {
 	public static final String WEB_URL = "http://files.modmuss50.me/";
 
 	public static LogHelper logHelper;
-	@Deprecated
-	public static JsonDestroyer jsonDestroyer = new JsonDestroyer();
 	public static RebornCoreConfig config;
 	@Mod.Instance
 	public static RebornCore INSTANCE;
@@ -82,7 +79,6 @@ public class RebornCore implements IModInfo {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		RebornCoreConfig.isIC2Loaded = Loader.isModLoaded("ic2");
-		jsonDestroyer.load();
 		TeslaManager.load();
 		// packets
 		OreUtil.scanForOres();

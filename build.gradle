@@ -98,8 +98,6 @@ group = 'RebornCore'
 
 
 dependencies {
-	//THIS IS NOT HOW YOU INCLUDE JSON DESTROYER! LOOK AT THE EXAMPLE!
-	shade 'JSON-Destroyer:JSON-Destroyer-1.11:2.2.3:dev'
 	shade 'net.industrial-craft:industrialcraft-2:2.7.5-ex111:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 

@@ -5,97 +5,107 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.item.Item;
 
 public class ModelCompound {
-    private String inventoryVariant = "inventory";
-    private String blockstatePath;
-    private IProperty[] ignoreProperties = null;
-    private String modid;
-    private Block block = null;
-    private Item item = null;
-    private int meta;
+	private String inventoryVariant = "inventory";
+	private String fileName = "shootingstar.undefinedfilename";
+	private String blockstatePath;
+	private IProperty[] ignoreProperties = null;
+	private String modid;
+	private Block block = null;
+	private Item item = null;
+	private int meta;
 
-    public ModelCompound(String modid, Block block, int meta, String blockstatePath, IProperty... ignoreProperties) {
-        this.modid = modid;
-        this.block = block;
-        this.blockstatePath = blockstatePath;
-        this.ignoreProperties = ignoreProperties;
-        this.meta = meta;
-    }
+	public ModelCompound(String modid, Block block, int meta, String blockstatePath, IProperty... ignoreProperties) {
+		this.modid = modid;
+		this.block = block;
+		this.blockstatePath = blockstatePath;
+		this.ignoreProperties = ignoreProperties;
+		this.meta = meta;
+	}
 
-    public ModelCompound(String modid, Block block, int meta, IProperty... ignoreProperties) {
-        this(modid, block, meta, "", ignoreProperties);
-    }
+	public ModelCompound(String modid, Block block, int meta, IProperty... ignoreProperties) {
+		this(modid, block, meta, "", ignoreProperties);
+	}
 
-    public ModelCompound(String modid, Block block, IProperty... ignoreProperties) {
-        this(modid, block, 0, "", ignoreProperties);
-    }
+	public ModelCompound(String modid, Block block, IProperty... ignoreProperties) {
+		this(modid, block, 0, "", ignoreProperties);
+	}
 
-    public ModelCompound(String modid, Block block, String blockstatePath, IProperty... ignoreProperties) {
-        this(modid, block, 0, blockstatePath, ignoreProperties);
-    }
+	public ModelCompound(String modid, Block block, String blockstatePath, IProperty... ignoreProperties) {
+		this(modid, block, 0, blockstatePath, ignoreProperties);
+	}
 
-    public ModelCompound(String modid, Item item, int meta, String blockstatePath) {
-        this.modid = modid;
-        this.item = item;
-        this.blockstatePath = blockstatePath;
-        this.meta = meta;
-    }
+	public ModelCompound(String modid, Item item, int meta, String blockstatePath) {
+		this.modid = modid;
+		this.item = item;
+		this.blockstatePath = blockstatePath;
+		this.meta = meta;
+	}
 
-    public ModelCompound(String modid, Item item, int meta) {
-        this(modid, item, meta, "");
-    }
+	public ModelCompound(String modid, Item item, int meta) {
+		this(modid, item, meta, "");
+	}
 
-    public ModelCompound(String modid, Item item) {
-        this(modid, item, 0, "");
-    }
+	public ModelCompound(String modid, Item item) {
+		this(modid, item, 0, "");
+	}
 
-    public ModelCompound(String modid, Item item, String blockstatePath) {
-        this(modid, item, 0, blockstatePath);
-    }
+	public ModelCompound(String modid, Item item, String blockstatePath) {
+		this(modid, item, 0, blockstatePath);
+	}
 
-    public String getInventoryVariant() {
-        return inventoryVariant;
-    }
+	public String getInventoryVariant() {
+		return inventoryVariant;
+	}
 
-    public ModelCompound setInvVariant(String variant) {
-        inventoryVariant = variant;
-        return this;
-    }
+	public String getFileName() {
+		return fileName;
+	}
 
-    public String getModid() {
-        return modid;
-    }
+	public ModelCompound setFileName(String name) {
+		fileName = name;
+		return this;
+	}
 
-    public Block getBlock() {
-        return block;
-    }
+	public ModelCompound setInvVariant(String variant) {
+		inventoryVariant = variant;
+		return this;
+	}
 
-    public Item getItem() {
-        if (isBlock())
-            return Item.getItemFromBlock(block);
-        return item;
-    }
+	public String getModid() {
+		return modid;
+	}
 
-    public boolean isBlock() {
-        if (block != null)
-            return true;
-        return false;
-    }
+	public Block getBlock() {
+		return block;
+	}
 
-    public boolean isItem() {
-        if (item != null)
-            return true;
-        return false;
-    }
+	public Item getItem() {
+		if (isBlock())
+			return Item.getItemFromBlock(block);
+		return item;
+	}
 
-    public String getBlockStatePath() {
-        return blockstatePath;
-    }
+	public boolean isBlock() {
+		if (block != null)
+			return true;
+		return false;
+	}
 
-    public IProperty[] getIgnoreProperties() {
-        return ignoreProperties;
-    }
+	public boolean isItem() {
+		if (item != null)
+			return true;
+		return false;
+	}
 
-    public int getMeta() {
-        return meta;
-    }
+	public String getBlockStatePath() {
+		return blockstatePath;
+	}
+
+	public IProperty[] getIgnoreProperties() {
+		return ignoreProperties;
+	}
+
+	public int getMeta() {
+		return meta;
+	}
 }
