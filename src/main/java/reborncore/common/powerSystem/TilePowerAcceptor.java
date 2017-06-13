@@ -103,8 +103,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
-							if (eFace.canAcceptEnergy(side.getOpposite()) && eFace.canAddEnergy(Math.min(getEnergy(), getMaxOutput()))) {
-								eFace.addEnergy(this.useEnergy(Math.min(getEnergy(), getMaxOutput())));
+							double drain = useEnergy(Math.min(getEnergy(),getMaxOutput()), true);
+							if (drain > 0) {
+								double filled = eFace.addEnergy(drain, false);
+								useEnergy(filled, false);
 							}
 						}
 					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)) {
@@ -254,7 +256,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		int energyExtracted = Math.min(getEnergyStored(null), maxExtract);
 
 		if (!simulate) {
-			setEnergy(energy - energyExtracted);
+			setEnergy(getEnergy() - energyExtracted);
 		}
 		return energyExtracted / RebornCoreConfig.euPerFU;
 	}
@@ -285,7 +287,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public double addEnergy(double energy, boolean simulate) {
-		double energyReceived = Math.min(getMaxPower(), Math.min(this.getMaxPower(), energy));
+		double energyReceived = Math.min(getMaxPower(), Math.min(getFreeSpace(), energy));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
@@ -317,8 +319,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	public boolean canAddEnergy(double energy) {
-		return this.energy + energy <= getMaxPower();
+	public boolean canAddEnergy(double energyIn) {
+		return getEnergy() + energyIn <= getMaxPower();
 	}
 	// TechReborn END
 
@@ -326,7 +328,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
-		energy = data.getDouble("energy");
+		if(shouldHanldeEnergyNBT())
+			this.setEnergy(data.getDouble("energy"));
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.readFromNBT(tag, this);
 		}
@@ -336,7 +339,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
 		NBTTagCompound data = new NBTTagCompound();
-		data.setDouble("energy", energy);
+		data.setDouble("energy", getEnergy());
 		tag.setTag("TilePowerAcceptor", data);
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.writeToNBT(tag, this);
@@ -346,7 +349,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
-		energy = data.getDouble("energy");
+		if(shouldHanldeEnergyNBT())
+			this.setEnergy(data.getDouble("energy"));
 	}
 
 	public NBTTagCompound writeToNBTWithoutCoords(NBTTagCompound tag) {
@@ -354,6 +358,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		data.setDouble("energy", energy);
 		tag.setTag("TilePowerAcceptor", data);
 		return tag;
+	}
+
+	public boolean shouldHanldeEnergyNBT(){
+		return true;
 	}
 
 	@Override
@@ -372,7 +380,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	public double getFreeSpace() {
-		return getMaxPower() - energy;
+		return getMaxPower() - getEnergy();
 	}
 
 	public void charge(int slot) {
@@ -397,7 +405,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	public int getEnergyScaled(int scale) {
-		return (int) ((energy * scale / getMaxPower()));
+		return (int) ((getEnergy() * scale / getMaxPower()));
 	}
 
 	public IPowerConfig getPowerConfig() {
