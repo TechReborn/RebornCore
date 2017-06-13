@@ -19,7 +19,7 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
 	}
 
 	private ChunkCoord(ChunkEvent event) {
-		this(event.getChunk().xPosition, event.getChunk().zPosition);
+		this(event.getChunk().x, event.getChunk().z);
 	}
 
 	public static ChunkCoord of(int x, int z) {

@@ -72,7 +72,7 @@ public class LogicBlock extends BlockContainer {
 	@Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced) {
 		super.addInformation(stack, world, tooltip, advanced);
-		logicController.addInformation(stack, world, tooltip, advanced.func_194127_a());
+		logicController.addInformation(stack, world, tooltip, advanced.isAdvanced());
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class LogicBlock extends BlockContainer {
 			EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ, itemStack.copy());
 
 			if (itemStack.hasTagCompound()) {
-				entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
+				entityItem.getItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
 			}
 
 			float factor = 0.05F;

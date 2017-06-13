@@ -14,7 +14,7 @@ public class RecipeRemover {
 	}
 
 	public static void removeAnyRecipe(ItemStack resultItem) {
-		for (IRecipe tmpRecipe : CraftingManager.field_193380_a) {
+		for (IRecipe tmpRecipe : CraftingManager.REGISTRY) {
 			ItemStack recipeResult = tmpRecipe.getRecipeOutput();
 			if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
 				//TODO 1.12
@@ -24,7 +24,7 @@ public class RecipeRemover {
 	}
 
 	public static void removeShapedRecipe(ItemStack resultItem) {
-		for (IRecipe tmpRecipe : CraftingManager.field_193380_a) {
+		for (IRecipe tmpRecipe : CraftingManager.REGISTRY) {
 			if (tmpRecipe instanceof ShapedRecipes) {
 				ShapedRecipes recipe = (ShapedRecipes) tmpRecipe;
 				ItemStack recipeResult = recipe.getRecipeOutput();

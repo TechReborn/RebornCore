@@ -42,7 +42,7 @@ public class GuiBuilder {
 		if (isInRect(x, y, 14, height, mouseX, mouseY)) {
 			List<String> list = new ArrayList<String>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRendererObj);
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
 			GlStateManager.disableLighting();
 		}
 	}
@@ -75,7 +75,7 @@ public class GuiBuilder {
 	}
 
 	public void drawString(GuiScreen gui, String string, int x, int y) {
-		gui.mc.fontRendererObj.drawString(string, x, y, 16777215);
+		gui.mc.fontRenderer.drawString(string, x, y, 16777215);
 	}
 
 	public void drawProgressBar(GuiScreen gui, double progress, int x, int y) {
@@ -96,7 +96,7 @@ public class GuiBuilder {
 			} else {
 				list.add("empty");
 			}
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRendererObj);
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
 			GlStateManager.disableLighting();
 		}
 	}

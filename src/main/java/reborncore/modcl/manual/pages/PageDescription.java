@@ -18,7 +18,7 @@ public class PageDescription extends ManualPage {
 		Minecraft minecraft = Minecraft.getMinecraft();
 		List<String> output = new ArrayList<String>();
 		for (String descriptionLine : descriptionLines) {
-			List<String> textLines = minecraft.fontRendererObj.listFormattedStringToWidth(descriptionLine, GuiTeamRebornManual.xSize - 12);
+			List<String> textLines = minecraft.fontRenderer.listFormattedStringToWidth(descriptionLine, GuiTeamRebornManual.xSize - 12);
 			output.addAll(textLines);
 		}
 		return output;
@@ -73,11 +73,11 @@ public class PageDescription extends ManualPage {
 
 		int y = 21;
 		for (String string : getDescription()) {
-			if (y > GuiTeamRebornManual.ySize - 6 - mc.fontRendererObj.FONT_HEIGHT) {
+			if (y > GuiTeamRebornManual.ySize - 6 - mc.fontRenderer.FONT_HEIGHT) {
 				break;
 			}
 			drawString(string, 6, y, 0xFF525252, manual);
-			y += mc.fontRendererObj.FONT_HEIGHT + 2;
+			y += mc.fontRenderer.FONT_HEIGHT + 2;
 		}
 	}
 }

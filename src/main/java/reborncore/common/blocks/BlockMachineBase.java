@@ -171,7 +171,7 @@ public abstract class BlockMachineBase extends BaseTileBlock implements IFakeTex
 				itemStack.copy());
 
 			if (itemStack.hasTagCompound()) {
-				entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
+				entityItem.getItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
 			}
 
 			float factor = 0.05F;

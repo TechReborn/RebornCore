@@ -57,11 +57,11 @@ public class GuiTeamRebornManual extends GuiScreen {
 
 		backButton = new GuiSmallButton(0, guiLeft + 6, guiTop + 6, 0, 12, "< Back");
 		nextButton = new GuiSmallButton(1, 0, guiTop + 6, 0, 12, "Next >");
-		homeButton = new GuiInvisibutton(2, guiLeft + (xSize / 2 - mc.fontRendererObj.getStringWidth(currentPage.title()) / 2) - 1, guiTop + 7, mc.fontRendererObj.getStringWidth(currentPage.title()) + 2, 10);
+		homeButton = new GuiInvisibutton(2, guiLeft + (xSize / 2 - mc.fontRenderer.getStringWidth(currentPage.title()) / 2) - 1, guiTop + 7, mc.fontRenderer.getStringWidth(currentPage.title()) + 2, 10);
 
-		backButton.setWidth(mc.fontRendererObj.getStringWidth(backButton.displayString) + 8);
-		nextButton.width = mc.fontRendererObj.getStringWidth(nextButton.displayString) + 8;
-		nextButton.xPosition = guiLeft + xSize - 5 - nextButton.width;
+		backButton.setWidth(mc.fontRenderer.getStringWidth(backButton.displayString) + 8);
+		nextButton.width = mc.fontRenderer.getStringWidth(nextButton.displayString) + 8;
+		nextButton.x = guiLeft + xSize - 5 - nextButton.width;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class GuiTeamRebornManual extends GuiScreen {
 		if (homeButton.isMouseOver()) {
 			List<String> list = new ArrayList<>();
 			list.add("Return to Home Screen");
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, width, height, -1, mc.fontRendererObj);
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, width, height, -1, mc.fontRenderer);
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
@@ -91,20 +91,20 @@ public class GuiTeamRebornManual extends GuiScreen {
 	}
 
 	public void drawCentredString(String string, int y, int colour) {
-		drawString(string, (xSize / 2 - mc.fontRendererObj.getStringWidth(string) / 2), y, colour);
+		drawString(string, (xSize / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawCentredStringShadow(String string, int y, int colour) {
-		drawStringShadow(string, (xSize / 2 - mc.fontRendererObj.getStringWidth(string) / 2), y, colour);
+		drawStringShadow(string, (xSize / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawString(String string, int x, int y, int colour) {
-		mc.fontRendererObj.drawString(string, x + guiLeft, y + guiTop, colour);
+		mc.fontRenderer.drawString(string, x + guiLeft, y + guiTop, colour);
 		GlStateManager.color(1, 1, 1, 1);
 	}
 
 	public void drawStringShadow(String string, int x, int y, int colour) {
-		mc.fontRendererObj.drawStringWithShadow(string, x + guiLeft, y + guiTop, colour);
+		mc.fontRenderer.drawStringWithShadow(string, x + guiLeft, y + guiTop, colour);
 		GlStateManager.color(1, 1, 1, 1);
 	}
 

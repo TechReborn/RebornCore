@@ -19,7 +19,7 @@ public class CraftingHelper {
 		ResourceLocation baseLoc = new ResourceLocation(RebornCore.MOD_ID, output.getItem().getRegistryName().getResourcePath());
 		ResourceLocation recipeLoc = baseLoc;
 		int index = 0;
-		while (CraftingManager.field_193380_a.containsKey(recipeLoc)) {
+		while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
 			index++;
 			recipeLoc = new ResourceLocation(RebornCore.MOD_ID, baseLoc.getResourcePath() + "_" + index);
 		}
@@ -34,7 +34,7 @@ public class CraftingHelper {
 
 	public static void addShapelessOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
 		ResourceLocation location = getNameForRecipe(outputItemStack);
-		CraftingManager.func_193372_a(location, new ShapelessOreRecipe(location, outputItemStack, objectInputs));
+		CraftingManager.register(location, new ShapelessOreRecipe(location, outputItemStack, objectInputs));
 	}
 
 	public static void addShapelessRecipe(ItemStack output, Object... params) {
@@ -44,7 +44,7 @@ public class CraftingHelper {
 		}
 		ResourceLocation location = getNameForRecipe(output);
 		ShapelessRecipes recipe = new ShapelessRecipes(RebornCore.MOD_ID, output, ingredients);
-		CraftingManager.func_193372_a(location, recipe);
+		CraftingManager.register(location, recipe);
 	}
 
 	public static IRecipe addShapedRecipe(ItemStack output, Object... params) {
@@ -56,13 +56,13 @@ public class CraftingHelper {
 
 	public static Ingredient toIngredient(Object object) {
 		if (object instanceof Item) {
-			return Ingredient.func_193367_a((Item) object);
+			return Ingredient.fromItem((Item) object);
 		} else if (object instanceof Block) {
-			return Ingredient.func_193369_a(new ItemStack((Block) object));
+			return Ingredient.fromStacks(new ItemStack((Block) object));
 		} else if (object instanceof ItemStack) {
-			return Ingredient.func_193369_a((ItemStack) object);
+			return Ingredient.fromStacks((ItemStack) object);
 		} else if(object == null){
-			return Ingredient.field_193370_a;
+			return Ingredient.EMPTY;
 		}
 
 		throw new IllegalArgumentException("Cannot convert object of type " + object.getClass() + " to an Ingredient!");

@@ -119,14 +119,14 @@ public class StackInfoHUD {
 					else
 						text = text + gold + " (" + I18n.translateToLocal("reborncore.message.inactive") + ")" + grey;
 				}
-				mc.fontRendererObj.drawStringWithShadow(text, x + 18, y, 0);
+				mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
 				y += 20;
 			}
 
 			for (StackInfoElement element : ELEMENTS) {
 				if (!element.getText(stack).equals("")) {
 					renderStackForInfo(stack);
-					mc.fontRendererObj.drawStringWithShadow(element.getText(stack), x + 18, y, 0);
+					mc.fontRenderer.drawStringWithShadow(element.getText(stack), x + 18, y, 0);
 					y += 20;
 				}
 			}

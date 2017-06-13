@@ -39,7 +39,7 @@ public class PacketButtonID implements INetworkPacket<PacketButtonID> {
 
 	@Override
 	public void processData(PacketButtonID message, MessageContext context) {
-		World world = context.getServerHandler().playerEntity.world;
+		World world = context.getServerHandler().player.world;
 		if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof LogicController) {
 			LogicController controller = (LogicController) world.getTileEntity(pos);
 			controller.actionPerformed(ID);
