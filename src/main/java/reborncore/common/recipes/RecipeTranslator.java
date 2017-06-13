@@ -24,7 +24,7 @@ public class RecipeTranslator {
 			}
 
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 }
