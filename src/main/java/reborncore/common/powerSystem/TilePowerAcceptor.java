@@ -95,7 +95,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					}
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if (handleTierWithPower() && eFace.getTier().ordinal() < getTier().ordinal()) {
+						if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
 							for (int j = 0; j < 2; ++j) {
 								double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
@@ -412,7 +412,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return RebornCoreConfig.getRebornPower();
 	}
 
-	private String getLocaliszedPowerFormatted(final int eu) {
+	public String getLocaliszedPowerFormatted(final int eu) {
 		switch (PowerSystem.getDisplayPower()) {
 			case EU:
 				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US")).format(eu) + " "
@@ -490,6 +490,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public double getMaxInput() {
 		return getBaseMaxInput();
+	}
+
+	public EnumPowerTier getPushingTier(){
+		return getTier();
 	}
 
 	@Override
