@@ -46,7 +46,9 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 				key = field.getName();
 			}
 			Object defaultValue = field.get(null);
-			Property property = get(annotation.category(), key, defaultValue, annotation.comment(), field.getType(), configuration);
+			String comment = annotation.comment();
+			comment = comment + " [Default=" + defaultValue + "]";
+			Property property = get(annotation.category(), key, defaultValue, comment, field.getType(), configuration);
 			Object value = getObjectFromType(property, field.getType());
 			field.set(null, value);
 
