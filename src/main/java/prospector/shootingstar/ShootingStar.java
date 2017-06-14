@@ -18,8 +18,13 @@ public class ShootingStar {
 	public static void registerModels(String modid) {
 		for (ModelCompound compound : modelList) {
 			if (compound.getModid().equals(modid)) {
-				registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
-				if (compound.isBlock() && !compound.getBlockStatePath().isEmpty()) {
+				if (compound.isBlock()) {
+					if (compound.getFileName().equals("shootingstar.undefinedfilename"))
+						registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
+					else
+						registerItemModel(compound.getItem(), compound.getMeta(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant());
+				}
+				if (compound.isBlock()) {
 					if (compound.getFileName().equals("shootingstar.undefinedfilename"))
 						ModelMethods.setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
 					else
