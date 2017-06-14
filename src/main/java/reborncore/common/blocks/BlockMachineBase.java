@@ -39,8 +39,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static PropertyBool ACTIVE = PropertyBool.create("active");
 
-	public static ItemStack machineStack;
-	public static ItemStack advancedMachineStack;
+	public static ItemStack basicFrameStack;
+	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
 
 	public BlockMachineBase() {
@@ -48,7 +48,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	public BlockMachineBase(boolean hasCustomStates) {
-		super(Material.ROCK);
+		super(Material.IRON);
 		setHardness(2f);
 		setSoundType(SoundType.METAL);
 		this.hasCustomStaes = hasCustomStates;
@@ -219,7 +219,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		List<ItemStack> items = new ArrayList<ItemStack>();
-		items.add(isAdvanced() ? advancedMachineStack.copy() : machineStack.copy());
+		items.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
 		return items;
 	}
 

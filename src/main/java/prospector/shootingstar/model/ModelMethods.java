@@ -22,17 +22,9 @@ public class ModelMethods {
 		setMRL(item, meta, item.getRegistryName(), "inventory");
 	}
 
-	public static void registerItemModel(Item item, String path) {
+	public static void registerItemModel(Item item, String fileName, String path) {
 		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + "/" + item.getRegistryName().getResourcePath());
 		setMRL(item, 0, loc, "inventory");
-	}
-
-	public static void registerItemModel(Item item, int meta, String path) {
-		String slash = "";
-		if (!path.isEmpty())
-			slash = "/";
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + slash + item.getRegistryName().getResourcePath());
-		setMRL(item, meta, loc, "inventory");
 	}
 
 	public static void registerItemModel(Item item, int meta, String path, String invVariant) {
@@ -40,6 +32,14 @@ public class ModelMethods {
 		if (!path.isEmpty())
 			slash = "/";
 		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + slash + item.getRegistryName().getResourcePath());
+		setMRL(item, meta, loc, invVariant);
+	}
+
+	public static void registerItemModel(Item item, int meta, String fileName, String path, String invVariant) {
+		String slash = "";
+		if (!path.isEmpty())
+			slash = "/";
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + slash + fileName);
 		setMRL(item, meta, loc, invVariant);
 	}
 
@@ -64,8 +64,8 @@ public class ModelMethods {
 		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String filename, IProperty... ignoredProperties) {
-		setBlockStateMapper(block, filename, "", ignoredProperties);
+	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty... ignoredProperties) {
+		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), blockstatePath, ignoredProperties);
 	}
 
 	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty... ignoredProperties) {
