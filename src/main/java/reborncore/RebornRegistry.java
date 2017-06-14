@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.LootManager;
-import reborncore.common.util.CraftingHelper;
+import reborncore.common.util.RebornCraftingHelper;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -59,11 +59,11 @@ public class RebornRegistry {
 	}
 
 	public static void addShapedOreRecipe(ItemStack output, Object parm) {
-		CraftingHelper.addShapedOreRecipe(output, parm);
+		RebornCraftingHelper.addShapedOreRecipe(output, parm);
 	}
 
 	public static void addShapelessOreRecipe(ItemStack output, Object parm) {
-		CraftingHelper.addShapelessOreRecipe(output, parm);
+		RebornCraftingHelper.addShapelessOreRecipe(output, parm);
 	}
 
 	//eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
