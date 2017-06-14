@@ -61,14 +61,22 @@ public class RebornCraftingHelper {
 	private static NonNullList<Ingredient> buildInput (Object[] input) {
 		NonNullList<Ingredient> list = NonNullList.create();
 		for(Object obj : input){
-			list.add(CraftingHelper.getIngredient(obj));
+			if(obj instanceof Ingredient){
+				list.add((Ingredient) obj);
+			} else {
+				Ingredient ingredient = CraftingHelper.getIngredient(obj);
+				if(ingredient == null){
+					ingredient = Ingredient.EMPTY;
+				}
+				list.add(ingredient);
+			}
 		}
 		return list;
 	}
 
 	public static NonNullList<Ingredient> parseShapedRecipe(Object... inputs){
 		int size = 0;
-		String recipePattern = "";
+		StringBuilder recipePattern = new StringBuilder();
 		Map<Character, Ingredient> ingredientMap  = new HashMap<>();
 		boolean hasFoundChar = false;
 		for (int i = 0; i < inputs.length; i++) {
@@ -85,7 +93,7 @@ public class RebornCraftingHelper {
 				if(i > size){
 					continue;
 				}
-				recipePattern += str;
+				recipePattern.append(str);
 			} else if(object instanceof Character){
 				hasFoundChar = true;
 				Character character = (Character) object;
@@ -97,7 +105,7 @@ public class RebornCraftingHelper {
 			}
 		}
 		NonNullList<Ingredient> ingredients = NonNullList.create();
-		for(Character character : recipePattern.toCharArray()){
+		for(Character character : recipePattern.toString().toCharArray()){
 			if(ingredientMap.containsKey(character)){
 				Ingredient ingredient = ingredientMap.get(character);
 				if(ingredient == null){
