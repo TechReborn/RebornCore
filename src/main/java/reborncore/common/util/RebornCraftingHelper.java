@@ -13,9 +13,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RebornCraftingHelper {
 
 	public static ResourceLocation getNameForRecipe(ItemStack output) {
@@ -31,9 +28,9 @@ public class RebornCraftingHelper {
 	}
 
 	public static void addShapedOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
-		NonNullList<Ingredient> ingredients = parseShapedRecipe(objectInputs);
+		CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(objectInputs);
 		ResourceLocation location = getNameForRecipe(outputItemStack);
-		ShapedRecipes recipe = new ShapedRecipes(outputItemStack.getItem().getRegistryName().toString(), 3, 3, ingredients, outputItemStack);
+		ShapedRecipes recipe = new ShapedRecipes(outputItemStack.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, outputItemStack);
 		recipe.setRegistryName(location);
 		ForgeRegistries.RECIPES.register(recipe);
 	}
@@ -75,53 +72,6 @@ public class RebornCraftingHelper {
 		}
 		return list;
 	}
-
-	public static NonNullList<Ingredient> parseShapedRecipe(Object... inputs){
-		int size = 0;
-		StringBuilder recipePattern = new StringBuilder();
-		Map<Character, Ingredient> ingredientMap  = new HashMap<>();
-		boolean hasFoundChar = false;
-		for (int i = 0; i < inputs.length; i++) {
-			Object object = inputs[i];
-			System.out.println(object.getClass());
-			if(object instanceof String && !hasFoundChar){
-				String str = (String) object;
-				if(i == 0){
-					size = str.length();
-					if(size > 3){
-						throw new Error("This shoudnt happen right?");
-					}
-				}
-				if(i > size){
-					continue;
-				}
-				recipePattern.append(str);
-			} else if(object instanceof Character){
-				hasFoundChar = true;
-				Character character = (Character) object;
-				if(ingredientMap.containsKey(character)){
-					throw new Error("This shoudnt happen right?");
-				}
-				System.out.println("Adding:" + character + ":" + CraftingHelper.getIngredient(inputs[i + 1]));
-				ingredientMap.put(character, CraftingHelper.getIngredient(inputs[i + 1]));
-			}
-		}
-		NonNullList<Ingredient> ingredients = NonNullList.create();
-		for(Character character : recipePattern.toString().toCharArray()){
-			if(ingredientMap.containsKey(character)){
-				Ingredient ingredient = ingredientMap.get(character);
-				if(ingredient == null){
-					ingredient = Ingredient.EMPTY;
-				}
-				ingredients.add(ingredient);
-				System.out.println(character + ":" + ingredientMap.get(character));
-			} else {
-				ingredients.add(Ingredient.EMPTY);
-			}
-		}
-		return ingredients;
-	}
-
 
 	public static void addSmelting(Block input, ItemStack output, float xp) {
 		GameRegistry.addSmelting(input, output, xp);
