@@ -9,14 +9,19 @@ buildscript {
 			name = "Modmuss50"
 			url = "http://maven.modmuss50.me/"
 		}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
 	}
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: net.minecrell.gradle.licenser.Licenser
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -117,6 +122,11 @@ processResources
 		}
 	}
 
+license {
+	header file('LICENSE.md')
+	include '**/*.java'
+	ignoreFailures = true //Stops the build from failing if a file does not have a license header
+}
 
 task deobfJar(type: Jar) {
 	from sourceSets.main.output
