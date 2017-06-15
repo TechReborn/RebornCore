@@ -7,10 +7,11 @@ import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import reborncore.RebornCore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +19,13 @@ import java.util.Map;
 public class RebornCraftingHelper {
 
 	public static ResourceLocation getNameForRecipe(ItemStack output) {
-		ResourceLocation baseLoc = new ResourceLocation(RebornCore.MOD_ID, output.getItem().getRegistryName().getResourcePath());
+		ModContainer activeContainer = Loader.instance().activeModContainer();
+		ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getResourcePath());
 		ResourceLocation recipeLoc = baseLoc;
 		int index = 0;
 		while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
 			index++;
-			recipeLoc = new ResourceLocation(RebornCore.MOD_ID, baseLoc.getResourcePath() + "_" + index);
+			recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getResourcePath() + "_" + index);
 		}
 		return recipeLoc;
 	}
@@ -31,14 +33,14 @@ public class RebornCraftingHelper {
 	public static void addShapedOreRecipe(ItemStack outputItemStack, Object... objectInputs) {
 		NonNullList<Ingredient> ingredients = parseShapedRecipe(objectInputs);
 		ResourceLocation location = getNameForRecipe(outputItemStack);
-		ShapedRecipes recipe = new ShapedRecipes(location.toString(), 3, 3, ingredients, outputItemStack);
+		ShapedRecipes recipe = new ShapedRecipes(outputItemStack.getItem().getRegistryName().toString(), 3, 3, ingredients, outputItemStack);
 		recipe.setRegistryName(location);
 		ForgeRegistries.RECIPES.register(recipe);
 	}
 
 	public static IRecipe addShapedRecipe(ItemStack output, Object... params) {
 		ResourceLocation location = getNameForRecipe(output);
-		ShapedRecipes recipe = new ShapedRecipes(location.toString(), 3, 3, buildInput(params), output);
+		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), 3, 3, buildInput(params), output);
 		recipe.setRegistryName(location);
 		ForgeRegistries.RECIPES.register(recipe);
 		return recipe;
@@ -53,7 +55,7 @@ public class RebornCraftingHelper {
 
 	public static void addShapelessRecipe(ItemStack output, Object... input) {
 		ResourceLocation location = getNameForRecipe(output);
-		ShapelessRecipes recipe = new ShapelessRecipes(location.toString(), output, buildInput(input));
+		ShapelessRecipes recipe = new ShapelessRecipes(location.getResourceDomain(), output, buildInput(input));
 		recipe.setRegistryName(location);
 		ForgeRegistries.RECIPES.register(recipe);
 	}
