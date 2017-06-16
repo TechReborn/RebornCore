@@ -176,9 +176,9 @@ public class PowerSystem {
 	}
 
 	public enum EnergySystem {
-		TESLA(0xFF1DBFB3, "Tesla", 71, 151, 0xFF09948C),
-		EU(0xFF980000, "EU", 43, 151, 0xFF580000),
-		FE(0xFFE14E1C, "FE", 15, 151, 0xFFB3380F);
+		TESLA(0xFF23A78D, "Tesla", 71, 151, 0xFF117F60),
+		EU(0xFF800600, "EU", 43, 151, 0xFF670000),
+		FE(0xFFBE281A, "FE", 15, 151, 0xFF960D0D);
 
 		public int colour;
 		public int altColour;
