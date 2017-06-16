@@ -38,6 +38,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
@@ -50,32 +51,13 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 public class RebornCraftingHelper {
 
 	/**
-	 * Genereates a unique name based of the active mod, and the itemstack that the recipe outputs
-	 *
-	 * @param output an itemstack, usualy the one the the recipe produces
-	 * @return a unique ResourceLocation based off the item item
-	 */
-	public static ResourceLocation getNameForRecipe(ItemStack output) {
-		ModContainer activeContainer = Loader.instance().activeModContainer();
-		ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getResourcePath());
-		ResourceLocation recipeLoc = baseLoc;
-		int index = 0;
-		while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
-			index++;
-			recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getResourcePath() + "_" + index);
-		}
-		return recipeLoc;
-	}
-
-	/**
 	 * Adds a shaped recipe that supports string inputparamers corisponding to an oredict entry, can also be used for recipes without ore dict ingredients
 	 *
 	 * @param output The stack that should be produced
 	 */
 	public static void addShapedOreRecipe(ItemStack output, Object... params) {
-		CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(params);
 		ResourceLocation location = getNameForRecipe(output);
-		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, output);
+		ShapedOreRecipe recipe = new ShapedOreRecipe(location, output, params);
 		recipe.setRegistryName(location);
 		GameRegistry.register(recipe);
 	}
@@ -114,6 +96,24 @@ public class RebornCraftingHelper {
 		ShapelessRecipes recipe = new ShapelessRecipes(location.getResourceDomain(), output, buildInput(input));
 		recipe.setRegistryName(location);
 		GameRegistry.register(recipe);
+	}
+
+	/**
+	 * Genereates a unique name based of the active mod, and the itemstack that the recipe outputs
+	 *
+	 * @param output an itemstack, usualy the one the the recipe produces
+	 * @return a unique ResourceLocation based off the item item
+	 */
+	public static ResourceLocation getNameForRecipe(ItemStack output) {
+		ModContainer activeContainer = Loader.instance().activeModContainer();
+		ResourceLocation baseLoc = new ResourceLocation(activeContainer.getModId(), output.getItem().getRegistryName().getResourcePath());
+		ResourceLocation recipeLoc = baseLoc;
+		int index = 0;
+		while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
+			index++;
+			recipeLoc = new ResourceLocation(activeContainer.getModId(), baseLoc.getResourcePath() + "_" + index);
+		}
+		return recipeLoc;
 	}
 
 	/**
