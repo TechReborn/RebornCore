@@ -69,7 +69,8 @@ public class RebornCraftingHelper {
 	 */
 	public static void addShapedRecipe(ItemStack output, Object... params) {
 		ResourceLocation location = getNameForRecipe(output);
-		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), 3, 3, buildInput(params), output);
+		CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(params);
+		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, output);
 		recipe.setRegistryName(location);
 		GameRegistry.register(recipe);
 	}
