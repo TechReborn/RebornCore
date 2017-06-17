@@ -41,11 +41,11 @@ repositories {
 		url = "http://maven.modmuss50.me/"
 	}
 
-	// maven {
-	// 	//IC2
-	// 	name = "player-ic2"
-	// 	url = "http://maven.ic2.player.to/"
-	// }
+	maven {
+		//IC2
+		name = "player-ic2"
+		url = "http://maven.ic2.player.to/"
+	}
 
 	maven {
 		// Tesla
@@ -76,12 +76,6 @@ repositories {
 		name "CraftTweaker"
 		artifactPattern "https://addons-origin.cursecdn.com/files/2392/421/[module]-[revision](-[classifier]).[ext]"
 	}
-
-	ivy {
-		// IC2Curse
-		name "IC2Curse"
-		artifactPattern "https://addons-origin.cursecdn.com/files/2428/217/[module]-[revision].[ext]"
-	}
 }
 
 configurations {
@@ -109,7 +103,7 @@ group = 'RebornCore'
 
 
 dependencies {
-	shade 'industrialcraft-2:industrialcraft-2:2.7.59-ex111'
+	shade 'net.industrial-craft:industrialcraft-2:2.7.5-ex111:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
 	provided "net.darkhax.tesla:Tesla:1.11-1.3.0.51"
