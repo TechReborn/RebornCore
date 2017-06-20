@@ -83,7 +83,7 @@ configurations {
 	compile.extendsFrom shade
 }
 
-version = "3.0.4"
+version = "3.0.5"
 
 
 def ENV = System.getenv()
@@ -92,8 +92,8 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.12-14.21.0.2335"
-	mappings = "snapshot_20170615"
+	version = "1.12-14.21.0.2340"
+	mappings = "snapshot_20170620"
 	replace "@MODVERSION@", project.version
 	runDir = "run"
 	makeObfSourceJar = false

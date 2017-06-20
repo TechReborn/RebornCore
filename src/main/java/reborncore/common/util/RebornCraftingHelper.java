@@ -57,7 +57,7 @@ public class RebornCraftingHelper {
 	 */
 	public static void addShapedOreRecipe(ItemStack output, Object... params) {
 		ResourceLocation location = getNameForRecipe(output);
-		ShapedOreRecipe recipe = new ShapedOreRecipe(location, output, params);
+		ShapedOreRecipe recipe = new FixedShapedOreRecipe(location, output, params);
 		recipe.setRegistryName(location);
 		GameRegistry.register(recipe);
 	}
