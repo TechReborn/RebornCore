@@ -46,18 +46,18 @@ public abstract class RegistryCL {
 	public HashMap<ItemStack, String> oreEntries = new HashMap<>();
 
 	protected static void register(ItemCL item) {
-		GameRegistry.register(item);
+//		GameRegistry.register(item);
 	}
 
 	protected static void register(BlockCL block) {
-		GameRegistry.register(block);
-		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+//		GameRegistry.register(block);
+//		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
 	}
 
 	protected static void register(BlockContainerCL block) {
-		GameRegistry.register(block);
-		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
-		GameRegistry.registerTileEntity(block.tileEntity, "TilePackagerRD");
+//		GameRegistry.register(block);
+//		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+//		GameRegistry.registerTileEntity(block.tileEntity, "TilePackagerRD");
 	}
 
 	public abstract void init(ModCL mod);

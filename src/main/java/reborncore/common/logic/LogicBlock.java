@@ -196,9 +196,9 @@ public class LogicBlock extends BlockContainer {
 			}
 			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0) {
 				if (itemStack.getItem() instanceof ItemBlock) {
-					if (((ItemBlock) itemStack.getItem()).block instanceof BlockFluidBase
-						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockStaticLiquid
-						|| ((ItemBlock) itemStack.getItem()).block instanceof BlockDynamicLiquid) {
+					if (((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockFluidBase
+						|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockStaticLiquid
+						|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockDynamicLiquid) {
 						continue;
 					}
 				}

@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.GameData;
 
 /**
  * This class contains a bunch of helper methods for adding recipes in code in minecraft 1.12
@@ -59,7 +60,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapedOreRecipe recipe = new FixedShapedOreRecipe(location, output, params);
 		recipe.setRegistryName(location);
-		GameRegistry.register(recipe);
+        GameData.register_impl(recipe);
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class RebornCraftingHelper {
 		CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(params);
 		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, output);
 		recipe.setRegistryName(location);
-		GameRegistry.register(recipe);
+        GameData.register_impl(recipe);
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapelessOreRecipe recipe = new ShapelessOreRecipe(location, output, input);
 		recipe.setRegistryName(location);
-		GameRegistry.register(recipe);
+        GameData.register_impl(recipe);
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapelessRecipes recipe = new ShapelessRecipes(location.getResourceDomain(), output, buildInput(input));
 		recipe.setRegistryName(location);
-		GameRegistry.register(recipe);
+        GameData.register_impl(recipe);
 	}
 
 	/**
