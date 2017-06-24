@@ -31,6 +31,7 @@ package reborncore.modcl;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import reborncore.RebornRegistry;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,18 +47,16 @@ public abstract class RegistryCL {
 	public HashMap<ItemStack, String> oreEntries = new HashMap<>();
 
 	protected static void register(ItemCL item) {
-//		GameRegistry.register(item);
+		RebornRegistry.registerItem(item);
 	}
 
 	protected static void register(BlockCL block) {
-//		GameRegistry.register(block);
-//		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
+		RebornRegistry.registerBlock(block);
 	}
 
 	protected static void register(BlockContainerCL block) {
-//		GameRegistry.register(block);
-//		GameRegistry.register(new ItemBlock(block), block.getRegistryName());
-//		GameRegistry.registerTileEntity(block.tileEntity, "TilePackagerRD");
+		RebornRegistry.registerBlock(block);
+		GameRegistry.registerTileEntity(block.tileEntity, "TilePackagerRD");
 	}
 
 	public abstract void init(ModCL mod);

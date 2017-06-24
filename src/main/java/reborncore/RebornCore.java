@@ -122,8 +122,8 @@ public class RebornCore implements IModInfo {
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 
 		if (ItemTeamRebornManual.isManualEnabled) {
-//			GameRegistry.register(new ItemTeamRebornManual());
-//			NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new ManualGuiHandler());
+			RebornRegistry.registerItem(new ItemTeamRebornManual());
+			NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new ManualGuiHandler());
 		}
 
 		proxy.init(event);
