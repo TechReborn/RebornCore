@@ -77,6 +77,18 @@ public class RebornRegistry {
 		}
 	}
 
+	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, ResourceLocation name) {
+		block.setRegistryName(name);
+		GameData.register_impl(block);
+		try {
+			ItemBlock itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
+			itemBlock.setRegistryName(name);
+			GameData.register_impl(itemBlock);
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static void registerBlock(Block block) {
 		GameData.register_impl(block);
 		ItemBlock itemBlock = new ItemBlock(block);
