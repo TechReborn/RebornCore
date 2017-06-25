@@ -63,6 +63,7 @@ public class RebornRegistry {
 		ItemBlock itemBlock = new ItemBlock(block);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
+		GameData.register_impl(block);
 	}
 
 	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
