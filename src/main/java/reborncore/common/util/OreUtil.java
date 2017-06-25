@@ -71,6 +71,10 @@ public class OreUtil {
 		return doesOreExistAndValid("ingot" + capitalizeFirstLetter(name));
 	}
 
+	public static boolean hasGem(String name) {
+		return doesOreExistAndValid("gem" + capitalizeFirstLetter(name));
+	}
+
 	public static boolean hasOre(String name) {
 		return doesOreExistAndValid("ore" + capitalizeFirstLetter(name));
 	}
