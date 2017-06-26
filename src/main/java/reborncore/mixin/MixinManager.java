@@ -29,13 +29,17 @@
 package reborncore.mixin;
 
 import org.apache.logging.log4j.Logger;
+import reborncore.mixin.api.IMixinRegistry;
+import reborncore.mixin.api.MixinRegistationTime;
 import reborncore.mixin.json.MixinConfiguration;
 import reborncore.mixin.json.MixinTargetData;
 import reborncore.mixin.transformer.IMixinRemap;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ServiceLoader;
 
 public class MixinManager {
 
@@ -49,7 +53,22 @@ public class MixinManager {
 	//The logger
 	public static Logger logger;
 
-	public static void registerMixin(MixinTargetData data) {
+	private static ServiceLoader<IMixinRegistry> serviceLoader;
+
+	public static void load(@Nullable MixinRegistationTime time){
+		serviceLoader = ServiceLoader.load(IMixinRegistry.class, MixinManager.class.getClassLoader());
+		List<MixinTargetData> dataList = new ArrayList<>();
+		for(IMixinRegistry mixinRegistry : serviceLoader){
+			if(time == null || mixinRegistry.registrationTime() == time ){
+				dataList.addAll(mixinRegistry.register());
+			}
+		}
+		dataList.forEach(MixinManager::registerMixin);
+		logger.info("Registed " + dataList.size() + " mixins, stage:" + time);
+	}
+
+	//Use service loader now
+	private static void registerMixin(MixinTargetData data) {
 		mixinClassList.add(data.mixinClass);
 		if (mixinTargetMap.containsKey(data.targetClass)) {
 			mixinTargetMap.get(data.targetClass).add(data.mixinClass);

@@ -35,7 +35,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
@@ -52,6 +51,8 @@ import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.util.*;
+import reborncore.mixin.MixinManager;
+import reborncore.mixin.api.MixinRegistationTime;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
@@ -76,6 +77,8 @@ public class RebornCore implements IModInfo {
 
 	public RebornCore() {
 		logHelper = new LogHelper(this);
+		//This is the 2nd pass of mixin registration
+		MixinManager.load(MixinRegistationTime.LATE);
 	}
 
 	@Mod.EventHandler
