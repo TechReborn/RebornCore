@@ -29,7 +29,6 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.mixin.json.MixinTargetData;
 
@@ -41,9 +40,6 @@ public abstract class PoweredItem {
 	public static List<MixinTargetData> registerPoweredItem(String itemclass, boolean ic2) {
 		List<MixinTargetData> mixinTargetData = new ArrayList<>();
 		mixinTargetData.add(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
-		if (ic2 && Loader.isModLoaded("ic2")) {
-			mixinTargetData.add(new MixinTargetData("reborncore.common.powerSystem.mixin.EUItemPowerTrait", itemclass));
-		}
 		return mixinTargetData;
 	}
 
