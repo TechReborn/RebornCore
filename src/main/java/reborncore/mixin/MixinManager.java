@@ -28,14 +28,13 @@
 
 package reborncore.mixin;
 
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.Logger;
 import reborncore.mixin.api.IMixinRegistry;
-import reborncore.mixin.api.MixinRegistationTime;
 import reborncore.mixin.json.MixinConfiguration;
 import reborncore.mixin.json.MixinTargetData;
 import reborncore.mixin.transformer.IMixinRemap;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,16 +54,14 @@ public class MixinManager {
 
 	private static ServiceLoader<IMixinRegistry> serviceLoader;
 
-	public static void load(@Nullable MixinRegistationTime time){
-		serviceLoader = ServiceLoader.load(IMixinRegistry.class, MixinManager.class.getClassLoader());
+	public static void load(){
+		serviceLoader = ServiceLoader.load(IMixinRegistry.class, Launch.classLoader);
 		List<MixinTargetData> dataList = new ArrayList<>();
 		for(IMixinRegistry mixinRegistry : serviceLoader){
-			if(time == null || mixinRegistry.registrationTime() == time ){
-				dataList.addAll(mixinRegistry.register());
-			}
+			dataList.addAll(mixinRegistry.register());
 		}
 		dataList.forEach(MixinManager::registerMixin);
-		logger.info("Registed " + dataList.size() + " mixins, stage:" + time);
+		logger.info("Registed " + dataList.size() + " mixins");
 	}
 
 	//Use service loader now

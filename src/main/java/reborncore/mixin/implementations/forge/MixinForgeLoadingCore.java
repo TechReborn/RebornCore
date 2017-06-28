@@ -34,7 +34,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import reborncore.mixin.MixinManager;
-import reborncore.mixin.api.MixinRegistationTime;
 import reborncore.mixin.transformer.MixinTransformer;
 
 import java.util.Map;
@@ -60,7 +59,7 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Launch.classLoader));
 		MixinManager.mixinRemaper = new ForgeRemapper();
 		MixinManager.logger = FMLLog.getLogger();//TODO don't use the FML logger?
-		MixinManager.load(MixinRegistationTime.EARLY);
+		MixinManager.load();
 	}
 
 	@Override
