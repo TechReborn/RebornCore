@@ -41,11 +41,11 @@ repositories {
 		url = "http://maven.modmuss50.me/"
 	}
 
-	// maven {
-	// 	//IC2
-	// 	name = "player-ic2"
-	// 	url = "http://maven.ic2.player.to/"
-	// }
+	 maven {
+	 	//IC2
+	 	name = "player-ic2"
+	 	url = "http://maven.ic2.player.to/"
+	 }
 
 	maven {
 		// Tesla
