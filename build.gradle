@@ -70,11 +70,9 @@ repositories {
 		name "TehNut"
 		url "http://tehnut.info/maven/"
 	}
-
-	ivy {
-		// CraftTweaker
-		name "CraftTweaker"
-		artifactPattern "https://addons-origin.cursecdn.com/files/2392/421/[module]-[revision](-[classifier]).[ext]"
+	maven {
+		name "Jared"
+		url "http://maven.blamejared.com/"
 	}
 }
 
@@ -107,7 +105,7 @@ dependencies {
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
-	provided "CraftTweaker:CraftTweaker:1.11.2-3.0.24"
+	provided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.0.5"
 }
 
 processResources
