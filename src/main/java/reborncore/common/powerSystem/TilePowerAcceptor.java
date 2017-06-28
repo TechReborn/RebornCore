@@ -124,7 +124,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
-							double drain = useEnergy(Math.min(getEnergy(),getMaxOutput()), true);
+							double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
 							if (drain > 0) {
 								double filled = eFace.addEnergy(drain, false);
 								useEnergy(filled, false);
@@ -349,7 +349,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
-		if(shouldHanldeEnergyNBT())
+		if (shouldHanldeEnergyNBT())
 			this.setEnergy(data.getDouble("energy"));
 		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 			TeslaManager.manager.readFromNBT(tag, this);
@@ -370,7 +370,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
-		if(shouldHanldeEnergyNBT())
+		if (shouldHanldeEnergyNBT())
 			this.setEnergy(data.getDouble("energy"));
 	}
 
@@ -381,7 +381,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return tag;
 	}
 
-	public boolean shouldHanldeEnergyNBT(){
+	public boolean shouldHanldeEnergyNBT() {
 		return true;
 	}
 
@@ -513,7 +513,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return getBaseMaxInput();
 	}
 
-	public EnumPowerTier getPushingTier(){
+	public EnumPowerTier getPushingTier() {
 		return getTier();
 	}
 

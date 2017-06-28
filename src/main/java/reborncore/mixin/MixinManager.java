@@ -58,7 +58,7 @@ public class MixinManager {
 		registries.addAll(load(MixinManager.class.getClassLoader()));
 		List<MixinTargetData> dataList = new ArrayList<>();
 		for (IMixinRegistry registry : registries) {
-			if(loadedRegistrys.contains(registry.getClass().getName())){
+			if (loadedRegistrys.contains(registry.getClass().getName())) {
 				continue;
 			}
 			dataList.addAll(registry.register());
@@ -81,7 +81,7 @@ public class MixinManager {
 	private static void registerMixin(MixinTargetData data) {
 		mixinClassList.add(data.mixinClass);
 		if (mixinTargetMap.containsKey(data.targetClass)) {
-			if(!mixinTargetMap.get(data.targetClass).contains(data.mixinClass)){
+			if (!mixinTargetMap.get(data.targetClass).contains(data.mixinClass)) {
 				mixinTargetMap.get(data.targetClass).add(data.mixinClass);
 			}
 		} else {

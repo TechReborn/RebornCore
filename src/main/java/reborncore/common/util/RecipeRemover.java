@@ -68,7 +68,7 @@ public class RecipeRemover {
 		}
 	}
 
-	private static void removeRecipe(IRecipe recipe){
+	private static void removeRecipe(IRecipe recipe) {
 		ForgeRegistries.RECIPES.register(new BlankRecipe(recipe));
 	}
 

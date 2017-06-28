@@ -52,5 +52,4 @@ public class RebornPackets {
 		RebornCore.logHelper.info("Registered " + packetList.size() + " packet(s)");
 	}
 
-
 }

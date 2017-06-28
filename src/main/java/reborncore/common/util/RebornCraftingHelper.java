@@ -31,7 +31,10 @@ package reborncore.common.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -60,7 +63,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapedOreRecipe recipe = new ShapedOreRecipe(location, output, params);
 		recipe.setRegistryName(location);
-        GameData.register_impl(recipe);
+		GameData.register_impl(recipe);
 	}
 
 	/**
@@ -73,7 +76,7 @@ public class RebornCraftingHelper {
 		CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(params);
 		ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, output);
 		recipe.setRegistryName(location);
-        GameData.register_impl(recipe);
+		GameData.register_impl(recipe);
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapelessOreRecipe recipe = new ShapelessOreRecipe(location, output, input);
 		recipe.setRegistryName(location);
-        GameData.register_impl(recipe);
+		GameData.register_impl(recipe);
 	}
 
 	/**
@@ -97,7 +100,7 @@ public class RebornCraftingHelper {
 		ResourceLocation location = getNameForRecipe(output);
 		ShapelessRecipes recipe = new ShapelessRecipes(location.getResourceDomain(), output, buildInput(input));
 		recipe.setRegistryName(location);
-        GameData.register_impl(recipe);
+		GameData.register_impl(recipe);
 	}
 
 	/**
@@ -119,16 +122,16 @@ public class RebornCraftingHelper {
 	}
 
 	/**
-	 *  Converts an object array into a NonNullList of Ingredients
+	 * Converts an object array into a NonNullList of Ingredients
 	 */
-	private static NonNullList<Ingredient> buildInput (Object[] input) {
+	private static NonNullList<Ingredient> buildInput(Object[] input) {
 		NonNullList<Ingredient> list = NonNullList.create();
-		for(Object obj : input){
-			if(obj instanceof Ingredient){
+		for (Object obj : input) {
+			if (obj instanceof Ingredient) {
 				list.add((Ingredient) obj);
 			} else {
 				Ingredient ingredient = CraftingHelper.getIngredient(obj);
-				if(ingredient == null){
+				if (ingredient == null) {
 					ingredient = Ingredient.EMPTY;
 				}
 				list.add(ingredient);

@@ -75,7 +75,7 @@ public class MixinTransformer implements IClassTransformer {
 
 			long start = System.currentTimeMillis();
 
-			if(!preLoadedClasses.contains(name)){
+			if (!preLoadedClasses.contains(name)) {
 				cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
 			}
 
