@@ -59,7 +59,6 @@ public class MixinForgeLoadingCore implements IFMLLoadingPlugin {
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(Launch.classLoader));
 		MixinManager.mixinRemaper = new ForgeRemapper();
 		MixinManager.logger = FMLLog.getLogger();//TODO don't use the FML logger?
-		MixinManager.load();
 	}
 
 	@Override

@@ -28,7 +28,6 @@
 
 package reborncore.mixin;
 
-import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.Logger;
 import reborncore.mixin.api.IMixinRegistry;
 import reborncore.mixin.json.MixinConfiguration;
@@ -52,16 +51,24 @@ public class MixinManager {
 	//The logger
 	public static Logger logger;
 
-	private static ServiceLoader<IMixinRegistry> serviceLoader;
-
-	public static void load(){
-		serviceLoader = ServiceLoader.load(IMixinRegistry.class, Launch.classLoader);
+	public static void load() {
+		List<IMixinRegistry> registries = new ArrayList<>();
+		registries.addAll(load(MixinManager.class.getClassLoader()));
 		List<MixinTargetData> dataList = new ArrayList<>();
-		for(IMixinRegistry mixinRegistry : serviceLoader){
-			dataList.addAll(mixinRegistry.register());
+		for (IMixinRegistry registry : registries) {
+			dataList.addAll(registry.register());
 		}
 		dataList.forEach(MixinManager::registerMixin);
 		logger.info("Registed " + dataList.size() + " mixins");
+	}
+
+	private static List<IMixinRegistry> load(ClassLoader classLoader) {
+		ServiceLoader<IMixinRegistry> serviceLoader = ServiceLoader.load(IMixinRegistry.class, classLoader);
+		List<IMixinRegistry> registries = new ArrayList<>();
+		for (IMixinRegistry mixinRegistry : serviceLoader) {
+			registries.add(mixinRegistry);
+		}
+		return registries;
 	}
 
 	//Use service loader now
