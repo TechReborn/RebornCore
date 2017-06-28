@@ -103,7 +103,7 @@ group = 'RebornCore'
 
 
 dependencies {
-	shade 'me.industrial-craft-backup:industrialcraft-2:2.7.5-ex111:api'
+	compile 'me.industrial-craft-backup:industrialcraft-2:2.8.2-ex112:api'
 	shade 'org.javassist:javassist:3.22.0-CR1'
 
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
