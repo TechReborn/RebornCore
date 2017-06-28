@@ -12,32 +12,22 @@ import reborncore.mixin.transformer.MixinTransformer;
  */
 public class ASMInjectorSetupClass {
 
+	static {
+		MixinManager.logger = LogManager.getLogger();
+	}
+
 	public static void main() {
-		if(MixinManager.logger == null){
-			setupLogger();
-		}
 		MixinManager.logger.info("Loading mixin manager");
 		MixinManager.logger.info("Using dummy remapper");
 		MixinManager.mixinRemaper = new MixinPrebaker.DummyRemapper();
 		MixinManager.load();
 	}
-
-	private static void setupLogger(){
-		MixinManager.logger = LogManager.getLogger();
-	}
-
 	public static void setClassLoader(ClassLoader classLoader) {
-		if(MixinManager.logger == null){
-			setupLogger();
-		}
 		MixinManager.logger.info("Setting class loader");
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(classLoader));
 	}
 
 	public static void loadClass(String name, byte[] bytes) {
-		if(MixinManager.logger == null){
-			setupLogger();
-		}
 		MixinTransformer.cp.insertClassPath(new ByteArrayClassPath(name, bytes));
 		MixinTransformer.preLoadedClasses.add(name);
 	}
