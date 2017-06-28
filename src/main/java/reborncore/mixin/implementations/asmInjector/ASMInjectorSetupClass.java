@@ -11,10 +11,6 @@ import reborncore.mixin.transformer.MixinTransformer;
  */
 public class ASMInjectorSetupClass {
 
-	static {
-		MixinManager.logger = System.out::println;
-	}
-
 	public static void main() {
 		MixinManager.logger = System.out::println;
 		MixinManager.logger.log("Loading mixin manager");
@@ -23,6 +19,7 @@ public class ASMInjectorSetupClass {
 		MixinManager.load();
 	}
 	public static void setClassLoader(ClassLoader classLoader) {
+		System.out.println("Setting logger");
 		MixinManager.logger = System.out::println;
 		MixinManager.logger.log("Setting class loader");
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(classLoader));
