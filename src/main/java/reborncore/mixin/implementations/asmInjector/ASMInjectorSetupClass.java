@@ -2,7 +2,6 @@ package reborncore.mixin.implementations.asmInjector;
 
 import javassist.ByteArrayClassPath;
 import javassist.LoaderClassPath;
-import org.apache.logging.log4j.LogManager;
 import reborncore.mixin.MixinManager;
 import reborncore.mixin.implementations.prebaker.MixinPrebaker;
 import reborncore.mixin.transformer.MixinTransformer;
@@ -13,17 +12,19 @@ import reborncore.mixin.transformer.MixinTransformer;
 public class ASMInjectorSetupClass {
 
 	static {
-		MixinManager.logger = LogManager.getLogger();
+		MixinManager.logger = System.out::println;
 	}
 
 	public static void main() {
-		MixinManager.logger.info("Loading mixin manager");
-		MixinManager.logger.info("Using dummy remapper");
+		MixinManager.logger = System.out::println;
+		MixinManager.logger.log("Loading mixin manager");
+		MixinManager.logger.log("Using dummy remapper");
 		MixinManager.mixinRemaper = new MixinPrebaker.DummyRemapper();
 		MixinManager.load();
 	}
 	public static void setClassLoader(ClassLoader classLoader) {
-		MixinManager.logger.info("Setting class loader");
+		MixinManager.logger = System.out::println;
+		MixinManager.logger.log("Setting class loader");
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(classLoader));
 	}
 

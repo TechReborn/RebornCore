@@ -34,7 +34,6 @@ import javassist.CtClass;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
 import org.objectweb.asm.*;
 import reborncore.mixin.MixinManager;
 import reborncore.mixin.api.Rewrite;
@@ -145,7 +144,7 @@ public class MixinPrebaker {
 
 	public static void preBake(File inputJar, File outputJar) {
 		MixinManager.mixinRemaper = new DummyRemapper();
-		MixinManager.logger = LogManager.getLogger("MixinPrebaker");
+		MixinManager.logger = System.out::println;
 
 		URLClassLoader ucl = (URLClassLoader) MixinPrebaker.class.getClassLoader();
 		Launch.classLoader = new LaunchClassLoader(ucl.getURLs());

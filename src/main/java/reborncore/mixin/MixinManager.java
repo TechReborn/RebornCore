@@ -28,7 +28,6 @@
 
 package reborncore.mixin;
 
-import org.apache.logging.log4j.Logger;
 import reborncore.mixin.api.IMixinRegistry;
 import reborncore.mixin.json.MixinConfiguration;
 import reborncore.mixin.json.MixinTargetData;
@@ -49,7 +48,7 @@ public class MixinManager {
 	//The remapper instance
 	public static IMixinRemap mixinRemaper;
 	//The logger
-	public static Logger logger;
+	public static ILogger logger;
 
 	public static List<String> loadedRegistrys = new ArrayList<>();
 
@@ -65,7 +64,7 @@ public class MixinManager {
 			loadedRegistrys.add(registry.getClass().getName());
 		}
 		dataList.forEach(MixinManager::registerMixin);
-		logger.info("Registed " + dataList.size() + " mixins");
+		logger.log("Registed " + dataList.size() + " mixins");
 	}
 
 	private static List<IMixinRegistry> load(ClassLoader classLoader) {

@@ -58,9 +58,9 @@ public class MixinTransformer implements IClassTransformer {
 			//Start of support for sponge mixins
 			//This fixes a crash when a reborn core mixin, mixes the same thing that sponge wants to.
 			try {
-				MixinManager.logger.trace("Mixin Transformer being called by " + Thread.currentThread().getStackTrace()[3].getClassName());
+				//MixinManager.logger.trace("Mixin Transformer being called by " + Thread.currentThread().getStackTrace()[3].getClassName());
 				if (Thread.currentThread().getStackTrace()[3].getClassName().equals("org.spongepowered.asm.mixin.transformer.TreeInfo")) { //TODO check for repackages of the sponge mixin lib
-					MixinManager.logger.trace("Skipping mixin transformer as it is being called by Sponge.");
+					//MixinManager.logger.trace("Skipping mixin transformer as it is being called by Sponge.");
 					return basicClass;
 				}
 			} catch (Exception e) {
@@ -68,7 +68,7 @@ public class MixinTransformer implements IClassTransformer {
 			}
 			//This should not happen, just stop it from doing it anyway.
 			if (MixinManager.transformedClasses.contains(name)) {
-				MixinManager.logger.trace("Skipping mixin transformer as the transformer has already transformed this class");
+				//MixinManager.logger.trace("Skipping mixin transformer as the transformer has already transformed this class");
 				return basicClass;
 			}
 			//End support
@@ -97,7 +97,7 @@ public class MixinTransformer implements IClassTransformer {
 			//Removes duplicate entries
 			mixins = mixins.stream().distinct().collect(Collectors.toList());
 
-			MixinManager.logger.info("Found " + mixins.size() + " mixins for " + transformedName);
+			MixinManager.logger.log("Found " + mixins.size() + " mixins for " + transformedName);
 			for (String mixinClassName : mixins) {
 				CtClass mixinClass = null;
 				try {
@@ -133,7 +133,7 @@ public class MixinTransformer implements IClassTransformer {
 
 							}
 							if (targetMethod == null) {
-								MixinManager.logger.error("Could not find method to inject into");
+								MixinManager.logger.log("Could not find method to inject into");
 								throw new RuntimeException("Could not find method " + (MixinForgeLoadingCore.runtimeDeobfuscationEnabled && !annotation.targetSRG().isEmpty() ? annotation.targetSRG()
 								                                                                                                                                              : annotation.target()) + " to inject into");
 							}
@@ -217,10 +217,10 @@ public class MixinTransformer implements IClassTransformer {
 				} catch (NotFoundException | CannotCompileException | ClassNotFoundException e) {
 					throw new RuntimeException(e);
 				}
-				MixinManager.logger.info("Successfully applied " + mixinClassName + " to " + name);
+				//MixinManager.logger.log("Successfully applied " + mixinClassName + " to " + name);
 			}
 			try {
-				MixinManager.logger.info("Successfully applied " + mixins.size() + " mixins to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
+				MixinManager.logger.log("Successfully applied " + mixins.size() + " mixins to " + name + " in " + (System.currentTimeMillis() - start) + "ms");
 				MixinManager.transformedClasses.add(name);
 				return target.toBytecode();
 			} catch (IOException | CannotCompileException e) {
