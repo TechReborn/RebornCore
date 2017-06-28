@@ -1,5 +1,6 @@
 package reborncore.mixin.implementations.asmInjector;
 
+import javassist.ByteArrayClassPath;
 import javassist.LoaderClassPath;
 import org.apache.logging.log4j.LogManager;
 import reborncore.mixin.MixinManager;
@@ -22,6 +23,11 @@ public class ASMInjectorSetupClass {
 	public static void setClassLoader(ClassLoader classLoader){
 		MixinManager.logger.info("Setting class loader");
 		MixinTransformer.cp.appendClassPath(new LoaderClassPath(classLoader));
+	}
+
+	public static void loadClass(String name, byte[] bytes){
+		MixinTransformer.cp.insertClassPath(new ByteArrayClassPath(name, bytes));
+		MixinTransformer.preLoadedClasses.add(name);
 	}
 
 }

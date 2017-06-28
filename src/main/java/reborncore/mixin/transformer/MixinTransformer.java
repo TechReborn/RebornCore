@@ -38,6 +38,7 @@ import reborncore.mixin.api.Rewrite;
 import reborncore.mixin.implementations.forge.MixinForgeLoadingCore;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 public class MixinTransformer implements IClassTransformer {
 
 	public static ClassPool cp = new ClassPool(true);
+	public static List<String> preLoadedClasses = new ArrayList<>();
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
@@ -72,8 +74,11 @@ public class MixinTransformer implements IClassTransformer {
 			//End support
 
 			long start = System.currentTimeMillis();
-			//makes a CtClass out of the byte array
-			cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
+
+			if(!preLoadedClasses.contains(name)){
+				cp.insertClassPath(new ByteArrayClassPath(name, basicClass));
+			}
+
 			CtClass target = null;
 			try {
 				target = cp.get(name);
