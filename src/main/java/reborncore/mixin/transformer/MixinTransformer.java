@@ -40,6 +40,7 @@ import reborncore.mixin.implementations.forge.MixinForgeLoadingCore;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This is where most of it happens.
@@ -88,6 +89,9 @@ public class MixinTransformer implements IClassTransformer {
 			}
 
 			List<String> mixins = MixinManager.mixinTargetMap.get(transformedName);
+			//Removes duplicate entries
+			mixins = mixins.stream().distinct().collect(Collectors.toList());
+
 			MixinManager.logger.info("Found " + mixins.size() + " mixins for " + transformedName);
 			for (String mixinClassName : mixins) {
 				CtClass mixinClass = null;

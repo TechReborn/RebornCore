@@ -51,12 +51,18 @@ public class MixinManager {
 	//The logger
 	public static Logger logger;
 
+	public static List<String> loadedRegistrys = new ArrayList<>();
+
 	public static void load() {
 		List<IMixinRegistry> registries = new ArrayList<>();
 		registries.addAll(load(MixinManager.class.getClassLoader()));
 		List<MixinTargetData> dataList = new ArrayList<>();
 		for (IMixinRegistry registry : registries) {
+			if(loadedRegistrys.contains(registry.getClass().getName())){
+				continue;
+			}
 			dataList.addAll(registry.register());
+			loadedRegistrys.add(registry.getClass().getName());
 		}
 		dataList.forEach(MixinManager::registerMixin);
 		logger.info("Registed " + dataList.size() + " mixins");
@@ -75,7 +81,9 @@ public class MixinManager {
 	private static void registerMixin(MixinTargetData data) {
 		mixinClassList.add(data.mixinClass);
 		if (mixinTargetMap.containsKey(data.targetClass)) {
-			mixinTargetMap.get(data.targetClass).add(data.mixinClass);
+			if(!mixinTargetMap.get(data.targetClass).contains(data.mixinClass)){
+				mixinTargetMap.get(data.targetClass).add(data.mixinClass);
+			}
 		} else {
 			List<String> list = new ArrayList<>();
 			list.add(data.mixinClass);

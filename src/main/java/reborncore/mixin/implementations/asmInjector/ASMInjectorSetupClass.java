@@ -16,8 +16,12 @@ public class ASMInjectorSetupClass {
 		MixinManager.logger.info("Loading mixin manager");
 		MixinManager.logger.info("Using dummy remapper");
 		MixinManager.mixinRemaper = new MixinPrebaker.DummyRemapper();
-		MixinTransformer.cp.appendClassPath(new LoaderClassPath(ASMInjectorSetupClass.class.getClassLoader()));
 		MixinManager.load();
+	}
+
+	public static void setClassLoader(ClassLoader classLoader){
+		MixinManager.logger.info("Setting class loader");
+		MixinTransformer.cp.appendClassPath(new LoaderClassPath(classLoader));
 	}
 
 }
