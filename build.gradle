@@ -102,8 +102,6 @@ group = 'RebornCore'
 
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.2-ex112:api'
-	shade 'org.javassist:javassist:3.22.0-CR1'
-
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
 	provided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.0.5"
 }
@@ -130,26 +128,11 @@ task deobfJar(type: Jar) {
 	from sourceSets.main.output
 	exclude "**/*.psd"
 	classifier = 'dev'
-	configurations.shade.each {dep ->
-		from(project.zipTree(dep)) {
-			include 'me/modmuss50/jsonDestroyer/'
-			include 'javassist/'
-		}
-	}
-	manifest {
-		attributes 'FMLCorePlugin': 'reborncore.mixin.implementations.forge.MixinForgeLoadingCore'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-	}
 }
 
 jar {
 	exclude "**/*.psd"
 	classifier = 'universal'
-	configurations.shade.each {dep ->
-		from(project.zipTree(dep)) {
-			include 'me/modmuss50/jsonDestroyer/'
-		}
-	}
 }
 
 task apiJar(type: Jar) {

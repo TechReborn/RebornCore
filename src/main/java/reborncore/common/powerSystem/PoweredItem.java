@@ -30,22 +30,8 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
 import reborncore.api.power.IEnergyInterfaceItem;
-import reborncore.mixin.json.MixinTargetData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class PoweredItem {
-
-	public static List<MixinTargetData> registerPoweredItem(String itemclass, boolean ic2) {
-		List<MixinTargetData> mixinTargetData = new ArrayList<>();
-		mixinTargetData.add(new MixinTargetData("reborncore.common.powerSystem.mixin.BasePowerMixin", itemclass));
-		return mixinTargetData;
-	}
-
-	public static List<MixinTargetData> registerPoweredItem(String itemclass) {
-		return registerPoweredItem(itemclass, true);
-	}
 
 	public static boolean canUseEnergy(double energy, ItemStack stack) {
 		if (stack.getItem() instanceof IEnergyInterfaceItem) {

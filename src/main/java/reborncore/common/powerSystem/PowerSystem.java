@@ -32,7 +32,7 @@ import net.minecraft.client.Minecraft;
 import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
-import reborncore.mixin.json.JsonUtil;
+import reborncore.common.util.serialization.SerializationUtil;
 
 import java.io.*;
 import java.text.NumberFormat;
@@ -151,7 +151,7 @@ public class PowerSystem {
 		if (priorityConfig.exists()) {
 			EnergyPriorityConfig config = null;
 			try (Reader reader = new FileReader(priorityConfig)) {
-				config = JsonUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
+				config = SerializationUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
@@ -168,7 +168,7 @@ public class PowerSystem {
 
 	public static void writeConfig(EnergyPriorityConfig config) {
 		try (Writer writer = new FileWriter(priorityConfig)) {
-			JsonUtil.GSON.toJson(config, writer);
+			SerializationUtil.GSON.toJson(config, writer);
 		} catch (Exception e) {
 
 		}
