@@ -26,7 +26,6 @@ apply plugin: net.minecrell.gradle.licenser.Licenser
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-
 repositories {
 	maven {
 		name = "Modmuss50"
