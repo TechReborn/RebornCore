@@ -151,7 +151,7 @@ public class RecipeCrafter {
 					if (canGiveInvAll) {
 						setCurrentRecipe(recipe);// Sets the current recipe then
 						// syncs
-						this.currentNeededTicks = (int) (currentRecipe.tickTime() * (1.0 - speedMultiplier));
+						this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - speedMultiplier)), 1);
 						this.currentTickTime = -1;
 						setIsActive();
 					} else {
