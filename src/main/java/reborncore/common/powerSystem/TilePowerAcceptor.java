@@ -107,7 +107,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void update() {
 		super.update();
 
-		if (getEnergy() > 0) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+		if (getEnergy() > 0 && !world.isRemote) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (EnumFacing side : EnumFacing.values()) {
 				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
