@@ -41,6 +41,7 @@ import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -107,6 +108,9 @@ public class RecipeCrafter {
 	 */
 	double powerMultiplier = 1;
 	int ticksSinceLastChange;
+
+	@Nullable
+	public static ICrafterSoundHanlder soundHanlder = null;
 
 	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, Inventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
@@ -200,6 +204,9 @@ public class RecipeCrafter {
 				if (energy.canUseEnergy(getEuPerTick())) {// This uses the power
 					energy.useEnergy(getEuPerTick());
 					currentTickTime++;// increase the ticktime
+					if(currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null){
+						soundHanlder.playSound(false, parentTile);
+					}
 				}
 			}
 		}
