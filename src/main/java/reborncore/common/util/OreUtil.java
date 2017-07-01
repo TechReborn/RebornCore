@@ -28,10 +28,13 @@
 
 package reborncore.common.util;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import reborncore.RebornCore;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class OreUtil {
@@ -107,6 +110,28 @@ public class OreUtil {
 		if (original.length() == 0)
 			return original;
 		return original.substring(0, 1).toUpperCase() + original.substring(1);
+	}
+
+	public static void registerOre(String name, Item ore) {
+		registerOre(name, new ItemStack(ore));
+	}
+
+	public static void registerOre(String name, Block ore) {
+		registerOre(name, new ItemStack(ore));
+	}
+
+	public static void registerOre(String name, @Nonnull ItemStack ore) {
+		OreDictionary.registerOre(sanitiseString(name), ore);
+	}
+
+	public static String sanitiseString(String input){
+		StringBuilder builder = new StringBuilder();
+		String[] split = input.split("_");
+		boolean isFirst = true;
+		for(String str : split){
+			builder.append(isFirst ? str: capitalizeFirstLetter(str));
+		}
+		return builder.toString();
 	}
 
 }
