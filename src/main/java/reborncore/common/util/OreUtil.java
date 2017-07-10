@@ -31,6 +31,7 @@ package reborncore.common.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import reborncore.RebornCore;
 
@@ -50,7 +51,11 @@ public class OreUtil {
 	}
 
 	public static ItemStack getStackFromName(String name, int stackSize) {
-		ItemStack stack = OreDictionary.getOres(name).get(0).copy();
+		NonNullList<ItemStack> oreList = OreDictionary.getOres(name);
+		if(oreList.isEmpty()){
+			throw new RuntimeException("Failed to get ore name:" + name);
+		}
+		ItemStack stack = oreList.get(0).copy();
 		stack.setCount(stackSize);
 		return stack;
 	}
