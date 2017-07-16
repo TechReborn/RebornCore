@@ -130,8 +130,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								useEnergy(filled, false);
 							}
 						}
-					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side)) {
-						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side);
+					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
+						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
 						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
 							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() / RebornCoreConfig.euPerFU), true);
 							if (drain > 0) {
