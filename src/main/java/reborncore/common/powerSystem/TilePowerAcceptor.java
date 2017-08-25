@@ -239,7 +239,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 	// END IC2
 
-	// Old cofh stuff, still used in places internaly, should be removed at somepoint
+	// Old cofh stuff, still used to implement Forge Energy, should be removed at somepoint
 	@Deprecated
 	public boolean canConnectEnergy(EnumFacing from) {
 		return canAcceptEnergy(from) || canProvideEnergy(from);
@@ -275,13 +275,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (!canProvideEnergy(from)) {
 			return 0;
 		}
-		maxExtract *= RebornCoreConfig.euPerFU;
-		int energyExtracted = Math.min(getEnergyStored(null), maxExtract);
+		int euExtracted = Math.min(getEnergyStored(null), maxExtract / RebornCoreConfig.euPerFU);
+		int feExtracted = euExtracted * RebornCoreConfig.euPerFU;
 
 		if (!simulate) {
-			setEnergy(getEnergy() - energyExtracted);
+			setEnergy(getEnergy() - euExtracted);
 		}
-		return energyExtracted / RebornCoreConfig.euPerFU;
+		return feExtracted;
 	}
 	// END COFH
 
