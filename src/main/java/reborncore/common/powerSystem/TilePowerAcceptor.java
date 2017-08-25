@@ -292,13 +292,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public void setEnergy(double energy) {
-		this.energy = energy;
-
-		if (this.getEnergy() > getMaxPower()) {
-			this.setEnergy(getMaxPower());
-		} else if (this.energy < 0) {
-			this.setEnergy(0);
-		}
+		this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 	}
 
 	@Override
