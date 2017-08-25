@@ -133,7 +133,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
 						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
-							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() / RebornCoreConfig.euPerFU), true);
+							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() * RebornCoreConfig.euPerFU), true);
 							if (drain > 0) {
 								int filled = energyStorage.receiveEnergy(drain, false);
 								forgePowerManager.extractEnergy(filled, false);
@@ -250,12 +250,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
-		int energyReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxInput() * RebornCoreConfig.euPerFU, maxReceive));
+		int feReceived = (int) Math.min(getMaxEnergyStored(from) - getEnergyStored(from), Math.min(getMaxInput() * RebornCoreConfig.euPerFU, maxReceive));
+		int euReceived = feReceived / RebornCoreConfig.euPerFU;
+		feReceived = euReceived * RebornCoreConfig.euPerFU;
 
 		if (!simulate) {
-			setEnergy(getEnergy() + energyReceived);
+			setEnergy(getEnergy() + euReceived);
 		}
-		return energyReceived;
+		return feReceived;
 	}
 
 	@Deprecated
