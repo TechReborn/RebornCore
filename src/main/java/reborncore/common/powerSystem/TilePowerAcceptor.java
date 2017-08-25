@@ -329,9 +329,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public double useEnergy(double extract, boolean simulate) {
 		if (extract > energy) {
-			double tempEnergy = energy;
-			setEnergy(0);
-			return tempEnergy;
+			extract = energy;
 		}
 		if (!simulate) {
 			setEnergy(energy - extract);
