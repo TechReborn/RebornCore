@@ -65,7 +65,7 @@ public class FluidUtils {
 				 * the inventory accordingly.
 				 */
 				if (drained != null && inputFluidHandler.getContainer() != ItemStack.EMPTY)
-					if (output == ItemStack.EMPTY) {
+					if (output.isEmpty()) {
 						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
 						inv.decrStackSize(inputSlot, 1);
 					} else {
@@ -100,7 +100,7 @@ public class FluidUtils {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 
-		if (input != ItemStack.EMPTY) {
+		if (!input.isEmpty()) {
 			IFluidHandlerItem inputFluidHandler = getFluidHandler(input);
 
 			/*
@@ -166,7 +166,7 @@ public class FluidUtils {
 
 	@Nonnull
 	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty) {
-		if (fluid == null || empty == ItemStack.EMPTY)
+		if (fluid == null || empty.isEmpty())
 			return ItemStack.EMPTY;
 		IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(empty);
 		fluidHandler.fill(new FluidStack(fluid, fluidHandler.getTankProperties()[0].getCapacity()), true);
