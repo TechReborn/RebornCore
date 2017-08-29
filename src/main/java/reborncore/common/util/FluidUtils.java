@@ -114,7 +114,7 @@ public class FluidUtils {
 			 * It's necessary to check before any alterations that the resulting
 			 * ItemStack can be placed into the outputSlot.
 			 */
-			if (inputFluidHandler != null && (output == ItemStack.EMPTY
+			if (inputFluidHandler != null && (output.isEmpty()
 				|| (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(
 				FluidUtils.getFilledContainer(fluidToFill, containerCopy), output, true, true)))) {
 
@@ -130,7 +130,7 @@ public class FluidUtils {
 						inputFluidHandler.getTankProperties()[0].getCapacity(), true);
 
 					// The inventory is modified and stacks are merged.
-					if (output == ItemStack.EMPTY)
+					if (output.isEmpty())
 						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
 					else
 						inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
