@@ -41,6 +41,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -48,15 +49,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
+import reborncore.api.IToolDrop;
+import reborncore.api.IToolHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.InventoryHelper;
+import techreborn.init.ModSounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,8 +282,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		if (fillBlockWithFluid(worldIn, pos, playerIn)) {
 			return true;
 		}
+		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
 		if (playerIn.isSneaking()) {
-			ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
 			if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
 				TileEntity tileEntity = worldIn.getTileEntity(pos);
 				if (tileEntity instanceof IUpgradeable) {
@@ -289,6 +295,60 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 						}
 					}
 				}
+			}
+		}
+		if (!stack.isEmpty() && stack.getItem() instanceof IToolHandler) {
+			IToolHandler toolHandler = (IToolHandler) stack.getItem();
+			if (toolHandler.handleTool(stack, pos, worldIn, playerIn, side, false)) {
+				TileEntity tileEntity = worldIn.getTileEntity(pos);
+				if (playerIn.isSneaking()) {
+					if (tileEntity instanceof IToolDrop) {
+						List<ItemStack> items = new ArrayList<>();
+						ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
+						if (drop == null) {
+							return false;
+						}
+						items.add(drop);
+
+						if (!items.isEmpty()) {
+							for (ItemStack itemStack : items) {
+
+								Random rand = new Random();
+
+								float dX = rand.nextFloat() * 0.8F + 0.1F;
+								float dY = rand.nextFloat() * 0.8F + 0.1F;
+								float dZ = rand.nextFloat() * 0.8F + 0.1F;
+
+								EntityItem entityItem = new EntityItem(worldIn, pos.getX() + dX, pos.getY() + dY,
+									pos.getZ() + dZ, itemStack.copy());
+
+								if (itemStack.hasTagCompound()) {
+									entityItem.getItem()
+										.setTagCompound(itemStack.getTagCompound().copy());
+								}
+
+								float factor = 0.05F;
+								entityItem.motionX = rand.nextGaussian() * factor;
+								entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+								entityItem.motionZ = rand.nextGaussian() * factor;
+								if (!worldIn.isRemote) {
+									worldIn.spawnEntity(entityItem);
+								}
+							}
+						}
+						worldIn.playSound(null, playerIn.posX, playerIn.posY,
+							playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
+							SoundCategory.BLOCKS, 0.6F, 1F);
+						if (!worldIn.isRemote) {
+							worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+						}
+						return true;
+					}
+				} else {
+					tileEntity.rotate(Rotation.CLOCKWISE_90);
+					return true;
+				}
+
 			}
 		}
 		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ)) {

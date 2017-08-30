@@ -32,16 +32,17 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Rotation;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.common.IWrenchable;
+import reborncore.api.IToolDrop;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.powerSystem.TileEnergyBase;
 
 /**
  * Created by Lordmau5 on 08.06.2016.
  */
-public abstract class TileMachineBase extends TileEnergyBase implements IWrenchable {
+public abstract class TileMachineBase extends TileEnergyBase implements IToolDrop {
 
 	/* Energy and Tick Setup */
 	private int costPerTick;
@@ -83,12 +84,6 @@ public abstract class TileMachineBase extends TileEnergyBase implements IWrencha
 		return (int) ((getEnergy() * scale / getMaxPower()));
 	}
 
-	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, EnumFacing side) {
-		return false;
-	}
-
-	@Override
 	public EnumFacing getFacing() {
 		return getFacingEnum();
 	}
@@ -101,17 +96,12 @@ public abstract class TileMachineBase extends TileEnergyBase implements IWrencha
 	}
 
 	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
-		return entityPlayer.isSneaking();
+	public void rotate(Rotation rotationIn) {
+		setFacing(rotationIn.rotate(getFacing()));
 	}
 
 	@Override
-	public float getWrenchDropRate() {
-		return 1.0F;
-	}
-
-	@Override
-	public abstract ItemStack getWrenchDrop(EntityPlayer p0);
+	public abstract ItemStack getToolDrop(EntityPlayer p0);
 
 	@Override
 	public boolean canAcceptEnergy(EnumFacing direction) {

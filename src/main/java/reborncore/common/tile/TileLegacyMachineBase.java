@@ -40,6 +40,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -443,5 +444,14 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public int getUpgradeSlotCount() {
 		return 4;
+	}
+
+	public EnumFacing getFacing() {
+		return getFacingEnum();
+	}
+
+	@Override
+	public void rotate(Rotation rotationIn) {
+		setFacing(rotationIn.rotate(getFacing()));
 	}
 }

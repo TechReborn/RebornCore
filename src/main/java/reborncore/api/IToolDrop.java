@@ -26,23 +26,12 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common;
+package reborncore.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 
-@Deprecated
-public interface IWrenchable {
-	boolean wrenchCanSetFacing(EntityPlayer p0, EnumFacing p1);
+public interface IToolDrop {
 
-	EnumFacing getFacing();
-
-	void setFacing(EnumFacing facing);
-
-	boolean wrenchCanRemove(EntityPlayer p0);
-
-	float getWrenchDropRate();
-
-	ItemStack getWrenchDrop(EntityPlayer p0);
+	ItemStack getToolDrop(EntityPlayer p0);
 }
