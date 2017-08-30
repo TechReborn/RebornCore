@@ -62,7 +62,6 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.InventoryHelper;
-import techreborn.init.ModSounds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -336,9 +335,9 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 								}
 							}
 						}
-						worldIn.playSound(null, playerIn.posX, playerIn.posY,
-							playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
-							SoundCategory.BLOCKS, 0.6F, 1F);
+//						worldIn.playSound(null, playerIn.posX, playerIn.posY,
+//							playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
+//							SoundCategory.BLOCKS, 0.6F, 1F);
 						if (!worldIn.isRemote) {
 							worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 						}
