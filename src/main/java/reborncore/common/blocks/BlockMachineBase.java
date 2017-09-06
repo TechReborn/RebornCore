@@ -57,6 +57,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import reborncore.api.IToolDrop;
 import reborncore.api.IToolHandler;
+import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
@@ -347,19 +348,12 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 					tileEntity.rotate(Rotation.CLOCKWISE_90);
 					return true;
 				}
-
 			}
-		}
-		if (onBlockActivated(worldIn, pos.getX(), pos.getY(), pos.getZ(), playerIn, side.getIndex(), hitX, hitY, hitZ)) {
+		} else if (getGui() != null && !playerIn.isSneaking()){
+			getGui().open(playerIn, pos, worldIn);
 			return true;
 		}
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
-	}
-
-	@Deprecated
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float hitX,
-	                                float hitY, float hitZ) {
-		return false;
 	}
 
 	//	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer)
@@ -556,4 +550,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 		return 0;
 	}
+
+	public abstract IMachineGuiHandler getGui();
 }
