@@ -153,10 +153,10 @@ public class RecipeCrafter {
 						}
 					}
 					if (canGiveInvAll) {
-						setCurrentRecipe(recipe);// Sets the current recipe then
-						// syncs
+						// Sets the current recipe then syncs
+						setCurrentRecipe(recipe);
 						this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - speedMultiplier)), 1);
-						this.currentTickTime = -1;
+						this.currentTickTime = 0;
 						setIsActive();
 					} else {
 						this.currentTickTime = -1;
@@ -164,46 +164,45 @@ public class RecipeCrafter {
 				}
 			}
 		} else {
-			if (isInvDirty() && !hasAllInputs()) {// If it doesn't have all the inputs reset
+			// If it doesn't have all the inputs reset
+			if (isInvDirty() && !hasAllInputs()) {
 				currentRecipe = null;
 				currentTickTime = -1;
 				setIsActive();
 			}
-			if (currentRecipe != null && currentTickTime >= currentNeededTicks) {// If it has reached the recipe tick time
+			// If it has reached the recipe tick time
+			if (currentRecipe != null && currentTickTime >= currentNeededTicks) {
 				boolean canGiveInvAll = true;
-				for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {// Checks to see if it can fit the output
+				// Checks to see if it can fit the output
+				for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
 					if (!canFitStack(currentRecipe.getOutput(i), outputSlots[i], currentRecipe.useOreDic())) {
 						canGiveInvAll = false;
 					}
 				}
-				ArrayList<Integer> filledSlots = new ArrayList<>();// The
-				// slots
-				// that
-				// have
-				// been
-				// filled
+				// The slots that have been filled
+				ArrayList<Integer> filledSlots = new ArrayList<>();
 				if (canGiveInvAll && currentRecipe.onCraft(parentTile)) {
 					for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
-						if (!filledSlots.contains(outputSlots[i])) {// checks it has not been filled
-							fitStack(currentRecipe.getOutput(i).copy(), outputSlots[i]);// fills
-							// the
-							// slot
-							// with
-							// the
-							// output
-							// stack
+						// Checks it has not been filled
+						if (!filledSlots.contains(outputSlots[i])) {
+							// Fills the slot with the output stack
+							fitStack(currentRecipe.getOutput(i).copy(), outputSlots[i]);
 							filledSlots.add(outputSlots[i]);
 						}
 					}
-					useAllInputs();// this uses all the inputs
-					currentRecipe = null;// resets
+					// This uses all the inputs
+					useAllInputs();
+					// Reset
+					currentRecipe = null;
 					currentTickTime = -1;
 					setIsActive();
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
-				if (energy.canUseEnergy(getEuPerTick())) {// This uses the power
+				// This uses the power
+				if (energy.canUseEnergy(getEuPerTick())) {
 					energy.useEnergy(getEuPerTick());
-					currentTickTime++;// increase the ticktime
+					// Increase the ticktime
+					currentTickTime++;
 					if(currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null){
 						soundHanlder.playSound(false, parentTile);
 					}

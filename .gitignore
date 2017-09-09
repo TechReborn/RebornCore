@@ -17,3 +17,5 @@ changelog.txt
 *.log
 .idea/*
 classes/*
+/.classpath
+/.project
