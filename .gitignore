@@ -19,3 +19,4 @@ changelog.txt
 classes/*
 /.classpath
 /.project
+*.launch

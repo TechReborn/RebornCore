@@ -28,6 +28,10 @@
 
 package reborncore.common.util;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 /**
  * @author Prospector on 11/05/16
  */
@@ -48,5 +52,15 @@ public class StringUtils {
 		String output = input.toLowerCase();
 		return output.substring(0, 1).toUpperCase() + output.substring(1);
 	}
+	
+	/**
+     * Returns localized string
+     * @param text String key to translate
+     * @return Translated key string
+     */
+    @SideOnly(Side.CLIENT)
+    public static String translateToLocal(String text){
+        return I18n.format(text);
+    }
 
 }
