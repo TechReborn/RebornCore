@@ -37,6 +37,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
@@ -92,20 +93,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 	}
 
-	public static ItemStack consumeItem(ItemStack stack) {
-		if (stack.getCount() == 1) {
-			if (stack.getItem().hasContainerItem(stack)) {
-				return stack.getItem().getContainerItem(stack);
-			} else {
-				return ItemStack.EMPTY;
-			}
-		} else {
-			stack.splitStack(1);
-
-			return stack;
-		}
-	}
-
 	protected BlockStateContainer createBlockState() {
 
 		FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
@@ -115,77 +102,25 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		//return new TileEnergyMachine();
 		return null;
-	}
-
-	@Deprecated
-	public void onBlockAdded(World world, int x, int y, int z) {
-	}
-
-	@Override
-	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-		super.onBlockAdded(worldIn, pos, state);
-		onBlockAdded(worldIn, pos.getX(), pos.getY(), pos.getZ());
-		this.setDefaultFacing(worldIn, pos, state);
-	}
-
-	private void setDefaultFacing(World worldIn, BlockPos pos, IBlockState state) {
-		if (hasCustomStaes) {
-			return;
-		}
-		if (!worldIn.isRemote) {
-			IBlockState sate = worldIn.getBlockState(pos.north());
-			Block block = sate.getBlock();
-			IBlockState state1 = worldIn.getBlockState(pos.south());
-			Block block1 = state1.getBlock();
-			IBlockState state2 = worldIn.getBlockState(pos.west());
-			Block block2 = state2.getBlock();
-			IBlockState state3 = worldIn.getBlockState(pos.east());
-			Block block3 = state3.getBlock();
-			EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
-
-			if (enumfacing == EnumFacing.NORTH && block.isFullBlock(state) && !block1.isFullBlock(state1)) {
-				enumfacing = EnumFacing.SOUTH;
-			} else if (enumfacing == EnumFacing.SOUTH && block1.isFullBlock(state1) && !block.isFullBlock(state)) {
-				enumfacing = EnumFacing.NORTH;
-			} else if (enumfacing == EnumFacing.WEST && block2.isFullBlock(state2) && !block3.isFullBlock(state2)) {
-				enumfacing = EnumFacing.EAST;
-			} else if (enumfacing == EnumFacing.EAST && block3.isFullBlock(state3) && !block2.isFullBlock(state2)) {
-				enumfacing = EnumFacing.WEST;
-			}
-
-			worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
-		}
-	}
-
-	@Deprecated
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack itemstack) {
-
 	}
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer,
 	                            ItemStack stack) {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-		onBlockPlacedBy(worldIn, pos.getX(), pos.getY(), pos.getZ(), placer, stack);
 		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
 	}
 
-	public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z) {
+	@Override
+	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
 		return false;
-	}
-
-	@Deprecated
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-
 	}
 
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		dropInventory(worldIn, pos);
 		super.breakBlock(worldIn, pos, state);
-		breakBlock(worldIn, pos.getX(), pos.getY(), pos.getZ(), state.getBlock(), 0);
 	}
 
 	protected void dropInventory(World world, BlockPos pos) {
