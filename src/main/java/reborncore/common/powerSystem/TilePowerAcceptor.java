@@ -57,8 +57,10 @@ import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
@@ -107,6 +109,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void update() {
 		super.update();
 
+		Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
 		if (getEnergy() > 0 && !world.isRemote) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (EnumFacing side : EnumFacing.values()) {
 				if (canProvideEnergy(side)) {
@@ -114,6 +117,22 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					if (tile == null) {
 						continue;
 					}
+					else {
+						acceptors.put(side, tile);
+					}
+				}
+			}
+		}
+				
+		if (acceptors.size() > 0){
+			double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
+			double energyShare = drain / acceptors.size();
+			double remainingEnergy = drain;
+			
+			if (energyShare > 0) {
+				for (Map.Entry<EnumFacing, TileEntity> entry : acceptors.entrySet()){
+					EnumFacing side = entry.getKey();
+					TileEntity tile = entry.getValue();
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
 						if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
@@ -124,26 +143,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
-							double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
-							if (drain > 0) {
-								double filled = eFace.addEnergy(drain, false);
-								useEnergy(filled, false);
-							}
+								double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
+								remainingEnergy -= useEnergy(filled, false);
 						}
 					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
-						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
-							int drain = forgePowerManager.extractEnergy(Math.min(forgePowerManager.getEnergyStored(), (int) getMaxOutput() * RebornCoreConfig.euPerFU), true);
-							if (drain > 0) {
-								int filled = energyStorage.receiveEnergy(drain, false);
-								forgePowerManager.extractEnergy(filled, false);
-							}
+						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {		
+								int filled = energyStorage.receiveEnergy((int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
+								remainingEnergy -= forgePowerManager.extractEnergy(filled, false);
 						}
 					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 						TeslaManager.manager.update(this);
-					}
-				}
-			}
+					}	
+				}			
+			}		
 		}
 
 		if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()) {
