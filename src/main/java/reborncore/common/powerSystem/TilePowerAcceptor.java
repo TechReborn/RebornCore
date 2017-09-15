@@ -412,20 +412,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	public void charge(int slot) {
+		if (world.isRemote) {
+			return;
+		}
 		if (getStackInSlot(slot) != ItemStack.EMPTY) {
-			if (getStackInSlot(slot).getItem() instanceof IEnergyItemInfo) {
-				if (getEnergy() != 0) {
-					ItemStack stack = getStackInSlot(slot);
-					double maxPower = PoweredItem.getMaxPower(stack);
-					double energy = PoweredItem.getEnergy(stack);
-					IEnergyItemInfo iEnergyItemInfo = (IEnergyItemInfo) stack.getItem();
-					if (energy < maxPower) {
-						double transfer = Math.min(Math.min(iEnergyItemInfo.getMaxTransfer(stack), getEnergy()), maxPower - energy);
-						if (PoweredItem.canUseEnergy(transfer, stack)) {
-							PoweredItem.useEnergy(transfer, stack);
-							addEnergy(transfer);
-						}
-
+			final ItemStack batteryStack = this.getStackInSlot(slot);
+			if (batteryStack.getItem() instanceof IEnergyItemInfo) {
+				final IEnergyItemInfo battery = (IEnergyItemInfo) batteryStack.getItem();
+				if (battery.canProvideEnergy(batteryStack) && this.getEnergy() < this.getMaxPower()){
+					double minAccept = Math.min(this.getFreeSpace(), this.getMaxInput());
+					double minProvide = Math.min(battery.getMaxTransfer(batteryStack), PoweredItem.getEnergy(batteryStack));
+					double transfer  = Math.min(minAccept, minProvide);
+					if (PoweredItem.canUseEnergy(transfer, batteryStack)){
+						PoweredItem.useEnergy(transfer, batteryStack);
+						this.addEnergy(transfer);
 					}
 				}
 			}
