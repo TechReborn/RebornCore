@@ -85,7 +85,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
 					renderer.renderByItem(itemStackIn);
 					return;
 				}
-				ShieldTexture shieldTexture = ShieldTextureStore.getTexture(location);
+				ShieldTexture shieldTexture = ShieldTextureStore.getTexture(str);
 				if (shieldTexture != null) {
 					if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
 						if (customTextureMap.containsKey(location.getResourcePath())) {

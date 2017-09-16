@@ -73,9 +73,8 @@ public class ShieldTextureStore {
 
 	public static
 	@Nullable
-	ShieldTexture getTexture(ResourceLocation location) {
+	ShieldTexture getTexture(String name) {
 		if (!textures.isEmpty()) {
-			String name = location.getResourcePath();
 			ShieldTexture texture = null;
 			if (ShieldJsonLoader.customTextureNameList.containsKey(name)) {
 				name = ShieldJsonLoader.customTextureNameList.get(name);
