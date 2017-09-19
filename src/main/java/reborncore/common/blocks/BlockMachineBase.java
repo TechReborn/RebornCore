@@ -28,7 +28,6 @@
 
 package reborncore.common.blocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.SoundType;
@@ -39,7 +38,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -51,7 +49,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -64,6 +61,7 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.InventoryHelper;
+import reborncore.common.util.WorldUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,35 +132,12 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 
 		IInventory inventory = (IInventory) tileEntity;
-
 		List<ItemStack> items = new ArrayList<ItemStack>();
-
 		addItemsToList(inventory, items);
 		if (tileEntity instanceof IUpgradeable) {
 			addItemsToList(((IUpgradeable) tileEntity).getUpgradeInvetory(), items);
 		}
-
-		for (ItemStack itemStack : items) {
-			Random rand = new Random();
-
-			float dX = rand.nextFloat() * 0.8F + 0.1F;
-			float dY = rand.nextFloat() * 0.8F + 0.1F;
-			float dZ = rand.nextFloat() * 0.8F + 0.1F;
-
-			EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
-				itemStack.copy());
-
-			if (itemStack.hasTagCompound()) {
-				entityItem.getItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
-			}
-
-			float factor = 0.05F;
-			entityItem.motionX = rand.nextGaussian() * factor;
-			entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-			entityItem.motionZ = rand.nextGaussian() * factor;
-			world.spawnEntity(entityItem);
-			itemStack.setCount(0);
-		}
+		WorldUtils.dropItems(items, world, pos);
 	}
 
 	private void addItemsToList(IInventory inventory, List<ItemStack> items) {
@@ -238,39 +213,14 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				TileEntity tileEntity = worldIn.getTileEntity(pos);
 				if (playerIn.isSneaking()) {
 					if (tileEntity instanceof IToolDrop) {
-						List<ItemStack> items = new ArrayList<>();
 						ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
 						if (drop == null) {
 							return false;
 						}
-						items.add(drop);
-
-						if (!items.isEmpty()) {
-							for (ItemStack itemStack : items) {
-
-								Random rand = new Random();
-
-								float dX = rand.nextFloat() * 0.8F + 0.1F;
-								float dY = rand.nextFloat() * 0.8F + 0.1F;
-								float dZ = rand.nextFloat() * 0.8F + 0.1F;
-
-								EntityItem entityItem = new EntityItem(worldIn, pos.getX() + dX, pos.getY() + dY,
-									pos.getZ() + dZ, itemStack.copy());
-
-								if (itemStack.hasTagCompound()) {
-									entityItem.getItem()
-										.setTagCompound(itemStack.getTagCompound().copy());
-								}
-
-								float factor = 0.05F;
-								entityItem.motionX = rand.nextGaussian() * factor;
-								entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-								entityItem.motionZ = rand.nextGaussian() * factor;
-								if (!worldIn.isRemote) {
-									worldIn.spawnEntity(entityItem);
-								}
-							}
+						if (!drop.isEmpty()){
+							spawnAsEntity(worldIn, pos, drop);
 						}
+						
 //						worldIn.playSound(null, playerIn.posX, playerIn.posY,
 //							playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
 //							SoundCategory.BLOCKS, 0.6F, 1F);

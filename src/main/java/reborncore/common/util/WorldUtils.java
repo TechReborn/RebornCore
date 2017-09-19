@@ -28,9 +28,15 @@
 
 package reborncore.common.util;
 
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 
 /**
  * Created by Mark on 13/03/2016.
@@ -44,5 +50,35 @@ public class WorldUtils {
 
 	public static boolean chunkExists(World world, int x, int z) {
 		return world.isBlockLoaded(new BlockPos(x << 4, 64, z << 4));
+	}
+	
+	public static void dropItem(ItemStack itemStack, World world, BlockPos pos) {
+		Random rand = new Random();
+
+		float dX = rand.nextFloat() * 0.8F + 0.1F;
+		float dY = rand.nextFloat() * 0.8F + 0.1F;
+		float dZ = rand.nextFloat() * 0.8F + 0.1F;
+
+		EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
+				itemStack.copy());
+
+		if (itemStack.hasTagCompound()) {
+			entityItem.getItem().setTagCompound(itemStack.getTagCompound().copy());
+		}
+
+		float factor = 0.05F;
+		entityItem.motionX = rand.nextGaussian() * factor;
+		entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+		entityItem.motionZ = rand.nextGaussian() * factor;
+		if (!world.isRemote) {
+			world.spawnEntity(entityItem);
+		}
+	}
+
+	public static void dropItems(List<ItemStack> itemStackList, World world, BlockPos pos) {
+		for (final ItemStack itemStack : itemStackList) {
+			WorldUtils.dropItem(itemStack, world, pos);
+			itemStack.setCount(0);
+		}
 	}
 }
