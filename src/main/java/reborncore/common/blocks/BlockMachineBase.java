@@ -38,13 +38,11 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -59,13 +57,13 @@ import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.InventoryHelper;
 import reborncore.common.util.WorldUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -160,10 +158,18 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		List<ItemStack> items = new ArrayList<ItemStack>();
-		items.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
+		
+		if (RebornCoreConfig.wrenchRequired){
+			items.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
+		}
+		else {
+			items = super.getDrops(world, pos, state, fortune);
+		}
+		
 		return items;
 	}
 

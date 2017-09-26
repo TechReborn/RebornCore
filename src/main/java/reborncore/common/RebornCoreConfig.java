@@ -55,6 +55,7 @@ public class RebornCoreConfig {
 	private static IPowerConfig powerConfig = null;
 	public static boolean mtDocGen;
 	public static boolean isIC2Loaded = false;
+	public static boolean wrenchRequired = true;
 
 	public RebornCoreConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -85,31 +86,45 @@ public class RebornCoreConfig {
 
 	public static void Configs() {
 
-		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla").getBoolean();
+		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla")
+				.getBoolean();
 
-		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system").getBoolean();
+		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system")
+				.getBoolean();
 
-		enableEU = config
-			.get(CATEGORY_POWER, "Allow IC2 EU", true, "Allow machines to be powered with EU")
-			.getBoolean();
+		enableEU = config.get(CATEGORY_POWER, "Allow IC2 EU", true, "Allow machines to be powered with EU")
+				.getBoolean();
 
-		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU").getInt();
+		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU")
+				.getInt();
 
-		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker").getBoolean();
+		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker")
+				.getBoolean();
 
 		ShowStackInfoHUD = config.get(CATEGORY_POWER, "Show Stack Info HUD", true, "Show Stack Info HUD (ClientSideOnly)")
-			.getBoolean(true);
+				.getBoolean(true);
+		
 		stackInfoBottom = config.get(CATEGORY_POWER, "Stack Info Bottom", true, "Reverse the order of the HUD, and calculate it's X and Y positions from the bottom left corner (ClientSideOnly)")
-			.getBoolean(true);
+				.getBoolean(true);
 
-		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X coordinate of the stack hud (ClientSideOnly)").getInt();
-		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y coordinate of the stack hud (ClientSideOnly)").getInt();
+		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X coordinate of the stack hud (ClientSideOnly)")
+				.getInt();
+		
+		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y coordinate of the stack hud (ClientSideOnly)")
+				.getInt();
 
-		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs").getBoolean();
+		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs")
+				.getBoolean();
 
-		mtDocGen = config.get(CATEGORY_MISC, "mtDocGen", false, "Enable automatic generation of MT docs at runtime (Beta)").getBoolean();
-		//resets this when the config is reloaded
+		mtDocGen = config.get(CATEGORY_MISC, "mtDocGen", false, "Enable automatic generation of MT docs at runtime (Beta)")
+				.getBoolean();
+		
+		// resets this when the config is reloaded
 		powerConfig = null;
+
+		wrenchRequired = config.get(CATEGORY_MISC, "Wrench required", true, "Wrench required to pick machine. If now wrenched than machine frame will drop instead.")
+				.getBoolean(true);
+
 	}
 
 	public static IPowerConfig getRebornPower() {
