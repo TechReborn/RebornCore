@@ -199,7 +199,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public double getDemandedEnergy() {
 		if (!RebornCoreConfig.getRebornPower().eu())
 			return 0;
-		return Math.min(getMaxPower() - getEnergy(), getMaxInput());
+		return getMaxPower() - getEnergy();
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		setEnergy(getEnergy() + amount);
+		addEnergy(amount);
 		return 0;
 	}
 
