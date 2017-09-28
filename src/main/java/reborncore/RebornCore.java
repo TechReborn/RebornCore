@@ -56,7 +56,7 @@ import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
-import techreborn.utils.GenericWrenchHelper;
+import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
 
