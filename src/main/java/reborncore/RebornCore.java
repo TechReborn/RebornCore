@@ -28,6 +28,7 @@
 
 package reborncore;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import reborncore.api.ToolManager;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
@@ -54,6 +56,7 @@ import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
+import techreborn.utils.GenericWrenchHelper;
 
 import java.io.File;
 
@@ -101,6 +104,11 @@ public class RebornCore implements IModInfo {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
 		}
 		RegistrationManager.load(event);
+
+		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("ic2:wrench"), true));
+		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("forestry:wrench"), false));
+		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("actuallyadditions:item_laser_wrench"), false));
+		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("thermalfoundation:wrench"), false));
 	}
 
 	@Mod.EventHandler

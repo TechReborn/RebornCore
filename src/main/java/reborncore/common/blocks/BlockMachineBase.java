@@ -53,6 +53,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import reborncore.api.IToolDrop;
 import reborncore.api.IToolHandler;
+import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
@@ -213,9 +214,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				}
 			}
 		}
-		if (!stack.isEmpty() && stack.getItem() instanceof IToolHandler) {
-			IToolHandler toolHandler = (IToolHandler) stack.getItem();
-			if (toolHandler.handleTool(stack, pos, worldIn, playerIn, side, false)) {
+		if (!stack.isEmpty() && ToolManager.INSTANCE.canHandleTool(stack)) {
+			if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, false)) {
 				TileEntity tileEntity = worldIn.getTileEntity(pos);
 				if (playerIn.isSneaking()) {
 					if (tileEntity instanceof IToolDrop) {
