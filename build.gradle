@@ -89,8 +89,8 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.12.2-14.23.0.2486"
-	mappings = "snapshot_20170918"
+	version = "1.12.2-14.23.0.2493"
+	mappings = "snapshot_20170624"
 	replace "@MODVERSION@", project.version
 	runDir = "run"
 	makeObfSourceJar = false
@@ -100,7 +100,7 @@ group = 'RebornCore'
 
 
 dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.8.2-ex112:api'
+	compile 'net.industrial-craft:industrialcraft-2:2.8.26-ex112:api'
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
 	provided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.0.5"
 }
