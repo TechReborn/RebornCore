@@ -49,6 +49,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.event.world.BlockEvent;
@@ -99,6 +100,7 @@ public class MultiblockRenderEvent {
 		World world = player.world;
 
 		minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		BlockRenderLayer originalLayer = MinecraftForgeClient.getRenderLayer();
 		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
 
 		GlStateManager.pushMatrix();
@@ -118,6 +120,7 @@ public class MultiblockRenderEvent {
 		this.renderModel(world, pos, alpha, comp.state);
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
+		ForgeHooksClient.setRenderLayer(originalLayer);
 	}
 
 	private void renderModel(World world, BlockPos pos, int alpha, IBlockState state) {
