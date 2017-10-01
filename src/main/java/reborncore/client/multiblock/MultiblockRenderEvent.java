@@ -57,7 +57,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
-import reborncore.common.misc.Location;
+
 
 import java.util.List;
 
@@ -66,7 +66,8 @@ public class MultiblockRenderEvent {
 	public static BlockPos anchor;
 	private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
-	public Location parent;
+	//public Location parent;
+	public BlockPos parent;
 
 	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
@@ -157,8 +158,7 @@ public class MultiblockRenderEvent {
 	@SubscribeEvent
 	public void breakBlock(BlockEvent.BreakEvent event) {
 		if (parent != null) {
-			if (event.getPos().getX() == parent.x && event.getPos().getY() == parent.y && event.getPos().getZ() == parent.z
-				&& Minecraft.getMinecraft().world == parent.world) {
+			if (event.getPos().getX() == parent.getX() && event.getPos().getY() == parent.getY() && event.getPos().getZ() == parent.getZ()) {
 				setMultiblock(null);
 			}
 		}
