@@ -43,7 +43,16 @@ public class OreUtil {
 	public static ArrayList<String> oreNames = new ArrayList<String>();
 
 	public static boolean doesOreExistAndValid(String name) {
-		return OreDictionary.doesOreNameExist(name);
+		if (OreDictionary.doesOreNameExist(name)){
+			NonNullList<ItemStack> oreList = OreDictionary.getOres(name);
+			if (oreList.isEmpty()){
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+		return true;
 	}
 
 	public static ItemStack getStackFromName(String name) {
