@@ -50,15 +50,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.tile.IContainerProvider;
-import reborncore.api.tile.IInventoryProvider;
-import reborncore.api.tile.IUpgrade;
-import reborncore.api.tile.IUpgradeable;
+import reborncore.api.tile.*;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
+import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 
@@ -69,9 +67,23 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable {
+public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
+
+	/**
+	 * This is used to change the speed of the crafting operation.
+	 * <p/>
+	 * 0 = none; 0.2 = 20% speed increase 0.75 = 75% increase
+	 */
+	double speedMultiplier = 0;
+	/**
+	 * This is used to change the power of the crafting operation.
+	 * <p/>
+	 * 1 = none; 1.2 = 20% speed increase 1.75 = 75% increase 5 = uses 5 times
+	 * more power
+	 */
+	double powerMultiplier = 1;
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
@@ -102,7 +114,6 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				crafter = getCrafterForTile().get();
 			}
 			if (canBeUpgraded()) {
-
 				resetUpgrades();
 				for (int i = 0; i < getUpgradeSlotCount(); i++) {
 					ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
@@ -118,11 +129,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	public void resetUpgrades() {
-		if (getCrafterForTile().isPresent()) {
-			RecipeCrafter crafter = getCrafterForTile().get();
-			crafter.resetPowerMulti();
-			crafter.resetSpeedMulti();
-		}
+		resetPowerMulti();
+		resetSpeedMulti();
 	}
 
 	@Deprecated
@@ -451,6 +459,45 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public void rotate(Rotation rotationIn) {
 		setFacing(rotationIn.rotate(getFacing()));
+	}
+
+	@Override
+	public void resetSpeedMulti() {
+		speedMultiplier = 0;
+	}
+
+	@Override
+	public double getSpeedMultiplier() {
+		return speedMultiplier;
+	}
+
+	@Override
+	public void addPowerMulti(double amount) {
+		powerMultiplier += amount;
+	}
+
+	@Override
+	public void resetPowerMulti() {
+		powerMultiplier = 1;
+	}
+
+	@Override
+	public double getPowerMultiplier() {
+		return powerMultiplier;
+	}
+
+	@Override
+	public double getEuPerTick(double baseEu) {
+		return baseEu * powerMultiplier;
+	}
+
+	@Override
+	public void addSpeedMulti(double amount) {
+		if (speedMultiplier + amount <= 0.99) {
+			speedMultiplier += amount;
+		} else {
+			speedMultiplier = 0.99;
+		}
 	}
 
 }

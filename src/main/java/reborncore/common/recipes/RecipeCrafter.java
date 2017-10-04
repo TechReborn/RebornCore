@@ -43,11 +43,12 @@ import reborncore.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Use this in your tile entity to craft things
  */
-public class RecipeCrafter {
+public class RecipeCrafter implements IUpgradeHandler {
 
 	/**
 	 * This is the recipe type to use
@@ -63,6 +64,8 @@ public class RecipeCrafter {
 	 * This is the place to use the power from
 	 */
 	public IEnergyInterfaceTile energy;
+
+	public Optional<IUpgradeHandler> parentUpgradeHandler = Optional.empty();
 
 	/**
 	 * This is the amount of inputs that the setRecipe has
@@ -94,19 +97,7 @@ public class RecipeCrafter {
 	public int currentTickTime = 0;
 	public int currentNeededTicks = 1;// Set to 1 to stop rare crashes
 	double lastEnergy;
-	/**
-	 * This is used to change the speed of the crafting operation.
-	 * <p/>
-	 * 0 = none; 0.2 = 20% speed increase 0.75 = 75% increase
-	 */
-	double speedMultiplier = 0;
-	/**
-	 * This is used to change the power of the crafting operation.
-	 * <p/>
-	 * 1 = none; 1.2 = 20% speed increase 1.75 = 75% increase 5 = uses 5 times
-	 * more power
-	 */
-	double powerMultiplier = 1;
+
 	int ticksSinceLastChange;
 
 	@Nullable
@@ -118,6 +109,9 @@ public class RecipeCrafter {
 		this.parentTile = parentTile;
 		if (parentTile instanceof IEnergyInterfaceTile) {
 			energy = (IEnergyInterfaceTile) parentTile;
+		}
+		if(parentTile instanceof IUpgradeHandler){
+			parentUpgradeHandler = Optional.of((IUpgradeHandler) parentTile);
 		}
 		this.inputs = inputs;
 		this.outputs = outputs;
@@ -180,8 +174,8 @@ public class RecipeCrafter {
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
 				// This uses the power
-				if (energy.canUseEnergy(getEuPerTick())) {
-					energy.useEnergy(getEuPerTick());
+				if (energy.canUseEnergy(getEuPerTick(currentRecipe.euPerTick()))) {
+					energy.useEnergy(getEuPerTick(currentRecipe.euPerTick()));
 					// Increase the ticktime
 					currentTickTime++;
 					if(currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null){
@@ -206,7 +200,7 @@ public class RecipeCrafter {
 				}
 				// Sets the current recipe then syncs
 				setCurrentRecipe(recipe);
-				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - speedMultiplier)), 1);
+				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
 				this.currentTickTime = 0;
 			}
 		}
@@ -363,38 +357,6 @@ public class RecipeCrafter {
 		return false;
 	}
 
-	public void addSpeedMulti(double amount) {
-		if (speedMultiplier + amount <= 0.99) {
-			speedMultiplier += amount;
-		} else {
-			speedMultiplier = 0.99;
-		}
-	}
-
-	public void resetSpeedMulti() {
-		speedMultiplier = 0;
-	}
-
-	public double getSpeedMultiplier() {
-		return speedMultiplier;
-	}
-
-	public void addPowerMulti(double amount) {
-		powerMultiplier += amount;
-	}
-
-	public void resetPowerMulti() {
-		powerMultiplier = 1;
-	}
-
-	public double getPowerMultiplier() {
-		return powerMultiplier;
-	}
-
-	public double getEuPerTick() {
-		return currentRecipe.euPerTick() * powerMultiplier;
-	}
-
 	public void setIsActive() {
 		if (parentTile.getWorld().getBlockState(parentTile.getPos()).getBlock() instanceof BlockMachineBase) {
 			BlockMachineBase blockMachineBase = (BlockMachineBase) parentTile.getWorld()
@@ -449,5 +411,40 @@ public class RecipeCrafter {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void resetSpeedMulti() {
+		parentUpgradeHandler.ifPresent(IUpgradeHandler::resetSpeedMulti);
+	}
+
+	@Override
+	public double getSpeedMultiplier() {
+		return parentUpgradeHandler.map(IUpgradeHandler::getSpeedMultiplier).orElse(0D);
+	}
+
+	@Override
+	public void addPowerMulti(double amount) {
+		parentUpgradeHandler.ifPresent(iUpgradeHandler -> iUpgradeHandler.addPowerMulti(amount));
+	}
+
+	@Override
+	public void resetPowerMulti() {
+		parentUpgradeHandler.ifPresent(IUpgradeHandler::resetPowerMulti);
+	}
+
+	@Override
+	public double getPowerMultiplier() {
+		return parentUpgradeHandler.map(IUpgradeHandler::getPowerMultiplier).orElse(0D);
+	}
+
+	@Override
+	public double getEuPerTick(double baseEu) {
+		return parentUpgradeHandler.map(iUpgradeHandler -> iUpgradeHandler.getEuPerTick(baseEu)).orElse(0D);
+	}
+
+	@Override
+	public void addSpeedMulti(double amount) {
+		parentUpgradeHandler.ifPresent(iUpgradeHandler -> iUpgradeHandler.addSpeedMulti(amount));
 	}
 }
