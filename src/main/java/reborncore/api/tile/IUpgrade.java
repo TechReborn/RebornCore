@@ -33,7 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import reborncore.common.recipes.RecipeCrafter;
+import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.tile.TileLegacyMachineBase;
 
 import javax.annotation.Nonnull;
@@ -48,7 +48,7 @@ public interface IUpgrade {
 		@Nonnull
 			TileLegacyMachineBase machineBase,
 		@Nullable
-			RecipeCrafter crafter,
+			IUpgradeHandler handler,
 		@Nonnull
 			ItemStack stack);
 

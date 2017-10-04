@@ -50,7 +50,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.tile.*;
+import reborncore.api.tile.IContainerProvider;
+import reborncore.api.tile.IInventoryProvider;
+import reborncore.api.tile.IUpgrade;
+import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
@@ -118,7 +121,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				for (int i = 0; i < getUpgradeSlotCount(); i++) {
 					ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
 					if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-						((IUpgrade) stack.getItem()).process(this, crafter, stack);
+						((IUpgrade) stack.getItem()).process(this, this, stack);
 					}
 				}
 			}
