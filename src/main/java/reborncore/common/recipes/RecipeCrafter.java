@@ -142,32 +142,13 @@ public class RecipeCrafter {
 			ticksSinceLastChange = 0;
 		}
 		if (currentRecipe == null && isInvDirty()) {// It will now look for new recipes.
-			currentTickTime = 0;
-			for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
-				if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {// This checks to see if it has all of the inputs
-					boolean canGiveInvAll = true;
-					for (int i = 0; i < recipe.getOutputsSize(); i++) {// This checks to see if it can fit all of the outputs
-						if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
-							canGiveInvAll = false;
-							return;
-						}
-					}
-					if (canGiveInvAll) {
-						// Sets the current recipe then syncs
-						setCurrentRecipe(recipe);
-						this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - speedMultiplier)), 1);
-						this.currentTickTime = 0;
-						setIsActive();
-					} else {
-						this.currentTickTime = -1;
-					}
-				}
-			}
-		} else {
+			updateCurrentRecipe();
+		}
+		if(currentRecipe != null) {
 			// If it doesn't have all the inputs reset
 			if (isInvDirty() && !hasAllInputs()) {
 				currentRecipe = null;
-				currentTickTime = -1;
+				currentTickTime = 0;
 				setIsActive();
 			}
 			// If it has reached the recipe tick time
@@ -194,8 +175,8 @@ public class RecipeCrafter {
 					useAllInputs();
 					// Reset
 					currentRecipe = null;
-					currentTickTime = -1;
-					setIsActive();
+					currentTickTime = 0;
+					updateCurrentRecipe();
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
 				// This uses the power
@@ -210,6 +191,26 @@ public class RecipeCrafter {
 			}
 		}
 		setInvDirty(false);
+	}
+
+	private void updateCurrentRecipe(){
+		currentTickTime = 0;
+		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
+			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {// This checks to see if it has all of the inputs
+				for (int i = 0; i < recipe.getOutputsSize(); i++) {// This checks to see if it can fit all of the outputs
+					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
+						currentRecipe = null;
+						this.currentTickTime = 0;
+						return;
+					}
+				}
+				// Sets the current recipe then syncs
+				setCurrentRecipe(recipe);
+				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - speedMultiplier)), 1);
+				this.currentTickTime = 0;
+			}
+		}
+		setIsActive();
 	}
 
 	public boolean hasAllInputs() {
