@@ -41,6 +41,7 @@ import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
@@ -127,6 +128,7 @@ public class RebornCore implements IModInfo {
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
+		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
 
 		if (ItemTeamRebornManual.isManualEnabled) {
 			RebornRegistry.registerItem(new ItemTeamRebornManual());
