@@ -36,6 +36,7 @@ import reborncore.common.network.INetworkPacket;
 import reborncore.common.network.RegisterPacketEvent;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -47,7 +48,10 @@ public class RebornPackets {
 
 	@SubscribeEvent
 	public void loadPackets(RegisterPacketEvent event) {
-		packetList.forEach(pair -> event.registerPacket(pair.getRight(), pair.getLeft()));
+		//Sorts all the packs to try and ensure they are loaded in the same order
+		packetList.stream()
+			.sorted(Comparator.comparing(o -> o.getRight().getCanonicalName()))
+			.forEach(pair -> event.registerPacket(pair.getRight(), pair.getLeft()));
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		RebornCore.logHelper.info("Registered " + packetList.size() + " packet(s)");
 	}
