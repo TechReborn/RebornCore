@@ -97,7 +97,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Nullable
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), writeToNBT(new NBTTagCompound()));
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
 	}
 
 	@Override
@@ -108,8 +108,13 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
+	public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+		super.onDataPacket(net, pkt);
+		readFromNBT(pkt.getNbtCompound());
+	}
+
+	@Override
 	public void update() {
-		updateEntity();
 		if (!world.isRemote) {
 			@Nullable
 			RecipeCrafter crafter = null;
@@ -134,11 +139,6 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public void resetUpgrades() {
 		resetPowerMulti();
 		resetSpeedMulti();
-	}
-
-	@Deprecated
-	public void updateEntity() {
-
 	}
 
 	public int getFacingInt() {
