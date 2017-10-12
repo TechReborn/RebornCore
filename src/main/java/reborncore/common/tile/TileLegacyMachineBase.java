@@ -182,7 +182,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		return false;
 	}
 
-	protected Optional<Inventory> getInventoryForTile() {
+	public Optional<Inventory> getInventoryForTile() {
 		if (this instanceof IInventoryProvider) {
 			IInventoryProvider inventory = (IInventoryProvider) this;
 			if (inventory.getInventory() == null) {
