@@ -150,7 +150,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
 						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {		
 								int filled = energyStorage.receiveEnergy((int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
-								remainingEnergy -= forgePowerManager.extractEnergy(filled, false);
+								remainingEnergy -= useEnergy(filled / RebornCoreConfig.euPerFU, false);
 						}
 					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
 						TeslaManager.manager.update(this);
