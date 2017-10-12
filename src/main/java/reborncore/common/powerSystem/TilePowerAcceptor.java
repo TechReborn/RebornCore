@@ -549,9 +549,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		super.resetUpgrades();
 		extraPowerStoage = 0;
 		extraTeir = 0;
-		if (getEnergy() > getMaxPower()) { //Makes sure we do not have too much power, and voids it
-			setEnergy(getMaxPower());
-		}
 	}
 
 	public boolean handleTierWithPower() {
