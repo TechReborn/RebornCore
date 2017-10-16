@@ -135,16 +135,18 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					TileEntity tile = entry.getValue();
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
-							for (int j = 0; j < 2; ++j) {
-								double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
-								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
-								double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
-								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
-							}
-						} else {
+						if (eFace.canAcceptEnergy(side.getOpposite())) {
+							if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
+								for (int j = 0; j < 2; ++j) {
+									double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+									double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
+									double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
+									world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
+								}
+							} else {
 								double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
 								remainingEnergy -= useEnergy(filled, false);
+							}
 						}
 					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
@@ -464,7 +466,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY) {
+			if (capability == CapabilityEnergy.ENERGY && canConnectEnergy(facing)) {
 				return true;
 			}
 		}
@@ -481,7 +483,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			}
 		}
 		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY) {
+			if (capability == CapabilityEnergy.ENERGY && canConnectEnergy(facing)) {
 				if (forgePowerManager == null) {
 					forgePowerManager = new ForgePowerManager(this, facing);
 				}
