@@ -211,8 +211,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	@Optional.Method(modid = "ic2")
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		addEnergy(amount);
-		return 0;
+		double used = addEnergy(amount);
+		return (amount - used);
 	}
 
 	@Override
