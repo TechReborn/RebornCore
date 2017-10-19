@@ -46,13 +46,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import reborncore.api.IToolDrop;
-import reborncore.api.IToolHandler;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
@@ -159,16 +159,15 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		List<ItemStack> items = new ArrayList<ItemStack>();
-		
+		NonNullList<ItemStack> items = NonNullList.create();
+				
 		if (RebornCoreConfig.wrenchRequired){
 			items.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
 		}
 		else {
-			items = super.getDrops(world, pos, state, fortune);
+			super.getDrops(items, world, pos, state, fortune);
 		}
 		
 		return items;
