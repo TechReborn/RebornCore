@@ -35,7 +35,9 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import reborncore.api.ToolManager;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
@@ -43,11 +45,12 @@ import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.logic.LogicControllerGuiHandler;
+import reborncore.common.logic.PacketButtonID;
 import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.RebornPackets;
+import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
@@ -100,6 +103,7 @@ public class RebornCore implements IModInfo {
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
+		MinecraftForge.EVENT_BUS.register(this);
 
 		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
 			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
@@ -125,7 +129,6 @@ public class RebornCore implements IModInfo {
 		TeslaManager.load();
 		// packets
 		OreUtil.scanForOres();
-		MinecraftForge.EVENT_BUS.register(new RebornPackets());
 		NetworkManager.load();
 
 		RebornCoreShields.init();
@@ -154,8 +157,13 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		FMLLog.warning("Invalid fingerprint detected for RebornCore!");
+		logHelper.error("Invalid fingerprint detected for RebornCore!");
 		RebornCore.proxy.invalidFingerprints.add("Invalid fingerprint detected for RebornCore!");
+	}
+
+	@SubscribeEvent
+	public void registerPackets(RegisterPacketEvent event){
+		event.registerPacket(PacketButtonID.class, Side.SERVER);
 	}
 
 	public String MOD_NAME() {

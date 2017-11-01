@@ -29,18 +29,11 @@
 package reborncore.common.network;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Constructor;
 
 public class RegisterPacketEvent extends Event {
-
-	SimpleNetworkWrapper wrapper;
-
-	public RegisterPacketEvent(SimpleNetworkWrapper wrapper) {
-		this.wrapper = wrapper;
-	}
 
 	public void registerPacket(Class<? extends INetworkPacket> packet, Side processingSide) {
 		int id = getNextID();
@@ -58,7 +51,7 @@ public class RegisterPacketEvent extends Event {
 		}
 		NetworkManager.packetHashMap.put(id, packet);
 		NetworkManager.packetHashMapReverse.put(packet, id);
-		wrapper.registerMessage(PacketWrapper.PacketWrapperHandler.class, PacketWrapper.class, id, processingSide);
+		NetworkManager.registerPacket(packet, processingSide);
 	}
 
 	public static int getNextID() {
