@@ -37,6 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import reborncore.RebornCore;
 
 import java.util.HashMap;
+import java.util.zip.CRC32;
 
 public class NetworkManager {
 
@@ -99,7 +100,7 @@ public class NetworkManager {
 		if(packageWrapperMap.containsKey(wrapperName)){
 			return packageWrapperMap.get(wrapperName);
 		} else {
-			SimpleNetworkWrapper newNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("rebornCore$" + wrapperName.replace(".", "$"));
+			SimpleNetworkWrapper newNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(wrapperName);
 			RebornCore.logHelper.info("Created new network wrapper " + wrapperName);
 			packageWrapperMap.put(wrapperName, newNetworkWrapper);
 			return newNetworkWrapper;
@@ -107,7 +108,12 @@ public class NetworkManager {
 	}
 
 	public static String getWrapperName(Class<? extends INetworkPacket> packetClass){
-		return packetClass.getCanonicalName().substring(0, packetClass.getCanonicalName().lastIndexOf("."));
+		String packageName = packetClass.getCanonicalName().substring(0, packetClass.getCanonicalName().lastIndexOf("."));
+		CRC32 crc = new CRC32();
+		crc.update(packageName.getBytes());
+		//Packet network names have a max size of 20
+		//3 chars on the rc bit, 11 on the package name, 1 to the & and the last 5 on the hash
+		return "rc&" + packageName.substring(0, 11) + "&" + Long.toString(crc.getValue()).substring(0, 5);
 	}
 
 	public static void registerPacket(Class<? extends INetworkPacket> packetClass, Side side){
