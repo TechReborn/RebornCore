@@ -80,7 +80,7 @@ configurations {
 	compile.extendsFrom shade
 }
 
-version = "3.4.10"
+version = "3.4.11"
 
 
 def ENV = System.getenv()
@@ -107,6 +107,10 @@ dependencies {
 
 processResources
 	{
+		// this will ensure that this task is redone when the versions change.
+		inputs.property "version", project.version
+		inputs.property "mcversion", project.minecraft.version
+		
 		from(sourceSets.main.resources.srcDirs) {
 			include 'mcmod.info'
 			expand 'version': project.version, 'mcversion': project.minecraft.version
