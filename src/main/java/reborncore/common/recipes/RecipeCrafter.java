@@ -195,6 +195,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
 						currentRecipe = null;
 						this.currentTickTime = 0;
+						setIsActive();
 						return;
 					}
 				}
@@ -202,9 +203,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 				setCurrentRecipe(recipe);
 				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
 				this.currentTickTime = 0;
+				setIsActive();
 			}
 		}
-		setIsActive();
 	}
 
 	public boolean hasAllInputs() {
