@@ -46,7 +46,7 @@ public class CalenderUtils {
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
 		int month = calendar.get(Calendar.MONTH) + 1; //Java months start at 0
 		if (month == 12) {
-			if (day >= 20 && day <= 30) {
+			if (day >= 24 && day <= 26) {
 				christmas = true;
 				RebornCore.logHelper.info("Merry christmas from reborn core! :)");
 			}
