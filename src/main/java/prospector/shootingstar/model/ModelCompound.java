@@ -99,6 +99,10 @@ public class ModelCompound {
 		return this;
 	}
 
+	public void setBlockStatePath(String blockstatePath) {
+		this.blockstatePath = blockstatePath;
+	}
+
 	public String getModid() {
 		return modid;
 	}
