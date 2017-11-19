@@ -146,7 +146,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				setIsActive();
 			}
 			// If it has reached the recipe tick time
-			if (currentRecipe != null && currentTickTime >= currentNeededTicks) {
+			if (currentRecipe != null && currentTickTime >= currentNeededTicks && hasAllInputs()) {
 				boolean canGiveInvAll = true;
 				// Checks to see if it can fit the output
 				for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
