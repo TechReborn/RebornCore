@@ -29,7 +29,7 @@
 package reborncore.common.multiblock.rectangular;
 
 import net.minecraft.util.EnumFacing;
-import reborncore.common.multiblock.CoordTriplet;
+import net.minecraft.util.math.BlockPos;
 import reborncore.common.multiblock.MultiblockControllerBase;
 import reborncore.common.multiblock.MultiblockTileEntityBase;
 import reborncore.common.multiblock.MultiblockValidationException;
@@ -64,8 +64,8 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 
 	@Override
 	public void onMachineAssembled(MultiblockControllerBase controller) {
-		CoordTriplet maxCoord = controller.getMaximumCoord();
-		CoordTriplet minCoord = controller.getMinimumCoord();
+		BlockPos maxCoord = controller.getMaximumCoord();
+		BlockPos minCoord = controller.getMinimumCoord();
 
 		// Discover where I am on the reactor
 		recalculateOutwardsDirection(minCoord, maxCoord);
@@ -78,18 +78,18 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	}
 
 	// Positional helpers
-	public void recalculateOutwardsDirection(CoordTriplet minCoord, CoordTriplet maxCoord) {
+	public void recalculateOutwardsDirection(BlockPos minCoord, BlockPos maxCoord) {
 		outwards = null;
 		position = PartPosition.Unknown;
 
 		int facesMatching = 0;
-		if (maxCoord.x == this.getPos().getX() || minCoord.x == this.getPos().getX()) {
+		if (maxCoord.getX() == this.getPos().getX() || minCoord.getX() == this.getPos().getX()) {
 			facesMatching++;
 		}
-		if (maxCoord.y == this.getPos().getY() || minCoord.y == this.getPos().getY()) {
+		if (maxCoord.getY() == this.getPos().getY() || minCoord.getY() == this.getPos().getY()) {
 			facesMatching++;
 		}
-		if (maxCoord.z == this.getPos().getZ() || minCoord.z == this.getPos().getZ()) {
+		if (maxCoord.getZ() == this.getPos().getZ() || minCoord.getZ() == this.getPos().getZ()) {
 			facesMatching++;
 		}
 
@@ -101,19 +101,19 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 			position = PartPosition.Frame;
 		} else {
 			// 1 face matches
-			if (maxCoord.x == this.getPos().getX()) {
+			if (maxCoord.getX() == this.getPos().getX()) {
 				position = PartPosition.EastFace;
 				outwards = EnumFacing.EAST;
-			} else if (minCoord.x == this.getPos().getX()) {
+			} else if (minCoord.getX() == this.getPos().getX()) {
 				position = PartPosition.WestFace;
 				outwards = EnumFacing.WEST;
-			} else if (maxCoord.z == this.getPos().getZ()) {
+			} else if (maxCoord.getZ() == this.getPos().getZ()) {
 				position = PartPosition.SouthFace;
 				outwards = EnumFacing.SOUTH;
-			} else if (minCoord.z == this.getPos().getZ()) {
+			} else if (minCoord.getZ() == this.getPos().getZ()) {
 				position = PartPosition.NorthFace;
 				outwards = EnumFacing.NORTH;
-			} else if (maxCoord.y == this.getPos().getY()) {
+			} else if (maxCoord.getY() == this.getPos().getY()) {
 				position = PartPosition.TopFace;
 				outwards = EnumFacing.UP;
 			} else {

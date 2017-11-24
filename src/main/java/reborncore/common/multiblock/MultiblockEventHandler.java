@@ -46,7 +46,7 @@ public class MultiblockEventHandler {
 	public void onChunkLoad(ChunkEvent.Load loadEvent) {
 		Chunk chunk = loadEvent.getChunk();
 		World world = loadEvent.getWorld();
-		MultiblockRegistry.onChunkLoaded(world, chunk.x, chunk.z);
+		MultiblockRegistry.onChunkLoaded(world, chunk);
 	}
 
 	// Cleanup, for nice memory usageness

@@ -31,6 +31,7 @@ package reborncore.common.multiblock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.Set;
 
@@ -57,13 +58,13 @@ public abstract class IMultiblockPart extends TileEntity {
 	public abstract MultiblockControllerBase getMultiblockController();
 
 	/**
-	 * Returns the location of this tile entity in the world, in CoordTriplet
+	 * Returns the location of this tile entity in the world, in BlockPos
 	 * form.
 	 *
-	 * @return A CoordTriplet with its x,y,z members set to the location of this
+	 * @return A BlockPos with its x,y,z members set to the location of this
 	 * tile entity in the world.
 	 */
-	public abstract CoordTriplet getWorldLocation();
+	public abstract BlockPos getWorldLocation();
 
 	// Multiblock connection-logic callbacks
 
@@ -163,6 +164,7 @@ public abstract class IMultiblockPart extends TileEntity {
 
 	/**
 	 * Is this block the designated save/load & network delegate?
+	 * @return Boolean 
 	 */
 	public abstract boolean isMultiblockSaveDelegate();
 

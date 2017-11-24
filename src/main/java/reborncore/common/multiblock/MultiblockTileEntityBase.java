@@ -33,10 +33,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.world.chunk.IChunkProvider;
-import reborncore.common.util.WorldUtils;
-
+import net.minecraft.util.math.BlockPos;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,14 +52,14 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	private boolean saveMultiblockData;
 	private NBTTagCompound cachedMultiblockData;
-	private boolean paused;
+	//private boolean paused;
 
 	public MultiblockTileEntityBase() {
 		super();
 		controller = null;
 		visited = false;
 		saveMultiblockData = false;
-		paused = false;
+		//paused = false;
 		cachedMultiblockData = null;
 	}
 
@@ -226,8 +225,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 			if (isConnected()) {
 				getMultiblockController().decodeDescriptionPacket(tag);
 			} else {
-				// This part hasn't been added to a machine yet, so cache the
-				// data.
+				// This part hasn't been added to a machine yet, so cache the data.
 				this.cachedMultiblockData = tag;
 			}
 		}
@@ -276,8 +274,8 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	@Override
-	public CoordTriplet getWorldLocation() {
-		return new CoordTriplet(this.getPos());
+	public BlockPos getWorldLocation() {
+		return this.getPos();
 	}
 
 	@Override
@@ -331,30 +329,20 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	@Override
 	public IMultiblockPart[] getNeighboringParts() {
-		CoordTriplet[] neighbors = new CoordTriplet[] {
-			new CoordTriplet(this.getPos().getX() - 1, this.getPos().getY(), this.getPos().getZ()),
-			new CoordTriplet(this.getPos().getX(), this.getPos().getY() - 1, this.getPos().getZ()),
-			new CoordTriplet(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() - 1),
-			new CoordTriplet(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ() + 1),
-			new CoordTriplet(this.getPos().getX(), this.getPos().getY() + 1, this.getPos().getZ()),
-			new CoordTriplet(this.getPos().getX() + 1, this.getPos().getY(), this.getPos().getZ()) };
-
 		TileEntity te;
 		List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
-		IChunkProvider chunkProvider = getWorld().getChunkProvider();
-		for (CoordTriplet neighbor : neighbors) {
-			if (!WorldUtils.chunkExists(getWorld(), neighbor.getChunkX(), neighbor.getChunkZ())) {
-				// Chunk not loaded, skip it.
-				continue;
-			}
+		BlockPos neighborPosition, partPosition = this.getWorldLocation();
 
-			te = this.getWorld().getTileEntity(neighbor.toBlockPos());
-			if (te instanceof IMultiblockPart) {
-				neighborParts.add((IMultiblockPart) te);
-			}
+		for (EnumFacing facing : EnumFacing.VALUES) {
+
+			neighborPosition = partPosition.offset(facing);
+			te = this.world.getTileEntity(neighborPosition);
+
+			if (te instanceof IMultiblockPart)
+				neighborParts.add((IMultiblockPart)te);
 		}
-		IMultiblockPart[] tmp = new IMultiblockPart[neighborParts.size()];
-		return neighborParts.toArray(tmp);
+
+		return neighborParts.toArray(new IMultiblockPart[neighborParts.size()]);
 	}
 
 	@Override
