@@ -28,10 +28,10 @@
 
 package reborncore.common.multiblock;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import reborncore.common.util.WorldUtils;
+import net.minecraft.world.chunk.Chunk;
 
 import java.util.*;
 
@@ -46,12 +46,12 @@ public class MultiblockWorldRegistry {
 
 	private World worldObj;
 
-	private Set<MultiblockControllerBase> controllers; // Active controllers
-	private Set<MultiblockControllerBase> dirtyControllers; // Controllers whose
-	// parts lists have
-	// changed
-	private Set<MultiblockControllerBase> deadControllers; // Controllers which
-	// are empty
+	// Active controllers
+	private Set<MultiblockControllerBase> controllers; 
+	// Controllers whose parts lists have changed
+	private Set<MultiblockControllerBase> dirtyControllers; 
+	// Controllers which are empty
+	private Set<MultiblockControllerBase> deadControllers; 
 
 	// A list of orphan parts - parts which currently have no master, but should
 	// seek one this tick
@@ -66,14 +66,14 @@ public class MultiblockWorldRegistry {
 	// They will be added to the orphan list when they are finished loading.
 	// Indexed by the hashed chunk coordinate
 	// This can be added-to asynchronously via chunk loads!
-	private HashMap<Long, Set<IMultiblockPart>> partsAwaitingChunkLoad;
+	private HashMap<Integer, Set<IMultiblockPart>> partsAwaitingChunkLoad;
 
 	// Mutexes to protect lists which may be changed due to asynchronous events,
 	// such as chunk loads
 	private Object partsAwaitingChunkLoadMutex;
 	private Object orphanedPartsMutex;
 
-	public MultiblockWorldRegistry(World world) {
+	public MultiblockWorldRegistry(final World world) {
 		worldObj = world;
 
 		controllers = new HashSet<MultiblockControllerBase>();
@@ -83,7 +83,7 @@ public class MultiblockWorldRegistry {
 		detachedParts = new HashSet<IMultiblockPart>();
 		orphanedParts = new HashSet<IMultiblockPart>();
 
-		partsAwaitingChunkLoad = new HashMap<Long, Set<IMultiblockPart>>();
+		partsAwaitingChunkLoad = new HashMap<Integer, Set<IMultiblockPart>>();
 		partsAwaitingChunkLoadMutex = new Object();
 		orphanedPartsMutex = new Object();
 	}
@@ -113,8 +113,7 @@ public class MultiblockWorldRegistry {
 	 * Called prior to processing multiblock controllers. Do bookkeeping.
 	 */
 	public void processMultiblockChanges() {
-		IChunkProvider chunkProvider = worldObj.getChunkProvider();
-		CoordTriplet coord;
+		BlockPos coord;
 
 		// Merge pools - sets of adjacent machines which should be merged later
 		// on in processing
@@ -144,7 +143,7 @@ public class MultiblockWorldRegistry {
 				// controller
 				for (IMultiblockPart orphan : orphansToProcess) {
 					coord = orphan.getWorldLocation();
-					if (!WorldUtils.chunkExists(worldObj, coord.getChunkX(), coord.getChunkZ())) {
+					if (!this.worldObj.isBlockLoaded(coord)){
 						continue;
 					}
 
@@ -153,8 +152,8 @@ public class MultiblockWorldRegistry {
 						continue;
 					}
 
-					if (worldObj.getTileEntity(coord.toBlockPos()) != orphan) {
-						// This block has been replaced by another.
+					// This block has been replaced by another.
+					if (worldObj.getTileEntity(coord) != orphan) {
 						continue;
 					}
 
@@ -177,7 +176,7 @@ public class MultiblockWorldRegistry {
 						// Multiple compatible controllers indicates an
 						// impending merge.
 						// Locate the appropriate merge pool(s)
-						boolean hasAddedToPool = false;
+						//boolean hasAddedToPool = false;
 						List<Set<MultiblockControllerBase>> candidatePools = new ArrayList<Set<MultiblockControllerBase>>();
 						for (Set<MultiblockControllerBase> candidatePool : mergePools) {
 							if (!Collections.disjoint(candidatePool, compatibleControllers)) {
@@ -320,12 +319,13 @@ public class MultiblockWorldRegistry {
 	 * @param part The part which is being added to this world.
 	 */
 	public void onPartAdded(IMultiblockPart part) {
-		CoordTriplet worldLocation = part.getWorldLocation();
+		BlockPos pos = part.getWorldLocation();
 
-		if (!WorldUtils.chunkExists(part.getWorld(), worldLocation.getChunkX(), worldLocation.getChunkZ())) {
+		if (!this.worldObj.isBlockLoaded(pos)) {
 			// Part goes into the waiting-for-chunk-load list
 			Set<IMultiblockPart> partSet;
-			long chunkHash = worldLocation.getChunkXZHash();
+			int chunkHash = new ChunkPos(pos).hashCode();
+
 			synchronized (partsAwaitingChunkLoadMutex) {
 				if (!partsAwaitingChunkLoad.containsKey(chunkHash)) {
 					partSet = new HashSet<IMultiblockPart>();
@@ -350,16 +350,16 @@ public class MultiblockWorldRegistry {
 	 * @param part The part which is being removed.
 	 */
 	public void onPartRemovedFromWorld(IMultiblockPart part) {
-		CoordTriplet coord = part.getWorldLocation();
-		if (coord != null) {
-			long hash = coord.getChunkXZHash();
+		BlockPos pos = part.getWorldLocation();
+		if (pos != null) {
+			int chunkHash = new ChunkPos(pos).hashCode();
 
-			if (partsAwaitingChunkLoad.containsKey(hash)) {
+			if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
 				synchronized (partsAwaitingChunkLoadMutex) {
-					if (partsAwaitingChunkLoad.containsKey(hash)) {
-						partsAwaitingChunkLoad.get(hash).remove(part);
-						if (partsAwaitingChunkLoad.get(hash).size() <= 0) {
-							partsAwaitingChunkLoad.remove(hash);
+					if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
+						partsAwaitingChunkLoad.get(chunkHash).remove(part);
+						if (partsAwaitingChunkLoad.get(chunkHash).size() <= 0) {
+							partsAwaitingChunkLoad.remove(chunkHash);
 						}
 					}
 				}
@@ -403,13 +403,11 @@ public class MultiblockWorldRegistry {
 	 * awaiting load to the list of parts which are orphans and therefore will
 	 * be added to machines after the next world tick.
 	 *
-	 * @param chunkX Chunk X coordinate (world coordate >> 4) of the chunk that was
-	 * loaded
-	 * @param chunkZ Chunk Z coordinate (world coordate >> 4) of the chunk that was
+	 * @param chunk Chunk that was
 	 * loaded
 	 */
-	public void onChunkLoaded(int chunkX, int chunkZ) {
-		long chunkHash = ChunkPos.asLong(chunkX, chunkZ);
+	public void onChunkLoaded(Chunk chunk) {
+		int chunkHash = chunk.getPos().hashCode();
 		if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
 			synchronized (partsAwaitingChunkLoadMutex) {
 				if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
@@ -465,9 +463,5 @@ public class MultiblockWorldRegistry {
 		synchronized (orphanedPartsMutex) {
 			orphanedParts.addAll(parts);
 		}
-	}
-
-	private String clientOrServer() {
-		return worldObj.isRemote ? "CLIENT" : "SERVER";
 	}
 }

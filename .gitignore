@@ -20,3 +20,4 @@ classes/*
 /.classpath
 /.project
 *.launch
+/doc/

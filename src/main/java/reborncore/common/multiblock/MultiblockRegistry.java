@@ -29,6 +29,7 @@
 package reborncore.common.multiblock;
 
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -60,12 +61,11 @@ public class MultiblockRegistry {
 	 * Called when the world has finished loading a chunk.
 	 *
 	 * @param world The world which has finished loading a chunk
-	 * @param chunkX The X coordinate of the chunk
-	 * @param chunkZ The Z coordinate of the chunk
+	 * @param chunk Loaded chunk
 	 */
-	public static void onChunkLoaded(World world, int chunkX, int chunkZ) {
+	public static void onChunkLoaded(World world, Chunk chunk) {
 		if (registries.containsKey(world)) {
-			registries.get(world).onChunkLoaded(chunkX, chunkZ);
+			registries.get(world).onChunkLoaded(chunk);
 		}
 	}
 
