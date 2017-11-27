@@ -65,7 +65,7 @@ public class RegistrationManager {
 
 		//Sorts all the classes to (try) and ensure they are loaded in the same oder on the client/server.
 		//Hopefully this fixes the issue with packets being misaligned
-		Collections.sort(registryClasses, Comparator.comparing(Class::getCanonicalName));
+		registryClasses.sort(Comparator.comparing(Class::getCanonicalName));
 
 		for (IRegistryFactory registryFactory : getFactorysForSate(event.getClass())) {
 			if (registryFactory.getTargets().contains(RegistryTarget.CLASS)) {
