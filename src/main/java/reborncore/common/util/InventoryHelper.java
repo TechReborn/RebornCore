@@ -42,6 +42,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.common.recipes.RecipeCrafter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -156,7 +158,10 @@ public class InventoryHelper {
 
 		if (inventory instanceof ISidedInventory && side != null)
 			availableSlots = ((ISidedInventory) inventory).getSlotsForFace(side);
-		else {
+		else if(inventory instanceof IRecipeCrafterProvider) { //This is horrible, and shoudnlt need to be a thing. Remove when side configs are added
+			RecipeCrafter recipeCrafter = ((IRecipeCrafterProvider) inventory).getRecipeCrafter();
+			availableSlots = recipeCrafter.inputSlots;
+		} else {
 			availableSlots = buildSlotsForLinearInventory(inventory);
 		}
 
