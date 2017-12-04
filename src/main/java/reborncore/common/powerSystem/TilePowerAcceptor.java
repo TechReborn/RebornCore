@@ -514,12 +514,26 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public double getMaxOutput() {
-		return getBaseMaxOutput();
+		double maxOutput = 0;
+		if (this.extraTeir > 0) {
+			maxOutput = this.getTier().getMaxOutput();
+		}
+		else {
+			maxOutput = getBaseMaxOutput();	
+		}
+		return maxOutput;
 	}
 
 	@Override
 	public double getMaxInput() {
-		return getBaseMaxInput();
+		double maxInput = 0;
+		if (this.extraTeir > 0) {
+			maxInput = this.getTier().getMaxInput();
+		}
+		else {
+			maxInput = getBaseMaxInput();	
+		}
+		return maxInput;
 	}
 
 	public EnumPowerTier getPushingTier() {
