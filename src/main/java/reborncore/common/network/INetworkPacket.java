@@ -38,6 +38,7 @@ public interface INetworkPacket<T> {
 
 	void readData(ExtendedPacketBuffer buffer) throws IOException;
 
+	@Deprecated //Message isnt needed change in 1.13
 	void processData(T message, MessageContext context);
 
 }

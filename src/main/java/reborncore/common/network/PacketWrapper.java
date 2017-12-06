@@ -53,8 +53,10 @@ public class PacketWrapper implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		try {
-			packet = NetworkManager.packetHashMap.get(buf.readInt()).newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
+			ExtendedPacketBuffer packetBuffer = new ExtendedPacketBuffer(buf);
+			String name = packetBuffer.readString(packetBuffer.readInt());
+			packet = (INetworkPacket) Class.forName(name).newInstance();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		try {
@@ -67,7 +69,9 @@ public class PacketWrapper implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		Validate.notNull(packet);
-		buf.writeInt(NetworkManager.packetHashMapReverse.get(packet.getClass()));
+		ExtendedPacketBuffer packetBuffer = new ExtendedPacketBuffer(buf);
+		packetBuffer.writeInt(packet.getClass().getCanonicalName().length());
+		packetBuffer.writeString(packet.getClass().getCanonicalName());
 		try {
 			packet.writeData(new ExtendedPacketBuffer(buf));
 		} catch (IOException e) {

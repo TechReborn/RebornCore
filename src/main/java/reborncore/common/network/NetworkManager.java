@@ -36,7 +36,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import reborncore.RebornCore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Predicate;
 import java.util.zip.CRC32;
 
 public class NetworkManager {
@@ -45,53 +47,51 @@ public class NetworkManager {
 	public static HashMap<String, SimpleNetworkWrapper> packageWrapperMap = new HashMap<>();
 	private static HashMap<SimpleNetworkWrapper, IntStore> wrapperIdList = new HashMap<>();
 
-
-	public static HashMap<Integer, Class<? extends INetworkPacket>> packetHashMap = new HashMap<>();
-	public static HashMap<Class<? extends INetworkPacket>, Integer> packetHashMapReverse = new HashMap<>();
-
 	public static void load() {
 		MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent());
 	}
 
+	public static ArrayList<PacketDetails> packetList = new ArrayList<>();
+
 	public static void sendToServer(INetworkPacket packet) {
-		if (!packetHashMap.containsValue(packet.getClass())) {
-			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
-		}
+		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToServer(new PacketWrapper(packet));
 	}
 
 	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
-		if (!packetHashMap.containsValue(packet.getClass())) {
-			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
-		}
+		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToAllAround(new PacketWrapper(packet), point);
 	}
 
 	public static void sendToAll(INetworkPacket packet) {
-		if (!packetHashMap.containsValue(packet.getClass())) {
-			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
-		} else {
-			getWrapperForPacket(packet.getClass()).sendToAll(new PacketWrapper(packet));
-		}
+		checkPacket(packet);
+		getWrapperForPacket(packet.getClass()).sendToAll(new PacketWrapper(packet));
 	}
 
 	public static void sendToPlayer(INetworkPacket packet, EntityPlayerMP playerMP) {
-		if (!packetHashMap.containsValue(packet.getClass())) {
-			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
-		} else {
-			getWrapperForPacket(packet.getClass()).sendTo(new PacketWrapper(packet), playerMP);
-		}
+		checkPacket(packet);
+		getWrapperForPacket(packet.getClass()).sendTo(new PacketWrapper(packet), playerMP);
 	}
 
 	public static void sendToWorld(INetworkPacket packet, World world) {
-		if (!packetHashMap.containsValue(packet.getClass())) {
+		checkPacket(packet);
+		getWrapperForPacket(packet.getClass()).sendToDimension(new PacketWrapper(packet), world.provider.getDimension());
+	}
+
+	public static void checkPacket(INetworkPacket packet){
+		if (getPacketDetails(packet.getClass()) == null) {
 			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
-		} else {
-			getWrapperForPacket(packet.getClass()).sendToDimension(new PacketWrapper(packet), world.provider.getDimension());
 		}
 	}
 
+	public static PacketDetails getPacketDetails(Class<? extends INetworkPacket> clazz){
+		return packetList.stream().filter(packetDetails -> packetDetails.packetClass.equals(clazz)).findAny().orElse(null);
+	}
+
 	public static SimpleNetworkWrapper getWrapperForPacket(Class<? extends INetworkPacket> packetClass){
+		if(!packetWrapperMap.containsKey(packetClass)){
+			return null;
+		}
 		return packetWrapperMap.get(packetClass);
 	}
 
@@ -116,12 +116,15 @@ public class NetworkManager {
 		return "rc&" + packageName.substring(0, 11) + "&" + Long.toString(crc.getValue()).substring(0, 5);
 	}
 
-	public static void registerPacket(Class<? extends INetworkPacket> packetClass, Side side){
+	public static PacketDetails registerPacket(Class<? extends INetworkPacket> packetClass, Side side){
 		SimpleNetworkWrapper wrapper = createOrGetNetworkWrapper(packetClass);
 		int id = getNextIDForWrapper(wrapper);
 		wrapper.registerMessage(PacketWrapper.PacketWrapperHandler.class, PacketWrapper.class, id, side);
 		packetWrapperMap.put(packetClass, wrapper);
 		RebornCore.logHelper.info("Registed packet to " + getWrapperName(packetClass) + " side: " + side + " id:" + id);
+		PacketDetails packetDetails = new PacketDetails(packetClass, id, wrapper);
+		packetList.add(packetDetails);
+		return packetDetails;
 	}
 
 	public static int getNextIDForWrapper(SimpleNetworkWrapper networkWrapper){
@@ -136,6 +139,18 @@ public class NetworkManager {
 
 	private static class IntStore {
 		int id = 0;
+	}
+
+	public static class PacketDetails {
+		public Class<? extends INetworkPacket> packetClass;
+		public int id;
+		SimpleNetworkWrapper networkWrapper;
+
+		public PacketDetails(Class<? extends INetworkPacket> packetClass, int id, SimpleNetworkWrapper networkWrapper) {
+			this.packetClass = packetClass;
+			this.id = id;
+			this.networkWrapper = networkWrapper;
+		}
 	}
 
 }
