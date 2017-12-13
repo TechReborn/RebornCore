@@ -29,8 +29,8 @@
 package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class OreDropSet {
@@ -38,8 +38,8 @@ public class OreDropSet {
 		this.dropSet = oreDrops;
 	}
 
-	public ArrayList<ItemStack> drop(int fortune, Random random) {
-		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+	public NonNullList<ItemStack> drop(int fortune, Random random) {
+		NonNullList<ItemStack> drops = NonNullList.create();
 
 		for (OreDrop drop : dropSet) {
 			drops.add(drop.getDrops(fortune, random));
