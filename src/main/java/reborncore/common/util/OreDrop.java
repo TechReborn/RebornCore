@@ -33,35 +33,51 @@ import net.minecraft.item.ItemStack;
 import java.util.Random;
 
 public class OreDrop {
-	public OreDrop(ItemStack drop, Double modifyer) {
+
+	public ItemStack drop;
+	public Integer baseChance;
+	public Integer minQuantity;
+	public int maxQuantity;
+
+	/**
+	 * @param drop ItemStack to drop. Increase stack size to always drop more than one item
+	 * @param maxQuantity int Drop modifier, if drop ItemStack size could be more than 1
+	 */
+	public OreDrop(ItemStack drop, int maxQuantity) {
 		this.drop = drop;
-		this.count = drop.getCount();
+		this.minQuantity = drop.getCount();
+		if (this.minQuantity == 0) {
+			this.minQuantity = 1;
+		}
 		this.baseChance = 100;
-		this.modifyer = modifyer;
+		this.maxQuantity = maxQuantity;
 	}
 
-	public OreDrop(ItemStack drop, double baseChance, Double modifyer) {
+	/**
+	 * @param drop ItemStack to drop
+	 * @param baseChance double Chance to drop that item
+	 * @param maxQuantity int Drop modifier, if drop ItemStack size could be more than 1
+	 */
+	public OreDrop(ItemStack drop, double baseChance, int maxQuantity) {
 		this.drop = drop;
-		this.count = drop.getCount();
+		this.minQuantity = drop.getCount();
+		if (this.minQuantity == 0) {
+			this.minQuantity = 1;
+		}
 		this.baseChance = (int) (baseChance * 100);
-		this.modifyer = modifyer;
+		this.maxQuantity = maxQuantity;
 	}
 
 	public ItemStack getDrops(int fortuneLevel, Random random) {
 		int count;
-		if (baseChance == 100) // This always drops. Use vanilla fortune rules.
-		{
+		
+		// This always drops. Increase drop amount with fortune
+		if (baseChance == 100) {
 			count = calculateFortuneMulti(fortuneLevel, random);
-		} else if (calculateFortuneSingle(fortuneLevel, random)) // This has a
-		// chance to
-		// drop.
-		// Increase
-		// that
-		// chance
-		// with
-		// fortune.
-		{
-			count = this.count;
+		} 
+		// This has a chance to drop. Increase that chance with fortune.
+		else if (calculateFortuneSingle(fortuneLevel, random)) {
+			count = this.calculateBaseQuantity(random);
 		} else {
 			count = 0;
 		}
@@ -69,16 +85,18 @@ public class OreDrop {
 	}
 
 	// Refer to http://minecraft.gamepedia.com/Enchanting#Fortune
-	private int calculateFortuneMulti(int level, Random random) {
-		int chanceOfEachBonus = 100 / (level + 2);
+	// Fortune I has 33% chance to multiply drop by 2
+	// Fortune II has 25% probability to multiply drop by 2 and 25% probability to multiply drop by 3
+	// Fortune III has 20% probability to multiply drop by 2 or 3 or 4
+	private int calculateFortuneMulti(int fortune, Random random) {
+		int chanceOfEachBonus = 100 / (fortune + 2);
 		int roll = random.nextInt(100);
 
-		if (roll < chanceOfEachBonus * level) // If level = 0, this is always
-		// false
-		{
-			return count * ((roll / chanceOfEachBonus) + 2);
+		// If level = 0, this is always false
+		if (roll < chanceOfEachBonus * fortune) {
+			return this.calculateBaseQuantity(random) * ((roll / chanceOfEachBonus) + 2);
 		} else {
-			return count;
+			return this.calculateBaseQuantity(random);
 		}
 	}
 
@@ -86,15 +104,14 @@ public class OreDrop {
 	// up to a limit of 100%, obviously.
 	// So, if base is 5% and we have Fortune III, chance is 5% + (3 * 2.5%) =
 	// 12.5%
-	private boolean calculateFortuneSingle(int level, Random random) {
-		double modifier = modifyer * level;
-		double total = baseChance + (baseChance * modifier);
+	private boolean calculateFortuneSingle(int fortune, Random random) {
+		double total = baseChance + (fortune * baseChance / 2);
 		int roll = random.nextInt(100);
 		return roll <= total;
 	}
+	
+	private int calculateBaseQuantity(Random random) {
+		return this.minQuantity + random.nextInt(this.maxQuantity - this.minQuantity + 1);
+	}
 
-	public ItemStack drop;
-	public Integer baseChance;
-	public Integer count;
-	public Double modifyer;
 }
