@@ -46,7 +46,7 @@ public class PowerSystem {
 	private static int euPriorityDefault = 0;
 	private static int teslaPriorityDefault = 2;
 	private static int forgePriorityDefault = 1;
-	private static final char[] magnitude = new char[]{'k', 'M', 'G', 'T'};
+	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
 
 	public static String getLocaliszedPower(double eu) {
 		return getLocaliszedPower((int) eu);
@@ -65,65 +65,84 @@ public class PowerSystem {
 	}
 
 	public static String getLocaliszedPower(int eu) {
-		if (getDisplayPower().equals(EnergySystem.EU)) { return getRoundedString(eu, EnergySystem.EU.abbreviation); } 
-		else { return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation); }
+		if (getDisplayPower() == EnergySystem.EU) {
+			return getRoundedString(eu, EnergySystem.EU.abbreviation);
+		} else {
+			return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation);
+		}
 	}
-	
+
 	public static String getLocaliszedPowerNoSuffix(int eu) {
-		if (getDisplayPower().equals(EnergySystem.EU)) { return getRoundedString(eu, ""); } 
-		else { return getRoundedString(eu * RebornCoreConfig.euPerFU, ""); }
+		if (getDisplayPower() == EnergySystem.EU) {
+			return getRoundedString(eu, "");
+		} else {
+			return getRoundedString(eu * RebornCoreConfig.euPerFU, "");
+		}
 	}
 
 	public static String getLocaliszedPowerFormatted(int eu) {
-		if (getDisplayPower().equals(EnergySystem.EU)) { return getRoundedString(eu, EnergySystem.EU.abbreviation); } 
-		else { return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation, true); }	
+		if (getDisplayPower() == EnergySystem.EU) {
+			return getRoundedString(eu, EnergySystem.EU.abbreviation);
+		} else {
+			return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation, true);
+		}
 	}
 
 	public static String getLocaliszedPowerFormattedNoSuffix(int eu) {
-		if (getDisplayPower().equals(EnergySystem.EU)) { return getRoundedString(eu, "", true); }
-		else { return getRoundedString(eu * RebornCoreConfig.euPerFU, "", true); }
+		if (getDisplayPower() == EnergySystem.EU) {
+			return getRoundedString(eu, "", true);
+		} else {
+			return getRoundedString(eu * RebornCoreConfig.euPerFU, "", true);
+		}
 	}
 
-	private static String getRoundedString(int value, String units){ 
+	private static String getRoundedString(int value, String units) {
 		return getRoundedString(value, units, false);
 	}
-	
-	private static String getRoundedString(int euValue, String units, Boolean doFormat) {
-        String ret = "";
-        Integer value = 0; 
-        Integer i = 0;
-        if (euValue < 0) { 
-        	ret = "-";
-            euValue = -euValue;
-        }
-		
-        if (euValue >= 1000) {
-            for (i = 0; ; i++) {
-                if (euValue < 10000 && euValue % 1000 >= 100) {
-                	value =  (euValue / 1000) + ((euValue % 1000) / 100);
-                	break;
-                }
-                euValue /= 1000;
-                if (euValue < 1000) { 
-                	value = euValue;
-                	break; 
-                }
-            }
-        }
-        
+
+	private static String getRoundedString(int euValue, String units, boolean doFormat) {
+		String ret = "";
+		int value = 0;
+		int i = 0;
+		boolean showMagnitude = true;
+		if (euValue < 0) {
+			ret = "-";
+			euValue = -euValue;
+		}
+
+		if (euValue < 1000) {
+			doFormat = false;
+			value = euValue;
+			showMagnitude = false;
+		} else if (euValue >= 1000) {
+			for (i = 0; ; i++) {
+				if (euValue < 10000 && euValue % 1000 >= 100) {
+					value = (euValue / 1000) + ((euValue % 1000) / 100);
+					break;
+				}
+				euValue /= 1000;
+				if (euValue < 1000) {
+					value = euValue;
+					break;
+				}
+			}
+		}
+
 		if (doFormat) {
 			ret += NumberFormat
-					.getIntegerInstance(Locale.forLanguageTag(
-							Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
-					.format(value);
-		} else { ret += value.toString(); }
-        
-        ret += magnitude[i];
-        if (units != "") { ret += " " + units; }
-        
-        return ret;     
+				.getIntegerInstance(Locale.forLanguageTag(
+					Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
+				.format(value);
+		} else { ret += value; }
+
+		if (showMagnitude) {
+			ret += magnitude[i];
+		}
+
+		if (units != "") { ret += " " + units; }
+
+		return ret;
 	}
-	
 
 	public static EnergySystem getDisplayPower() {
 		int eu = euPriority;
