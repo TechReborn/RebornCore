@@ -36,6 +36,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import reborncore.RebornCore;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -103,9 +105,9 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	@Override
 	public void assertDetached() {
 		if (this.controller != null) {
-			BeefCoreLog.info(
-				"[assert] Part @ (%d, %d, %d) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.",
-				getPos().getX(), getPos().getY(), getPos().getZ());
+			RebornCore.logHelper.info(
+				String.format("[assert] Part @ (%d, %d, %d) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.",
+					getPos().getX(), getPos().getY(), getPos().getZ()));
 			this.controller = null;
 		}
 	}

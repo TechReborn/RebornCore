@@ -28,12 +28,12 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import reborncore.RebornCore;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -92,7 +92,7 @@ public class RegistrationManager {
 				}
 			}
 		}
-		FMLLog.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.logHelper.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	public static void load(FMLStateEvent event) {
@@ -132,7 +132,7 @@ public class RegistrationManager {
 			setActiveModContainer(activeMod);
 		}
 
-		FMLLog.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.logHelper.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	private static List<IRegistryFactory> getFactorysForSate(Class<? extends FMLStateEvent> event) {

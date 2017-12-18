@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import reborncore.RebornCore;
 
 import java.util.*;
 
@@ -227,9 +228,9 @@ public class MultiblockWorldRegistry {
 				}
 
 				if (newMaster == null) {
-					BeefCoreLog.fatal(
-						"Multiblock system checked a merge pool of size %d, found no master candidates. This should never happen.",
-						mergePool.size());
+					RebornCore.logHelper.fatal(
+						String.format("Multiblock system checked a merge pool of size %d, found no master candidates. This should never happen.",
+							mergePool.size()));
 				} else {
 					// Merge all the other machines into the master machine,
 					// then unregister them
@@ -284,7 +285,7 @@ public class MultiblockWorldRegistry {
 				// potentially dead.
 				// Validate that they are empty/dead, then unregister them.
 				if (!controller.isEmpty()) {
-					BeefCoreLog.fatal(
+					RebornCore.logHelper.fatal(
 						"Found a non-empty controller. Forcing it to shed its blocks and die. This should never happen!");
 					detachedParts.addAll(controller.detachAllBlocks());
 				}

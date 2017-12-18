@@ -28,20 +28,28 @@
 
 package reborncore.common.util;
 
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import reborncore.common.IModInfo;
 
 public class LogHelper {
 
 	IModInfo modInfo;
+	Logger logger;
 
 	public LogHelper(IModInfo modInfo) {
 		this.modInfo = modInfo;
+		ModContainer modContainer = Loader.instance().getActiveModList()
+			.stream().filter(modContainer1 -> modContainer1.getModId()
+				.equals(modInfo.MOD_ID())).findFirst().get();
+		logger = LogManager.getLogger(modContainer);
 	}
 
 	public void log(Level logLevel, Object object) {
-		FMLLog.log(modInfo.MOD_NAME(), logLevel, String.valueOf(object));
+		logger.log(logLevel, String.valueOf(object));
 	}
 
 	public void all(Object object) {
