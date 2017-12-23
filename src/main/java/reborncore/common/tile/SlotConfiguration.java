@@ -1,10 +1,12 @@
 package reborncore.common.tile;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
 import reborncore.common.util.Inventory;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,6 +33,10 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		deserializeNBT(tagCompound);
 	}
 
+	public List<SlotConfigHolder> getSlotDetails() {
+		return slotDetails;
+	}
+
 	/**
 	 * Replaces or adds a slot detail for the slot id
 	 * @param slotConfigHolder
@@ -44,6 +50,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		return slotConfigHolder;
 	}
 
+	@Nullable
 	public SlotConfigHolder getSlotDetails(int id){
 		for(SlotConfigHolder detail : slotDetails){
 			if(detail.slotID == id){
@@ -89,6 +96,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 
 		public SlotConfigHolder(NBTTagCompound tagCompound) {
+			sideMap = new HashMap<>();
 			deserializeNBT(tagCompound);
 		}
 
@@ -98,6 +106,11 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		public List<SlotConfig> getAllSides(){
 			return new ArrayList<>(sideMap.values());
+		}
+
+		public void updateSlotConfig(SlotConfig config){
+			SlotConfig toEdit = sideMap.get(config.side);
+			toEdit.slotIO = config.slotIO;
 		}
 
 		@Override
@@ -128,10 +141,29 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		public SlotConfig(EnumFacing side, int slotID) {
 			this.side = side;
 			this.slotID = slotID;
+			this.slotIO = new SlotIO(ExtractConfig.NONE, false, false);
+		}
+
+		public SlotConfig(EnumFacing side, SlotIO slotIO, int slotID) {
+			this.side = side;
+			this.slotIO = slotIO;
+			this.slotID = slotID;
 		}
 
 		public SlotConfig(NBTTagCompound tagCompound) {
 			deserializeNBT(tagCompound);
+		}
+
+		public EnumFacing getSide() {
+			return side;
+		}
+
+		public SlotIO getSlotIO() {
+			return slotIO;
+		}
+
+		public int getSlotID() {
+			return slotID;
 		}
 
 		@Override
@@ -157,6 +189,24 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		public SlotIO(NBTTagCompound tagCompound) {
 			deserializeNBT(tagCompound);
+		}
+
+		public SlotIO(ExtractConfig ioConfig, boolean input, boolean output) {
+			this.ioConfig = ioConfig;
+			this.input = input;
+			this.output = output;
+		}
+
+		public ExtractConfig getIoConfig() {
+			return ioConfig;
+		}
+
+		public boolean isInput() {
+			return input;
+		}
+
+		public boolean isOutput() {
+			return output;
 		}
 
 		@Override

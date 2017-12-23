@@ -79,7 +79,7 @@ import java.util.stream.Collectors;
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
-	private SlotConfiguration slotConfiguration;
+	public SlotConfiguration slotConfiguration;
 
 	/**
 	 * This is used to change the speed of the crafting operation.
@@ -95,17 +95,21 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	 */
 	double powerMultiplier = 1;
 
-	public TileLegacyMachineBase() {
-		if(getInventoryForTile().isPresent()){
-			slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
-		} else {
-			slotConfiguration = new SlotConfiguration();
-		}
-	}
-
 	public void syncWithAll() {
 		if (!world.isRemote) {
 			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
+		}
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if(slotConfiguration == null){
+			if(getInventoryForTile().isPresent()){
+				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			} else {
+				slotConfiguration = new SlotConfiguration();
+			}
 		}
 	}
 
@@ -244,6 +248,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		}
 		if(tagCompound.hasKey("slotConfig")){
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
+		} else {
+			if(getInventoryForTile().isPresent()){
+				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			} else {
+				slotConfiguration = new SlotConfiguration();
+			}
 		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
