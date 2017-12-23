@@ -46,6 +46,6 @@ public class PacketSlotSave implements INetworkPacket<PacketSlotSave> {
 		legacyMachineBase.markDirty();
 
 		PacketSlotSync packetSlotSync = new PacketSlotSync(pos, legacyMachineBase.slotConfiguration);
-		NetworkManager.sendToAllAround(packetSlotSync, new NetworkRegistry.TargetPoint(legacyMachineBase.getWorld().provider.getDimension(), legacyMachineBase.getPos().getX(), legacyMachineBase.getPos().getY(), legacyMachineBase.getPos().getZ(), 64));
+		NetworkManager.sendToAll(packetSlotSync);
 	}
 }

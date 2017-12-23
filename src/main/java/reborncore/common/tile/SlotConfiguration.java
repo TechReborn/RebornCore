@@ -247,6 +247,14 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		public boolean isInsert() {
 			return insert;
 		}
+
+		public ExtractConfig getNext(){
+			int i = this.ordinal() + 1;
+			if(i >= ExtractConfig.values().length){
+				i = 0;
+			}
+			return ExtractConfig.values()[i];
+		}
 	}
 
 
