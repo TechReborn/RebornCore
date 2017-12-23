@@ -106,6 +106,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		int slotID;
 		HashMap<EnumFacing, SlotConfig> sideMap;
+		boolean input, output;
 
 		public SlotConfigHolder(int slotID) {
 			this.slotID = slotID;
@@ -131,11 +132,29 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			toEdit.slotIO = config.slotIO;
 		}
 
+		public boolean isInput() {
+			return input;
+		}
+
+		public boolean isOutput() {
+			return output;
+		}
+
+		public void setInput(boolean input) {
+			this.input = input;
+		}
+
+		public void setOutput(boolean output) {
+			this.output = output;
+		}
+
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setInteger("slotID", slotID);
 			Arrays.stream(EnumFacing.VALUES).forEach(facing -> compound.setTag("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
+			compound.setBoolean("input", input);
+			compound.setBoolean("output", output);
 			return compound;
 		}
 
@@ -148,6 +167,8 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				SlotConfig config = new SlotConfig(compound);
 				sideMap.put(facing, config);
 			});
+			input = nbt.getBoolean("input");
+			output = nbt.getBoolean("output");
 		}
 	}
 
@@ -159,7 +180,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		public SlotConfig(EnumFacing side, int slotID) {
 			this.side = side;
 			this.slotID = slotID;
-			this.slotIO = new SlotIO(ExtractConfig.NONE, false, false);
+			this.slotIO = new SlotIO(ExtractConfig.NONE);
 		}
 
 		public SlotConfig(EnumFacing side, SlotIO slotIO, int slotID) {
@@ -203,44 +224,29 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 	public static class SlotIO implements INBTSerializable<NBTTagCompound>{
 		ExtractConfig ioConfig;
-		boolean input, output;
 
 		public SlotIO(NBTTagCompound tagCompound) {
 			deserializeNBT(tagCompound);
 		}
 
-		public SlotIO(ExtractConfig ioConfig, boolean input, boolean output) {
+		public SlotIO(ExtractConfig ioConfig) {
 			this.ioConfig = ioConfig;
-			this.input = input;
-			this.output = output;
 		}
 
 		public ExtractConfig getIoConfig() {
 			return ioConfig;
 		}
 
-		public boolean isInput() {
-			return input;
-		}
-
-		public boolean isOutput() {
-			return output;
-		}
-
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setInteger("config", ioConfig.ordinal());
-			compound.setBoolean("input", input);
-			compound.setBoolean("output", output);
 			return compound;
 		}
 
 		@Override
 		public void deserializeNBT(NBTTagCompound nbt) {
 			ioConfig = ExtractConfig.values()[nbt.getInteger("config")];
-			input = nbt.getBoolean("input");
-			output = nbt.getBoolean("output");
 		}
 	}
 
