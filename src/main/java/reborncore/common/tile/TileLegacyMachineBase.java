@@ -65,7 +65,13 @@ import reborncore.common.util.Inventory;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 /**
  * Created by modmuss50 on 04/11/2016.
@@ -73,6 +79,7 @@ import java.util.Optional;
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
+	private SlotConfiguration slotConfiguration;
 
 	/**
 	 * This is used to change the speed of the crafting operation.
@@ -87,6 +94,14 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	 * more power
 	 */
 	double powerMultiplier = 1;
+
+	public TileLegacyMachineBase() {
+		if(getInventoryForTile().isPresent()){
+			slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+		} else {
+			slotConfiguration = new SlotConfiguration();
+		}
+	}
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
@@ -227,6 +242,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().readFromNBT(tagCompound);
 		}
+		if(tagCompound.hasKey("slotConfig")){
+			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
+		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
 
@@ -239,6 +257,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
+		tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
 	}
@@ -388,27 +407,24 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			ArrayList<Integer> intList = new ArrayList<>();
-			for (int i = 0; i < container.slotMap.size(); i++) {
-				intList.add(i);
-			}
-			int[] intArr = ArrayUtils.toPrimitive(intList.toArray(new Integer[intList.size()]));
-			return intArr;
-		}
-		return new int[0];
+		return slotConfiguration.getSlotsForSide(side).stream()
+			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
+			.mapToInt(value -> value.slotID).toArray();
 	}
 
 	@Override
 	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			if (container.slotMap.containsKey(index)) {
-				Slot slot = container.slotMap.get(index);
-				if (slot.isItemValid(itemStackIn)) {
-					return true;
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if(slotConfig.slotIO.ioConfig.isInsert()){
+			if (getContainerForTile().isPresent()) {
+				RebornContainer container = getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					Slot slot = container.slotMap.get(index);
+					return slot.isItemValid(itemStackIn);
 				}
+			} else {
+				return true;
 			}
 		}
 		return false;
@@ -416,13 +432,17 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			if (container.slotMap.containsKey(index)) {
-				BaseSlot slot = container.slotMap.get(index);
-				if (slot.canWorldBlockRemove()) {
-					return true;
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if(slotConfig.slotIO.ioConfig.isExtact()){
+			if (getContainerForTile().isPresent()) {
+				RebornContainer container = getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					BaseSlot slot = container.slotMap.get(index);
+					return slot.canWorldBlockRemove();
 				}
+			} else {
+				return true;
 			}
 		}
 		return false;
