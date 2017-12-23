@@ -1,9 +1,9 @@
 package reborncore.common.tile;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
+import reborncore.RebornCore;
 import reborncore.common.util.Inventory;
 
 import javax.annotation.Nullable;
@@ -17,6 +17,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 	List<SlotConfigHolder> slotDetails = new ArrayList<>();
 
+	@Nullable
 	Inventory inventory;
 
 	public SlotConfiguration() {
@@ -26,6 +27,23 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		this.inventory = inventory;
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));
+		}
+	}
+
+	public void update(TileLegacyMachineBase machineBase){
+		if(inventory == null && machineBase.getInventoryForTile().isPresent()){
+			inventory = machineBase.getInventoryForTile().get();
+		}
+		if(inventory != null && slotDetails.size() != inventory.getSizeInventory()){
+			RebornCore.logHelper.debug("Fixing curoupt SlotConfiguration");
+			for (int i = 0; i < inventory.getSizeInventory(); i++) {
+				SlotConfigHolder holder = getSlotDetails(i);
+				if(holder == null){
+					RebornCore.logHelper.debug("Fixed slot " + i + " in " + machineBase);
+					//humm somthing has gone wrong
+					updateSlotDetails(new SlotConfigHolder(i));
+				}
+			}
 		}
 	}
 

@@ -48,7 +48,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
@@ -64,14 +63,7 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 
 /**
  * Created by modmuss50 on 04/11/2016.
@@ -153,6 +145,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				crafter.updateEntity();
 			}
 		}
+		slotConfiguration.update(this);
 	}
 
 	public void resetUpgrades() {
