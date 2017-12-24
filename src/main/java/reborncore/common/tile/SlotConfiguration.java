@@ -1,8 +1,11 @@
 package reborncore.common.tile;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.items.CapabilityItemHandler;
 import reborncore.RebornCore;
 import reborncore.common.util.Inventory;
 
@@ -44,6 +47,9 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 					updateSlotDetails(new SlotConfigHolder(i));
 				}
 			}
+		}
+		if(machineBase.getWorld().isRemote && machineBase.getWorld().getTotalWorldTime() % 10 == 0){
+			getSlotDetails().forEach(slotConfigHolder -> slotConfigHolder.handleItemIO(machineBase));
 		}
 	}
 
@@ -132,11 +138,27 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			toEdit.slotIO = config.slotIO;
 		}
 
-		public boolean isInput() {
+		private void handleItemIO(TileLegacyMachineBase machineBase){
+			if(!input && !output){
+				return;
+			}
+			getAllSides().stream()
+				.filter(config -> config.getSlotIO().getIoConfig() != ExtractConfig.NONE)
+				.forEach(config -> {
+				if(input){
+					config.handleItemInput(machineBase);
+				}
+				if(output){
+					config.handleItemOutput(machineBase);
+				}
+			});
+		}
+
+		public boolean autoInput() {
 			return input;
 		}
 
-		public boolean isOutput() {
+		public boolean autoOutput() {
 			return output;
 		}
 
@@ -203,6 +225,32 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		public int getSlotID() {
 			return slotID;
+		}
+
+		private void handleItemInput(TileLegacyMachineBase machineBase){
+			Inventory inventory = machineBase.getInventoryForTile().get();
+			ItemStack targetStack = inventory.getStackInSlot(slotID);
+			if(targetStack.getMaxStackSize() == targetStack.getCount()){
+				return;
+			}
+			TileEntity tileEntity = machineBase.getWorld().getTileEntity(machineBase.getPos().offset(side));
+			if(tileEntity == null || !tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)){
+				return;
+			}
+			//TODO
+		}
+
+		private void handleItemOutput(TileLegacyMachineBase machineBase){
+			Inventory inventory = machineBase.getInventoryForTile().get();
+			ItemStack sourceStack = inventory.getStackInSlot(slotID);
+			if(sourceStack.isEmpty()){
+				return;
+			}
+			TileEntity tileEntity = machineBase.getWorld().getTileEntity(machineBase.getPos().offset(side));
+			if(tileEntity == null || !tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)){
+				return;
+			}
+			//TODO
 		}
 
 		@Override

@@ -30,7 +30,10 @@ package reborncore;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -52,6 +55,7 @@ import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.CustomDescriptionPacket;
+import reborncore.common.network.packet.PacketIOSave;
 import reborncore.common.network.packet.PacketSlotSave;
 import reborncore.common.network.packet.PacketSlotSync;
 import reborncore.common.powerSystem.PowerSystem;
@@ -63,7 +67,6 @@ import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
-import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
 
@@ -170,6 +173,7 @@ public class RebornCore implements IModInfo {
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
 		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
+		event.registerPacket(PacketIOSave.class, Side.SERVER);
 	}
 
 	public String MOD_NAME() {
