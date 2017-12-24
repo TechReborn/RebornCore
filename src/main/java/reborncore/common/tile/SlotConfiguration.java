@@ -6,8 +6,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import reborncore.RebornCore;
 import reborncore.common.util.Inventory;
+import reborncore.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -237,7 +239,28 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			if(tileEntity == null || !tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)){
 				return;
 			}
-			//TODO
+			IItemHandler sourceHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			for (int i = 0; i < sourceHandler.getSlots(); i++) {
+				ItemStack sourceStack = sourceHandler.getStackInSlot(i);
+				if(sourceStack.isEmpty()){
+					continue;
+				}
+				//Checks if we are going to merge stacks that the items are the same
+				if(!targetStack.isEmpty()){
+					if(!ItemUtils.isItemEqual(sourceStack, targetStack, true, true, false)){
+						continue;
+					}
+				}
+				if(!machineBase.isItemValidForSlot(slotID, sourceStack)){
+					continue;
+				}
+				ItemStack extractedStack = sourceHandler.extractItem(i, 1, false);
+				if(sourceStack.isEmpty()){
+					inventory.setInventorySlotContents(slotID, extractedStack);
+				} else {
+					inventory.getStackInSlot(slotID).grow(extractedStack.getCount());
+				}
+			}
 		}
 
 		private void handleItemOutput(TileLegacyMachineBase machineBase){
@@ -250,6 +273,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			if(tileEntity == null || !tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)){
 				return;
 			}
+
 			//TODO
 		}
 
