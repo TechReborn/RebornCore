@@ -50,7 +50,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				}
 			}
 		}
-		if(machineBase.getWorld().isRemote && machineBase.getWorld().getTotalWorldTime() % 10 == 0){
+		if(!machineBase.getWorld().isRemote && machineBase.getWorld().getTotalWorldTime() % 5 == 0){
 			getSlotDetails().forEach(slotConfigHolder -> slotConfigHolder.handleItemIO(machineBase));
 		}
 	}
@@ -141,9 +141,10 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 
 		private void handleItemIO(TileLegacyMachineBase machineBase){
-			if(!input && !output){
-				return;
-			}
+//			if(!input && !output){
+//				return;
+//			}
+			System.out.println("hi");
 			getAllSides().stream()
 				.filter(config -> config.getSlotIO().getIoConfig() != ExtractConfig.NONE)
 				.forEach(config -> {
@@ -255,11 +256,12 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 					continue;
 				}
 				ItemStack extractedStack = sourceHandler.extractItem(i, 1, false);
-				if(sourceStack.isEmpty()){
+				if(targetStack.isEmpty()){
 					inventory.setInventorySlotContents(slotID, extractedStack);
 				} else {
 					inventory.getStackInSlot(slotID).grow(extractedStack.getCount());
 				}
+				break;
 			}
 		}
 

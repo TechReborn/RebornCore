@@ -144,8 +144,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			if (crafter != null) {
 				crafter.updateEntity();
 			}
+			slotConfiguration.update(this);
 		}
-		slotConfiguration.update(this);
+
 	}
 
 	public void resetUpgrades() {
