@@ -141,17 +141,16 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 
 		private void handleItemIO(TileLegacyMachineBase machineBase){
-//			if(!input && !output){
-//				return;
-//			}
-			System.out.println("hi");
+			if(!input && !output){
+				return;
+			}
 			getAllSides().stream()
 				.filter(config -> config.getSlotIO().getIoConfig() != ExtractConfig.NONE)
 				.forEach(config -> {
-				if(input){
+				if(input && config.getSlotIO().getIoConfig() == ExtractConfig.INPUT){
 					config.handleItemInput(machineBase);
 				}
-				if(output){
+				if(output && config.getSlotIO().getIoConfig() == ExtractConfig.OUTPUT){
 					config.handleItemOutput(machineBase);
 				}
 			});
@@ -275,8 +274,15 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			if(tileEntity == null || !tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)){
 				return;
 			}
-
-			//TODO
+			IItemHandler destHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			for (int i = 0; i < destHandler.getSlots(); i++) {
+				ItemStack returnStack = destHandler.insertItem(i, sourceStack, false);
+				if(!returnStack.isEmpty() && returnStack.getCount() == sourceStack.getCount()){
+					continue;
+				}
+				inventory.setInventorySlotContents(slotID, returnStack);
+				break;
+			}
 		}
 
 		@Override
