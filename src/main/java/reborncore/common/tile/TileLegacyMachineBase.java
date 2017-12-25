@@ -48,7 +48,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import org.apache.commons.lang3.ArrayUtils;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IInventoryProvider;
@@ -64,7 +63,6 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -73,6 +71,7 @@ import java.util.Optional;
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
+	public SlotConfiguration slotConfiguration;
 
 	/**
 	 * This is used to change the speed of the crafting operation.
@@ -91,6 +90,18 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public void syncWithAll() {
 		if (!world.isRemote) {
 			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
+		}
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if(slotConfiguration == null){
+			if(getInventoryForTile().isPresent()){
+				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			} else {
+				slotConfiguration = new SlotConfiguration();
+			}
 		}
 	}
 
@@ -133,7 +144,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			if (crafter != null) {
 				crafter.updateEntity();
 			}
+			slotConfiguration.update(this);
 		}
+
 	}
 
 	public void resetUpgrades() {
@@ -227,6 +240,15 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().readFromNBT(tagCompound);
 		}
+		if(tagCompound.hasKey("slotConfig")){
+			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
+		} else {
+			if(getInventoryForTile().isPresent()){
+				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			} else {
+				slotConfiguration = new SlotConfiguration();
+			}
+		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
 
@@ -239,6 +261,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
+		tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
 	}
@@ -388,27 +411,24 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			ArrayList<Integer> intList = new ArrayList<>();
-			for (int i = 0; i < container.slotMap.size(); i++) {
-				intList.add(i);
-			}
-			int[] intArr = ArrayUtils.toPrimitive(intList.toArray(new Integer[intList.size()]));
-			return intArr;
-		}
-		return new int[0];
+		return slotConfiguration.getSlotsForSide(side).stream()
+			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
+			.mapToInt(value -> value.slotID).toArray();
 	}
 
 	@Override
 	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			if (container.slotMap.containsKey(index)) {
-				Slot slot = container.slotMap.get(index);
-				if (slot.isItemValid(itemStackIn)) {
-					return true;
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if(slotConfig.slotIO.ioConfig.isInsert()){
+			if (getContainerForTile().isPresent()) {
+				RebornContainer container = getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					Slot slot = container.slotMap.get(index);
+					return slot.isItemValid(itemStackIn);
 				}
+			} else {
+				return true;
 			}
 		}
 		return false;
@@ -416,13 +436,17 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		if (getContainerForTile().isPresent()) {
-			RebornContainer container = getContainerForTile().get();
-			if (container.slotMap.containsKey(index)) {
-				BaseSlot slot = container.slotMap.get(index);
-				if (slot.canWorldBlockRemove()) {
-					return true;
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if(slotConfig.slotIO.ioConfig.isExtact()){
+			if (getContainerForTile().isPresent()) {
+				RebornContainer container = getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					BaseSlot slot = container.slotMap.get(index);
+					return slot.canWorldBlockRemove();
 				}
+			} else {
+				return true;
 			}
 		}
 		return false;
