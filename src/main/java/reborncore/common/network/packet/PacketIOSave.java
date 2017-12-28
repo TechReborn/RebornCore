@@ -17,13 +17,14 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 
 	BlockPos pos;
 	int slotID;
-	boolean input, output;
+	boolean input, output, filter;
 
-	public PacketIOSave(BlockPos pos, int slotID, boolean input, boolean output) {
+	public PacketIOSave(BlockPos pos, int slotID, boolean input, boolean output, boolean filter) {
 		this.pos = pos;
 		this.slotID = slotID;
 		this.input = input;
 		this.output = output;
+		this.filter = filter;
 	}
 
 	public PacketIOSave() {
@@ -35,6 +36,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 		buffer.writeInt(slotID);
 		buffer.writeBoolean(input);
 		buffer.writeBoolean(output);
+		buffer.writeBoolean(filter);
 	}
 
 	@Override
@@ -43,6 +45,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 		slotID = buffer.readInt();
 		input = buffer.readBoolean();
 		output = buffer.readBoolean();
+		filter = buffer.readBoolean();
 	}
 
 	@Override
@@ -54,6 +57,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 		}
 		holder.setInput(input);
 		holder.setOutput(output);
+		holder.setfilter(filter);
 
 		//Syncs back to the client
 		PacketSlotSync packetSlotSync = new PacketSlotSync(pos, legacyMachineBase.slotConfiguration);

@@ -1,5 +1,6 @@
 package reborncore.common.tile;
 
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -114,7 +115,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		int slotID;
 		HashMap<EnumFacing, SlotConfig> sideMap;
-		boolean input, output;
+		boolean input, output, filter;
 
 		public SlotConfigHolder(int slotID) {
 			this.slotID = slotID;
@@ -164,12 +165,20 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			return output;
 		}
 
+		public boolean filter() {
+			return filter;
+		}
+
 		public void setInput(boolean input) {
 			this.input = input;
 		}
 
 		public void setOutput(boolean output) {
 			this.output = output;
+		}
+
+		public void setfilter(boolean filter) {
+			this.filter = filter;
 		}
 
 		@Override
@@ -179,6 +188,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			Arrays.stream(EnumFacing.VALUES).forEach(facing -> compound.setTag("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
 			compound.setBoolean("input", input);
 			compound.setBoolean("output", output);
+			compound.setBoolean("filter", filter);
 			return compound;
 		}
 
@@ -193,6 +203,9 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			});
 			input = nbt.getBoolean("input");
 			output = nbt.getBoolean("output");
+			if(nbt.hasKey("filter")){ //Was added later, this allows old saves to be upgraded
+				filter = nbt.getBoolean("filter");
+			}
 		}
 	}
 
@@ -231,6 +244,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		private void handleItemInput(TileLegacyMachineBase machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
+			ISidedInventory sidedInventory = machineBase;
 			ItemStack targetStack = inventory.getStackInSlot(slotID);
 			if(targetStack.getMaxStackSize() == targetStack.getCount()){
 				return;

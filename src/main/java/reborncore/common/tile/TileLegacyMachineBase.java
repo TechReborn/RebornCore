@@ -351,6 +351,13 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		if(slotConfigHolder.filter() && getCrafterForTile().isPresent()){
+			RecipeCrafter crafter = getCrafterForTile().get();
+			if(!crafter.isStackValidInput(stack)){
+				return false;
+			}
+		}
 		if (getInventoryForTile().isPresent()) {
 			return getInventoryForTile().get().isItemValidForSlot(index, stack);
 		}
@@ -423,6 +430,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if(slotConfig.slotIO.ioConfig.isInsert()){
+			if(slotConfigHolder.filter() && getCrafterForTile().isPresent()){
+				RecipeCrafter crafter = getCrafterForTile().get();
+				if(!crafter.isStackValidInput(itemStackIn)){
+					return false;
+				}
+			}
 			if (getContainerForTile().isPresent()) {
 				RebornContainer container = getContainerForTile().get();
 				if (container.slotMap.containsKey(index)) {
