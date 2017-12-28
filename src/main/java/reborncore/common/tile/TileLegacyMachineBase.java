@@ -261,7 +261,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
-		tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+		if(slotConfiguration != null){
+			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+		}
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
 	}
