@@ -38,6 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -394,19 +395,21 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
-		info.add(TextFormatting.GRAY + "Max Energy: " + TextFormatting.GOLD
-			+ getLocaliszedPowerFormatted((int) getMaxPower()));
+		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.maxEnergy") + ": "
+				+ TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxPower()));
 		if (getMaxInput() != 0) {
-			info.add(TextFormatting.GRAY + "Input Rate: " + TextFormatting.GOLD
-				+ getLocaliszedPowerFormatted((int) getMaxInput()));
+			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.inputRate") + ": "
+					+ TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(TextFormatting.GRAY + "Output Rate: " + TextFormatting.GOLD
-				+ getLocaliszedPowerFormatted((int) getMaxOutput()));
+			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.outputRate")
+					+ ": " + TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxOutput()));
 		}
-		info.add(TextFormatting.GRAY + "Tier: " + TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
+		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.tier") + ": "
+				+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
 	}
 
 	public double getFreeSpace() {
