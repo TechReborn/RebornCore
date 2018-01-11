@@ -1,0 +1,9 @@
+reborncore.message.active=Ativo
+reborncore.message.inactive=Inativo
+
+item.reborncore:manual.name=Manual do Grupo Reborn
+
+reborncore.tooltip.energy.maxEnergy=Energia Máx
+reborncore.tooltip.energy.inputRate=Taxa de Entrada
+reborncore.tooltip.energy.outputRate=Taxa de Saída
+reborncore.tooltip.energy.tier=Nível
