@@ -29,7 +29,6 @@
 package reborncore.common.network.packet;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
@@ -74,6 +73,6 @@ public class PacketSlotSave implements INetworkPacket<PacketSlotSave> {
 		legacyMachineBase.markDirty();
 
 		PacketSlotSync packetSlotSync = new PacketSlotSync(pos, legacyMachineBase.slotConfiguration);
-		NetworkManager.sendToAll(packetSlotSync);
+		NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
 	}
 }

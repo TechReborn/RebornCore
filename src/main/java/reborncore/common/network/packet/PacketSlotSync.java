@@ -37,7 +37,6 @@ import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileLegacyMachineBase;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 /**
  * Used to sync all the slot details to the client
@@ -69,8 +68,11 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 
 	@Override
 	public void processData(PacketSlotSync message, MessageContext context) {
+		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
+			return;
+		}
 		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-		if(machineBase == null){
+		if(machineBase == null || machineBase.slotConfiguration == null){
 			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
 		}
 		slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder));
