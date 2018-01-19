@@ -131,11 +131,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		ticksSinceLastChange++;
-		if (ticksSinceLastChange == 20) {// Force a has chanced every second
+		// Force a has chanced every second
+		if (ticksSinceLastChange == 20) {
 			setInvDirty(true);
 			ticksSinceLastChange = 0;
 		}
-		if (currentRecipe == null && isInvDirty()) {// It will now look for new recipes.
+		// It will now look for new recipes.
+		if (currentRecipe == null && isInvDirty()) {
 			updateCurrentRecipe();
 		}
 		if(currentRecipe != null) {
@@ -187,11 +189,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 		setInvDirty(false);
 	}
 
-	private void updateCurrentRecipe(){
+	public void updateCurrentRecipe(){
 		currentTickTime = 0;
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
-			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {// This checks to see if it has all of the inputs
-				for (int i = 0; i < recipe.getOutputsSize(); i++) {// This checks to see if it can fit all of the outputs
+			// This checks to see if it has all of the inputs
+			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {
+				// This checks to see if it can fit all of the outputs
+				for (int i = 0; i < recipe.getOutputsSize(); i++) {
 					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
 						currentRecipe = null;
 						this.currentTickTime = 0;
@@ -401,14 +405,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
 			for (Object input : recipe.getInputs()) {
-				boolean hasItem = false;
 				boolean useOreDict = input instanceof String || recipe.useOreDic();
-				boolean checkSize = input instanceof ItemStack;
 				if (ItemUtils.isInputEqual(input, stack, true, true,
 					useOreDict)) {
 					return true;
 				}
-
 			}
 		}
 		return false;
