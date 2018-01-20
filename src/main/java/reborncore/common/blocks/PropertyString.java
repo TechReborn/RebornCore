@@ -34,23 +34,23 @@ import net.minecraft.block.properties.PropertyHelper;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Created by covers1624 on 2/6/2016.
  */
 public class PropertyString extends PropertyHelper<String> {
 
-	private final HashSet<String> valuesSet;
+	private final LinkedList<String> valuesSet;
 
 	public PropertyString(String name, Collection<String> values) {
 		super(name, String.class);
-		valuesSet = new HashSet(values);
+		valuesSet = new LinkedList<>(values);
 	}
 
 	public PropertyString(String name, String... values) {
 		super(name, String.class);
-		valuesSet = new HashSet<String>();
+		valuesSet = new LinkedList<>();
 		Collections.addAll(valuesSet, values);
 	}
 
