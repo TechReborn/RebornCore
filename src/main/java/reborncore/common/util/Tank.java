@@ -33,7 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 
 public class Tank extends FluidTank {
@@ -94,15 +94,23 @@ public class Tank extends FluidTank {
 		if (tile == null || tile.getWorld().isRemote) {
 			return;
 		}
-		if (lastFluid == null || (lastFluid != null && (this.getFluid() == null) || this.getFluid().getFluid() == null) || (lastFluid != this.getFluid().getFluid()) || lastAmmount != this.getFluidAmount()) {
-			if (this.getFluid() == null) {
-				lastFluid = null;
-				lastAmmount = 0;
+		FluidStack current = this.getFluid();
+		if (current != null) {
+			if (lastBeforeUpdate != null) {
+				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
+					NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+					lastBeforeUpdate = current.copy();
+				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
+					NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+					lastBeforeUpdate = current.copy();
+				}
 			} else {
-				lastFluid = this.getFluid().getFluid();
-				lastAmmount = this.getFluidAmount();
+				NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+				lastBeforeUpdate = current.copy();
 			}
-			reborncore.common.network.NetworkManager.sendToAllAround(new CustomDescriptionPacket(tile), new NetworkRegistry.TargetPoint(tile.getWorld().provider.getDimension(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), 20));
+		} else if (lastBeforeUpdate != null) {
+			NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+			lastBeforeUpdate = null;
 		}
 	}
 
