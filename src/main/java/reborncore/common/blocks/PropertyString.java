@@ -32,9 +32,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.PropertyHelper;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by covers1624 on 2/6/2016.
@@ -45,13 +43,15 @@ public class PropertyString extends PropertyHelper<String> {
 
 	public PropertyString(String name, Collection<String> values) {
 		super(name, String.class);
-		valuesSet = new LinkedList<>(values);
+		List<String> strList = new ArrayList<>();
+		values.forEach(s -> strList.add(s.intern()));
+		valuesSet = new LinkedList<>(strList);
 	}
 
 	public PropertyString(String name, String... values) {
 		super(name, String.class);
 		valuesSet = new LinkedList<>();
-		Collections.addAll(valuesSet, values);
+		Arrays.stream(values).forEach(s -> valuesSet.add(s.intern()));
 	}
 
 	@Override
@@ -61,14 +61,14 @@ public class PropertyString extends PropertyHelper<String> {
 
 	@Override
 	public Optional<String> parseValue(String value) {
-		if (valuesSet.contains(value)) {
-			return Optional.of(value);
+		if (valuesSet.contains(value.intern())) {
+			return Optional.of(value.intern());
 		}
 		return Optional.absent();
 	}
 
 	@Override
 	public String getName(String value) {
-		return value;
+		return value.intern();
 	}
 }
