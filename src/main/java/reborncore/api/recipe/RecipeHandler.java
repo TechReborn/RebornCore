@@ -34,6 +34,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class RecipeHandler {
 
 	/**

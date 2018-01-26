@@ -60,6 +60,7 @@ import reborncore.common.network.packet.PacketSlotSave;
 import reborncore.common.network.packet.PacketSlotSync;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
+import reborncore.common.recipe.RecipeLoader;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
@@ -127,6 +128,8 @@ public class RebornCore implements IModInfo {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("correlated:weldthrower"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
+
+		RecipeLoader.load();
 	}
 
 	@Mod.EventHandler

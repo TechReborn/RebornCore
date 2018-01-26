@@ -48,6 +48,7 @@ import java.util.Optional;
 /**
  * Use this in your tile entity to craft things
  */
+@Deprecated
 public class RecipeCrafter implements IUpgradeHandler {
 
 	/**

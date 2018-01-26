@@ -33,6 +33,7 @@ import reborncore.common.recipes.RecipeCrafter;
 /**
  * Created by modmuss50 on 11/04/2016.
  */
+@Deprecated
 public interface IRecipeCrafterProvider {
 
 	RecipeCrafter getRecipeCrafter();

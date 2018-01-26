@@ -36,6 +36,7 @@ import java.util.List;
 /**
  * This is the base recipe class implement this to make a recipe handler
  */
+@Deprecated
 public interface IBaseRecipeType {
 
 	/**

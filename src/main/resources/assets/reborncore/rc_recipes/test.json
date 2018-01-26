@@ -1,0 +1,18 @@
+{
+  "factory" : "techreborn:fusion_reactor",
+  "recipe" :{
+    "ticktime": 200,
+    "generation": 20000,
+    "start_power": 1234,
+    "inputs": [
+      "techreborn:coal",
+      {
+        "type": "reborncore:itemstack",
+        "name": "techreborn:cell:lava"
+      }
+    ],
+    "outputs": [
+      "techreborn:parts:something"
+    ]
+  }
+}

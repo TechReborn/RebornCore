@@ -36,6 +36,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * Created by Prospector
  */
+@Deprecated
 public abstract class RCRecipeMethods {
 
 	static ItemStack getStack(Item item) {
