@@ -47,7 +47,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -59,7 +58,6 @@ import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.InventoryHelper;
 import reborncore.common.util.WorldUtils;
 
@@ -90,8 +88,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 	}
 
+	@Override
 	protected BlockStateContainer createBlockState() {
-
 		FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 		ACTIVE = PropertyBool.create("active");
 		return new BlockStateContainer(this, FACING, ACTIVE);
@@ -177,72 +175,63 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		return false;
 	}
 
-	@Override
-	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
-		if (axis == null) {
-			return false;
-		} else {
-			TileEntity tile = world.getTileEntity(pos);
-			if (tile != null && tile instanceof TileMachineBase) {
-				world.setBlockState(pos,
-					world.getBlockState(pos).withProperty(FACING, axis));
-				return true;
-			}
-			return false;
-		}
-	}
-
+	/* 
+	 *  Right-click should open GUI for all non-wrench items
+	 *  Shift-Right-click should apply special action, like fill\drain bucket, install upgrade, etc.
+	 */
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-	                                EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+			EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (fillBlockWithFluid(worldIn, pos, playerIn)) {
 			return true;
 		}
 		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
-		if (playerIn.isSneaking()) {
-			if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-				TileEntity tileEntity = worldIn.getTileEntity(pos);
-				if (tileEntity instanceof IUpgradeable) {
-					if (((IUpgradeable) tileEntity).canBeUpgraded()) {
-						if (InventoryHelper.testInventoryInsertion(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack, null) > 0) {
-							InventoryHelper.insertItemIntoInventory(((IUpgradeable) tileEntity).getUpgradeInvetory(), stack);
-							playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+
+		// We extended BlockTileBase. Thus we should always have tile entity. I hope.
+		if (tileEntity == null) {
+			return false;
+		}
+
+		if (!stack.isEmpty()) {
+			if (ToolManager.INSTANCE.canHandleTool(stack)) {
+				if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, false)) {
+					if (playerIn.isSneaking()) {
+						if (tileEntity instanceof IToolDrop) {
+							ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
+							if (drop == null) {
+								return false;
+							}
+							if (!drop.isEmpty()) {
+								spawnAsEntity(worldIn, pos, drop);
+							}
+							if (!worldIn.isRemote) {
+								worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+							}
 							return true;
 						}
+					} else {
+						rotateBlock(worldIn, pos, side);
+						return true;
+					}
+				}
+			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
+				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
+				if (upgradeableEntity.canBeUpgraded()) {
+					if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack, null) > 0) {
+						InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInvetory(), stack);
+						playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+						return true;
 					}
 				}
 			}
 		}
-		if (!stack.isEmpty() && ToolManager.INSTANCE.canHandleTool(stack)) {
-			if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, false)) {
-				TileEntity tileEntity = worldIn.getTileEntity(pos);
-				if (playerIn.isSneaking()) {
-					if (tileEntity instanceof IToolDrop) {
-						ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
-						if (drop == null) {
-							return false;
-						}
-						if (!drop.isEmpty()){
-							spawnAsEntity(worldIn, pos, drop);
-						}
-						
-//						worldIn.playSound(null, playerIn.posX, playerIn.posY,
-//							playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
-//							SoundCategory.BLOCKS, 0.6F, 1F);
-						if (!worldIn.isRemote) {
-							worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
-						}
-						return true;
-					}
-				} else {
-					tileEntity.rotate(Rotation.CLOCKWISE_90);
-					return true;
-				}
-			}
-		} else if (getGui() != null && !playerIn.isSneaking()){
+
+		if (getGui() != null && !playerIn.isSneaking()) {
 			getGui().open(playerIn, pos, worldIn);
 			return true;
 		}
+
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
 	}
 
