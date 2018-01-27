@@ -28,12 +28,14 @@
 
 package reborncore.common.recipe.registry;
 
-import reborncore.api.newRecipe.IIngredient;
+import com.google.gson.JsonObject;
 import reborncore.common.recipe.IngredientParser;
 import reborncore.common.registration.IRegistryFactory;
 import reborncore.common.registration.RegistryTarget;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,11 +49,29 @@ public class IngredientFactory implements IRegistryFactory {
 
 	@Override
 	public void handleClass(Class clazz) {
+		validateClass(clazz);
 		try {
-			IIngredient ingredient = (IIngredient) clazz.newInstance();
-			IngredientParser.addIngredient(ingredient);
-		} catch (InstantiationException | IllegalAccessException e) {
+			IngredientParser.addIngredient(clazz);
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
 			throw new RuntimeException("Failed to load ingredient", e);
+		}
+	}
+
+	private void validateClass(Class clazz){
+		boolean hasEmptyConstructor = false;
+		for (Constructor constructor : clazz.getConstructors()) {
+			if (constructor.getParameterCount() == 0) {
+				hasEmptyConstructor = true;
+			}
+		}
+		if (!hasEmptyConstructor) {
+			throw new RuntimeException("The ingredient " + clazz.getName() + " does not have an empty constructor!");
+		}
+
+		try {
+			Method method = clazz.getDeclaredMethod("fromJson", JsonObject.class);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("The ingredient " + clazz.getName() + " does not have a valid fromJson method");
 		}
 	}
 

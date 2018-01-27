@@ -13,7 +13,6 @@ import reborncore.api.newRecipe.IRecipeFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -80,10 +79,8 @@ public class RecipeLoader {
 				throw new RuntimeException("Failed to find factory with name " + factoryName);
 			}
 			return recipeFactory.load(jsonObject.getAsJsonObject("recipe"), new ResourceLocation(modid, filename));
-		} catch (IOException e) {
-			e.printStackTrace();
-			//TODO better error handling
-			throw new RuntimeException("Failed to load recipe", e);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to load recipe: " + file, e);
 		}
 	}
 }

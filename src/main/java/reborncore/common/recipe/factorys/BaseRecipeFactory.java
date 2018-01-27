@@ -2,7 +2,6 @@ package reborncore.common.recipe.factorys;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.util.ResourceLocation;
 import reborncore.api.newRecipe.IIngredient;
 import reborncore.api.newRecipe.IRecipe;
@@ -45,16 +44,11 @@ public abstract class BaseRecipeFactory<T extends IRecipe> implements IRecipeFac
 	public List<IIngredient> buildIngredientList(JsonArray jsonElements){
 		List<IIngredient> inputList = new ArrayList<>();
 		jsonElements.forEach(jsonElement -> {
-			if(jsonElement.isJsonPrimitive()){
-				JsonPrimitive primitive = jsonElement.getAsJsonPrimitive();
-				if(primitive.isString()){
-					inputList.add(IngredientParser.parseIngredient(primitive.getAsString()));
-				}
-			} else if (jsonElement.isJsonObject()){
+			if (jsonElement.isJsonObject()){
 				JsonObject jsonObject = jsonElement.getAsJsonObject();
 				inputList.add(IngredientParser.parseIngredient(jsonObject));
 			} else {
-				throw new RuntimeException(getName() + " failed to parse json inputs");
+				throw new RuntimeException("An item in the ingredient list was is not a json object");
 			}
 		});
 		return inputList;

@@ -5,14 +5,25 @@
     "generation": 20000,
     "start_power": 1234,
     "inputs": [
-      "techreborn:coal",
       {
         "type": "reborncore:itemstack",
-        "name": "techreborn:cell:lava"
+        "item": "minecraft:coal",
+        "count": 10
+      },
+      {
+        "type": "reborncore:ore",
+        "ore": "plateCopper"
+      },
+      {
+        "type": "reborncore:energy",
+        "power": 250
       }
     ],
     "outputs": [
-      "techreborn:parts:something"
+      {
+        "type": "reborncore:itemstack",
+        "item": "minecraft:stone"
+      }
     ]
   }
 }
