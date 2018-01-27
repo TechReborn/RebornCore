@@ -17,10 +17,10 @@ public interface IRecipe {
 
 	/**
 	 *
-	 * @param ingredients the ingredients that the machine has
+	 * @param machine the machine that is trying to craft the recipe
 	 * @return if the recipe can be made with the provided ingredients
 	 */
-	public boolean check(List<IIngredient> ingredients);
+	public boolean check(IMachine machine);
 
 	/**
 	 * the outputs

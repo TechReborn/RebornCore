@@ -28,35 +28,13 @@
 
 package reborncore.common.recipe.registry;
 
-import reborncore.api.newRecipe.IRecipeFactory;
-import reborncore.common.recipe.RecipeFactoryManager;
-import reborncore.common.registration.IRegistryFactory;
-import reborncore.common.registration.RegistryTarget;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.List;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface IngredientRegistry {
 
-@IRegistryFactory.RegistryFactory
-public class RecipeFactoryFactory implements IRegistryFactory {
-
-	@Override
-	public Class<? extends Annotation> getAnnotation() {
-		return RecipeFacotryRegistry.class;
-	}
-
-	@Override
-	public void handleClass(Class clazz) {
-		try {
-			IRecipeFactory recipeFactory = (IRecipeFactory) clazz.newInstance();
-			RecipeFactoryManager.addFactory(recipeFactory);
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Failed to load recipe factory", e);
-		}
-	}
-
-	@Override
-	public List<RegistryTarget> getTargets() {
-		return Collections.singletonList(RegistryTarget.CLASS);
-	}
 }

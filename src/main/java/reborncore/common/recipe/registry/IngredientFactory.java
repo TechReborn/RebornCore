@@ -28,8 +28,8 @@
 
 package reborncore.common.recipe.registry;
 
-import reborncore.api.newRecipe.IRecipeFactory;
-import reborncore.common.recipe.RecipeFactoryManager;
+import reborncore.api.newRecipe.IIngredient;
+import reborncore.common.recipe.IngredientParser;
 import reborncore.common.registration.IRegistryFactory;
 import reborncore.common.registration.RegistryTarget;
 
@@ -38,20 +38,20 @@ import java.util.Collections;
 import java.util.List;
 
 @IRegistryFactory.RegistryFactory
-public class RecipeFactoryFactory implements IRegistryFactory {
+public class IngredientFactory implements IRegistryFactory {
 
 	@Override
 	public Class<? extends Annotation> getAnnotation() {
-		return RecipeFacotryRegistry.class;
+		return IngredientRegistry.class;
 	}
 
 	@Override
 	public void handleClass(Class clazz) {
 		try {
-			IRecipeFactory recipeFactory = (IRecipeFactory) clazz.newInstance();
-			RecipeFactoryManager.addFactory(recipeFactory);
+			IIngredient ingredient = (IIngredient) clazz.newInstance();
+			IngredientParser.addIngredient(ingredient);
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Failed to load recipe factory", e);
+			throw new RuntimeException("Failed to load ingredient", e);
 		}
 	}
 

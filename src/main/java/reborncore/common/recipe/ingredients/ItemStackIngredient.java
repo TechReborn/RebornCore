@@ -2,9 +2,14 @@ package reborncore.common.recipe.ingredients;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import reborncore.api.newRecipe.IMachine;
+import reborncore.common.recipe.registry.IngredientRegistry;
+import reborncore.common.registration.RebornRegistry;
 import reborncore.common.util.ItemUtils;
 
-public class ItemStackIngredient extends BaseIngredient<ItemStack>{
+@RebornRegistry
+@IngredientRegistry
+public class ItemStackIngredient extends BaseIngredient{
 
 	ItemStack stack;
 	boolean matchDamage, matchNBT, useOreDict = true;
@@ -36,18 +41,8 @@ public class ItemStackIngredient extends BaseIngredient<ItemStack>{
 	}
 
 	@Override
-	public ItemStack get() {
-		return stack.copy();
-	}
-
-	@Override
-	public boolean matches(Object obj) {
-		//TODO shall we check the object or not? We might only want to check item stacks
-		return ItemUtils.isInputEqual(obj, stack, matchDamage, matchNBT, useOreDict);
-	}
-
-	@Override
-	public Class getHeldClass() {
-		return stack.getClass();
+	public boolean canCraft(IMachine machine) {
+		//TODO make this work
+		return ItemUtils.isInputEqual(machine, stack, matchDamage, matchNBT, useOreDict);
 	}
 }

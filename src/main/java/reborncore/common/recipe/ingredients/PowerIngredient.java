@@ -1,23 +1,29 @@
 package reborncore.common.recipe.ingredients;
 
 import net.minecraft.util.ResourceLocation;
+import reborncore.api.newRecipe.IIngredient;
 import reborncore.api.newRecipe.IMachine;
 import reborncore.common.recipe.registry.IngredientRegistry;
 import reborncore.common.registration.RebornRegistry;
 
 @RebornRegistry
 @IngredientRegistry
-public class OreIngredient extends BaseIngredient {
+public class PowerIngredient implements IIngredient {
 
-	String oreDict;
+	final int power;
 
-	public OreIngredient(ResourceLocation type, String oreDict) {
-		super(type);
-		this.oreDict = oreDict;
+	public PowerIngredient(int power) {
+		this.power = power;
 	}
 
 	@Override
 	public boolean canCraft(IMachine machine) {
-		return false; //TODO
+		return machine.getEnergy().getEnergyStored() > power;
 	}
+
+	@Override
+	public ResourceLocation getType() {
+		return new ResourceLocation("forge:energy");
+	}
+
 }

@@ -9,13 +9,9 @@ import net.minecraft.util.ResourceLocation;
  * items
  * fluilds
  */
-public interface IIngredient<T> {
+public interface IIngredient {
 
-	public T get();
-
-	public boolean matches(Object obj);
-
-	public Class<? extends T> getHeldClass();
+	public boolean canCraft(IMachine machine);
 
 	public ResourceLocation getType();
 

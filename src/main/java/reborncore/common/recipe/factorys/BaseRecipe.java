@@ -2,6 +2,7 @@ package reborncore.common.recipe.factorys;
 
 import net.minecraft.util.ResourceLocation;
 import reborncore.api.newRecipe.IIngredient;
+import reborncore.api.newRecipe.IMachine;
 import reborncore.api.newRecipe.IRecipe;
 
 import java.util.Collections;
@@ -25,15 +26,9 @@ public class BaseRecipe implements IRecipe {
 	}
 
 	@Override
-	public boolean check(List<IIngredient> ingredients) {
+	public boolean check(IMachine machine) {
 		for(IIngredient input : inputs){
-			boolean found = false;
-			for(IIngredient ingredient : ingredients){
-				if(input.matches(ingredient)){
-					found = true;
-				}
-			}
-			if(!found){
+			if(!input.canCraft(machine)){
 				return false;
 			}
 		}
