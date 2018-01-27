@@ -38,14 +38,18 @@ import reborncore.RebornCore;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mark on 26/02/2017.
  */
 public class RegistrationManager {
 
-	static HashMap<Class<? extends FMLStateEvent>, IRegistryFactory> factoryList = new HashMap<>();
+	static List<IRegistryFactory> factoryList = new ArrayList<>();
 	static List<Class> registryClasses = new ArrayList<>();
 
 	public static void init(FMLPreInitializationEvent event) {
@@ -66,32 +70,6 @@ public class RegistrationManager {
 		//Sorts all the classes to (try) and ensure they are loaded in the same oder on the client/server.
 		//Hopefully this fixes the issue with packets being misaligned
 		registryClasses.sort(Comparator.comparing(Class::getCanonicalName));
-
-		for (IRegistryFactory registryFactory : getFactorysForSate(event.getClass())) {
-			if (registryFactory.getTargets().contains(RegistryTarget.CLASS)) {
-				Set<ASMDataTable.ASMData> asmDataFactorySet = asmDataTable.getAll(registryFactory.getAnnotation().getName());
-				for (ASMDataTable.ASMData data : asmDataFactorySet) {
-					try {
-						ModContainer activeContainer = Loader.instance().activeModContainer();
-						Class factoryClazz = Class.forName(data.getClassName());
-						//Check to see if it also has a reborn registry annoation that specifyes a custom mod id
-						Annotation annotation = getAnnoation(factoryClazz.getAnnotations(), RebornRegistry.class);
-						if (annotation instanceof RebornRegistry) {
-							RebornRegistry registryAnnotation = (RebornRegistry) annotation;
-							String modId = registryAnnotation.modID();
-							if (!activeContainer.getModId().equals(modId)) {
-								setActiveMod(modId);
-							}
-						}
-						registryFactory.handleClass(factoryClazz);
-						setActiveModContainer(activeContainer);
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-
-				}
-			}
-		}
 		RebornCore.logHelper.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
 	}
 
@@ -108,8 +86,8 @@ public class RegistrationManager {
 						setActiveMod(annotation.modID());
 					}
 				}
-				for (Field field : clazz.getDeclaredFields()) {
-					for (IRegistryFactory regFactory : factoryList) {
+				for (IRegistryFactory regFactory : factoryList) {
+					for (Field field : clazz.getDeclaredFields()) {
 						if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
 							continue;
 						}
@@ -117,14 +95,18 @@ public class RegistrationManager {
 							regFactory.handleField(field);
 						}
 					}
-				}
-				for (Method method : clazz.getDeclaredMethods()) {
-					for (IRegistryFactory regFactory : factoryList) {
+					for (Method method : clazz.getDeclaredMethods()) {
 						if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD)) {
 							continue;
 						}
 						if (method.isAnnotationPresent(regFactory.getAnnotation())) {
 							regFactory.handleMethod(method);
+						}
+
+					}
+					if(regFactory.getTargets().contains(RegistryTarget.CLASS)){
+						if(clazz.isAnnotationPresent(regFactory.getAnnotation())){
+							regFactory.handleClass(clazz);
 						}
 					}
 				}
@@ -136,13 +118,7 @@ public class RegistrationManager {
 	}
 
 	private static List<IRegistryFactory> getFactorysForSate(Class<? extends FMLStateEvent> event) {
-		List<IRegistryFactory> factorySateList = new ArrayList<>();
-		for (Map.Entry<Class<? extends FMLStateEvent>, IRegistryFactory> entry : factoryList.entrySet()) {
-			if (entry.getKey() == event) {
-				factorySateList.add(entry.getValue());
-			}
-		}
-		return factorySateList;
+		return factoryList.stream().filter(iRegistryFactory -> iRegistryFactory.getProcessSate() == event).collect(Collectors.toList());
 	}
 
 	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
@@ -178,7 +154,7 @@ public class RegistrationManager {
 				Object object = clazz.newInstance();
 				if (object instanceof IRegistryFactory) {
 					IRegistryFactory factory = (IRegistryFactory) object;
-					factoryList.put(((IRegistryFactory) object).getProcessSate(), factory);
+					factoryList.add(factory);
 				}
 			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
 				e.printStackTrace();
