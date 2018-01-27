@@ -26,6 +26,6 @@ public interface IRecipe {
 	 * the outputs
 	 * @return
 	 */
-	public List<IOutput> getOutputs();
+	public List<IIngredient> getOutputs();
 
 }

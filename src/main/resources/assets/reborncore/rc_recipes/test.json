@@ -1,5 +1,5 @@
 {
-  "factory" : "techreborn:fusion_reactor",
+  "factory" : "reborncore:test",
   "recipe" :{
     "ticktime": 200,
     "generation": 20000,

@@ -1,17 +1,15 @@
 package reborncore.common.recipe.factorys;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.ResourceLocation;
-import reborncore.api.newRecipe.IInput;
-import reborncore.api.newRecipe.IOutput;
+import reborncore.api.newRecipe.IIngredient;
 import reborncore.api.newRecipe.IRecipe;
 import reborncore.api.newRecipe.IRecipeFactory;
+import reborncore.common.recipe.IngredientParser;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class BaseRecipeFactory<T extends IRecipe> implements IRecipeFactory {
@@ -30,7 +28,7 @@ public abstract class BaseRecipeFactory<T extends IRecipe> implements IRecipeFac
 
 	@Override
 	public T load(JsonObject jsonObject, ResourceLocation name) {
-		T recipe = createRecipe(name, buildInputs(jsonObject.getAsJsonArray("inputs")), null);
+		T recipe = createRecipe(name, buildIngredientList(jsonObject.getAsJsonArray("inputs")), buildIngredientList(jsonObject.getAsJsonArray("outputs")));
 		buildRecipe(jsonObject, recipe);
 		return recipe;
 	}
@@ -42,22 +40,19 @@ public abstract class BaseRecipeFactory<T extends IRecipe> implements IRecipeFac
 	 */
 	public abstract void buildRecipe(JsonObject jsonObject, T recipe);
 
-	public abstract T createRecipe(ResourceLocation resourceLocation, List<IInput> inputs, List<IOutput> outputs);
+	public abstract T createRecipe(ResourceLocation resourceLocation, List<IIngredient> inputs, List<IIngredient> outputs);
 
-	public List<IInput> buildInputs(JsonArray jsonElements){
-		List<IInput> inputList = new ArrayList<>();
+	public List<IIngredient> buildIngredientList(JsonArray jsonElements){
+		List<IIngredient> inputList = new ArrayList<>();
 		jsonElements.forEach(jsonElement -> {
 			if(jsonElement.isJsonPrimitive()){
 				JsonPrimitive primitive = jsonElement.getAsJsonPrimitive();
 				if(primitive.isString()){
-					//TODO make input from string, this could be a oredict name, or even a more copact format for the main json structure
+					inputList.add(IngredientParser.parseIngredient(primitive.getAsString()));
 				}
 			} else if (jsonElement.isJsonObject()){
 				JsonObject jsonObject = jsonElement.getAsJsonObject();
-				String type = "?"; //TODO shall we have a defualt type? most likey going to be items
-				if(jsonObject.has("type")){
-					type = jsonObject.get("type").getAsString();
-				}
+				inputList.add(IngredientParser.parseIngredient(jsonObject));
 			} else {
 				throw new RuntimeException(getName() + " failed to parse json inputs");
 			}

@@ -2,8 +2,6 @@ package reborncore.common.recipe.factorys;
 
 import net.minecraft.util.ResourceLocation;
 import reborncore.api.newRecipe.IIngredient;
-import reborncore.api.newRecipe.IInput;
-import reborncore.api.newRecipe.IOutput;
 import reborncore.api.newRecipe.IRecipe;
 
 import java.util.Collections;
@@ -12,10 +10,10 @@ import java.util.List;
 public class BaseRecipe implements IRecipe {
 
 	final ResourceLocation resourceLocation;
-	final List<IInput> inputs;
-	final List<IOutput> outputs;
+	final List<IIngredient> inputs;
+	final List<IIngredient> outputs;
 
-	public BaseRecipe(ResourceLocation resourceLocation, List<IInput> inputs, List<IOutput> outputs) {
+	public BaseRecipe(ResourceLocation resourceLocation, List<IIngredient> inputs, List<IIngredient> outputs) {
 		this.resourceLocation = resourceLocation;
 		this.inputs = inputs;
 		this.outputs = outputs;
@@ -28,7 +26,7 @@ public class BaseRecipe implements IRecipe {
 
 	@Override
 	public boolean check(List<IIngredient> ingredients) {
-		for(IInput input : inputs){
+		for(IIngredient input : inputs){
 			boolean found = false;
 			for(IIngredient ingredient : ingredients){
 				if(input.matches(ingredient)){
@@ -43,7 +41,7 @@ public class BaseRecipe implements IRecipe {
 	}
 
 	@Override
-	public List<IOutput> getOutputs() {
+	public List<IIngredient> getOutputs() {
 		return Collections.unmodifiableList(outputs);
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import reborncore.RebornCore;
+import reborncore.api.newRecipe.IRecipe;
 import reborncore.api.newRecipe.IRecipeFactory;
 
 import java.io.BufferedReader;
@@ -33,12 +34,13 @@ public class RecipeLoader {
 	}
 
 	private static void loadModRecipes(ModContainer mod){
-		CraftingHelper.findFiles(mod, "assets/" + mod.getModId() + "/rc_recipes", null, RecipeLoader::loadRecipe, false, true);
+		CraftingHelper.findFiles(mod, "assets/" + mod.getModId() + "/rc_recipes", null, (root, file) -> loadRecipe(root, file, mod.getModId()) != null, false, true);
 	}
 
 	/**
 	 * Loads the recipes from the config
 	 */
+	//TODO check if needed in 1.13 with content packs
 	private static void loadConfigRecipes(){
 		File configDir = new File(RebornCore.configDir, "recipes");
 		if(!configDir.exists()){
@@ -59,26 +61,29 @@ public class RecipeLoader {
 			if(file.isDirectory()){
 				scanDir(file);
 			} else {
-				loadRecipe(root.toPath(), file.toPath());
+				loadRecipe(root.toPath(), file.toPath(), "rc_config");
 			}
 		});
 	}
 
-	private static boolean loadRecipe(Path root, Path file){
+	private static IRecipe loadRecipe(Path root, Path file, String modid){
 		String filename = root.relativize(file).toString();
 		if(!filename.endsWith(".json") || filename.startsWith("_")){
-			return false;
+			return null;
 		}
 		try {
 			BufferedReader reader = Files.newBufferedReader(file);
 			JsonObject jsonObject = GSON.fromJson(reader, JsonObject.class);
-			String factoryName = jsonObject.getAsJsonPrimitive("facotry").getAsString();
+			String factoryName = jsonObject.getAsJsonPrimitive("factory").getAsString();
 			IRecipeFactory recipeFactory = RecipeFactoryManager.getRecipeFactory(new ResourceLocation(factoryName));
-			return recipeFactory.load(jsonObject.getAsJsonObject("recipe"));
+			if(recipeFactory == null){
+				throw new RuntimeException("Failed to find factory with name " + factoryName);
+			}
+			return recipeFactory.load(jsonObject.getAsJsonObject("recipe"), new ResourceLocation(modid, filename));
 		} catch (IOException e) {
 			e.printStackTrace();
 			//TODO better error handling
-			return false;
+			throw new RuntimeException("Failed to load recipe", e);
 		}
 	}
 }
