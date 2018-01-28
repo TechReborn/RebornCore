@@ -170,7 +170,7 @@ public abstract class RebornContainer extends Container {
 						slot.onSlotChanged();
 						changed = true;
 					} else if (stackInSlot.getCount() < max) {
-						stackToShift.setCount(-(max - stackInSlot.getCount()));
+						stackToShift.setCount(stackToShift.getCount()-(max-stackInSlot.getCount()));
 						stackInSlot.setCount(max);
 						slot.onSlotChanged();
 						changed = true;
@@ -186,7 +186,7 @@ public abstract class RebornContainer extends Container {
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					stackInSlot = stackToShift.copy();
 					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.setCount(-stackInSlot.getCount());
+					stackToShift.setCount(stackToShift.getCount()-stackInSlot.getCount());
 					slot.putStack(stackInSlot);
 					slot.onSlotChanged();
 					changed = true;
