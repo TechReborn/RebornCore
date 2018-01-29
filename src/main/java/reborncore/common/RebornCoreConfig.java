@@ -53,7 +53,6 @@ public class RebornCoreConfig {
 	protected static boolean enableForge;
 	private static RebornCoreConfig instance = null;
 	private static IPowerConfig powerConfig = null;
-	public static boolean mtDocGen;
 	public static boolean isIC2Loaded = false;
 	public static boolean wrenchRequired = true;
 
@@ -114,9 +113,6 @@ public class RebornCoreConfig {
 				.getInt();
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs")
-				.getBoolean();
-
-		mtDocGen = config.get(CATEGORY_MISC, "mtDocGen", false, "Enable automatic generation of MT docs at runtime (Beta)")
 				.getBoolean();
 		
 		// resets this when the config is reloaded

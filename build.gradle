@@ -102,7 +102,6 @@ group = 'RebornCore'
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.26-ex112:api'
 	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
-	provided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.0.5"
 }
 
 processResources

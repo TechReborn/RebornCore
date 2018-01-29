@@ -49,7 +49,6 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.logic.PacketButtonID;
-import reborncore.common.minetweaker.MinetweakerDocGen;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
@@ -111,9 +110,6 @@ public class RebornCore implements IModInfo {
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
 		MinecraftForge.EVENT_BUS.register(this);
 
-		if (RebornCoreConfig.mtDocGen && Loader.isModLoaded("crafttweaker")) {
-			MinetweakerDocGen.gen(event.getAsmData(), new File(configDir, "MTDocs.txt"));
-		}
 		RegistrationManager.load(event);
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("ic2:wrench"), true));
