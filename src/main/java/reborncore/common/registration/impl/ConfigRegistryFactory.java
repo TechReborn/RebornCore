@@ -30,7 +30,10 @@ package reborncore.common.registration.impl;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.registration.*;
 
 import java.io.File;
@@ -41,12 +44,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @IRegistryFactory.RegistryFactory
 public class ConfigRegistryFactory implements IRegistryFactory {
 
 	private static File configDir = null;
 	private static HashMap<String, Configuration> configMap = new HashMap<>();
+	private static HashMap<Configuration, ConfigData> configDataMap = new HashMap<>();
 
 	@Override
 	public Class<? extends Annotation> getAnnotation() {
@@ -80,12 +85,22 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			Object value = getObjectFromType(property, field.getType());
 			field.set(null, value);
 
+			ConfigData configData;
+			if(configDataMap.containsKey(configuration)){
+				configData = configDataMap.get(configuration);
+			} else {
+				configData = new ConfigData(configuration);
+				configDataMap.put(configuration, configData);
+			}
+
+			configData.fieldMap.put(configData.getName(annotation.category(), property), field);
+
 		} catch (IllegalAccessException e) {
 			throw new Error("Failed to load config", e);
 		}
 	}
 
-	private Object getObjectFromType(Property property, Class<?> type) {
+	private static Object getObjectFromType(Property property, Class<?> type) {
 		if (type == String.class) {
 			return property.getString();
 		}
@@ -96,6 +111,21 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			return property.getInt();
 		}
 		if (type == double.class) {
+			return property.getDouble();
+		}
+		throw new RuntimeException("Type not supported");
+	}
+	private static Object getObjectFromProperty(Property property) {
+		if (property.getType() == Property.Type.STRING) {
+			return property.getString();
+		}
+		if (property.getType() == Property.Type.BOOLEAN) {
+			return property.getBoolean();
+		}
+		if (property.getType() == Property.Type.INTEGER) {
+			return property.getInt();
+		}
+		if (property.getType() == Property.Type.DOUBLE) {
 			return property.getDouble();
 		}
 		throw new RuntimeException("Type not supported");
@@ -137,14 +167,70 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		return configuration;
 	}
 
+	public static List<Pair<Configuration, String>> getConfigs(String modid){
+		return configMap.entrySet().stream()
+			.filter(entry -> entry.getKey().startsWith(modid))
+			.map(entry -> Pair.of(entry.getValue(), entry.getKey()))
+			.collect(Collectors.toList());
+	}
+
 	public static void saveAll() {
 		for (Map.Entry<String, Configuration> configurationEntry : configMap.entrySet()) {
 			configurationEntry.getValue().save();
 		}
 	}
 
+	@SubscribeEvent
+	public static void onChange(ConfigChangedEvent.OnConfigChangedEvent event){
+		List<Pair<Configuration, String>> configs = getConfigs(event.getModID());
+		if(configs.isEmpty()){
+			return;
+		}
+		configs.forEach(pair -> reload(pair.getLeft()));
+	}
+
+	public static void reload(Configuration configuration){
+		if(!configDataMap.containsKey(configuration)){
+			return;
+		}
+		ConfigData data = configDataMap.get(configuration);
+		for(String category : configuration.getCategoryNames()){
+			for(Property property : configuration.getCategory(category).values()){
+				Field field = data.fieldMap.get(data.getName(category, property));
+				if(field == null){
+					System.out.println("failed to find field for " + property.getName());
+					continue;
+				}
+				try {
+					field.set(null, getObjectFromProperty(property));
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		configuration.save();
+	}
+
+
 	public static void setConfigDir(File configDir) {
 		ConfigRegistryFactory.configDir = configDir;
+	}
+
+	private static class ConfigData {
+
+		Configuration configuration;
+
+		Map<String, Field> fieldMap;
+
+		public ConfigData(Configuration configuration) {
+			this.configuration = configuration;
+			this.fieldMap = new HashMap<>();
+		}
+
+		public String getName(String category, Property property){
+			return category + ":" + property.getName();
+		}
+
 	}
 
 	@Override

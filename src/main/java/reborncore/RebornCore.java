@@ -97,6 +97,7 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
+		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
 		RegistrationManager.load(new RegistryConstructionEvent());
