@@ -34,6 +34,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import reborncore.RebornCore;
 import reborncore.common.registration.*;
 
 import java.io.File;
@@ -131,7 +132,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		throw new RuntimeException("Type not supported");
 	}
 
-	private Property get(String category, String key, Object defaultValue, String comment, Class<?> type, Configuration configuration) {
+	public static Property get(String category, String key, Object defaultValue, String comment, Class<?> type, Configuration configuration) {
 		if (type == String.class) {
 			return configuration.get(category, key, (String) defaultValue, comment);
 		}
@@ -147,7 +148,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		throw new RuntimeException("Type not supported: " + type);
 	}
 
-	private static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegistry rebornRegistry) {
+	public static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegistry rebornRegistry) {
 		String configIdent = rebornRegistry.modID();
 		if (!annotation.config().isEmpty()) {
 			configIdent = configIdent + ":" + annotation.config();
@@ -198,7 +199,8 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			for(Property property : configuration.getCategory(category).values()){
 				Field field = data.fieldMap.get(data.getName(category, property));
 				if(field == null){
-					System.out.println("failed to find field for " + property.getName());
+					//This is a possible outcome, as some configs dont have a field for them.
+					RebornCore.logHelper.debug("failed to find field for " + property.getName());
 					continue;
 				}
 				try {
