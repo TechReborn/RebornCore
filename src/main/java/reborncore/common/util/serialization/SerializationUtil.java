@@ -39,4 +39,10 @@ public class SerializationUtil {
 		.enableComplexMapKeySerialization()
 		.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
 		.create();
+
+	//Same as above, just without pretty printing
+	public static final Gson GSON_FLAT = new GsonBuilder()
+		.enableComplexMapKeySerialization()
+		.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+		.create();
 }

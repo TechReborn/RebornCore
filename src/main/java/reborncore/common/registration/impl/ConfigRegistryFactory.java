@@ -28,6 +28,7 @@
 
 package reborncore.common.registration.impl;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -36,15 +37,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
 import reborncore.common.registration.*;
+import reborncore.common.util.serialization.SerializationUtil;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @IRegistryFactory.RegistryFactory
@@ -83,7 +84,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			String comment = annotation.comment();
 			comment = comment + " [Default=" + defaultValue + "]";
 			Property property = get(annotation.category(), key, defaultValue, comment, field.getType(), configuration);
-			Object value = getObjectFromType(property, field.getType());
+			Object value = getObjectFromProperty(property, field);
 			field.set(null, value);
 
 			ConfigData configData;
@@ -101,23 +102,11 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		}
 	}
 
-	private static Object getObjectFromType(Property property, Class<?> type) {
-		if (type == String.class) {
-			return property.getString();
-		}
-		if (type == boolean.class) {
-			return property.getBoolean();
-		}
-		if (type == int.class) {
-			return property.getInt();
-		}
-		if (type == double.class) {
-			return property.getDouble();
-		}
-		throw new RuntimeException("Type not supported");
-	}
-	private static Object getObjectFromProperty(Property property) {
+	private static Object getObjectFromProperty(Property property, @Nullable Field field) {
 		if (property.getType() == Property.Type.STRING) {
+			if(property.isList()){
+				return getList(property, field);
+			}
 			return property.getString();
 		}
 		if (property.getType() == Property.Type.BOOLEAN) {
@@ -144,6 +133,9 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		}
 		if (type == double.class) {
 			return configuration.get(category, key, (Double) defaultValue, comment);
+		}
+		if(type == List.class){
+			return getListProperty(category, key, defaultValue, comment, type, configuration);
 		}
 		throw new RuntimeException("Type not supported: " + type);
 	}
@@ -204,7 +196,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 					continue;
 				}
 				try {
-					field.set(null, getObjectFromProperty(property));
+					field.set(null, getObjectFromProperty(property, field));
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
@@ -244,4 +236,33 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	public Class<? extends FMLStateEvent> getProcessSate() {
 		return RegistryConstructionEvent.class;
 	}
+
+	private static List getList(Property property, Field field){
+		ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+		Class<?> listClass = (Class<?>) genericType.getActualTypeArguments()[0];
+		if(listClass == String.class){
+			return Arrays.asList(property.getStringList());
+		} else if (listClass == ItemStack.class){
+			List<ItemStack> stacks = Arrays.stream(property.getStringList())
+				.map(s -> SerializationUtil.GSON_FLAT.fromJson(s, ItemStack.class))
+				.collect(Collectors.toList());
+			return stacks;
+		}
+		throw new UnsupportedOperationException("List type " + listClass.getName() + " not supported");
+	}
+
+	private static Property getListProperty(String category, String key, Object defaultValue, String comment, Class<?> type, Configuration configuration){
+		List defaultList = (List) defaultValue;
+		if(defaultList.isEmpty()){
+			return configuration.get(category, key, new String[]{}, comment);
+		} if (defaultList.get(0) instanceof ItemStack){
+			String[] stackList = (String[]) defaultList.stream().map(o -> {
+				ItemStack itemStack = (ItemStack) o;
+				return SerializationUtil.GSON_FLAT.toJson(itemStack);
+			}).toArray(String[]::new);
+			return configuration.get(category, key, stackList, comment);
+		}
+		throw new UnsupportedOperationException("List type " + defaultList.get(0).getClass().getName() + " not supported");
+	}
+
 }
