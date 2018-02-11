@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 modmuss50 and Gigabit101
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  *
  *
@@ -33,9 +33,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Rotation;
+import reborncore.api.IToolDrop;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.IToolDrop;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.powerSystem.TileEnergyBase;
 

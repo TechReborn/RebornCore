@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 modmuss50 and Gigabit101
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  *
  *
@@ -28,7 +28,6 @@
 
 package reborncore.common.logic;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;

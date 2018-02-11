@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 modmuss50 and Gigabit101
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  *
  *

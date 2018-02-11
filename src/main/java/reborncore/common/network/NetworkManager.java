@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 modmuss50 and Gigabit101
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  *
  *
@@ -38,7 +38,6 @@ import reborncore.RebornCore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Predicate;
 import java.util.zip.CRC32;
 
 public class NetworkManager {

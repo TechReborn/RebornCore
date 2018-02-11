@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 modmuss50 and Gigabit101
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  *
  *
@@ -57,7 +57,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.client.multiblock.component.MultiblockComponent;
-
 
 import java.util.List;
 
