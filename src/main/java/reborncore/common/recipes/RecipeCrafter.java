@@ -271,8 +271,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 					if (input instanceof ItemStack) {
 						count = RecipeTranslator.getStackFromObject(input).getCount();
 					}
-					inventory.decrStackSize(inputSlot, count);
-					break;
+					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
+						inventory.decrStackSize(inputSlot, count);
+						break;	
+					}
 				}
 			}
 		}
