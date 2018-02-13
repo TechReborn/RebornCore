@@ -84,7 +84,14 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			String comment = annotation.comment();
 			comment = comment + " [Default=" + defaultValue + "]";
 			Property property = get(annotation.category(), key, defaultValue, comment, field.getType(), configuration);
-			Object value = getObjectFromProperty(property, field);
+			Object value;
+			try {
+				value = getObjectFromProperty(property, field);
+			} catch (Exception e){
+				RebornCore.logHelper.error("Failed to read config value " + annotation.category() + "." + annotation.key() + " resetting to default value");
+				e.printStackTrace();
+				value = defaultValue;
+			}
 			field.set(null, value);
 
 			ConfigData configData;
