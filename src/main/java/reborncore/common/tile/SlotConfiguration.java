@@ -69,7 +69,6 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			inventory = machineBase.getInventoryForTile().get();
 		}
 		if(inventory != null && slotDetails.size() != inventory.getSizeInventory()){
-			RebornCore.logHelper.debug("Fixing curoupt SlotConfiguration");
 			for (int i = 0; i < inventory.getSizeInventory(); i++) {
 				SlotConfigHolder holder = getSlotDetails(i);
 				if(holder == null){
