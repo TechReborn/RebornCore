@@ -34,10 +34,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -47,6 +44,7 @@ import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.commands.CommandListRecipes;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.logic.PacketButtonID;
 import reborncore.common.multiblock.MultiblockEventHandler;
@@ -171,6 +169,11 @@ public class RebornCore implements IModInfo {
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
 		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
+	}
+
+	@Mod.EventHandler
+	public void serverStarting(FMLServerStartingEvent event){
+		event.registerServerCommand(new CommandListRecipes());
 	}
 
 	public String MOD_NAME() {
