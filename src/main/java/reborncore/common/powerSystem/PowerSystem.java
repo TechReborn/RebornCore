@@ -102,7 +102,7 @@ public class PowerSystem {
 
 	private static String getRoundedString(int euValue, String units, boolean doFormat) {
 		String ret = "";
-		int value = 0;
+		float value = 0f;
 		int i = 0;
 		boolean showMagnitude = true;
 		if (euValue < 0) {
@@ -112,12 +112,13 @@ public class PowerSystem {
 
 		if (euValue < 1000) {
 			doFormat = false;
-			value = euValue;
 			showMagnitude = false;
+			value = euValue;
 		} else if (euValue >= 1000) {
 			for (i = 0; ; i++) {
 				if (euValue < 10000 && euValue % 1000 >= 100) {
-					value = (euValue / 1000) + ((euValue % 1000) / 100);
+					value = euValue / 1000;
+					value += ((float)euValue % 1000) / 1000;
 					break;
 				}
 				euValue /= 1000;
@@ -129,9 +130,10 @@ public class PowerSystem {
 		}
 
 		if (doFormat) {
-			ret += NumberFormat
-				.getIntegerInstance(Locale.forLanguageTag(
+			ret += NumberFormat.getNumberInstance(Locale.forLanguageTag(
 					Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
+//				.getIntegerInstance(Locale.forLanguageTag(
+//					Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
 				.format(value);
 		} else { ret += value; }
 
