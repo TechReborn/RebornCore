@@ -173,6 +173,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 					currentRecipe = null;
 					currentTickTime = 0;
 					updateCurrentRecipe();
+					//Update active sate if the tile isnt going to start crafting again
+					if(currentRecipe == null){
+						setIsActive();
+					}
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
 				// This uses the power
@@ -208,6 +212,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
 				this.currentTickTime = 0;
 				setIsActive();
+				return;
 			}
 		}
 	}
