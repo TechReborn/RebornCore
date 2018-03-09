@@ -49,4 +49,8 @@ public @interface RebornRegistry {
 	 */
 	public String modID() default RebornCore.MOD_ID;
 
+	public int priority() default 0;
+
+	public boolean earlyReg() default false;
+
 }

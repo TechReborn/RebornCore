@@ -58,9 +58,15 @@ public class RegistrationManager {
 		loadFactorys(asmDataTable);
 
 		Set<ASMDataTable.ASMData> asmDataSet = asmDataTable.getAll(RebornRegistry.class.getName());
-		for (ASMDataTable.ASMData data : asmDataSet) {
+		List<ASMDataTable.ASMData> asmDataList = new ArrayList<>(asmDataSet);
+		asmDataList.sort(Comparator.comparingInt(RegistrationManager::getPriority));
+		for (ASMDataTable.ASMData data : asmDataList) {
 			try {
 				Class clazz = Class.forName(data.getClassName());
+				if(isEarlyReg(data)){
+					handleClass(clazz, null);
+					continue;
+				}
 				registryClasses.add(clazz);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -73,6 +79,20 @@ public class RegistrationManager {
 		RebornCore.logHelper.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
 	}
 
+	private static int getPriority(ASMDataTable.ASMData asmData){
+		if(asmData.getAnnotationInfo().containsKey("priority")){
+			return -(int) asmData.getAnnotationInfo().get("priority");
+		}
+		return 0;
+	}
+
+	private static boolean isEarlyReg(ASMDataTable.ASMData asmData){
+		if(asmData.getAnnotationInfo().containsKey("earlyReg")){
+			return (boolean) asmData.getAnnotationInfo().get("earlyReg");
+		}
+		return false;
+	}
+
 	public static void load(FMLStateEvent event) {
 		long start = System.currentTimeMillis();
 		final ModContainer activeMod = Loader.instance().activeModContainer();
@@ -80,41 +100,45 @@ public class RegistrationManager {
 		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
 		if (!factoryList.isEmpty()) {
 			for (Class clazz : registryClasses) {
-				RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
-				if (annotation != null) {
-					if (!activeMod.getModId().equals(annotation.modID())) {
-						setActiveMod(annotation.modID());
-					}
-				}
-				for (IRegistryFactory regFactory : factoryList) {
-					for (Field field : clazz.getDeclaredFields()) {
-						if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
-							continue;
-						}
-						if (field.isAnnotationPresent(regFactory.getAnnotation())) {
-							regFactory.handleField(field);
-						}
-					}
-					for (Method method : clazz.getDeclaredMethods()) {
-						if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD)) {
-							continue;
-						}
-						if (method.isAnnotationPresent(regFactory.getAnnotation())) {
-							regFactory.handleMethod(method);
-						}
-
-					}
-					if(regFactory.getTargets().contains(RegistryTarget.CLASS)){
-						if(clazz.isAnnotationPresent(regFactory.getAnnotation())){
-							regFactory.handleClass(clazz);
-						}
-					}
-				}
+				handleClass(clazz, activeMod);
 			}
 			setActiveModContainer(activeMod);
 		}
 
 		RebornCore.logHelper.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
+	}
+
+	private static void handleClass(Class clazz, ModContainer activeMod){
+		RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
+		if (annotation != null) {
+			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
+				setActiveMod(annotation.modID());
+			}
+		}
+		for (IRegistryFactory regFactory : factoryList) {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
+					continue;
+				}
+				if (field.isAnnotationPresent(regFactory.getAnnotation())) {
+					regFactory.handleField(field);
+				}
+			}
+			for (Method method : clazz.getDeclaredMethods()) {
+				if (!regFactory.getTargets().contains(RegistryTarget.MEHTOD)) {
+					continue;
+				}
+				if (method.isAnnotationPresent(regFactory.getAnnotation())) {
+					regFactory.handleMethod(method);
+				}
+
+			}
+			if(regFactory.getTargets().contains(RegistryTarget.CLASS)){
+				if(clazz.isAnnotationPresent(regFactory.getAnnotation())){
+					regFactory.handleClass(clazz);
+				}
+			}
+		}
 	}
 
 	private static List<IRegistryFactory> getFactorysForSate(Class<? extends FMLStateEvent> event) {
