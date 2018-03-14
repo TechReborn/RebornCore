@@ -33,6 +33,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import reborncore.RebornCore;
 import reborncore.api.tile.IContainerLayout;
 import reborncore.client.gui.slots.BaseSlot;
@@ -42,10 +44,21 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Optional;
 
 public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
+
+	private Optional<TileEntity> baseTile = Optional.empty();
+
+	@Deprecated //TODO remove in 1.13 to use tile senstive version
+	public RebornContainer() {
+	}
+
+	public RebornContainer(TileEntity tileEntity){
+		this.baseTile = Optional.of(tileEntity);
+	}
 
 	public static
 	@Nullable
@@ -273,5 +286,15 @@ public abstract class RebornContainer extends Container {
 	public void drawPlayersInvAndHotbar(EntityPlayer player, int x, int y) {
 		drawPlayersInv(player, x, y);
 		drawPlayersHotBar(player, x, y + 58);
+	}
+
+	@Override
+	public boolean canInteractWith(EntityPlayer player) {
+		if(baseTile.isPresent()){
+			World world = player.getEntityWorld();
+			BlockPos pos = baseTile.get().getPos();
+			return world.getTileEntity(pos) == baseTile.get() && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+		}
+		return true;
 	}
 }
