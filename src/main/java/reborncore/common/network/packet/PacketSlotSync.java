@@ -72,7 +72,7 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 			return;
 		}
 		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-		if(machineBase == null || machineBase.slotConfiguration == null){
+		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
 			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
 		}
 		slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder));
