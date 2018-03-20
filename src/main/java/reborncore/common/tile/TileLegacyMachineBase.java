@@ -70,7 +70,7 @@ import java.util.Optional;
  */
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
-	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 64, this);
+	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
 	public SlotConfiguration slotConfiguration;
 
 	/**
