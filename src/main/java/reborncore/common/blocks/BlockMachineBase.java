@@ -220,7 +220,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				if (upgradeableEntity.canBeUpgraded()) {
 					if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack, null) > 0) {
 						InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInvetory(), stack);
-						playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+						playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
 						return true;
 					}
 				}
