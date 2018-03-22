@@ -183,7 +183,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				if (energy.canUseEnergy(getEuPerTick(currentRecipe.euPerTick()))) {
 					energy.useEnergy(getEuPerTick(currentRecipe.euPerTick()));
 					// Increase the ticktime
-					currentTickTime++;
+					currentTickTime += 1 * getSpeedMultiplier();
 					if(currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null){
 						soundHanlder.playSound(false, parentTile);
 					}
@@ -209,7 +209,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				}
 				// Sets the current recipe then syncs
 				setCurrentRecipe(recipe);
-				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
+				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime()), 1);
 				this.currentTickTime = 0;
 				setIsActive();
 				return;
@@ -429,7 +429,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 	@Override
 	public double getSpeedMultiplier() {
-		return parentUpgradeHandler.map(IUpgradeHandler::getSpeedMultiplier).orElse(0D);
+		return parentUpgradeHandler.map(IUpgradeHandler::getSpeedMultiplier).orElse(1D);
 	}
 
 	@Override
@@ -444,12 +444,12 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 	@Override
 	public double getPowerMultiplier() {
-		return parentUpgradeHandler.map(IUpgradeHandler::getPowerMultiplier).orElse(0D);
+		return parentUpgradeHandler.map(IUpgradeHandler::getPowerMultiplier).orElse(1D);
 	}
 
 	@Override
 	public double getEuPerTick(double baseEu) {
-		return parentUpgradeHandler.map(iUpgradeHandler -> iUpgradeHandler.getEuPerTick(baseEu)).orElse(0D);
+		return parentUpgradeHandler.map(iUpgradeHandler -> iUpgradeHandler.getEuPerTick(baseEu)).orElse(1D);
 	}
 
 	@Override

@@ -507,7 +507,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public void resetSpeedMulti() {
-		speedMultiplier = 0;
+		speedMultiplier = 1;
 	}
 
 	@Override
@@ -517,7 +517,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public void addPowerMulti(double amount) {
-		powerMultiplier += amount;
+		powerMultiplier = powerMultiplier * (1f + amount);
 	}
 
 	@Override
@@ -537,11 +537,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public void addSpeedMulti(double amount) {
-		if (speedMultiplier + amount <= 0.99) {
-			speedMultiplier += amount;
-		} else {
-			speedMultiplier = 0.99;
-		}
+		speedMultiplier = speedMultiplier * (1f + amount);
 	}
 
 }
