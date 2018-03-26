@@ -36,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import reborncore.RebornCore;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
@@ -316,15 +317,8 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				return;
 			}
 			IItemHandler destHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
-			for (int i = 0; i < destHandler.getSlots(); i++) {
-				ItemStack returnStack = destHandler.insertItem(i, sourceStack, true);
-				if(!returnStack.isEmpty() && returnStack.getCount() == sourceStack.getCount()){
-					continue;
-				}
-				returnStack = destHandler.insertItem(i, sourceStack, false);
-				inventory.setInventorySlotContents(slotID, returnStack);
-				break;
-			}
+			ItemStack stack = ItemHandlerHelper.insertItemStacked(destHandler, sourceStack, false);
+			inventory.setInventorySlotContents(slotID, stack);
 		}
 
 		@Override
