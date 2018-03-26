@@ -449,7 +449,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 	@Override
 	public double getEuPerTick(double baseEu) {
-		return parentUpgradeHandler.map(iUpgradeHandler -> iUpgradeHandler.getEuPerTick(baseEu)).orElse(1D);
+		double power = parentUpgradeHandler.map(iUpgradeHandler -> iUpgradeHandler.getEuPerTick(baseEu)).orElse(1D);
+		return Math.min(power, energy.getMaxPower());
 	}
 
 	@Override
