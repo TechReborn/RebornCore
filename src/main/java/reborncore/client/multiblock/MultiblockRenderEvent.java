@@ -44,7 +44,9 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -67,6 +69,11 @@ public class MultiblockRenderEvent {
 	public MultiblockSet currentMultiblock;
 	//public Location parent;
 	public BlockPos parent;
+	RebornFluidRenderer fluidRenderer;
+
+	public MultiblockRenderEvent() {
+		this.fluidRenderer = new RebornFluidRenderer();
+	}
 
 	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
@@ -104,7 +111,8 @@ public class MultiblockRenderEvent {
 		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(pos.getX() - dx, pos.getY() - dy, pos.getZ() - dz);
+		GlStateManager.translate(-dx, -dy, -dz);
+		GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
 		GlStateManager.scale(0.8, 0.8, 0.8);
 		GlStateManager.translate(0.2, 0.2, 0.2);
 
@@ -124,6 +132,15 @@ public class MultiblockRenderEvent {
 	}
 
 	private void renderModel(World world, BlockPos pos, int alpha, IBlockState state) {
+		if(state.getRenderType() == EnumBlockRenderType.LIQUID){
+			final Tessellator tessellator = Tessellator.getInstance();
+			final BufferBuilder buffer = tessellator.getBuffer();
+			GlStateManager.translate(-pos.getX(), -pos.getY(), -pos.getZ());
+			buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+			fluidRenderer.renderFluid(world, state, pos, buffer);
+			tessellator.draw();
+			return;
+		}
 		IBakedModel model = blockRender.getModelForState(state);
 		IBlockState extendedState = state.getBlock().getExtendedState(state, world, pos);
 		for (final EnumFacing facing : EnumFacing.values()) {

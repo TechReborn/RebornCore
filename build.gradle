@@ -118,6 +118,8 @@ processResources
 		from(sourceSets.main.resources.srcDirs) {
 			exclude 'mcmod.info'
 		}
+
+		rename '(.+_at.cfg)', 'META-INF/$1'
 	}
 
 license {
@@ -130,11 +132,17 @@ task deobfJar(type: Jar) {
 	from sourceSets.main.output
 	exclude "**/*.psd"
 	classifier = 'dev'
+	manifest {
+		attributes 'FMLAT': 'reborncore_at.cfg'
+	}
 }
 
 jar {
 	exclude "**/*.psd"
 	classifier = 'universal'
+	manifest {
+		attributes 'FMLAT': 'reborncore_at.cfg'
+	}
 }
 
 task apiJar(type: Jar) {
