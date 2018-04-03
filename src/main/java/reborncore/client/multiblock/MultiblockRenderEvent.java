@@ -90,9 +90,18 @@ public class MultiblockRenderEvent {
 
 				Multiblock mb = currentMultiblock.getForIndex(0);
 
+				//Render the liquids first, it looks better.
 				for (MultiblockComponent comp : mb.getComponents()) {
-					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					if(comp.state.getRenderType() == EnumBlockRenderType.LIQUID){
+						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					}
 				}
+				for (MultiblockComponent comp : mb.getComponents()) {
+					if(comp.state.getRenderType() != EnumBlockRenderType.LIQUID){
+						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					}
+				}
+
 
 			}
 		}
