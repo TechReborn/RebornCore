@@ -29,6 +29,7 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.tesla.TeslaManager;
@@ -129,13 +130,14 @@ public class PowerSystem {
 			}
 		}
 
-		if (doFormat) {
-			ret += NumberFormat.getNumberInstance(Locale.forLanguageTag(
-					Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
-//				.getIntegerInstance(Locale.forLanguageTag(
-//					Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
-				.format(value);
-		} else { ret += value; }
+		if (FMLCommonHandler.instance().getEffectiveSide().isClient() && doFormat) {
+			ret += NumberFormat
+					.getNumberInstance(Locale.forLanguageTag(
+							Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
+					.format(value);
+		} else {
+			ret += value;
+		}
 
 		if (showMagnitude) {
 			ret += magnitude[i];
