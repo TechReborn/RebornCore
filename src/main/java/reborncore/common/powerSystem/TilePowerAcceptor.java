@@ -78,6 +78,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public double extraPowerStoage;
 	public double extraPowerInput;
 	public int extraTeir;
+	public double powerChange;
+	public double powerLastTick;
 
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
@@ -166,6 +168,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()) {
 				onLoaded();
 			}
+			powerChange = getEnergy() - powerLastTick;
+			powerLastTick = getEnergy();
 		}
 	}
 
@@ -412,6 +416,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.tier") + ": "
 				+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
+		if(isRealTile){
+			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.change")
+				+ ": " + TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getPowerChange()) + "/t");
+		}
 	}
 
 	public double getFreeSpace() {
@@ -575,5 +583,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public boolean handleTierWithPower() {
 		return true;
+	}
+
+	public double getPowerChange() {
+		return powerChange;
+	}
+
+	public void setPowerChange(double powerChange) {
+		this.powerChange = powerChange;
 	}
 }
