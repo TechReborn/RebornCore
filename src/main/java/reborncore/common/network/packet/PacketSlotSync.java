@@ -28,6 +28,7 @@
 
 package reborncore.common.network.packet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import reborncore.RebornCore;
@@ -75,6 +76,7 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
 			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
 		}
-		slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder));
+		Minecraft.getMinecraft().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));
+
 	}
 }
