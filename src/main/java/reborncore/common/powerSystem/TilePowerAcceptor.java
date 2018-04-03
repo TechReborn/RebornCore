@@ -76,6 +76,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	private double energy;
 
 	public double extraPowerStoage;
+	public double extraPowerInput;
 	public int extraTeir;
 
 	public void setExtraPowerStoage(double extraPowerStoage) {
@@ -109,61 +110,62 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public void update() {
 		super.update();
-
-		Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
-		if (getEnergy() > 0 && !world.isRemote) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
-			for (EnumFacing side : EnumFacing.values()) {
-				if (canProvideEnergy(side)) {
-					TileEntity tile = world.getTileEntity(pos.offset(side));
-					if (tile == null) {
-						continue;
-					}
-					else {
-						acceptors.put(side, tile);
+		if(!world.isRemote){
+			Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
+			if (getEnergy() > 0 && !world.isRemote) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
+				for (EnumFacing side : EnumFacing.values()) {
+					if (canProvideEnergy(side)) {
+						TileEntity tile = world.getTileEntity(pos.offset(side));
+						if (tile == null) {
+							continue;
+						}
+						else {
+							acceptors.put(side, tile);
+						}
 					}
 				}
 			}
-		}
-				
-		if (acceptors.size() > 0){
-			double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
-			double energyShare = drain / acceptors.size();
-			double remainingEnergy = drain;
-			
-			if (energyShare > 0) {
-				for (Map.Entry<EnumFacing, TileEntity> entry : acceptors.entrySet()){
-					EnumFacing side = entry.getKey();
-					TileEntity tile = entry.getValue();
-					if (tile instanceof IEnergyInterfaceTile) {
-						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if (eFace.canAcceptEnergy(side.getOpposite())) {
-							if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
-								for (int j = 0; j < 2; ++j) {
-									double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
-									double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
-									double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
-									world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
+
+			if (acceptors.size() > 0){
+				double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
+				double energyShare = drain / acceptors.size();
+				double remainingEnergy = drain;
+
+				if (energyShare > 0) {
+					for (Map.Entry<EnumFacing, TileEntity> entry : acceptors.entrySet()){
+						EnumFacing side = entry.getKey();
+						TileEntity tile = entry.getValue();
+						if (tile instanceof IEnergyInterfaceTile) {
+							IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
+							if (eFace.canAcceptEnergy(side.getOpposite())) {
+								if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
+									for (int j = 0; j < 2; ++j) {
+										double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+										double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
+										double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
+										world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
+									}
+								} else {
+									double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
+									remainingEnergy -= useEnergy(filled, false);
 								}
-							} else {
-								double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
-								remainingEnergy -= useEnergy(filled, false);
 							}
-						}
-					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
-						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
-						if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {		
+						} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
+							IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
+							if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
 								int filled = energyStorage.receiveEnergy((int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
 								remainingEnergy -= useEnergy(filled / RebornCoreConfig.euPerFU, false);
+							}
+						} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
+							TeslaManager.manager.update(this);
 						}
-					} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-						TeslaManager.manager.update(this);
-					}	
-				}			
-			}		
-		}
+					}
+				}
+			}
 
-		if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()) {
-			onLoaded();
+			if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu() && Info.isIc2Available()) {
+				onLoaded();
+			}
 		}
 	}
 
@@ -534,9 +536,9 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			maxInput = this.getTier().getMaxInput();
 		}
 		else {
-			maxInput = getBaseMaxInput();	
+			maxInput = getBaseMaxInput();
 		}
-		return maxInput;
+		return maxInput + extraPowerInput;
 	}
 
 	public EnumPowerTier getPushingTier() {
@@ -568,6 +570,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		super.resetUpgrades();
 		extraPowerStoage = 0;
 		extraTeir = 0;
+		extraPowerInput = 0;
 	}
 
 	public boolean handleTierWithPower() {
