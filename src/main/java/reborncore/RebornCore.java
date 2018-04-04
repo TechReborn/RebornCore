@@ -101,6 +101,7 @@ public class RebornCore implements IModInfo {
 		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
 		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
 		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
 		PowerSystem.reloadConfig();
 		CalenderUtils.loadCalender(); //Done early as some features need this
@@ -154,6 +155,11 @@ public class RebornCore implements IModInfo {
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 		RegistrationManager.load(event);
+	}
+
+	@Mod.EventHandler
+	public void loaded(FMLLoadCompleteEvent event){
+		OreRegistationEvent.loadComplete();
 	}
 
 	@Mod.EventHandler
