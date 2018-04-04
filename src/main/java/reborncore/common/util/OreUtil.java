@@ -74,7 +74,7 @@ public class OreUtil {
 			"block" };
 		for (String oreDicName : OreDictionary.getOreNames()) {
 			for (String prefix : validPrefixes) {
-				if (oreDicName.startsWith(prefix) && isValidSufix(oreDicName)) {
+				if (oreDicName.startsWith(prefix) && isValidName(oreDicName)) {
 					if (!oreNames.contains(oreDicName.replace(prefix, "").toLowerCase())) {
 						oreNames.add(oreDicName.replace(prefix, "").toLowerCase());
 					}
@@ -84,10 +84,11 @@ public class OreUtil {
 		RebornCore.logHelper.info("Found " + oreNames.size() + " ores");
 	}
 
-	private static boolean isValidSufix(String name){
-		String[] invalidSufixes = new String[] { "metal"};
-		for(String sufix : invalidSufixes){
-			if(name.endsWith(sufix)){
+	private static boolean isValidName(String name){
+		//Tinkers construct registers iron and gold as blockMetal, and it messes with our stuff, this prevents it being added to our ore util
+		String[] invalidNames = new String[] { "blockMetal"};
+		for(String invalidName : invalidNames){
+			if(name.equalsIgnoreCase(invalidName)){
 				return false;
 			}
 		}
