@@ -54,6 +54,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 import reborncore.client.multiblock.component.MultiblockComponent;
 
 public class MultiblockRenderEvent {
@@ -121,13 +122,10 @@ public class MultiblockRenderEvent {
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.enableBlend();
-		GlStateManager.enableTexture2D();
-		GlStateManager.color(1f, 1f, 1f, 1f);
 
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
+		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
-		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.depthFunc(GL11.GL_LEQUAL);
 		this.renderModel(world, pos,  comp.state);
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
