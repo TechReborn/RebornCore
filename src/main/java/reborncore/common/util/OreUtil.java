@@ -36,7 +36,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import reborncore.RebornCore;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OreUtil {
 
@@ -84,7 +86,7 @@ public class OreUtil {
 		RebornCore.logHelper.info("Found " + oreNames.size() + " ores");
 	}
 
-	private static boolean isValidName(String name){
+	public static boolean isValidName(String name){
 		//Tinkers construct registers iron and gold as blockMetal, and it messes with our stuff, this prevents it being added to our ore util
 		String[] invalidNames = new String[] { "blockMetal"};
 		for(String invalidName : invalidNames){
@@ -93,6 +95,21 @@ public class OreUtil {
 			}
 		}
 		return true;
+	}
+
+	public static boolean isValidID(int id){
+		return isValidName(OreDictionary.getOreName(id));
+	}
+
+	//This is an expensive call, dont use it too much
+	public static void remove(String name) throws NoSuchFieldException, IllegalAccessException {
+		int id = OreDictionary.getOreID(name);
+		Field field = OreDictionary.class.getDeclaredField("idToStack");
+		field.setAccessible(true);
+		List<NonNullList<ItemStack>> idToStack = (List<NonNullList<ItemStack>>) field.get(null);
+		idToStack.remove(id);
+		idToStack.add(id, NonNullList.withSize(0, ItemStack.EMPTY));
+		OreDictionary.rebakeMap();
 	}
 
 	public static boolean hasIngot(String name) {

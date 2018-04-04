@@ -155,6 +155,12 @@ public class RebornCore implements IModInfo {
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 		RegistrationManager.load(event);
+		try {
+			OreUtil.remove("blockMetal");
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			RebornCore.logHelper.error("Failed to remove ore");
+			RebornCore.logHelper.error(e);
+		}
 	}
 
 	@Mod.EventHandler
