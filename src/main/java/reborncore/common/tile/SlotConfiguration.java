@@ -302,6 +302,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				} else {
 					inventory.getStackInSlot(slotID).grow(extractedStack.getCount());
 				}
+				inventory.hasChanged = true;
 				break;
 			}
 		}
