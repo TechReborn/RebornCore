@@ -95,12 +95,12 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
+		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
 		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
-		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
 		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
 		PowerSystem.reloadConfig();
