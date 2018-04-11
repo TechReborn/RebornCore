@@ -233,7 +233,12 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			try {
 				configVersionTag = CompressedStreamTools.read(dataFile);
 			} catch (IOException e) {
-				throw new RuntimeException("Failed to read config data", e);
+				e.printStackTrace();
+				RebornCore.logHelper.error("Failed to read config data");
+				RebornCore.logHelper.error(e);
+				//Just reset it, I cannot be dealing with crashes for things being off.
+				dataFile.delete();
+				configVersionTag = new NBTTagCompound();
 			}
 		} else {
 			configVersionTag = new NBTTagCompound();
