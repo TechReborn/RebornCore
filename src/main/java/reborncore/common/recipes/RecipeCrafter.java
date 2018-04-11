@@ -350,7 +350,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		return currentRecipe != null && energy.getEnergy() >= currentRecipe.euPerTick();
 	}
 
-	private boolean canCraftAgain() {
+	public boolean canCraftAgain() {
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
 			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {
 				boolean canGiveInvAll = true;
