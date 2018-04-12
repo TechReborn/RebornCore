@@ -42,13 +42,14 @@ import java.util.List;
 public class CommonProxy {
 
 	public List<String> invalidFingerprints = new ArrayList<>();
+	public boolean ic2Loaded = false;
 
 	public void preInit(FMLPreInitializationEvent event) {
 
 	}
 
 	public void init(FMLInitializationEvent event) {
-
+		ic2Loaded = Loader.isModLoaded("ic2");
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {

@@ -45,6 +45,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
+import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
@@ -55,6 +56,7 @@ import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.util.IC2ItemCharger;
 import reborncore.common.util.StringUtils;
 
 import java.text.NumberFormat;
@@ -443,6 +445,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 						this.addEnergy(transfer);
 					}
 				}
+			} else if (RebornCore.proxy.ic2Loaded){
+				IC2ItemCharger.dischargeIc2Item(this, batteryStack);
 			}
 		}
 	}
