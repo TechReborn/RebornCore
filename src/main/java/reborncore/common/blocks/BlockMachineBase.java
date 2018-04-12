@@ -198,6 +198,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, false)) {
 					if (playerIn.isSneaking()) {
 						if (tileEntity instanceof IToolDrop) {
+							dropInventory(worldIn, pos);
 							ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
 							if (drop == null) {
 								return false;
