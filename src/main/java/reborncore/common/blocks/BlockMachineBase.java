@@ -206,6 +206,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 								spawnAsEntity(worldIn, pos, drop);
 							}
 							if (!worldIn.isRemote) {
+								worldIn.removeTileEntity(pos);
 								worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 							}
 							return true;
