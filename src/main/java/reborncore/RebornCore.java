@@ -51,10 +51,7 @@ import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
-import reborncore.common.network.packet.CustomDescriptionPacket;
-import reborncore.common.network.packet.PacketIOSave;
-import reborncore.common.network.packet.PacketSlotSave;
-import reborncore.common.network.packet.PacketSlotSync;
+import reborncore.common.network.packet.*;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
@@ -179,6 +176,7 @@ public class RebornCore implements IModInfo {
 		event.registerPacket(PacketButtonID.class, Side.SERVER);
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
+		event.registerPacket(PacketConfigSave.class, Side.SERVER);
 		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
 	}
