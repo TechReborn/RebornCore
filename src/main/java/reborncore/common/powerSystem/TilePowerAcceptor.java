@@ -82,6 +82,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public int extraTeir;
 	public double powerChange;
 	public double powerLastTick;
+	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
 
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
@@ -318,6 +319,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public void setEnergy(double energy) {
+		if(!checkOverfill){
+			this.energy = energy;
+			return;
+		}
 		this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 	}
 
