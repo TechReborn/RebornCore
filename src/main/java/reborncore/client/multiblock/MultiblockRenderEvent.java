@@ -41,10 +41,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -65,6 +68,7 @@ public class MultiblockRenderEvent {
 	//public Location parent;
 	public BlockPos parent;
 	RebornFluidRenderer fluidRenderer;
+	private ICamera camera;
 
 	public MultiblockRenderEvent() {
 		this.fluidRenderer = new RebornFluidRenderer();
@@ -106,7 +110,14 @@ public class MultiblockRenderEvent {
 		double dx = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
 		double dy = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
 		double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
+		if(camera == null){
+			camera = new Frustum();
+		}
+		camera.setPosition(dx, dy, dz);
 		BlockPos pos = anchor.add(comp.getRelativePosition());
+		if(!camera.isBoundingBoxInFrustum(new AxisAlignedBB(pos))){
+			return;
+		}
 		Minecraft minecraft = Minecraft.getMinecraft();
 		World world = player.world;
 
