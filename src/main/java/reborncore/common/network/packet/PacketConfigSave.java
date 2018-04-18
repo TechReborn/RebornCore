@@ -28,31 +28,32 @@
 
 package reborncore.common.network.packet;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
+import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileLegacyMachineBase;
 
 import java.io.IOException;
 
 /**
- * Used to sync all the slot details to the client
+ * Used to update certian slot detilas on the server
  */
-public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
+public class PacketConfigSave implements INetworkPacket<PacketConfigSave> {
 
 	BlockPos pos;
 	SlotConfiguration slotConfig;
+	NBTTagCompound tagCompound;
 
-	public PacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
+	public PacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
 		this.pos = pos;
 		this.slotConfig = slotConfig;
 	}
 
-	public PacketSlotSync() {
+	public PacketConfigSave() {
 	}
 
 	@Override
@@ -64,19 +65,16 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 	@Override
 	public void readData(ExtendedPacketBuffer buffer) throws IOException {
 		pos = buffer.readBlockPos();
-		slotConfig = new SlotConfiguration(buffer.readCompoundTag());
+		tagCompound = buffer.readCompoundTag();
 	}
 
 	@Override
-	public void processData(PacketSlotSync message, MessageContext context) {
-		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
-			return;
-		}
-		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
-			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
-		}
-		Minecraft.getMinecraft().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));
+	public void processData(PacketConfigSave message, MessageContext context) {
+		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
+		legacyMachineBase.slotConfiguration.deserializeNBT(tagCompound);
+		legacyMachineBase.markDirty();
 
+		PacketSlotSync packetSlotSync = new PacketSlotSync(pos, legacyMachineBase.slotConfiguration);
+		NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
 	}
 }

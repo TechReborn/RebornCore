@@ -48,6 +48,8 @@ public class RebornCoreConfig {
 	public static int stackInfoY;
 	public static boolean versionCheck;
 	public static boolean easterEggs;
+	public static boolean oreDebug;
+	public static boolean configUpdating = true;
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
@@ -114,7 +116,13 @@ public class RebornCoreConfig {
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs")
 				.getBoolean();
-		
+
+		oreDebug = config.get(CATEGORY_MISC, "Enable Debug tools for ores", false, "Contains some debug tools to help fix issues with ores.")
+			.getBoolean();
+
+		configUpdating = config.get(CATEGORY_MISC, "Config Updater", true, "AutoUpdates none user chnaged config values, when the mod default changes.")
+			.getBoolean();
+
 		// resets this when the config is reloaded
 		powerConfig = null;
 

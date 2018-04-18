@@ -179,6 +179,7 @@ public class Inventory implements IInventory {
 
 		ItemStack stackToTake = this.contents[slotId];
 		setInventorySlotContents(slotId, ItemStack.EMPTY);
+		hasChanged = true;
 		return stackToTake;
 	}
 

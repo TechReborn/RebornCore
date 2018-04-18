@@ -30,6 +30,8 @@ package reborncore.common.tile;
 
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -302,6 +304,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				} else {
 					inventory.getStackInSlot(slotID).grow(extractedStack.getCount());
 				}
+				inventory.hasChanged = true;
 				break;
 			}
 		}
@@ -397,5 +400,23 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 	}
 
+	public String toJson(String machineIdent){
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.setTag("data", serializeNBT());
+		tagCompound.setString("machine", machineIdent);
+		return tagCompound.toString();
+	}
 
+	public void readJson(String json, String machineIdent) throws UnsupportedOperationException {
+		NBTTagCompound compound;
+		try {
+			compound = JsonToNBT.getTagFromJson(json);
+		} catch (NBTException e) {
+			throw new UnsupportedOperationException("Clipboard conetents isnt a valid slot configuation");
+		}
+		if(!compound.hasKey("machine") || !compound.getString("machine").equals(machineIdent)){
+			throw new UnsupportedOperationException("Machine config is not for this machine.");
+		}
+		deserializeNBT(compound.getCompoundTag("data"));
+	}
 }

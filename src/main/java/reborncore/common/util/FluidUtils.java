@@ -75,7 +75,7 @@ public class FluidUtils {
 						 * the two stacks can be merged together, there was no
 						 * simple way to make that check before.
 						 */
-						if (ItemUtils.isItemEqual(output, inputFluidHandler.getContainer(), true, true)) {
+						if (ItemUtils.isItemEqual(output, inputFluidHandler.getContainer(), true, true) && output.getCount() <= output.getMaxStackSize()) {
 							inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
 							inv.decrStackSize(inputSlot, 1);
 						} else {

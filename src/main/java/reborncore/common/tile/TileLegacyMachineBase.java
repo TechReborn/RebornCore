@@ -96,8 +96,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if(slotConfiguration == null){
-			if(getInventoryForTile().isPresent()){
+		if (slotConfiguration == null) {
+			if (getInventoryForTile().isPresent()) {
 				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
 			} else {
 				slotConfiguration = new SlotConfiguration();
@@ -126,25 +126,25 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public void update() {
-		if (!world.isRemote) {
-			@Nullable
-			RecipeCrafter crafter = null;
-			if (getCrafterForTile().isPresent()) {
-				crafter = getCrafterForTile().get();
-			}
-			if (canBeUpgraded()) {
-				resetUpgrades();
-				for (int i = 0; i < getUpgradeSlotCount(); i++) {
-					ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
-					if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-						((IUpgrade) stack.getItem()).process(this, this, stack);
-					}
+		@Nullable
+		RecipeCrafter crafter = null;
+		if (getCrafterForTile().isPresent()) {
+			crafter = getCrafterForTile().get();
+		}
+		if (canBeUpgraded()) {
+			resetUpgrades();
+			for (int i = 0; i < getUpgradeSlotCount(); i++) {
+				ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
+				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
+					((IUpgrade) stack.getItem()).process(this, this, stack);
 				}
 			}
+		}
+		if (!world.isRemote) {
 			if (crafter != null) {
 				crafter.updateEntity();
 			}
-			if(slotConfiguration != null){
+			if (slotConfiguration != null) {
 				slotConfiguration.update(this);
 			}
 		}
@@ -242,10 +242,10 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().readFromNBT(tagCompound);
 		}
-		if(tagCompound.hasKey("slotConfig")){
+		if (tagCompound.hasKey("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
 		} else {
-			if(getInventoryForTile().isPresent()){
+			if (getInventoryForTile().isPresent()) {
 				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
 			} else {
 				slotConfiguration = new SlotConfiguration();
@@ -263,7 +263,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().writeToNBT(tagCompound);
 		}
-		if(slotConfiguration != null){
+		if (slotConfiguration != null) {
 			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
 		}
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
@@ -334,7 +334,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
 		return world.getTileEntity(this.pos) == this &&
-				player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+			player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -354,9 +354,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		if(slotConfigHolder.filter() && getCrafterForTile().isPresent()){
+		if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
 			RecipeCrafter crafter = getCrafterForTile().get();
-			if(!crafter.isStackValidInput(stack)){
+			if (!crafter.isStackValidInput(stack)) {
 				return false;
 			}
 		}
@@ -431,10 +431,10 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if(slotConfig.slotIO.ioConfig.isInsert()){
-			if(slotConfigHolder.filter() && getCrafterForTile().isPresent()){
+		if (slotConfig.slotIO.ioConfig.isInsert()) {
+			if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
 				RecipeCrafter crafter = getCrafterForTile().get();
-				if(!crafter.isStackValidInput(itemStackIn)){
+				if (!crafter.isStackValidInput(itemStackIn)) {
 					return false;
 				}
 			}
@@ -455,7 +455,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if(slotConfig.slotIO.ioConfig.isExtact()){
+		if (slotConfig.slotIO.ioConfig.isExtact()) {
 			if (getContainerForTile().isPresent()) {
 				RebornContainer container = getContainerForTile().get();
 				if (container.slotMap.containsKey(index)) {

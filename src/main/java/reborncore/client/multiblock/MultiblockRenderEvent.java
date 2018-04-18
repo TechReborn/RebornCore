@@ -41,24 +41,21 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 import reborncore.client.multiblock.component.MultiblockComponent;
-
-import java.util.List;
 
 public class MultiblockRenderEvent {
 
@@ -67,6 +64,11 @@ public class MultiblockRenderEvent {
 	public MultiblockSet currentMultiblock;
 	//public Location parent;
 	public BlockPos parent;
+	RebornFluidRenderer fluidRenderer;
+
+	public MultiblockRenderEvent() {
+		this.fluidRenderer = new RebornFluidRenderer();
+	}
 
 	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
@@ -83,9 +85,18 @@ public class MultiblockRenderEvent {
 
 				Multiblock mb = currentMultiblock.getForIndex(0);
 
+				//Render the liquids first, it looks better.
 				for (MultiblockComponent comp : mb.getComponents()) {
-					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					if(comp.state.getRenderType() == EnumBlockRenderType.LIQUID){
+						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					}
 				}
+				for (MultiblockComponent comp : mb.getComponents()) {
+					if(comp.state.getRenderType() != EnumBlockRenderType.LIQUID){
+						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					}
+				}
+
 
 			}
 		}
@@ -104,54 +115,35 @@ public class MultiblockRenderEvent {
 		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(pos.getX() - dx, pos.getY() - dy, pos.getZ() - dz);
+		GlStateManager.translate(-dx, -dy, -dz);
+		GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
 		GlStateManager.scale(0.8, 0.8, 0.8);
 		GlStateManager.translate(0.2, 0.2, 0.2);
 
 		RenderHelper.disableStandardItemLighting();
-		GlStateManager.color(1f, 1f, 1f, 1f);
-		int alpha = ((int) (0.5 * 0xFF)) << 24;
 		GlStateManager.enableBlend();
-		GlStateManager.enableTexture2D();
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.depthFunc(GL11.GL_LEQUAL);
-		this.renderModel(world, pos, alpha, comp.state);
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
+		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
+
+		this.renderModel(world, pos,  comp.state);
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
 		ForgeHooksClient.setRenderLayer(originalLayer);
 	}
 
-	private void renderModel(World world, BlockPos pos, int alpha, IBlockState state) {
-		IBakedModel model = blockRender.getModelForState(state);
-		IBlockState extendedState = state.getBlock().getExtendedState(state, world, pos);
-		for (final EnumFacing facing : EnumFacing.values()) {
-			this.renderQuads(world, state, pos, model.getQuads(extendedState, facing, 0), alpha);
-		}
-
-		this.renderQuads(world, state, pos, model.getQuads(extendedState, null, 0), alpha);
-	}
-
-	private void renderQuads(final World world, final IBlockState actualState, final BlockPos pos, final List<BakedQuad> quads, final int alpha) {
+	private void renderModel(World world, BlockPos pos,IBlockState state) {
+		final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().blockRenderDispatcher;
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
-
-		if (quads == null || quads.isEmpty()) { //Bad things
-			return;
+		GlStateManager.translate(-pos.getX(), -pos.getY(), -pos.getZ());
+		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+		if(state.getRenderType() == EnumBlockRenderType.LIQUID){
+			fluidRenderer.renderFluid(world, state, pos, buffer);
+		} else {
+			blockRendererDispatcher.renderBlock(state, pos, world, buffer);
 		}
-		for (final BakedQuad quad : quads) {
-			buffer.begin(GL11.GL_QUADS, quad.getFormat());
-
-			final int color = quad.hasTintIndex() ? this.getTint(world, actualState, pos, alpha, quad.getTintIndex()) : alpha | 0xffffff;
-			LightUtil.renderQuadColor(buffer, quad, color);
-
-			tessellator.draw();
-		}
-	}
-
-	private int getTint(final World world, final IBlockState actualState, final BlockPos pos, final int alpha, final int tintIndex) {
-		return alpha | Minecraft.getMinecraft().getBlockColors().colorMultiplier(actualState, world, pos, tintIndex);
+		tessellator.draw();
 	}
 
 	@SubscribeEvent

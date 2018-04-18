@@ -51,10 +51,7 @@ import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
-import reborncore.common.network.packet.CustomDescriptionPacket;
-import reborncore.common.network.packet.PacketIOSave;
-import reborncore.common.network.packet.PacketSlotSave;
-import reborncore.common.network.packet.PacketSlotSync;
+import reborncore.common.network.packet.*;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
@@ -95,12 +92,13 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
+		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
 		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
-		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
+		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
 		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
 		PowerSystem.reloadConfig();
 		CalenderUtils.loadCalender(); //Done early as some features need this
@@ -154,6 +152,17 @@ public class RebornCore implements IModInfo {
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 		RegistrationManager.load(event);
+		try {
+			OreUtil.remove("blockMetal");
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			RebornCore.logHelper.error("Failed to remove ore");
+			RebornCore.logHelper.error(e);
+		}
+	}
+
+	@Mod.EventHandler
+	public void loaded(FMLLoadCompleteEvent event){
+		OreRegistationEvent.loadComplete();
 	}
 
 	@Mod.EventHandler
@@ -167,6 +176,7 @@ public class RebornCore implements IModInfo {
 		event.registerPacket(PacketButtonID.class, Side.SERVER);
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
+		event.registerPacket(PacketConfigSave.class, Side.SERVER);
 		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
 	}

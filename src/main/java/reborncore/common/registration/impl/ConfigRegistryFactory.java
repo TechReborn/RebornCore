@@ -29,6 +29,8 @@
 package reborncore.common.registration.impl;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -36,11 +38,13 @@ import net.minecraftforge.fml.common.event.FMLStateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.registration.*;
 import reborncore.common.util.serialization.SerializationUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -54,6 +58,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	private static File configDir = null;
 	private static HashMap<String, Configuration> configMap = new HashMap<>();
 	private static HashMap<Configuration, ConfigData> configDataMap = new HashMap<>();
+	private static NBTTagCompound configVersionTag = null;
 
 	@Override
 	public Class<? extends Annotation> getAnnotation() {
@@ -84,6 +89,9 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			String comment = annotation.comment();
 			comment = comment + " [Default=" + defaultValue + "]";
 			Property property = get(annotation.category(), key, defaultValue, comment, field.getType(), configuration);
+			if(shouldReset(property, annotation, rebornRegistry.modID()) && RebornCoreConfig.configUpdating){
+				property.setToDefault();
+			}
 			Object value;
 			try {
 				value = getObjectFromProperty(property, field);
@@ -178,6 +186,11 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		for (Map.Entry<String, Configuration> configurationEntry : configMap.entrySet()) {
 			configurationEntry.getValue().save();
 		}
+		try {
+			CompressedStreamTools.write(configVersionTag, new File(configDir, "configData.nbt"));
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to save config data", e);
+		}
 	}
 
 	@SubscribeEvent
@@ -215,6 +228,45 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 
 	public static void setConfigDir(File configDir) {
 		ConfigRegistryFactory.configDir = configDir;
+		File dataFile =  new File(configDir, "configData.nbt");
+		if(dataFile.exists()){
+			try {
+				configVersionTag = CompressedStreamTools.read(dataFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+				RebornCore.logHelper.error("Failed to read config data");
+				RebornCore.logHelper.error(e);
+				//Just reset it, I cannot be dealing with crashes for things being off.
+				dataFile.delete();
+				configVersionTag = new NBTTagCompound();
+			}
+		} else {
+			configVersionTag = new NBTTagCompound();
+		}
+	}
+
+	public boolean shouldReset(Property property, ConfigRegistry configRegistry, String modID){
+		NBTTagCompound propertyTag = configVersionTag.getCompoundTag(getPropertyString(configRegistry, modID));
+		propertyTag.setInteger("version", 0);
+		propertyTag.setString("comment", configRegistry.comment());
+		propertyTag.setString("key", configRegistry.key());
+		propertyTag.setString("config", configRegistry.config());
+
+		String configValue = property.getString();
+		String savedDefault = propertyTag.getString("default");
+		boolean shouldReset = false;
+		if(configValue.equals(savedDefault) && !configValue.equals(property.getDefault())){
+			RebornCore.logHelper.info(configRegistry.key() + " is being reset to new mod default:" + property.getDefault());
+			shouldReset = true;
+		} else {
+			propertyTag.setString("default", property.getDefault());
+		}
+		configVersionTag.setTag(getPropertyString(configRegistry, modID), propertyTag);
+		return shouldReset;
+	}
+
+	private String getPropertyString(ConfigRegistry configRegistry, String modid){
+		return modid + "." + configRegistry.config() + "." + configRegistry.category() + "." + configRegistry.key();
 	}
 
 	private static class ConfigData {
