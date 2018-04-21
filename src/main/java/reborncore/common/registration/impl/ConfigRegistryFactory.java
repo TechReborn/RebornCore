@@ -31,10 +31,12 @@ package reborncore.common.registration.impl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
@@ -117,6 +119,12 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		}
 	}
 
+	@Override
+	public void factoryComplete() {
+		MinecraftForge.EVENT_BUS.post(new RebornRegistryEvent());
+		saveAll();
+	}
+
 	private static Object getObjectFromProperty(Property property, @Nullable Field field) {
 		if (property.getType() == Property.Type.STRING) {
 			if(property.isList()){
@@ -155,19 +163,23 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		throw new RuntimeException("Type not supported: " + type);
 	}
 
-	public static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegistry rebornRegistry) {
-		String configIdent = rebornRegistry.modID();
-		if (!annotation.config().isEmpty()) {
-			configIdent = configIdent + ":" + annotation.config();
+	public static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegistry rebornRegistry){
+		return getOrCreateConfig(rebornRegistry.modID(), annotation.config());
+	}
+
+	private static Configuration getOrCreateConfig(String modId, String config) {
+		String configIdent = modId;
+		if (!config.isEmpty()) {
+			configIdent = configIdent + ":" + config;
 		}
 		Configuration configuration;
 		if (configMap.containsKey(configIdent)) {
 			configuration = configMap.get(configIdent);
 		} else {
-			File modConfigDir = new File(configDir, rebornRegistry.modID());
+			File modConfigDir = new File(configDir, modId);
 			String configName = "config.cfg";
-			if (!annotation.config().isEmpty()) {
-				configName = annotation.config() + ".cfg";
+			if (!config.isEmpty()) {
+				configName = config + ".cfg";
 			}
 			configuration = new Configuration(new File(modConfigDir, configName));
 			configMap.put(configIdent, configuration);
@@ -322,6 +334,19 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			return configuration.get(category, key, stackList, comment);
 		}
 		throw new UnsupportedOperationException("List type " + defaultList.get(0).getClass().getName() + " not supported");
+	}
+
+	/**
+	 * Use to handle config settings similar to the traditional way of doing things.
+	 *
+	 * This needs to be registed before the configs are loaded. It might be best not to use this unless you need to.
+	 */
+	public class RebornRegistryEvent extends Event {
+
+		public Configuration getConfiguration(String modid, String config){
+			return getOrCreateConfig(modid, config);
+		}
+
 	}
 
 }

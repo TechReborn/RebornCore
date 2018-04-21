@@ -102,6 +102,7 @@ public class RegistrationManager {
 			for (Class clazz : registryClasses) {
 				handleClass(clazz, activeMod);
 			}
+			factoryList.forEach(IRegistryFactory::factoryComplete);
 			setActiveModContainer(activeMod);
 		}
 
