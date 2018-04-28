@@ -30,6 +30,7 @@ package reborncore.api.power;
 
 import net.minecraft.item.ItemStack;
 
+@Deprecated //TODO remove in 1.13 and use forge energy, the implimentation is broken in a few places, and its just a pain to maintain.
 public interface IEnergyInterfaceItem extends IEnergyItemInfo {
 	/**
 	 * @param stack The {@link ItemStack} that contains the power
