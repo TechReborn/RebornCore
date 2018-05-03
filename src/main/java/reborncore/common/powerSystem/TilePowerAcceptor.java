@@ -32,6 +32,7 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -65,6 +66,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "ic2") })
@@ -124,7 +126,16 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 						if (tile == null) {
 							continue;
 						}
-						else {
+						else if (tile instanceof IEnergyInterfaceTile) {
+							IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
+							if (eFace.canAcceptEnergy(side.getOpposite())) {
+								acceptors.put(side, tile);
+							}
+						}
+						else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
+							acceptors.put(side, tile);
+						}
+						else if (TeslaManager.isTeslaEnabled(getPowerConfig()) && tile.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, side.getOpposite())) {
 							acceptors.put(side, tile);
 						}
 					}
@@ -142,18 +153,16 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 						TileEntity tile = entry.getValue();
 						if (tile instanceof IEnergyInterfaceTile) {
 							IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-							if (eFace.canAcceptEnergy(side.getOpposite())) {
-								if (handleTierWithPower() && eFace.getTier().ordinal() < getPushingTier().ordinal()) {
-									for (int j = 0; j < 2; ++j) {
-										double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
-										double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
-										double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
-										world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
-									}
-								} else {
-									double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
-									remainingEnergy -= useEnergy(filled, false);
+							if (handleTierWithPower() && (eFace.getTier().ordinal() < getPushingTier().ordinal())) {
+								for (int j = 0; j < 2; ++j) {
+									double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getFrontOffsetX() / 2);
+									double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
+									double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getFrontOffsetZ() / 2);
+									world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
 								}
+							} else {
+								double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
+								remainingEnergy -= useEnergy(filled, false);
 							}
 						} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
 							IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
@@ -408,7 +417,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
 		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.maxEnergy") + ": "
