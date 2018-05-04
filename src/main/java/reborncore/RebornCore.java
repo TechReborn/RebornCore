@@ -53,7 +53,6 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.RegisterPacketEvent;
 import reborncore.common.network.packet.*;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
@@ -125,7 +124,6 @@ public class RebornCore implements IModInfo {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		RebornCoreConfig.isIC2Loaded = Loader.isModLoaded("ic2");
-		TeslaManager.load();
 		// packets
 		OreUtil.scanForOres();
 		NetworkManager.load();
@@ -186,6 +184,7 @@ public class RebornCore implements IModInfo {
 		event.registerServerCommand(new CommandListRecipes());
 	}
 
+	@Override
 	public String MOD_NAME() {
 		return MOD_NAME;
 	}

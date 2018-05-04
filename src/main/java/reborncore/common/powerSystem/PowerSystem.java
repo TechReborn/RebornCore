@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import reborncore.RebornCore;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.util.serialization.SerializationUtil;
 
 import java.io.*;
@@ -42,10 +41,8 @@ import java.util.Locale;
 public class PowerSystem {
 	public static File priorityConfig;
 	private static int euPriority;
-	private static int teslaPriority;
 	private static int forgePriority;
 	private static int euPriorityDefault = 0;
-	private static int teslaPriorityDefault = 2;
 	private static int forgePriorityDefault = 1;
 	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
 
@@ -150,28 +147,19 @@ public class PowerSystem {
 
 	public static EnergySystem getDisplayPower() {
 		int eu = euPriority;
-		int tesla = teslaPriority;
 		int fe = forgePriority;
-		if ((eu > tesla || !TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower())) && eu > fe && RebornCoreConfig.getRebornPower().eu())
+		if ( eu > fe && RebornCoreConfig.getRebornPower().eu())
 			return EnergySystem.EU;
-		if ((tesla > eu || !RebornCoreConfig.getRebornPower().eu()) && tesla > fe && TeslaManager.isTeslaEnabled(RebornCoreConfig.getRebornPower()))
-			return EnergySystem.TESLA;
 		return EnergySystem.FE;
 	}
 
 	public static void bumpPowerConfig() {
 		EnergyPriorityConfig config = new EnergyPriorityConfig();
-		if (getDisplayPower() == EnergySystem.TESLA) {
-			config.setEuPriority(2);
-			config.setTeslaPriority(0);
-			config.setForgePriority(1);
-		} else if (getDisplayPower() == EnergySystem.EU) {
+		if (getDisplayPower() == EnergySystem.EU) {
 			config.setEuPriority(0);
-			config.setTeslaPriority(1);
-			config.setForgePriority(2);
+			config.setForgePriority(1);
 		} else if (getDisplayPower() == EnergySystem.FE) {
 			config.setEuPriority(1);
-			config.setTeslaPriority(2);
 			config.setForgePriority(0);
 		}
 		writeConfig(config);
@@ -194,7 +182,6 @@ public class PowerSystem {
 				writeConfig(config);
 			}
 			euPriority = config.euPriority;
-			teslaPriority = config.teslaPriority;
 			forgePriority = config.forgePriority;
 		}
 	}
@@ -209,7 +196,6 @@ public class PowerSystem {
 	}
 
 	public enum EnergySystem {
-		TESLA(0xFF23A78D, "Tesla", 71, 151, 0xFF117F60),
 		EU(0xFF800600, "EU", 43, 151, 0xFF670000),
 		FE(0xFFBE281A, "FE", 15, 151, 0xFF960D0D);
 
@@ -230,7 +216,6 @@ public class PowerSystem {
 
 	public static class EnergyPriorityConfig {
 		public int euPriority = euPriorityDefault;
-		public int teslaPriority = teslaPriorityDefault;
 		public int forgePriority = forgePriorityDefault;
 
 		public int getEuPriority() {
@@ -239,14 +224,6 @@ public class PowerSystem {
 
 		public void setEuPriority(int euPriority) {
 			this.euPriority = euPriority;
-		}
-
-		public int getTeslaPriority() {
-			return teslaPriority;
-		}
-
-		public void setTeslaPriority(int teslaPriority) {
-			this.teslaPriority = teslaPriority;
 		}
 
 		public int getForgePriority() {

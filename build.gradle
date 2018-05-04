@@ -47,12 +47,6 @@ repositories {
 	 }
 
 	maven {
-		// Tesla
-		name = "Dankhax"
-		url = "https://maven.mcmoddev.com/"
-	}
-
-	maven {
 		// JEI
 		name = "prog"
 		url = "http://dvs1.progwml6.com/files/maven"
@@ -100,7 +94,6 @@ group = 'RebornCore'
 
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.26-ex112:api'
-	provided "net.darkhax.tesla:Tesla-1.12:1.0.59:deobf"
 }
 
 processResources

@@ -32,7 +32,6 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.*;
 import ic2.api.info.Info;
-import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -55,7 +54,6 @@ import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
-import reborncore.common.powerSystem.tesla.TeslaManager;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.IC2ItemCharger;
 import reborncore.common.util.StringUtils;
@@ -92,16 +90,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public TilePowerAcceptor() {
 		checkTeir();
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.created(this);
-		}
 	}
 
 	public TilePowerAcceptor(EnumPowerTier tier) {
 		checkTeir();
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.created(this);
-		}
 	}
 
 	public void checkTeir() {
@@ -133,9 +125,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 							}
 						}
 						else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
-							acceptors.put(side, tile);
-						}
-						else if (TeslaManager.isTeslaEnabled(getPowerConfig()) && tile.hasCapability(TeslaCapabilities.CAPABILITY_CONSUMER, side.getOpposite())) {
 							acceptors.put(side, tile);
 						}
 					}
@@ -170,9 +159,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 								int filled = energyStorage.receiveEnergy((int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
 								remainingEnergy -= useEnergy(filled / RebornCoreConfig.euPerFU, false);
 							}
-						} else if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-							TeslaManager.manager.update(this);
-						}
+						} 
 					}
 				}
 			}
@@ -383,9 +370,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT())
 			this.setEnergy(data.getDouble("energy"));
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.readFromNBT(tag, this);
-		}
 	}
 
 	@Override
@@ -394,9 +378,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", getEnergy());
 		tag.setTag("TilePowerAcceptor", data);
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			TeslaManager.manager.writeToNBT(tag, this);
-		}
 		return tag;
 	}
 
@@ -477,24 +458,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			case EU:
 				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US")).format(eu) + " "
 					+ EnergySystem.EU.abbreviation;
-			case TESLA:
-				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
-					.format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.TESLA.abbreviation;
 			default:
 				return NumberFormat.getIntegerInstance(Locale.forLanguageTag("en_US"))
 					.format(eu * RebornCoreConfig.euPerFU) + " " + EnergySystem.FE.abbreviation;
 		}
 	}
 
-	//Tesla
-
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			if (TeslaManager.manager.hasCapability(capability, facing, this)) {
-				return true;
-			}
-		}
 		if (getPowerConfig().forge()) {
 			if (capability == CapabilityEnergy.ENERGY && canConnectEnergy(facing)) {
 				return true;
@@ -506,12 +477,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (TeslaManager.isTeslaEnabled(getPowerConfig())) {
-			T teslaCap = TeslaManager.manager.getCapability(capability, facing, this);
-			if (TeslaManager.manager.isTeslaCapability(capability)) {
-				return teslaCap;
-			}
-		}
 		if (getPowerConfig().forge()) {
 			if (capability == CapabilityEnergy.ENERGY && canConnectEnergy(facing)) {
 				if (forgePowerManager == null) {
@@ -523,8 +488,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 		return super.getCapability(capability, facing);
 	}
-
-	//End Tesla
 
 	public abstract double getBaseMaxPower();
 
