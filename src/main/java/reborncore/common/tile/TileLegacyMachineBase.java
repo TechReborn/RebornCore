@@ -63,6 +63,7 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -422,7 +423,11 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
+		if(slotConfiguration == null){
+			return new int[]{}; //I think should be ok, if needed this can return all the slots
+		}
 		return slotConfiguration.getSlotsForSide(side).stream()
+			.filter(Objects::nonNull)
 			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
 			.mapToInt(value -> value.slotID).toArray();
 	}
