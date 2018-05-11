@@ -37,10 +37,12 @@ public class SlotInput extends BaseSlot {
 		super(par1iInventory, par2, par3, par4);
 	}
 
+	@Override
 	public boolean isItemValid(ItemStack par1ItemStack) {
 		return true;
 	}
 
+	@Override
 	public int getSlotStackLimit() {
 		return 64;
 	}

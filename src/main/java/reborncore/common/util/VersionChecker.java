@@ -82,6 +82,7 @@ public class VersionChecker {
 
 	public void checkVersionThreaded() {
 		new Thread(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					checkVersion();

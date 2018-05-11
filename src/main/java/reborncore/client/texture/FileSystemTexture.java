@@ -35,9 +35,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.IMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -45,7 +42,6 @@ import java.io.*;
  * Created by Mark on 25/03/2016.
  */
 public class FileSystemTexture extends AbstractTexture {
-	private static final Logger logger = LogManager.getLogger();
 	protected final File textureLocation;
 	BufferedImage image;
 
@@ -53,6 +49,7 @@ public class FileSystemTexture extends AbstractTexture {
 		this.textureLocation = textureResourceLocation;
 	}
 
+	@Override
 	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
 		if (image == null) {

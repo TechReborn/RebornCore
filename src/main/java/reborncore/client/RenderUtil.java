@@ -136,10 +136,7 @@ public class RenderUtil {
 
 	@SideOnly(Side.CLIENT)
 	public static void renderItemInWorld(ItemStack stack) {
-		Minecraft mc = Minecraft.getMinecraft();
-
 		GlStateManager.pushMatrix();
-
 		GlStateManager.disableLighting();
 		GlStateManager.color(1.0F, 1.0F, 1.0F);
 		if (stack.getItem() instanceof ItemBlock) {

@@ -93,6 +93,7 @@ public class CoordTriplet implements Comparable {
 	}
 
 	// Suggested implementation from NetBeans 7.1
+	@Override
 	public int hashCode() {
 		int hash = 7;
 		hash = 71 * hash + this.x;

@@ -28,7 +28,6 @@
 
 package reborncore.common.tile;
 
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -274,7 +273,6 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 		private void handleItemInput(TileLegacyMachineBase machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
-			ISidedInventory sidedInventory = machineBase;
 			ItemStack targetStack = inventory.getStackInSlot(slotID);
 			if(targetStack.getMaxStackSize() == targetStack.getCount()){
 				return;

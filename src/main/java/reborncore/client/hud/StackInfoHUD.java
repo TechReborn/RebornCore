@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -45,8 +46,6 @@ import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.util.Color;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +54,7 @@ import static net.minecraft.item.ItemStack.EMPTY;
 /**
  * Created by Prospector
  */
+@SuppressWarnings("deprecation")
 public class StackInfoHUD {
 	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static boolean showHud = true;
@@ -124,28 +124,29 @@ public class StackInfoHUD {
 	private void addInfo(ItemStack stack) {
 		if (stack != EMPTY) {
 			String text = "";
-			boolean didShit = false;
-			Color gold = Color.GOLD;
-			Color grey = Color.GRAY;
 			if (stack.getItem() instanceof IEnergyInterfaceItem) {
 				double MaxCharge = ((IEnergyInterfaceItem) stack.getItem()).getMaxPower(stack);
 				double CurrentCharge = ((IEnergyInterfaceItem) stack.getItem()).getEnergy(stack);
-				Color color = Color.GREEN;
+				TextFormatting color = TextFormatting.GREEN;
 				double quarter = MaxCharge / 4;
 				double half = MaxCharge / 2;
 				renderStackForInfo(stack);
 				if (CurrentCharge <= half) {
-					color = Color.YELLOW;
+					color = TextFormatting.YELLOW;
 				}
 				if (CurrentCharge <= quarter) {
-					color = Color.DARK_RED;
+					color = TextFormatting.DARK_RED;
 				}
-				text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(CurrentCharge) + "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(MaxCharge) + " " + PowerSystem.getDisplayPower().abbreviation + grey;
+				text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(CurrentCharge) + "/"
+						+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(MaxCharge) + " "
+						+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
 				if (stack.getTagCompound() != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("isActive")) {
 					if (stack.getTagCompound().getBoolean("isActive"))
-						text = text + gold + " (" + I18n.translateToLocal("reborncore.message.active") + ")" + grey;
+						text = text + TextFormatting.GOLD + " (" + I18n.translateToLocal("reborncore.message.active")
+								+ ")" + TextFormatting.GRAY;
 					else
-						text = text + gold + " (" + I18n.translateToLocal("reborncore.message.inactive") + ")" + grey;
+						text = text + TextFormatting.GOLD + " (" + I18n.translateToLocal("reborncore.message.inactive")
+								+ ")" + TextFormatting.GRAY;
 				}
 				mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
 				y += 20;

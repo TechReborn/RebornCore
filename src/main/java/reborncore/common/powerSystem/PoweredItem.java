@@ -31,6 +31,7 @@ package reborncore.common.powerSystem;
 import net.minecraft.item.ItemStack;
 import reborncore.api.power.IEnergyInterfaceItem;
 
+@SuppressWarnings("deprecation")
 public abstract class PoweredItem {
 
 	public static boolean canUseEnergy(double energy, ItemStack stack) {

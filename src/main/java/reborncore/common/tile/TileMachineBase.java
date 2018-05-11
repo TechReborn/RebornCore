@@ -80,6 +80,7 @@ public abstract class TileMachineBase extends TileEnergyBase implements IToolDro
 		return (this.progress * scale) / this.ticksNeeded;
 	}
 
+	@Override
 	public int getEnergyScaled(int scale) {
 		return (int) ((getEnergy() * scale / getMaxPower()));
 	}

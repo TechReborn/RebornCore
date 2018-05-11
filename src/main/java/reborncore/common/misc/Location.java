@@ -214,6 +214,7 @@ public class Location implements Comparable<Location> {
 		return world.getTileEntity(new BlockPos(this.x, this.y, this.z));
 	}
 
+	@Override
 	public final Location clone() {
 		return new Location(this.x, this.y, this.z);
 	}

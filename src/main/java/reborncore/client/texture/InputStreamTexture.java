@@ -35,9 +35,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.IMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +43,6 @@ import java.io.InputStream;
  * Created by modmuss50 on 23/05/2016.
  */
 public class InputStreamTexture extends AbstractTexture {
-	private static final Logger logger = LogManager.getLogger();
 	protected final InputStream textureLocation;
 	BufferedImage image;
 	String name;
@@ -56,6 +52,7 @@ public class InputStreamTexture extends AbstractTexture {
 		this.name = name;
 	}
 
+	@Override
 	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
 		if (image == null) {

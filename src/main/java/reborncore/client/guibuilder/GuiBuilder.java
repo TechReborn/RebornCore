@@ -47,7 +47,7 @@ public class GuiBuilder {
 	static ResourceLocation resourceLocation;
 
 	public GuiBuilder(ResourceLocation resourceLocation) {
-		this.resourceLocation = resourceLocation;
+		GuiBuilder.resourceLocation = resourceLocation;
 	}
 
 	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
