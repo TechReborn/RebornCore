@@ -28,6 +28,8 @@
 
 package reborncore.common.util;
 
+import net.minecraft.util.text.TextComponentTranslation;
+
 /**
  * @author Prospector on 11/05/16
  */
@@ -47,6 +49,16 @@ public class StringUtils {
 		}
 		String output = input.toLowerCase();
 		return output.substring(0, 1).toUpperCase() + output.substring(1);
+	}
+	
+	/**
+	 * Simple wrapper for text translation
+	 * 
+	 * @param translationKey String Translation Key from language file
+	 * @return String Translated string
+	 */
+	public static String t(String translationKey) {
+		return new TextComponentTranslation(translationKey).getFormattedText();
 	}
 
 }
