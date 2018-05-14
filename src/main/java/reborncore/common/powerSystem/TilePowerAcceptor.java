@@ -38,7 +38,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -64,7 +63,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-@SuppressWarnings("deprecation")
 @Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
 	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "ic2") })
@@ -400,20 +398,20 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile) {
-		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.maxEnergy") + ": "
+		info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
 				+ TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxPower()));
 		if (getMaxInput() != 0) {
-			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.inputRate") + ": "
+			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
 					+ TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.outputRate")
+			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate")
 					+ ": " + TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getMaxOutput()));
 		}
-		info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.tier") + ": "
+		info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
 				+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
 		if(isRealTile){
-			info.add(TextFormatting.GRAY + I18n.translateToLocal("reborncore.tooltip.energy.change")
+			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
 				+ ": " + TextFormatting.GOLD + getLocaliszedPowerFormatted((int) getPowerChange()) + "/t");
 		}
 	}

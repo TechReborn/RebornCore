@@ -36,7 +36,6 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -46,6 +45,8 @@ import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyInterfaceItem;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,6 @@ import static net.minecraft.item.ItemStack.EMPTY;
 /**
  * Created by Prospector
  */
-@SuppressWarnings("deprecation")
 public class StackInfoHUD {
 	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static boolean showHud = true;
@@ -142,10 +142,10 @@ public class StackInfoHUD {
 						+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
 				if (stack.getTagCompound() != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("isActive")) {
 					if (stack.getTagCompound().getBoolean("isActive"))
-						text = text + TextFormatting.GOLD + " (" + I18n.translateToLocal("reborncore.message.active")
+						text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
 								+ ")" + TextFormatting.GRAY;
 					else
-						text = text + TextFormatting.GOLD + " (" + I18n.translateToLocal("reborncore.message.inactive")
+						text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
 								+ ")" + TextFormatting.GRAY;
 				}
 				mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);

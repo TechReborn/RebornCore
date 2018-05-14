@@ -29,7 +29,7 @@
 package reborncore.modcl.manual.pages;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.translation.I18n;
+import reborncore.common.util.StringUtils;
 import reborncore.modcl.manual.GuiTeamRebornManual;
 
 /**
@@ -38,7 +38,7 @@ import reborncore.modcl.manual.GuiTeamRebornManual;
 public class PageHome extends ManualPage {
 	@Override
 	public String title() {
-		return I18n.translateToLocal("item.reborncore:manual.name");
+		return StringUtils.t("item.reborncore:manual.name");
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import reborncore.common.util.StringUtils;
 
 public class BaseGui extends GuiContainer {
 	Container container;
@@ -59,7 +59,7 @@ public class BaseGui extends GuiContainer {
 	}
 
 	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
-		String name = I18n.translateToLocal("tile." + this.name + ".name");
+		String name = StringUtils.t("tile." + this.name + ".name");
 		this.fontRenderer.drawString(name, this.xSize / 2 - 6 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);
 	}
 

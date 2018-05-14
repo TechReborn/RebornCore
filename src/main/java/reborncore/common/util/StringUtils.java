@@ -60,5 +60,16 @@ public class StringUtils {
 	public static String t(String translationKey) {
 		return new TextComponentTranslation(translationKey).getFormattedText();
 	}
+	
+	/**
+	 * Simple wrapper for formatted text translation
+	 * 
+	 * @param translationKey String Translation Key from language file
+	 * @param format Text to insert into translation
+	 * @return String Translated string
+	 */
+	public static String t(String translationKey, Object... format) {
+		return new TextComponentTranslation(translationKey, format).getFormattedText();
+	}
 
 }
