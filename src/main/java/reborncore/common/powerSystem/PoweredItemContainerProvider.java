@@ -32,8 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
@@ -43,12 +42,15 @@ import javax.annotation.Nullable;
 /**
  * Created by modmuss50 on 18/01/2017.
  */
-public class PoweredItemContainerProvider implements INBTSerializable<NBTTagCompound>, ICapabilityProvider {
+public class PoweredItemContainerProvider implements ICapabilitySerializable<NBTTagCompound> {
+//INBTSerializable<NBTTagInt>, ICapabilityProvider {
 
 	ItemStack stack;
+	final ForgePowerItemManager capEnergy;
 
 	public PoweredItemContainerProvider(ItemStack stack) {
 		this.stack = stack;
+		this.capEnergy = new ForgePowerItemManager(stack);
 	}
 
 	@Override
@@ -59,23 +61,43 @@ public class PoweredItemContainerProvider implements INBTSerializable<NBTTagComp
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 		if (RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY) {
-			return (T) new ForgePowerItemManager(stack);
+			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
 	}
 
 	@Override
 	public NBTTagCompound serializeNBT() {
-		return new NBTTagCompound();
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		NBTTagCompound oldTag = stack.getTagCompound();
+		if (oldTag != null && oldTag.hasKey("charge")) {
+			tagCompound.setInteger("Charge", (int) oldTag.getDouble("charge"));
+			//oldTag.removeTag("charge");
+		}
+		else {
+			tagCompound.setInteger("Charge", capEnergy.getEnergyStored());	
+		}
+		return tagCompound;
+		// TODO: Uncomment in 1.13
+		//return (NBTTagCompound) CapabilityEnergy.ENERGY.getStorage().writeNBT(CapabilityEnergy.ENERGY, capEnergy, null);
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-
+		NBTTagCompound oldTag = stack.getTagCompound();
+		if (oldTag != null && oldTag.hasKey("charge")) {
+			capEnergy.setEnergyStored((int) oldTag.getDouble("charge"));
+			oldTag.removeTag("charge");
+		}
+		else {
+			capEnergy.setEnergyStored(nbt.getInteger("Charge"));
+		}
+		// TODO: Uncomment in 1.13
+		//CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, capEnergy, null, nbt);
+		
 	}
 }
