@@ -107,47 +107,4 @@ public class ForgePowerItemManager implements IEnergyStorage {
 	public boolean canReceive() {
 		return itemPowerInfo.canAcceptEnergy(stack);
 	}
-
-/*	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
-		if (!RebornCoreConfig.getRebornPower().forge())
-			return 0;
-		if (!itemPowerInfo.canAcceptEnergy(container)) {
-			return 0;
-		}
-		maxReceive *= RebornCoreConfig.euPerFU;
-		int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
-				Math.min((int) itemPowerInfo.getMaxTransfer(container) * RebornCoreConfig.euPerFU, maxReceive));
-
-		if (!simulate) {
-			PoweredItem.setEnergy(PoweredItem.getEnergy(container) + energyReceived, container);
-		}
-		return energyReceived / RebornCoreConfig.euPerFU;
-	}*/
-
-/*	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
-		if (!RebornCoreConfig.getRebornPower().forge())
-			return 0;
-		if (!itemPowerInfo.canAcceptEnergy(container)) {
-			return 0;
-		}
-		maxExtract *= RebornCoreConfig.euPerFU;
-		int energyExtracted = Math.min(getEnergyStored(), Math.min(maxExtract, maxExtract));
-
-		if (!simulate) {
-			PoweredItem.setEnergy(PoweredItem.getEnergy(container) - energyExtracted, container);
-		}
-		return energyExtracted / RebornCoreConfig.euPerFU;
-	}*/
-
-	/*
-	 * public int getEnergyStored(ItemStack container) { if
-	 * (!RebornCoreConfig.getRebornPower().forge()) return 0; return ((int)
-	 * PoweredItem.getEnergy(container) / RebornCoreConfig.euPerFU); }
-	 */
-
-	/*
-	 * public int getMaxEnergyStored(ItemStack container) { if
-	 * (!RebornCoreConfig.getRebornPower().forge()) return 0; return ((int)
-	 * itemPowerInfo.getMaxPower(container) / RebornCoreConfig.euPerFU); }
-	 */
 }

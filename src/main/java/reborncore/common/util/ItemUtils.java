@@ -33,6 +33,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
@@ -156,5 +158,15 @@ public class ItemUtils {
 			list.add(stack);
 		}
 		return list;
+	}
+	
+	public static double getPowerForDurabilityBar(ItemStack stack) {
+		if (stack == ItemStack.EMPTY) {
+			return 0.0;
+		}
+		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		double energy = (double) capEnergy.getEnergyStored();
+		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
+		return energy /  maxEnergy;
 	}
 }
