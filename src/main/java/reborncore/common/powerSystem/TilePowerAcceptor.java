@@ -48,7 +48,6 @@ import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
-import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
@@ -426,16 +425,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 		if (getStackInSlot(slot) != ItemStack.EMPTY) {
 			final ItemStack batteryStack = this.getStackInSlot(slot);
-			if (batteryStack.getItem() instanceof IEnergyItemInfo) {
-				final IEnergyItemInfo battery = (IEnergyItemInfo) batteryStack.getItem();
-				if (battery.canProvideEnergy(batteryStack) && this.getEnergy() < this.getMaxPower()){
-					double minAccept = Math.min(this.getFreeSpace(), this.getMaxInput());
-					double minProvide = Math.min(battery.getMaxTransfer(batteryStack), PoweredItem.getEnergy(batteryStack));
-					double transfer  = Math.min(minAccept, minProvide);
-					if (PoweredItem.canUseEnergy(transfer, batteryStack)){
-						PoweredItem.useEnergy(transfer, batteryStack);
-						this.addEnergy(transfer);
-					}
+			if(batteryStack.hasCapability(CapabilityEnergy.ENERGY, null)){
+				IEnergyStorage energyStorage = batteryStack.getCapability(CapabilityEnergy.ENERGY, null);
+				if(getEnergy() != getMaxPower() && energyStorage.getEnergyStored() > 0){
+					addEnergy(energyStorage.extractEnergy((int) (getMaxInput() * RebornCoreConfig.euPerFU), false));
 				}
 			} else if (RebornCore.proxy.ic2Loaded){
 				IC2ItemCharger.dischargeIc2Item(this, batteryStack);
