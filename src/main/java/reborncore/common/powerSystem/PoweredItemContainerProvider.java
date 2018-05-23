@@ -36,6 +36,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -43,7 +44,6 @@ import javax.annotation.Nullable;
  * Created by modmuss50 on 18/01/2017.
  */
 public class PoweredItemContainerProvider implements ICapabilitySerializable<NBTTagCompound> {
-//INBTSerializable<NBTTagInt>, ICapabilityProvider {
 
 	ItemStack stack;
 	final ForgePowerItemManager capEnergy;
@@ -70,34 +70,14 @@ public class PoweredItemContainerProvider implements ICapabilitySerializable<NBT
 		return null;
 	}
 
+	//NBT cap tags seem to have some issues, so we just use the item's normal nbt
 	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound tagCompound = new NBTTagCompound();
-		NBTTagCompound oldTag = stack.getTagCompound();
-		if (oldTag != null && oldTag.hasKey("charge")) {
-			tagCompound.setInteger("Charge", (int) oldTag.getDouble("charge"));
-			//oldTag.removeTag("charge");
-		}
-		else {
-			tagCompound.setInteger("Charge", capEnergy.getEnergyStored());	
-		}
-		return tagCompound;
-		// TODO: Uncomment in 1.13
-		//return (NBTTagCompound) CapabilityEnergy.ENERGY.getStorage().writeNBT(CapabilityEnergy.ENERGY, capEnergy, null);
+		return new NBTTagCompound();
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		NBTTagCompound oldTag = stack.getTagCompound();
-		if (oldTag != null && oldTag.hasKey("charge")) {
-			capEnergy.setEnergyStored((int) oldTag.getDouble("charge"));
-			oldTag.removeTag("charge");
-		}
-		else {
-			capEnergy.setEnergyStored(nbt.getInteger("Charge"));
-		}
-		// TODO: Uncomment in 1.13
-		//CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, capEnergy, null, nbt);
-		
+
 	}
 }

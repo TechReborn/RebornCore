@@ -29,6 +29,7 @@
 package reborncore.common.powerSystem.forge;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
@@ -37,18 +38,35 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	ItemStack stack;
 	IEnergyItemInfo itemPowerInfo;
-	protected int energy;
 
 	public ForgePowerItemManager(ItemStack stack) {
 		this.stack = stack;
 		if (stack.getItem() instanceof IEnergyItemInfo) {
 			this.itemPowerInfo = (IEnergyItemInfo) stack.getItem();
 		}
-		this.energy = 0;
+		validateNBT();
 	}
-	
+
+	private int getEnergyInStack(){
+		validateNBT();
+		return stack.getTagCompound().getInteger("charge");
+	}
+
+	private void setEnergyInStack(int energy){
+		validateNBT();
+		stack.getTagCompound().setInteger("charge", energy);
+	}
+
+	//Checks to ensure that the item has a nbt tag
+	private void validateNBT(){
+		if(!stack.hasTagCompound()){
+			stack.setTagCompound(new NBTTagCompound());
+			setEnergyInStack(0);
+		}
+	}
+
 	public void setEnergyStored(int value) {
-		energy = value;
+		setEnergyInStack(value);
 	}
 
 	@Override
@@ -63,7 +81,7 @@ public class ForgePowerItemManager implements IEnergyStorage {
 				Math.min((int) itemPowerInfo.getMaxTransfer(stack), maxReceive));
 
 		if (!simulate) {
-			energy += energyReceived;
+			setEnergyInStack(getEnergyInStack() + energyReceived);
 		}
 		return energyReceived;
 	} 
@@ -77,7 +95,7 @@ public class ForgePowerItemManager implements IEnergyStorage {
 		}
 		int energyExtracted = Math.min(getEnergyStored(), maxExtract);
 		if (!simulate) {
-			energy -= energyExtracted;
+			setEnergyInStack(getEnergyInStack() - energyExtracted);
 		}
 		return energyExtracted;
 	}
@@ -87,7 +105,7 @@ public class ForgePowerItemManager implements IEnergyStorage {
 		if (!RebornCoreConfig.getRebornPower().forge()) {
 			return 0;
 		}
-		return energy;
+		return getEnergyInStack();
 	}
 
 	@Override
