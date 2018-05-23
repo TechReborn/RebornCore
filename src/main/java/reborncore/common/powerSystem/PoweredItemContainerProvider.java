@@ -29,10 +29,9 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
@@ -43,7 +42,7 @@ import javax.annotation.Nullable;
 /**
  * Created by modmuss50 on 18/01/2017.
  */
-public class PoweredItemContainerProvider implements ICapabilitySerializable<NBTTagCompound> {
+public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	ItemStack stack;
 	final ForgePowerItemManager capEnergy;
@@ -68,16 +67,5 @@ public class PoweredItemContainerProvider implements ICapabilitySerializable<NBT
 			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
-	}
-
-	//NBT cap tags seem to have some issues, so we just use the item's normal nbt
-	@Override
-	public NBTTagCompound serializeNBT() {
-		return new NBTTagCompound();
-	}
-
-	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
-
 	}
 }

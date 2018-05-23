@@ -428,7 +428,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			if(batteryStack.hasCapability(CapabilityEnergy.ENERGY, null)){
 				IEnergyStorage energyStorage = batteryStack.getCapability(CapabilityEnergy.ENERGY, null);
 				if(getEnergy() != getMaxPower() && energyStorage.getEnergyStored() > 0){
-					addEnergy(energyStorage.extractEnergy((int) (getMaxInput() * RebornCoreConfig.euPerFU), false));
+					addEnergy(energyStorage.extractEnergy((int) (getMaxInput() * RebornCoreConfig.euPerFU), false) / RebornCoreConfig.euPerFU);
 				}
 			} else if (RebornCore.proxy.ic2Loaded){
 				IC2ItemCharger.dischargeIc2Item(this, batteryStack);

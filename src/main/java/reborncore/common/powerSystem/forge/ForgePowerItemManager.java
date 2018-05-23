@@ -49,19 +49,25 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	private int getEnergyInStack(){
 		validateNBT();
-		return stack.getTagCompound().getInteger("charge");
+		return stack.getTagCompound().getInteger("energy");
 	}
 
 	private void setEnergyInStack(int energy){
 		validateNBT();
-		stack.getTagCompound().setInteger("charge", energy);
+		stack.getTagCompound().setInteger("energy", energy);
 	}
 
-	//Checks to ensure that the item has a nbt tag
+	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
 	private void validateNBT(){
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 			setEnergyInStack(0);
+		} else {
+			if(stack.getTagCompound().hasKey("charge")){
+				//Upgrades the item from the old format to the new format
+				stack.getTagCompound().setInteger("energy", stack.getTagCompound().getInteger("charge") * RebornCoreConfig.euPerFU);
+				stack.getTagCompound().removeTag("charge");
+			}
 		}
 	}
 
@@ -71,9 +77,6 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (!RebornCoreConfig.getRebornPower().forge()) {
-			return 0;
-		}
 		if (!itemPowerInfo.canAcceptEnergy(stack)) {
 			return 0;
 		}
@@ -88,8 +91,6 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		if (!RebornCoreConfig.getRebornPower().forge())
-			return 0;
 		if (!itemPowerInfo.canAcceptEnergy(stack)) {
 			return 0;
 		}
@@ -102,18 +103,12 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	@Override
 	public int getEnergyStored() {
-		if (!RebornCoreConfig.getRebornPower().forge()) {
-			return 0;
-		}
 		return getEnergyInStack();
 	}
 
 	@Override
 	public int getMaxEnergyStored() {
-		if (!RebornCoreConfig.getRebornPower().forge()) {
-			return 0;
-		}
-		return ((int) itemPowerInfo.getMaxPower(stack));
+		return ((int) itemPowerInfo.getMaxPower(stack) * RebornCoreConfig.euPerFU); //TODO remove this and make all values in the mod use EU
 	}
 
 	@Override
