@@ -169,4 +169,11 @@ public class ItemUtils {
 		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
 		return energy /  maxEnergy;
 	}
+	
+	public static boolean isActive(ItemStack stack) {
+		if (!stack.isEmpty() && stack.getTagCompound() != null && stack.getTagCompound().getBoolean("isActive")) {
+			return true;
+		}
+		return false;
+	}
 }
