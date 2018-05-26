@@ -43,6 +43,7 @@ import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.commands.CommandListRecipes;
 import reborncore.common.logic.LogicControllerGuiHandler;
@@ -136,6 +137,7 @@ public class RebornCore implements IModInfo {
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
+		MinecraftForge.EVENT_BUS.register(BlockMachineBase.class);
 
 		if (ItemTeamRebornManual.isManualEnabled) {
 			RebornRegistry.registerItem(new ItemTeamRebornManual());

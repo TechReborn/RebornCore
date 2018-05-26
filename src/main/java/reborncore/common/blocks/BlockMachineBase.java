@@ -50,7 +50,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
@@ -169,6 +171,13 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 		
 		return items;
+	}
+
+	@SubscribeEvent
+	public static void getDigSpeed(PlayerEvent.BreakSpeed event){
+		if(event.getState().getBlock() instanceof BlockMachineBase && RebornCoreConfig.wrenchRequired){
+			event.setNewSpeed(event.getOriginalSpeed() / 25);
+		}
 	}
 
 	public boolean isAdvanced() {
