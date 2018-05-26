@@ -88,6 +88,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			this.setDefaultState(
 				this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 		}
+		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
 
 	@Override
@@ -204,7 +205,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 		if (!stack.isEmpty()) {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
-				if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, false)) {
+				if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, true)) {
 					if (playerIn.isSneaking()) {
 						if (tileEntity instanceof IToolDrop) {
 							dropInventory(worldIn, pos);
