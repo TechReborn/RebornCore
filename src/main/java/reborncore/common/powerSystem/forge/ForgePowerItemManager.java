@@ -61,7 +61,7 @@ public class ForgePowerItemManager implements IEnergyStorage {
 	private void validateNBT(){
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
-			setEnergyInStack(0);
+			stack.getTagCompound().setInteger("energy", 0);
 		} else {
 			if(stack.getTagCompound().hasKey("charge")){
 				//Upgrades the item from the old format to the new format
