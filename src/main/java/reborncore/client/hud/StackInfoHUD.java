@@ -58,15 +58,13 @@ import static net.minecraft.item.ItemStack.EMPTY;
  * Created by Prospector
  */
 public class StackInfoHUD {
+	
 	public static final StackInfoHUD instance = new StackInfoHUD();
-	public static boolean showHud = true;
-	public static boolean bottom = true;
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
 	private static Minecraft mc = Minecraft.getMinecraft();
-	private final int yDef = 7;
 	private int x = 2;
 	private int y = 7;
-
+	
 	public static void registerElement(StackInfoElement element) {
 		ELEMENTS.add(element);
 	}
@@ -85,20 +83,25 @@ public class StackInfoHUD {
 
 	public void drawStackInfoHud(ScaledResolution res) {
 		EntityPlayer player = mc.player;
-		y = yDef;
-		if (showHud) {
-			List<ItemStack> stacks = new ArrayList<>();
-			for (ItemStack stack : player.getArmorInventoryList()) {
-				stacks.add(stack);
-			}
-			stacks.add(player.getHeldItemOffhand());
-			stacks.add(player.getHeldItemMainhand());
+		List<ItemStack> stacks = new ArrayList<>();
+		for (ItemStack stack : player.getArmorInventoryList()) {
+			stacks.add(stack);
+		}
+		stacks.add(player.getHeldItemOffhand());
+		stacks.add(player.getHeldItemMainhand());
 
-			if (bottom) {
-				stacks = Lists.reverse(stacks);
-			}
-			for (ItemStack stack : stacks)
-				addInfo(stack);
+		x = RebornCoreConfig.stackInfoX;
+
+		if (RebornCoreConfig.stackInfoCorner == 2 || RebornCoreConfig.stackInfoCorner == 3) {
+			stacks = Lists.reverse(stacks);
+			// 20 for line height and additionally padding from configuration file
+			y = res.getScaledHeight() - 20 - RebornCoreConfig.stackInfoY;
+		} else {
+			y = RebornCoreConfig.stackInfoY;
+		}
+
+		for (ItemStack stack : stacks) {
+			addInfo(stack, res);
 		}
 	}
 
@@ -123,7 +126,7 @@ public class StackInfoHUD {
 		renderItemStack(stack, x, y - 5);
 	}
 
-	private void addInfo(ItemStack stack) {
+	private void addInfo(ItemStack stack, ScaledResolution res) {
 		if (stack != EMPTY) {
 			String text = "";
 			if (stack.getItem() instanceof IEnergyItemInfo) {
@@ -132,7 +135,6 @@ public class StackInfoHUD {
 				TextFormatting color = TextFormatting.GREEN;
 				double quarter = maxCharge / 4;
 				double half = maxCharge / 2;
-				renderStackForInfo(stack);
 				if (currentCharge <= half) {
 					color = TextFormatting.YELLOW;
 				}
@@ -143,12 +145,28 @@ public class StackInfoHUD {
 						+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
 						+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
 				if (ItemUtils.isActive(stack)) {
-					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active") + ")" + TextFormatting.GRAY;
+					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
+							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				} else {
-					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive") + ")" + TextFormatting.GRAY;
+					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
+							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				}
+				
+				if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
+					int strWidth = mc.fontRenderer.getStringWidth(text);
+					// 18 for item icon and additionally padding from configuration file
+					x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
+				}
+
+				renderStackForInfo(stack);
 				mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
-				y += 20;
+				
+				if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
+					y += 20;
+				}
+				else {
+					y -= 20;	
+				}
 			}
 
 			for (StackInfoElement element : ELEMENTS) {

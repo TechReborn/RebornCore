@@ -43,7 +43,7 @@ public class RebornCoreConfig {
 	public static String CATEGORY_MISC = "misc";
 	public static int euPerFU;
 	public static boolean ShowStackInfoHUD;
-	public static boolean stackInfoBottom;
+	public static int stackInfoCorner;
 	public static int stackInfoX;
 	public static int stackInfoY;
 	public static boolean versionCheck;
@@ -105,13 +105,13 @@ public class RebornCoreConfig {
 		ShowStackInfoHUD = config.get(CATEGORY_POWER, "Show Stack Info HUD", true, "Show Stack Info HUD (ClientSideOnly)")
 				.getBoolean(true);
 		
-		stackInfoBottom = config.get(CATEGORY_POWER, "Stack Info Bottom", true, "Reverse the order of the HUD, and calculate it's X and Y positions from the bottom left corner (ClientSideOnly)")
-				.getBoolean(true);
+		stackInfoCorner = config.get(CATEGORY_POWER, "Stack Info Corner", 0, "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left (ClientSideOnly)")
+				.getInt();
 
-		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X coordinate of the stack hud (ClientSideOnly)")
+		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X padding for HUD (ClientSideOnly)")
 				.getInt();
 		
-		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y coordinate of the stack hud (ClientSideOnly)")
+		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y padding for HUD (ClientSideOnly)")
 				.getInt();
 
 		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs")
@@ -126,7 +126,7 @@ public class RebornCoreConfig {
 		// resets this when the config is reloaded
 		powerConfig = null;
 
-		wrenchRequired = config.get(CATEGORY_MISC, "Wrench required", true, "Wrench required to pick machine. If now wrenched than machine frame will drop instead.")
+		wrenchRequired = config.get(CATEGORY_MISC, "Wrench required", true, "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
 				.getBoolean(true);
 
 	}
