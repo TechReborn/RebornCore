@@ -29,11 +29,16 @@
 package reborncore.common.util;
 
 import net.minecraft.util.math.BlockPos;
+import reborncore.RebornCore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Torus {
+
+	public static Map<Integer, Integer> TORUS_SIZE_MAP = new HashMap<>();
 
 	public static List<BlockPos> generate(BlockPos orgin, int radius){
 		List<BlockPos> posLists = new ArrayList<>();
@@ -47,6 +52,28 @@ public class Torus {
 			}
 		}
 		return posLists;
+	}
+
+	public static void genSizeMap(int maxRadius){
+		if(!TORUS_SIZE_MAP.isEmpty()){
+			//Lets not do this again
+			return;
+		}
+		long start = System.currentTimeMillis();
+		for (int radius = 0; radius < maxRadius + 10; radius++) { //10 is added as the control computer has a base of around 6 less
+			int size = 0;
+			for (int x = -radius; x < radius; x++) {
+				for (int y = -radius; y < radius; y++) {
+					for (int z = -radius; z < radius; z++) {
+						if(Math.pow(radius /2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)){
+							size++;
+						}
+					}
+				}
+			}
+			TORUS_SIZE_MAP.put(radius, size);
+		}
+		RebornCore.logHelper.info("Loaded torus size map in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 }
