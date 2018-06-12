@@ -296,7 +296,11 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				if(!machineBase.isItemValidForSlot(slotID, sourceStack)){
 					continue;
 				}
-				ItemStack extractedStack = sourceHandler.extractItem(i, 4, false);
+				int extract = 4;
+				if(!targetStack.isEmpty()){
+					extract = Math.min(targetStack.getMaxStackSize() - targetStack.getCount(), extract);
+				}
+				ItemStack extractedStack = sourceHandler.extractItem(i, extract, false);
 				if(targetStack.isEmpty()){
 					inventory.setInventorySlotContents(slotID, extractedStack);
 				} else {
