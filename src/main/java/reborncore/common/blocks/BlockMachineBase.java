@@ -53,7 +53,6 @@ import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.items.WrenchHelper;
 import reborncore.common.util.InventoryHelper;
-import java.util.List;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -110,17 +109,13 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		NonNullList<ItemStack> items = NonNullList.create();
-				
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {	
 		if (RebornCoreConfig.wrenchRequired){
-			items.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
+			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
 		}
 		else {
-			super.getDrops(items, world, pos, state, fortune);
+			super.getDrops(drops, world, pos, state, fortune);
 		}
-		
-		return items;
 	}
 
 	public boolean isAdvanced() {
