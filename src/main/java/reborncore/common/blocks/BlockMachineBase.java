@@ -45,8 +45,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
@@ -90,13 +88,12 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return null;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer,
-	                            ItemStack stack) {
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
 	}
@@ -124,13 +121,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 		
 		return items;
-	}
-
-	@SubscribeEvent
-	public static void getDigSpeed(PlayerEvent.BreakSpeed event){
-		if(event.getState().getBlock() instanceof BlockMachineBase && RebornCoreConfig.wrenchRequired){
-			event.setNewSpeed(event.getOriginalSpeed() / 25);
-		}
 	}
 
 	public boolean isAdvanced() {
