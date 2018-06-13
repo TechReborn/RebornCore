@@ -28,11 +28,14 @@
 
 package reborncore.common.util;
 
+import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -42,7 +45,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.BlockFluidBase;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.api.tile.IUpgradeable;
 import reborncore.common.recipes.RecipeCrafter;
 
 import java.util.Arrays;
@@ -228,7 +233,7 @@ public class InventoryHelper {
 	}
 
 	public static IInventory getInventory(World world, int x, int y, int z, EnumFacing direction) {
-		if (direction != null && direction != null) {
+		if (direction != null) {
 			x += direction.getFrontOffsetX();
 			y += direction.getFrontOffsetY();
 			z += direction.getFrontOffsetZ();
@@ -251,6 +256,39 @@ public class InventoryHelper {
 			slots[i] = i;
 
 		return slots;
+	}
+	
+	public static void dropInventoryItems(World world, BlockPos pos) {
+		TileEntity tileEntity = world.getTileEntity(pos);
+
+		if (tileEntity == null) {
+			return;
+		}
+		if (tileEntity instanceof IInventory) {
+			IInventory inventory = (IInventory) tileEntity;
+
+			for (int i = 0; i < inventory.getSizeInventory(); i++) {
+				ItemStack itemStack = inventory.getStackInSlot(i);
+
+				if (itemStack == ItemStack.EMPTY) {
+					continue;
+				}
+				if (itemStack.getCount() > 0) {
+					if (itemStack.getItem() instanceof ItemBlock) {
+						if (((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockFluidBase
+								|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockStaticLiquid
+								|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockDynamicLiquid) {
+							continue;
+						}
+					}
+				}
+				net.minecraft.inventory.InventoryHelper.spawnItemStack(world, (double) pos.getX(), (double) pos.getY(),
+						(double) pos.getZ(), itemStack);
+			}
+		}
+		if (tileEntity instanceof IUpgradeable) {
+			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, ((IUpgradeable) tileEntity).getUpgradeInvetory());
+		}
 	}
 
 	public static class GenericInventory implements IInventory {

@@ -28,8 +28,6 @@
 
 package reborncore.common.blocks;
 
-import net.minecraft.block.BlockDynamicLiquid;
-import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -39,9 +37,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -51,19 +46,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.items.WrenchHelper;
 import reborncore.common.util.InventoryHelper;
-import reborncore.common.util.WorldUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
@@ -117,47 +108,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		dropInventory(worldIn, pos);
+		InventoryHelper.dropInventoryItems(worldIn, pos);
 		super.breakBlock(worldIn, pos, state);
-	}
-
-	protected void dropInventory(World world, BlockPos pos) {
-		TileEntity tileEntity = world.getTileEntity(pos);
-
-		if (tileEntity == null) {
-			return;
-		}
-		if (!(tileEntity instanceof IInventory)) {
-			return;
-		}
-
-		IInventory inventory = (IInventory) tileEntity;
-		List<ItemStack> items = new ArrayList<ItemStack>();
-		addItemsToList(inventory, items);
-		if (tileEntity instanceof IUpgradeable) {
-			addItemsToList(((IUpgradeable) tileEntity).getUpgradeInvetory(), items);
-		}
-		WorldUtils.dropItems(items, world, pos);
-	}
-
-	private void addItemsToList(IInventory inventory, List<ItemStack> items) {
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
-
-			if (itemStack == ItemStack.EMPTY) {
-				continue;
-			}
-			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0) {
-				if (itemStack.getItem() instanceof ItemBlock) {
-					if (((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockFluidBase
-						|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockStaticLiquid
-						|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockDynamicLiquid) {
-						continue;
-					}
-				}
-			}
-			items.add(itemStack.copy());
-		}
 	}
 
 	@Override
@@ -205,32 +157,14 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 		if (!stack.isEmpty()) {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
-				if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, true)) {
-					if (playerIn.isSneaking()) {
-						if (tileEntity instanceof IToolDrop) {
-							dropInventory(worldIn, pos);
-							ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
-							if (drop == null) {
-								return false;
-							}
-							if (!drop.isEmpty()) {
-								spawnAsEntity(worldIn, pos, drop);
-							}
-							if (!worldIn.isRemote) {
-								worldIn.removeTileEntity(pos);
-								worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
-							}
-							return true;
-						}
-					} else {
-						rotateBlock(worldIn, pos, side);
-						return true;
-					}
-				}
+				if (WrenchHelper.handleWrench(stack, worldIn, pos, playerIn, side)) {
+					return true;
+				}			
 			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
-					if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack, null) > 0) {
+					if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack,
+							null) > 0) {
 						InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInvetory(), stack);
 						playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
 						return true;
