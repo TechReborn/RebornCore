@@ -45,6 +45,7 @@ import reborncore.common.LootManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.commands.CommandListMods;
 import reborncore.common.commands.CommandListRecipes;
 import reborncore.common.logic.LogicControllerGuiHandler;
 import reborncore.common.logic.PacketButtonID;
@@ -184,6 +185,7 @@ public class RebornCore implements IModInfo {
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event){
 		event.registerServerCommand(new CommandListRecipes());
+		event.registerServerCommand(new CommandListMods());
 	}
 
 	@Override
