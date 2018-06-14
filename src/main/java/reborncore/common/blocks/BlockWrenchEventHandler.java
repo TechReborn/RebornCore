@@ -31,9 +31,11 @@ package reborncore.common.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.api.ToolManager;
+import reborncore.common.RebornCoreConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +56,10 @@ public class BlockWrenchEventHandler {
 		}
 	}
 
-
+	@SubscribeEvent
+	public static void getDigSpeed(PlayerEvent.BreakSpeed event){
+		if (wrenableBlocks.contains(event.getState().getBlock())  && RebornCoreConfig.wrenchRequired) {
+			event.setNewSpeed(event.getOriginalSpeed() / 25);
+		}
+	}
 }
