@@ -54,7 +54,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-		if (RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY) {
+		if (capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return false;
@@ -63,7 +63,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		if (RebornCoreConfig.getRebornPower().forge() && capability == CapabilityEnergy.ENERGY) {
+		if (capability == CapabilityEnergy.ENERGY) {
 			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
