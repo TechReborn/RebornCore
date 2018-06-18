@@ -539,7 +539,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					return tier;
 				}
 			}
-			return EnumPowerTier.INSANE;
+			return EnumPowerTier.INFINITE;
 		}
 		return baseTier;
 	}
