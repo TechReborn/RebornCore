@@ -486,7 +486,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return (T) new SidedInvWrapper(this, facing);
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
 		}
 		return super.getCapability(capability, facing);
 	}

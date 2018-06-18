@@ -67,8 +67,8 @@ public class GuiTeamRebornManual extends GuiScreen {
 		super.initGui();
 		xSize = 350;
 		ySize = 201;
-		this.guiLeft = this.width / 2 - this.xSize / 2;
-		this.guiTop = this.height / 2 - this.ySize / 2;
+		this.guiLeft = this.width / 2 - GuiTeamRebornManual.xSize / 2;
+		this.guiTop = this.height / 2 - GuiTeamRebornManual.ySize / 2;
 		PageDescription desc = new PageDescription();
 		desc.setTitle("Tech Reborn > Getting Started");
 		desc.setDescription("First thing's first, to get started you must find a Rubber Tree in the world. They're more commonly found in swamps, but you can find them in most biomes that have trees. Craft a treetap and use it on a yellowish sap spot on a rubber tree to harvest it's sap. You can smelt the sap into rubber, which is used later on in things.");

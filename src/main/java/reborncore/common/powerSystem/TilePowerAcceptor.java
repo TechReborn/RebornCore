@@ -426,9 +426,9 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (getStackInSlot(slot) != ItemStack.EMPTY) {
 			final ItemStack batteryStack = this.getStackInSlot(slot);
 			if(batteryStack.hasCapability(CapabilityEnergy.ENERGY, null)){
-				IEnergyStorage energyStorage = batteryStack.getCapability(CapabilityEnergy.ENERGY, null);
-				if(getEnergy() != getMaxPower() && energyStorage.getEnergyStored() > 0){
-					addEnergy(energyStorage.extractEnergy((int) (getMaxInput() * RebornCoreConfig.euPerFU), false) / RebornCoreConfig.euPerFU);
+				IEnergyStorage batteryEnergy = batteryStack.getCapability(CapabilityEnergy.ENERGY, null);
+				if(getEnergy() != getMaxPower() && batteryEnergy.getEnergyStored() > 0){
+					addEnergy(batteryEnergy.extractEnergy((int) (getMaxInput() * RebornCoreConfig.euPerFU), false) / RebornCoreConfig.euPerFU);
 				}
 			} else if (RebornCore.proxy.ic2Loaded){
 				IC2ItemCharger.dischargeIc2Item(this, batteryStack);
@@ -466,7 +466,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (getPowerConfig().forge()) {
 			if (capability == CapabilityEnergy.ENERGY && canConnectEnergy(facing)) {
@@ -474,7 +473,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					forgePowerManager = new ForgePowerManager(this, facing);
 				}
 				forgePowerManager.setFacing(facing);
-				return (T) forgePowerManager;
+				return CapabilityEnergy.ENERGY.cast(forgePowerManager);
 			}
 		}
 		return super.getCapability(capability, facing);

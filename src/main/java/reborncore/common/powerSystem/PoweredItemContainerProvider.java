@@ -33,7 +33,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 import javax.annotation.Nonnull;

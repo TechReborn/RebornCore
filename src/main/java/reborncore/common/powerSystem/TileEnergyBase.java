@@ -48,7 +48,6 @@ import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.power.IPowerConfig;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.tile.TileBase;
 
 import javax.annotation.Nullable;
@@ -66,7 +65,7 @@ public abstract class TileEnergyBase extends TileBase implements IEnergyInterfac
 	public EnumPowerTier tier;
 	private double energy;
 	private int capacity;
-	private ForgePowerManager forgePowerManager;
+	//private ForgePowerManager forgePowerManager;
 	/*-----------------------*/
 
 	public TileEnergyBase(EnumPowerTier tier, int capacity) {

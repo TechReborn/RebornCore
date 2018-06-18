@@ -203,6 +203,7 @@ public class LogicBlock extends BlockContainer {
 		}
 	}
 
+	@Override
 	protected BlockStateContainer createBlockState() {
 		FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 		ACTIVE = PropertyBool.create("active");
