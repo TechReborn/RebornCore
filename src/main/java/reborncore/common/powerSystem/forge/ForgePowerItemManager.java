@@ -108,7 +108,7 @@ public class ForgePowerItemManager implements IEnergyStorage {
 
 	@Override
 	public int getMaxEnergyStored() {
-		return ((int) itemPowerInfo.getMaxPower(stack) * RebornCoreConfig.euPerFU); //TODO remove this and make all values in the mod use EU
+		return (int) itemPowerInfo.getMaxPower(stack);
 	}
 
 	@Override
