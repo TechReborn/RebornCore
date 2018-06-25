@@ -44,7 +44,7 @@ public class TorchHelper {
 	                                          EnumFacing side, float xOffset, float yOffset, float zOffset, EnumHand hand) {
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
 			ItemStack torchStack = player.inventory.getStackInSlot(i);
-			if (torchStack == ItemStack.EMPTY || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
+			if (torchStack.isEmpty() || !torchStack.getUnlocalizedName().toLowerCase().contains("torch"))
 				continue;
 			Item item = torchStack.getItem();
 			if (!(item instanceof ItemBlock))

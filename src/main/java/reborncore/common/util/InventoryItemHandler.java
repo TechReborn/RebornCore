@@ -83,7 +83,7 @@ public class InventoryItemHandler implements IItemHandler {
 
 	@Override
 	public ItemStack insertItem(int slotIndex, ItemStack stack, boolean simulate) {
-		if (stack == ItemStack.EMPTY || stack.getCount() == 0)
+		if (stack.isEmpty()|| stack.getCount() == 0)
 			return ItemStack.EMPTY;
 
 		Slot slot = this.slotMap.get(this.facing).get(slotIndex);
@@ -95,7 +95,7 @@ public class InventoryItemHandler implements IItemHandler {
 		ItemStack existing = slot.getStack();
 		int limit = slot.getSlotStackLimit();
 
-		if (existing != ItemStack.EMPTY) {
+		if (!existing.isEmpty()) {
 			if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
 				return stack;
 
@@ -108,7 +108,7 @@ public class InventoryItemHandler implements IItemHandler {
 		boolean reachedLimit = stack.getCount() > limit;
 
 		if (!simulate) {
-			if (existing == ItemStack.EMPTY) {
+			if (existing.isEmpty()) {
 				slot.putStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
 			} else {
 				existing.setCount(reachedLimit ? limit : stack.getCount());
@@ -124,12 +124,12 @@ public class InventoryItemHandler implements IItemHandler {
 			return ItemStack.EMPTY;
 
 		Slot slot = this.slotMap.get(this.facing).get(slotIndex);
-		if (slot.getStack() == ItemStack.EMPTY) {
+		if (slot.getStack().isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 
 		ItemStack existing = slot.getStack();
-		if (existing == ItemStack.EMPTY)
+		if (existing.isEmpty())
 			return ItemStack.EMPTY;
 
 		int toExtract = Math.min(amount, existing.getMaxStackSize());

@@ -79,7 +79,7 @@ public class Inventory implements IInventory {
 
 	@Override
 	public ItemStack decrStackSize(int slotId, int count) {
-		if (slotId < contents.length && contents[slotId] != ItemStack.EMPTY) {
+		if (slotId < contents.length && !contents[slotId].isEmpty()) {
 			if (contents[slotId].getCount() > count) {
 				ItemStack result = contents[slotId].splitStack(count);
 				markDirty();
@@ -101,7 +101,7 @@ public class Inventory implements IInventory {
 		}
 		contents[slotId] = itemstack;
 
-		if (itemstack != ItemStack.EMPTY && itemstack.getCount() > this.getInventoryStackLimit()) {
+		if (!itemstack.isEmpty() && itemstack.getCount() > this.getInventoryStackLimit()) {
 			itemstack.setCount(this.getInventoryStackLimit());
 		}
 		markDirty();
@@ -157,7 +157,7 @@ public class Inventory implements IInventory {
 	public void writeToNBT(NBTTagCompound data, String tag) {
 		NBTTagList slots = new NBTTagList();
 		for (byte index = 0; index < contents.length; ++index) {
-			if (contents[index] != ItemStack.EMPTY && contents[index].getCount() > 0) {
+			if (!contents[index].isEmpty() && contents[index].getCount() > 0) {
 				NBTTagCompound slot = new NBTTagCompound();
 				slots.appendTag(slot);
 				slot.setByte("Slot", index);
@@ -173,7 +173,7 @@ public class Inventory implements IInventory {
 
 	@Override
 	public ItemStack removeStackFromSlot(int slotId) {
-		if (this.contents[slotId] == ItemStack.EMPTY) {
+		if (this.contents[slotId].isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 

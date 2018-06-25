@@ -270,7 +270,7 @@ public class InventoryHelper {
 			for (int i = 0; i < inventory.getSizeInventory(); i++) {
 				ItemStack itemStack = inventory.getStackInSlot(i);
 
-				if (itemStack == ItemStack.EMPTY) {
+				if (itemStack.isEmpty()) {
 					continue;
 				}
 				if (itemStack.getCount() > 0) {
@@ -443,7 +443,7 @@ public class InventoryHelper {
 			tag.setInteger("size", getSizeInventory());
 			NBTTagList nbttaglist = new NBTTagList();
 			for (int i = 0; i < inventoryContents.length; i++) {
-				if (inventoryContents[i] != ItemStack.EMPTY) {
+				if (!inventoryContents[i].isEmpty()) {
 					NBTTagCompound stacktag = new NBTTagCompound();
 					stacktag.setByte("Slot", (byte) i);
 					inventoryContents[i].writeToNBT(stacktag);

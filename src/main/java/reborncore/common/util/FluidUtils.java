@@ -64,7 +64,7 @@ public class FluidUtils {
 				 * If the drained container doesn't disappear we need to update
 				 * the inventory accordingly.
 				 */
-				if (drained != null && inputFluidHandler.getContainer() != ItemStack.EMPTY)
+				if (drained != null && !inputFluidHandler.getContainer().isEmpty())
 					if (output.isEmpty()) {
 						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
 						inv.decrStackSize(inputSlot, 1);

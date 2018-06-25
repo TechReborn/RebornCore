@@ -115,7 +115,7 @@ public class ItemNBTHelper {
 	// ///////////////////////////////////////////////////////////////////
 
 	public static boolean verifyExistance(ItemStack stack, String tag) {
-		return stack != ItemStack.EMPTY && getNBT(stack).hasKey(tag);
+		return !stack.isEmpty() && getNBT(stack).hasKey(tag);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected) {

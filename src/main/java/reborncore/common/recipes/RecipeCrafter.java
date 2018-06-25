@@ -286,10 +286,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic) {// Checks to see if it can fit the stack
-		if (stack == ItemStack.EMPTY) {
+		if (stack.isEmpty()) {
 			return true;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY) {
+		if (inventory.getStackInSlot(slot).isEmpty()) {
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, oreDic)) {
@@ -301,10 +301,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public void fitStack(ItemStack stack, int slot) {// This fits a stack into a slot
-		if (stack == ItemStack.EMPTY) {
+		if (stack.isEmpty()) {
 			return;
 		}
-		if (inventory.getStackInSlot(slot) == ItemStack.EMPTY) {// If the slot is empty set the contents
+		if (inventory.getStackInSlot(slot).isEmpty()) {// If the slot is empty set the contents
 			inventory.setInventorySlotContents(slot, stack);
 			return;
 		}

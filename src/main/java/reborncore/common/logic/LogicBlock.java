@@ -187,10 +187,7 @@ public class LogicBlock extends BlockContainer {
 		for (int i = 0; i < inventory.getSlots(); i++) {
 			ItemStack itemStack = inventory.getStackInSlot(i);
 
-			if (itemStack == ItemStack.EMPTY) {
-				continue;
-			}
-			if (itemStack != ItemStack.EMPTY && itemStack.getCount() > 0) {
+			if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
 				if (itemStack.getItem() instanceof ItemBlock) {
 					if (((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockFluidBase
 						|| ((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockStaticLiquid

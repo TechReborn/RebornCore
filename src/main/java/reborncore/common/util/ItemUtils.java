@@ -47,7 +47,7 @@ public class ItemUtils {
 
 	public static boolean isItemEqual(final ItemStack a, final ItemStack b, final boolean matchDamage,
 	                                  final boolean matchNBT) {
-		if (a == ItemStack.EMPTY || b == ItemStack.EMPTY)
+		if (a.isEmpty() || b.isEmpty())
 			return false;
 		if (a.getItem() != b.getItem())
 			return false;
@@ -108,7 +108,7 @@ public class ItemUtils {
 		NBTTagList list = new NBTTagList();
 		for (byte slot = 0; slot < inv.getSizeInventory(); slot++) {
 			ItemStack stack = inv.getStackInSlot(slot);
-			if (stack != ItemStack.EMPTY) {
+			if (!stack.isEmpty()) {
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", slot);
 				writeItemToNBT(stack, itemTag);
@@ -131,7 +131,7 @@ public class ItemUtils {
 	}
 
 	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
-		if (stack == ItemStack.EMPTY || stack.getCount() <= 0)
+		if (stack.isEmpty() || stack.getCount() <= 0)
 			return;
 		if (stack.getCount() > 127)
 			stack.setCount(127);
@@ -143,7 +143,7 @@ public class ItemUtils {
 	}
 
 	public static List<ItemStack> getStackWithAllOre(ItemStack stack) {
-		if (stack == ItemStack.EMPTY) {
+		if (stack.isEmpty()) {
 			return new ArrayList<ItemStack>();
 		}
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
@@ -161,7 +161,7 @@ public class ItemUtils {
 	}
 	
 	public static double getPowerForDurabilityBar(ItemStack stack) {
-		if (stack == ItemStack.EMPTY) {
+		if (stack.isEmpty()) {
 			return 0.0;
 		}
 		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
