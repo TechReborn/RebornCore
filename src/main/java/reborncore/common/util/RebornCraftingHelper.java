@@ -55,9 +55,10 @@ import net.minecraftforge.registries.GameData;
 public class RebornCraftingHelper {
 
 	/**
-	 * Adds a shaped recipe that supports string inputparamers corisponding to an oredict entry, can also be used for recipes without ore dict ingredients
+	 * Adds a shaped recipe that supports string input paramers corresponding to an oredict entry, can also be used for recipes without ore dict ingredients
 	 *
 	 * @param output The stack that should be produced
+	 * @param params Input ingredients
 	 */
 	public static void addShapedOreRecipe(ItemStack output, Object... params) {
 		ResourceLocation location = getNameForRecipe(output);
@@ -70,6 +71,7 @@ public class RebornCraftingHelper {
 	 * Adds a basic shaped recipe
 	 *
 	 * @param output The stack that should be produced
+	 * @param params Input ingredients
 	 */
 	public static void addShapedRecipe(ItemStack output, Object... params) {
 		ResourceLocation location = getNameForRecipe(output);
@@ -83,6 +85,7 @@ public class RebornCraftingHelper {
 	 * Adds a shapeless ore recipe
 	 *
 	 * @param output The stack that should be produced
+	 * @param input Input ingredients
 	 */
 	public static void addShapelessOreRecipe(ItemStack output, Object... input) {
 		ResourceLocation location = getNameForRecipe(output);
@@ -95,6 +98,7 @@ public class RebornCraftingHelper {
 	 * Adds a basic shapeless recipe
 	 *
 	 * @param output The stack that should be produced
+	 * @param input Input ingredients
 	 */
 	public static void addShapelessRecipe(ItemStack output, Object... input) {
 		ResourceLocation location = getNameForRecipe(output);
@@ -104,9 +108,9 @@ public class RebornCraftingHelper {
 	}
 
 	/**
-	 * Genereates a unique name based of the active mod, and the itemstack that the recipe outputs
+	 * Generates a unique name based of the active mod, and the ItemStack that the recipe outputs
 	 *
-	 * @param output an itemstack, usualy the one the the recipe produces
+	 * @param output an ItemStack, usually the one the the recipe produces
 	 * @return a unique ResourceLocation based off the item item
 	 */
 	public static ResourceLocation getNameForRecipe(ItemStack output) {

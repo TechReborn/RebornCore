@@ -44,6 +44,7 @@ public class ManualBuilder extends GuiBuilder {
 		super(resourceLocation);
 	}
 
+	@Override
 	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);

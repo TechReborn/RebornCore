@@ -63,7 +63,7 @@ import reborncore.client.multiblock.component.MultiblockComponent;
 public class MultiblockRenderEvent {
 
 	public static BlockPos anchor;
-	private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
+	//private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
 	//public Location parent;
 	public BlockPos parent;

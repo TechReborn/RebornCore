@@ -67,6 +67,7 @@ public interface IEnergyInterfaceItem extends IEnergyItemInfo {
 	 * add the energy
 	 *
 	 * @param energy amount to add
+	 * @param simulate Should we simulate adding of energy or do real addition
 	 * @param stack The {@link ItemStack} that contains the power
 	 * @return The amount of energy that was added.
 	 */

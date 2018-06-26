@@ -299,6 +299,7 @@ public class Location implements Comparable<Location> {
 		return depth;
 	}
 
+	@Override
 	public int compareTo(Location o) {
 		return ((Integer) depth).compareTo(o.depth);
 	}
