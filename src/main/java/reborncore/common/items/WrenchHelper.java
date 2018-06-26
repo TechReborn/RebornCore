@@ -33,10 +33,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
+import reborncore.common.misc.ModSounds;
 import reborncore.common.util.InventoryHelper;
 
 
@@ -53,27 +55,29 @@ public class WrenchHelper {
 		}
 
 		if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, true)) {
-			if (playerIn.isSneaking() && !worldIn.isRemote) {
+			if (playerIn.isSneaking()) {
 				if (tileEntity instanceof IToolDrop) {
 					ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
 					if (drop == null) {
 						return false;
 					}
-					InventoryHelper.dropInventoryItems(worldIn, pos);
-					if (!drop.isEmpty()) {
-						net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
-								(double) pos.getY(), (double) pos.getZ(), drop);
+					if (!worldIn.isRemote) {
+						InventoryHelper.dropInventoryItems(worldIn, pos);
+						if (!drop.isEmpty()) {
+							net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
+									(double) pos.getY(), (double) pos.getZ(), drop);
+						}
+						worldIn.removeTileEntity(pos);
+						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 					}
-					//worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, ModSounds.BLOCK_DISMANTLE, SoundCategory.BLOCKS, 0.6F, 1F);
-					worldIn.removeTileEntity(pos);
-					worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
-
-					return true;
+					worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
+							SoundCategory.BLOCKS, 0.6F, 1F);
 				}
-			} else {
+			} 
+			else {
 				worldIn.getBlockState(pos).getBlock().rotateBlock(worldIn, pos, side);
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
