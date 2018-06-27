@@ -74,7 +74,7 @@ configurations {
 	compile.extendsFrom shade
 }
 
-version = "3.8.9"
+version = "3.9.0"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
