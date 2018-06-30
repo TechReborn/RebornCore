@@ -46,7 +46,6 @@ import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.util.ItemUtils;
 import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
@@ -127,54 +126,57 @@ public class StackInfoHUD {
 	}
 
 	private void addInfo(ItemStack stack, ScaledResolution res) {
-		if (stack != EMPTY) {
-			String text = "";
-			if (stack.getItem() instanceof IEnergyItemInfo) {
-				int maxCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
-				int currentCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
-				TextFormatting color = TextFormatting.GREEN;
-				double quarter = maxCharge / 4;
-				double half = maxCharge / 2;
-				if (currentCharge <= half) {
-					color = TextFormatting.YELLOW;
-				}
-				if (currentCharge <= quarter) {
-					color = TextFormatting.DARK_RED;
-				}
-				text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge) + "/"
-						+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
-						+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
-				if (ItemUtils.isActive(stack)) {
+		if (stack == ItemStack.EMPTY) {
+			return;	
+		}
+			
+		String text = "";
+		if (stack.getItem() instanceof IEnergyItemInfo) {
+			int maxCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
+			int currentCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
+			TextFormatting color = TextFormatting.GREEN;
+			double quarter = maxCharge / 4;
+			double half = maxCharge / 2;
+			if (currentCharge <= half) {
+				color = TextFormatting.YELLOW;
+			}
+			if (currentCharge <= quarter) {
+				color = TextFormatting.DARK_RED;
+			}
+			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
+					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
+					+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
+			if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("isActive")) {
+				if (stack.getTagCompound().getBoolean("isActive")) {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
 							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				} else {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
 							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				}
-				
-				if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
-					int strWidth = mc.fontRenderer.getStringWidth(text);
-					// 18 for item icon and additionally padding from configuration file
-					x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
-				}
-
-				renderStackForInfo(stack);
-				mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
-				
-				if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
-					y += 20;
-				}
-				else {
-					y -= 20;	
-				}
 			}
 
-			for (StackInfoElement element : ELEMENTS) {
-				if (!element.getText(stack).equals("")) {
-					renderStackForInfo(stack);
-					mc.fontRenderer.drawStringWithShadow(element.getText(stack), x + 18, y, 0);
-					y += 20;
-				}
+			if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
+				int strWidth = mc.fontRenderer.getStringWidth(text);
+				// 18 for item icon and additionally padding from configuration file
+				x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
+			}
+
+			renderStackForInfo(stack);
+			mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
+
+			if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
+				y += 20;
+			} else {
+				y -= 20;
+			}
+		}
+
+		for (StackInfoElement element : ELEMENTS) {
+			if (!element.getText(stack).equals("")) {
+				renderStackForInfo(stack);
+				mc.fontRenderer.drawStringWithShadow(element.getText(stack), x + 18, y, 0);
+				y += 20;
 			}
 		}
 	}

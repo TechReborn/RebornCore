@@ -58,6 +58,7 @@ public class BaseGui extends GuiContainer {
 		super.initGui();
 	}
 
+	@Override
 	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
 		String name = StringUtils.t("tile." + this.name + ".name");
 		this.fontRenderer.drawString(name, this.xSize / 2 - 6 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);

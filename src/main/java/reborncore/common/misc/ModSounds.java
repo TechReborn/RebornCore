@@ -26,30 +26,35 @@
  * THE SOFTWARE.
  */
 
-package reborncore.modcl.manual;
+package reborncore.common.misc;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import reborncore.RebornCore;
-import reborncore.client.guibuilder.GuiBuilder;
 
 /**
- * Created by Prospector
+ * @author drcrazy
+ *
  */
-public class ManualBuilder extends GuiBuilder {
-	public static ResourceLocation resourceLocation = new ResourceLocation(RebornCore.MOD_ID + ":" + "textures/gui/manual.png");
 
-	public ManualBuilder() {
-		super(resourceLocation);
+@Mod.EventBusSubscriber(modid = RebornCore.MOD_ID)
+public class ModSounds {
+
+	public static SoundEvent BLOCK_DISMANTLE;
+
+	@SubscribeEvent
+	public static void onSoundRegistry(Register<SoundEvent> event) {
+		BLOCK_DISMANTLE = createSoundEvent("block_dismantle");
+		event.getRegistry().register(ModSounds.BLOCK_DISMANTLE);
 	}
 
-	@Override
-	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y, 256 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x, y + height / 2, 0, 256 - height / 2, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 256 - width / 2, 256 - height / 2, width / 2, height / 2);
+	private static SoundEvent createSoundEvent(String str) {
+		ResourceLocation resourceLocation = new ResourceLocation(RebornCore.MOD_ID, str);
+		SoundEvent soundEvent = new SoundEvent(resourceLocation);
+		soundEvent.setRegistryName(resourceLocation);
+		return soundEvent;
 	}
 }

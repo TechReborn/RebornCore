@@ -58,7 +58,7 @@ public class HolidayRenderEvent {
 		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
 			return;
 		}
-		Render render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
+		Render<?> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
 		if (render instanceof RenderPlayer) {
 			RenderPlayer renderPlayer = (RenderPlayer) render;
 			if (!renderPlayerList.contains(renderPlayer)) {
