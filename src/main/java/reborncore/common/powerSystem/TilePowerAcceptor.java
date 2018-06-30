@@ -273,7 +273,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY && canAcceptEnergy(facing)) {
+			if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
 				return true;
 			}
 		}
@@ -283,7 +283,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY && canAcceptEnergy(facing)) {
+			if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
 				if (forgePowerManager == null) {
 					forgePowerManager = new ForgePowerManager(this, facing);
 				}
