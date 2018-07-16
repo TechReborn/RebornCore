@@ -71,7 +71,6 @@ public class GuiBuilder {
 			List<String> list = new ArrayList<String>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
 			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
-			GlStateManager.disableLighting();
 		}
 	}
 
@@ -125,7 +124,6 @@ public class GuiBuilder {
 				list.add("empty");
 			}
 			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
-			GlStateManager.disableLighting();
 		}
 	}
 
