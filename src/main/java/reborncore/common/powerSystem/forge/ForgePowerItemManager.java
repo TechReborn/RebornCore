@@ -31,19 +31,14 @@ package reborncore.common.powerSystem.forge;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.IEnergyStorage;
-import reborncore.api.power.IEnergyItemInfo;
-import reborncore.common.RebornCoreConfig;
+
 
 public class ForgePowerItemManager implements IEnergyStorage {
 
-	ItemStack stack;
-	IEnergyItemInfo itemPowerInfo;
+/*	ItemStack stack;
 
 	public ForgePowerItemManager(ItemStack stack) {
 		this.stack = stack;
-		if (stack.getItem() instanceof IEnergyItemInfo) {
-			this.itemPowerInfo = (IEnergyItemInfo) stack.getItem();
-		}
 		validateNBT();
 	}
 
@@ -57,18 +52,11 @@ public class ForgePowerItemManager implements IEnergyStorage {
 		stack.getTagCompound().setInteger("energy", energy);
 	}
 
-	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
 	private void validateNBT(){
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 			stack.getTagCompound().setInteger("energy", 0);
-		} else {
-			if(stack.getTagCompound().hasKey("charge")){
-				//Upgrades the item from the old format to the new format
-				stack.getTagCompound().setInteger("energy", stack.getTagCompound().getInteger("charge") * RebornCoreConfig.euPerFU);
-				stack.getTagCompound().removeTag("charge");
-			}
-		}
+		} 
 	}
 
 	public void setEnergyStored(int value) {
@@ -119,5 +107,5 @@ public class ForgePowerItemManager implements IEnergyStorage {
 	@Override
 	public boolean canReceive() {
 		return itemPowerInfo.canAcceptEnergy(stack);
-	}
+	}*/
 }

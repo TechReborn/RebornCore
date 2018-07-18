@@ -28,37 +28,28 @@
 
 package reborncore.api.power;
 
-import net.minecraft.item.ItemStack;
-
 public interface IEnergyItemInfo {
-
+	
 	/**
-	 * Gets the max stored energy in the item
-	 *
-	 * @param stack The {@link ItemStack} that contains the power
-	 * @return The max energy
+	 * Maximum amount of energy item can store
+	 * 
+	 * @return int Energy capacity
 	 */
-	double getMaxPower(ItemStack stack);
-
+	int getCapacity();
+	
 	/**
-	 * Can the item accept energy.
-	 *
-	 * @param stack The {@link ItemStack} that contains the power
-	 * @return if it can accept energy
+	 * Maximum amount of energy per tick that item can accept
+	 * 
+	 * @return int FE per tick 
 	 */
-	boolean canAcceptEnergy(ItemStack stack);
-
+	int getMaxInput();
+	
 	/**
-	 * Can the item recieve energy
-	 *
-	 * @param stack The {@link ItemStack} that contains the power
-	 * @return if it can provide energy
+	 * Maximum amount of energy per tick that item can provide. 0 means item is not able to provide energy.
+	 *  
+	 * @return int FE per tick
 	 */
-	boolean canProvideEnergy(ItemStack stack);
-
-	/**
-	 * @param stack The {@link ItemStack} that contains the power
-	 * @return Max amount of energy that can be transfered in one tick.
-	 */
-	double getMaxTransfer(ItemStack stack);
+	int getMaxOutput();
+	
+	
 }
