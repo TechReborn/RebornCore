@@ -34,7 +34,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.api.power.IEnergyItemInfo;
-import reborncore.common.powerSystem.forge.ForgePowerItemManager;
+//import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,14 +45,14 @@ import javax.annotation.Nullable;
 public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	ItemStack stack;
-	ForgePowerItemManager capEnergy;
+	//ForgePowerItemManager capEnergy;
 	final boolean isEnergyItem;
 
 	public PoweredItemContainerProvider(ItemStack stack) {
 		this.stack = stack;
 		this.isEnergyItem = stack.getItem() instanceof IEnergyItemInfo;
 		if(isEnergyItem){ // Done to ensure that the item that is being handled is only one of TechReborns, this shouldnt be false but this protects agasinst it.
-			this.capEnergy = new ForgePowerItemManager(stack);
+//			this.capEnergy = new ForgePowerItemManager(stack);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 		if (isEnergyItem && capability == CapabilityEnergy.ENERGY) {
-			return CapabilityEnergy.ENERGY.cast(capEnergy);
+			//return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
 	}

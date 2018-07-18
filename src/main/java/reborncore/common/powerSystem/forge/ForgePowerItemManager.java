@@ -33,7 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.energy.IEnergyStorage;
 
 
-public class ForgePowerItemManager implements IEnergyStorage {
+//public class ForgePowerItemManager implements IEnergyStorage {
 
 /*	ItemStack stack;
 
@@ -108,4 +108,4 @@ public class ForgePowerItemManager implements IEnergyStorage {
 	public boolean canReceive() {
 		return itemPowerInfo.canAcceptEnergy(stack);
 	}*/
-}
+//}
