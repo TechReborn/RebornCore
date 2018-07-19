@@ -148,8 +148,8 @@ public class PowerSystem {
 	public static EnergySystem getDisplayPower() {
 		int eu = euPriority;
 		int fe = forgePriority;
-		if ( eu > fe && RebornCoreConfig.getRebornPower().eu())
-			return EnergySystem.EU;
+/*		if ( eu > fe && RebornCoreConfig.getRebornPower().eu())
+			return EnergySystem.EU;*/
 		return EnergySystem.FE;
 	}
 

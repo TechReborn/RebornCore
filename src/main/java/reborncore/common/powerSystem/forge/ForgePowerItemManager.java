@@ -28,10 +28,6 @@
 
 package reborncore.common.powerSystem.forge;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.energy.IEnergyStorage;
-
 
 //public class ForgePowerItemManager implements IEnergyStorage {
 
