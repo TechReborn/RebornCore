@@ -29,7 +29,6 @@
 package reborncore.common;
 
 import net.minecraftforge.common.config.Configuration;
-import reborncore.api.power.IPowerConfig;
 
 import java.io.File;
 
@@ -50,12 +49,7 @@ public class RebornCoreConfig {
 	public static boolean easterEggs;
 	public static boolean oreDebug;
 	public static boolean configUpdating = true;
-	protected static boolean enableEU;
-	protected static boolean enableTesla;
-	protected static boolean enableForge;
 	private static RebornCoreConfig instance = null;
-	private static IPowerConfig powerConfig = null;
-	public static boolean isIC2Loaded = false;
 	public static boolean wrenchRequired = true;
 
 	public RebornCoreConfig(File configFile) {
@@ -87,15 +81,6 @@ public class RebornCoreConfig {
 
 	public static void Configs() {
 
-		enableTesla = config.get(CATEGORY_POWER, "Allow Tesla", false, "Allow machines to be powered with Tesla")
-				.getBoolean();
-
-		enableForge = config.get(CATEGORY_POWER, "Allow Forge", true, "Allow machines to be powered with Forges power system")
-				.getBoolean();
-
-		enableEU = config.get(CATEGORY_POWER, "Allow IC2 EU", true, "Allow machines to be powered with EU")
-				.getBoolean();
-
 		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU")
 				.getInt();
 
@@ -123,38 +108,10 @@ public class RebornCoreConfig {
 		configUpdating = config.get(CATEGORY_MISC, "Config Updater", true, "AutoUpdates none user chnaged config values, when the mod default changes.")
 			.getBoolean();
 
-		// resets this when the config is reloaded
-		powerConfig = null;
 
 		wrenchRequired = config.get(CATEGORY_MISC, "Wrench required", true, "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
 				.getBoolean(true);
 
 	}
 
-	public static IPowerConfig getRebornPower() {
-		if (powerConfig == null) {
-			powerConfig = new IPowerConfig() {
-				@Override
-				public boolean eu() {
-					return enableEU;
-				}
-
-				@Override
-				public boolean tesla() {
-					return enableTesla;
-				}
-
-				@Override
-				public boolean internal() {
-					return true;
-				}
-
-				@Override
-				public boolean forge() {
-					return enableForge;
-				}
-			};
-		}
-		return powerConfig;
-	}
 }

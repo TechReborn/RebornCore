@@ -35,37 +35,8 @@ repositories {
 
 repositories {
 	maven {
-		// JSON-Destroyer
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
-	}
-
-	 maven {
-	 	//IC2
-	 	name = "player-ic2"
-	 	url = "http://maven.ic2.player.to/"
-	 }
-
-	maven {
-		// JEI
-		name = "prog"
-		url = "http://dvs1.progwml6.com/files/maven"
-	}
-
-	maven {
-		// TheOneProbe
-		name = "tterrag"
-		url = "http://maven.tterrag.com/"
-	}
-
-	maven {
-		// HWYLA
-		name "TehNut"
-		url "http://tehnut.info/maven/"
-	}
-	maven {
-		name "Jared"
-		url "http://maven.blamejared.com/"
 	}
 }
 
@@ -93,7 +64,6 @@ group = 'RebornCore'
 
 
 dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.8.26-ex112:api'
 }
 
 processResources

@@ -56,7 +56,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 			stack.getTagCompound().setInteger("energy", 0);
-		} 
+		}
 	}
 
 	public void setEnergyStored(int value) {
@@ -75,7 +75,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 			setEnergyInStack(getEnergyInStack() + energyReceived);
 		}
 		return energyReceived;
-	} 
+	}
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
