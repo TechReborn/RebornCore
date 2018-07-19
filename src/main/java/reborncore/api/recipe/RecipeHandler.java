@@ -32,7 +32,11 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 public class RecipeHandler {
 
@@ -41,6 +45,11 @@ public class RecipeHandler {
 	 */
 	public static final ArrayList<IBaseRecipeType> recipeList = new ArrayList<>();
 
+	/**
+	 * This is map to store recipes per machine \ category
+	 */
+	public static Map<IBaseRecipeType, String> recipeMap = new HashMap<IBaseRecipeType, String>();
+	
 	/**
 	 * This is a list of all the registered machine names.
 	 */
@@ -73,10 +82,28 @@ public class RecipeHandler {
 
 	/**
 	 * Add a recipe to the system
-	 *
+	 * 
+	 * @param machineName Name of a machine which will be doing this recipe
 	 * @param recipe The recipe to add to the system.
 	 */
-	public static void addRecipe(IBaseRecipeType recipe) {
+	public static void addRecipe(String machineName, @Nonnull IBaseRecipeType recipe) {
+		if (recipeMap.containsKey(recipe)) {
+			return;
+		}
+		for (Object input : recipe.getInputs()) {
+			Validate.notNull(input);
+			if (input instanceof ItemStack) {
+				Validate.notNull(((ItemStack) input).getItem());
+			}
+		}
+		for (ItemStack output : recipe.getOutputs()) {
+			Validate.notNull(output);
+			Validate.notNull(output.getItem());
+		}
+		recipeMap.put(recipe, machineName);
+		
+	}
+	/*public static void addRecipe(IBaseRecipeType recipe) {
 		if (recipe == null) {
 			return;
 		}
@@ -100,5 +127,5 @@ public class RecipeHandler {
 			machineNames.add(recipe.getRecipeName());
 		}
 		recipeList.add(recipe);
-	}
+	}*/
 }
