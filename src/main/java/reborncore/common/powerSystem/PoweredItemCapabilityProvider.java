@@ -80,14 +80,18 @@ public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NB
 
 	@Override
 	public NBTTagInt serializeNBT() {
-		// TODO Auto-generated method stub
-		return null;
+		NBTTagInt nbt = new NBTTagInt(0);
+		if (energyStorage != null) {
+			nbt =  (NBTTagInt) CapabilityEnergy.ENERGY.getStorage().writeNBT(CapabilityEnergy.ENERGY, energyStorage, null);
+		}
+		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagInt nbt) {
-		// TODO Auto-generated method stub
-		
+		if (energyStorage != null) {
+			CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, energyStorage, null, nbt);	
+		}
 	}
 
 }
