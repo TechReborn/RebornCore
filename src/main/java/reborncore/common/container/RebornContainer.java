@@ -50,14 +50,10 @@ public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
-	private Optional<TileEntity> baseTile = Optional.empty();
-
-	@Deprecated //TODO remove in 1.13 to use tile senstive version
-	public RebornContainer() {
-	}
+	private final TileEntity baseTile;
 
 	public RebornContainer(TileEntity tileEntity){
-		this.baseTile = Optional.of(tileEntity);
+		this.baseTile = tileEntity;
 	}
 
 	public static
@@ -290,10 +286,10 @@ public abstract class RebornContainer extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		if(baseTile.isPresent()){
+		if(baseTile != null){
 			World world = player.getEntityWorld();
-			BlockPos pos = baseTile.get().getPos();
-			return world.getTileEntity(pos) == baseTile.get() && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+			BlockPos pos = baseTile.getPos();
+			return world.getTileEntity(pos) == baseTile && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
 		}
 		return true;
 	}

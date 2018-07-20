@@ -35,19 +35,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import reborncore.api.ToolManager;
-import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.commands.CommandListMods;
 import reborncore.common.commands.CommandListRecipes;
-import reborncore.common.logic.LogicControllerGuiHandler;
-import reborncore.common.logic.PacketButtonID;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
@@ -58,7 +53,6 @@ import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.util.*;
-import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
 import reborncore.shields.json.ShieldJsonLoader;
 
@@ -102,7 +96,6 @@ public class RebornCore implements IModInfo {
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
-		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
 		MinecraftForge.EVENT_BUS.register(this);
 
 		RegistrationManager.load(event);
@@ -127,7 +120,6 @@ public class RebornCore implements IModInfo {
 		NetworkManager.load();
 
 		RebornCoreShields.init();
-		RebornPermissions.init();
 		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);
 		// Multiblock events
@@ -135,11 +127,6 @@ public class RebornCore implements IModInfo {
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
 		MinecraftForge.EVENT_BUS.register(BlockMachineBase.class);
-
-		if (ItemTeamRebornManual.isManualEnabled) {
-			RebornRegistry.registerItem(new ItemTeamRebornManual());
-			NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new ManualGuiHandler());
-		}
 
 		proxy.init(event);
 		RegistrationManager.load(event);
@@ -170,7 +157,6 @@ public class RebornCore implements IModInfo {
 
 	@SubscribeEvent
 	public void registerPackets(RegisterPacketEvent event){
-		event.registerPacket(PacketButtonID.class, Side.SERVER);
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
 		event.registerPacket(PacketConfigSave.class, Side.SERVER);
