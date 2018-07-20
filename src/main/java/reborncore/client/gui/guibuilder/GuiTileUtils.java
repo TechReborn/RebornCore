@@ -26,26 +26,25 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields;
+package reborncore.client.gui.guibuilder;
 
-import net.minecraft.util.ResourceLocation;
-import reborncore.shields.api.Shield;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 /**
- * Created by Mark on 21/03/2016.
+ * Created by Gigabit101 on 19/02/2017.
  */
-public class FaceShield extends Shield {
-	public FaceShield(String name) {
-		super(name);
-	}
-
-	@Override
-	public ResourceLocation getShieldTexture() {
-		return new ResourceLocation("reborncore:textures/shields/people/" + name + ".png");
-	}
-
-	@Override
-	public boolean showInItemLists() {
-		return false;
+public class GuiTileUtils {
+	@SideOnly(Side.CLIENT)
+	public static void drawSlotsFromList(List<Slot> slotList, GuiBuilder builder, GuiScreen guiContainer, int guiLeft, int guiTop) {
+		if (slotList != null) {
+			for (Slot s : slotList) {
+				builder.drawSlot(guiContainer, guiLeft + s.xPos - 1, guiTop + s.yPos - 1);
+			}
+		}
 	}
 }

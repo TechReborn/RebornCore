@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.json;
+package reborncore.common.shields.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,8 +34,8 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.commons.io.IOUtils;
 import reborncore.RebornCore;
-import reborncore.shields.FaceShield;
-import reborncore.shields.api.ShieldRegistry;
+import reborncore.common.shields.FaceShield;
+import reborncore.common.shields.ShieldRegistry;
 
 import javax.annotation.Nonnull;
 import java.io.*;

@@ -35,6 +35,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.IMetadataSection;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 

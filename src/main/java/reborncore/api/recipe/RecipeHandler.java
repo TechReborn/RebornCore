@@ -31,12 +31,11 @@ package reborncore.api.recipe;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.Validate;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
 
 public class RecipeHandler {
 

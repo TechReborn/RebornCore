@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.client.models;
+package reborncore.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import reborncore.client.models.ModelSantaHat;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.util.CalenderUtils;
 

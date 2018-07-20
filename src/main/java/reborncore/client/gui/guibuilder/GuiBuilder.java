@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.client.guibuilder;
+package reborncore.client.gui.guibuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

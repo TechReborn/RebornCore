@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package prospector.shootingstar.model;
+package reborncore.client.models;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
@@ -39,9 +39,37 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class ModelMethods {
+
+public class RebornModelRegistry {
+	protected static List<ModelCompound> modelList = new ArrayList<>();
+
+	public static void registerModel(ModelCompound modelCompound) {
+		modelList.add(modelCompound);
+	}
+
+	public static void registerModels(String modid) {
+		for (ModelCompound compound : modelList) {
+			if (compound.getModid().equals(modid)) {
+				if (compound.isBlock()) {
+					if (compound.getFileName().equals("modelregistration.undefinedfilename"))
+						registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
+					else
+						registerItemModel(compound.getItem(), compound.getMeta(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant());
+				}
+				if (compound.isBlock()) {
+					if (compound.getFileName().equals("modelregistration.undefinedfilename"))
+						setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
+					else
+						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getIgnoreProperties());
+				}
+			}
+		}
+	}
+
 	public static void registerItemModel(Item item) {
 		setMRL(item, 0, item.getRegistryName(), "inventory");
 	}

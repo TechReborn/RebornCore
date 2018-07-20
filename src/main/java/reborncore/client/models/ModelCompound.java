@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package prospector.shootingstar.model;
+package reborncore.client.models;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 
 public class ModelCompound {
 	private String inventoryVariant = "inventory";
-	private String fileName = "shootingstar.undefinedfilename";
+	private String fileName = "modelregistration.undefinedfilename";
 	private String blockstatePath;
 	private IProperty[] ignoreProperties = null;
 	private String modid;

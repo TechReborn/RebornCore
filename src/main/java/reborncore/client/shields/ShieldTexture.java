@@ -26,48 +26,57 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.api;
+package reborncore.client.shields;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import reborncore.common.util.ItemNBTHelper;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import reborncore.client.texture.InputStreamTexture;
 
-import java.util.List;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
- * Created by Mark on 21/03/2016.
+ * Created by modmuss50 on 23/05/2016.
  */
-public abstract class Shield {
+public class ShieldTexture {
 
-	public String name;
+	DownloadState state = DownloadState.AVAILABLE;
 
-	public Shield(String name) {
-		this.name = name;
+	@Nullable
+	AbstractTexture texture;
+
+	String url;
+
+	public ShieldTexture(String url) {
+		this.url = url;
 	}
 
-	public ResourceLocation getShieldTexture() {
-		return new ResourceLocation("null");
+	public void download() {
+		if (state != DownloadState.AVAILABLE) {
+			return;
+		}
+		state = DownloadState.DOWNLOADING;
+
+		new Thread(() ->
+		{
+			try {
+				InputStream inputStream = new URL(url).openStream();
+				texture = new InputStreamTexture(inputStream, url);
+				state = DownloadState.DOWNLOADED;
+			} catch (IOException e) {
+				e.printStackTrace();
+				state = DownloadState.FAILED;
+			}
+		}).start();
 	}
 
-	public boolean showInItemLists() {
-		return true;
+	public DownloadState getState() {
+		return state;
 	}
 
-	public void getSubTypes(Shield shield, CreativeTabs tab, List<ItemStack> subItems) {
-		ItemStack newStack = new ItemStack(Items.SHIELD);
-		ItemNBTHelper.setString(newStack, "type", shield.name);
-		ItemNBTHelper.setBoolean(newStack, "vanilla", false);
-		subItems.add(newStack);
+	@Nullable
+	public AbstractTexture getTexture() {
+		return texture;
 	}
-
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return (double) stack.getItemDamage() / (double) stack.getMaxDamage();
-	}
-
-	public boolean showDurabilityBar(ItemStack stack) {
-		return false;
-	}
-
 }

@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.client;
+package reborncore.client.shields;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelShield;
@@ -38,9 +38,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.ResourceLocation;
+import reborncore.common.shields.json.ShieldJsonLoader;
+import reborncore.common.shields.json.ShieldUser;
 import reborncore.common.util.ItemNBTHelper;
-import reborncore.shields.json.ShieldJsonLoader;
-import reborncore.shields.json.ShieldUser;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;

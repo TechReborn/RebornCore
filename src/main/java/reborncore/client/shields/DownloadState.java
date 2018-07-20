@@ -26,26 +26,14 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.client;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+package reborncore.client.shields;
 
 /**
- * Created by mark on 14/05/16.
+ * Created by modmuss50 on 23/05/2016.
  */
-public class ShieldModelLoader {
-
-	public static void load() {
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Items.SHIELD, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation("shield", "inventory");
-			}
-		});
-	}
-
+public enum DownloadState {
+	AVAILABLE,
+	DOWNLOADING,
+	DOWNLOADED,
+	FAILED
 }

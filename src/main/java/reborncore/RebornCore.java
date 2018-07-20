@@ -52,9 +52,9 @@ import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
+import reborncore.common.shields.RebornCoreShields;
+import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.*;
-import reborncore.shields.RebornCoreShields;
-import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.File;
 

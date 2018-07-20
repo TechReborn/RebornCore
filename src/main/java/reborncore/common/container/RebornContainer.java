@@ -44,7 +44,6 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Optional;
 
 public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();

@@ -26,7 +26,25 @@
  * THE SOFTWARE.
  */
 
-@API(apiVersion = "@MODVERSION@", owner = "reborncore", provides = "reborncoreAPI|Tile")
-package reborncore.api.tile;
+package reborncore.common.shields;
 
-import net.minecraftforge.fml.common.API;
+import net.minecraft.util.ResourceLocation;
+
+/**
+ * Created by Mark on 21/03/2016.
+ */
+public class FaceShield extends Shield {
+	public FaceShield(String name) {
+		super(name);
+	}
+
+	@Override
+	public ResourceLocation getShieldTexture() {
+		return new ResourceLocation("reborncore:textures/shields/people/" + name + ".png");
+	}
+
+	@Override
+	public boolean showInItemLists() {
+		return false;
+	}
+}

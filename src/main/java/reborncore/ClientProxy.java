@@ -37,11 +37,11 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import reborncore.client.HolidayRenderEvent;
 import reborncore.client.hud.StackInfoHUD;
-import reborncore.client.models.HolidayRenderEvent;
+import reborncore.client.shields.RebornItemStackRenderer;
+import reborncore.client.shields.ShieldTextureStore;
 import reborncore.common.multiblock.MultiblockClientTickHandler;
-import reborncore.shields.client.RebornItemStackRenderer;
-import reborncore.shields.client.ShieldTextureStore;
 
 import java.util.List;
 

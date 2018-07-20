@@ -28,24 +28,18 @@
 
 package reborncore.client;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -128,34 +122,4 @@ public class RenderUtil {
 		GlStateManager.disableBlend();
 	}
 
-	//Todo use for tinker table
-	@SideOnly(Side.CLIENT)
-	public static void renderBlockInWorld(Block block, int meta) {
-		renderItemInWorld(new ItemStack(block, 1, meta));
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void renderItemInWorld(ItemStack stack) {
-		GlStateManager.pushMatrix();
-		GlStateManager.disableLighting();
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
-		if (stack.getItem() instanceof ItemBlock) {
-			GlStateManager.scale(.6, .6, .6);
-		} else {
-			GlStateManager.scale(.5, .5, .5);
-		}
-
-		Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-		GlStateManager.enableLighting();
-		GlStateManager.popMatrix();
-	}
-
-	public static void drawBar(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-		renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		renderer.pos((double) (x), (double) (y), 0.0D).color(red, green, blue, alpha).endVertex();
-		renderer.pos((double) (x), (double) (y + height), 0.0D).color(red, green, blue, alpha).endVertex();
-		renderer.pos((double) (x + width), (double) (y + height), 0.0D).color(red, green, blue, alpha).endVertex();
-		renderer.pos((double) (x + width), (double) (y), 0.0D).color(red, green, blue, alpha).endVertex();
-		Tessellator.getInstance().draw();
-	}
 }

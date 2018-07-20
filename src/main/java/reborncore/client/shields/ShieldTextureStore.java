@@ -26,12 +26,12 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.client;
+package reborncore.client.shields;
 
 import reborncore.RebornCore;
-import reborncore.shields.json.ShieldJsonFile;
-import reborncore.shields.json.ShieldJsonLoader;
-import reborncore.shields.json.ShieldUser;
+import reborncore.common.shields.json.ShieldJsonFile;
+import reborncore.common.shields.json.ShieldJsonLoader;
+import reborncore.common.shields.json.ShieldUser;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

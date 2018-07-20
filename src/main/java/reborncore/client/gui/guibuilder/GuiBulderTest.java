@@ -26,26 +26,36 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.api;
+package reborncore.client.gui.guibuilder;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
 
 /**
- * Created by Mark on 21/03/2016.
+ * Created by Gigabit101 on 08/08/2016.
  */
-public class ShieldRegistry {
-	public static List<Shield> shieldList = new ArrayList<>();
-	public static HashMap<String, Shield> shieldHashMap = new HashMap<>();
-	public static HashMap<Shield, ResourceLocation> shieldTextureHashMap = new HashMap<>();
+public class GuiBulderTest extends GuiContainer {
+	GuiBuilder builder = new GuiBuilder(GuiBuilder.defaultTextureSheet);
 
-	public static void registerShield(Shield shield) {
-		shieldList.add(shield);
-		shieldHashMap.put(shield.name, shield);
-		shieldTextureHashMap.put(shield, shield.getShieldTexture());
+	public GuiBulderTest(Container inventorySlotsIn) {
+		super(inventorySlotsIn);
 	}
 
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		builder.drawDefaultBackground(this, guiLeft, guiLeft, xSize, ySize);
+
+		builder.drawSlot(this, guiLeft + 40, guiTop + 30);
+		builder.drawSlot(this, guiLeft + 120, guiTop + 30);
+
+		builder.drawPlayerSlots(this, guiLeft + xSize / 2, guiTop + 80, true);
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button) throws IOException {
+		super.actionPerformed(button);
+	}
 }

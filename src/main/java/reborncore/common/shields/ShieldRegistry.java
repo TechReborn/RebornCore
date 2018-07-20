@@ -26,14 +26,26 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.client;
+package reborncore.common.shields;
+
+import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- * Created by modmuss50 on 23/05/2016.
+ * Created by Mark on 21/03/2016.
  */
-public enum DownloadState {
-	AVAILABLE,
-	DOWNLOADING,
-	DOWNLOADED,
-	FAILED
+public class ShieldRegistry {
+	public static List<Shield> shieldList = new ArrayList<>();
+	public static HashMap<String, Shield> shieldHashMap = new HashMap<>();
+	public static HashMap<Shield, ResourceLocation> shieldTextureHashMap = new HashMap<>();
+
+	public static void registerShield(Shield shield) {
+		shieldList.add(shield);
+		shieldHashMap.put(shield.name, shield);
+		shieldTextureHashMap.put(shield, shield.getShieldTexture());
+	}
+
 }

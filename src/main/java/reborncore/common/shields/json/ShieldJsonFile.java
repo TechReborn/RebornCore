@@ -26,57 +26,15 @@
  * THE SOFTWARE.
  */
 
-package reborncore.shields.client;
+package reborncore.common.shields.json;
 
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import reborncore.client.texture.InputStreamTexture;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.List;
 
 /**
- * Created by modmuss50 on 23/05/2016.
+ * Created by Mark on 25/03/2016.
  */
-public class ShieldTexture {
+public class ShieldJsonFile {
 
-	DownloadState state = DownloadState.AVAILABLE;
+	public List<ShieldUser> userList;
 
-	@Nullable
-	AbstractTexture texture;
-
-	String url;
-
-	public ShieldTexture(String url) {
-		this.url = url;
-	}
-
-	public void download() {
-		if (state != DownloadState.AVAILABLE) {
-			return;
-		}
-		state = DownloadState.DOWNLOADING;
-
-		new Thread(() ->
-		{
-			try {
-				InputStream inputStream = new URL(url).openStream();
-				texture = new InputStreamTexture(inputStream, url);
-				state = DownloadState.DOWNLOADED;
-			} catch (IOException e) {
-				e.printStackTrace();
-				state = DownloadState.FAILED;
-			}
-		}).start();
-	}
-
-	public DownloadState getState() {
-		return state;
-	}
-
-	@Nullable
-	public AbstractTexture getTexture() {
-		return texture;
-	}
 }
