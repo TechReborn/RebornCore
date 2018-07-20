@@ -28,90 +28,38 @@
 
 package reborncore.common;
 
-import net.minecraftforge.common.config.Configuration;
+import reborncore.common.registration.RebornRegistry;
+import reborncore.common.registration.impl.ConfigRegistry;
 
-import java.io.File;
 
-/**
- * Created by Mark on 20/02/2016.
- */
+@RebornRegistry
 public class RebornCoreConfig {
 
-	public static Configuration config;
-	public static String CATEGORY_POWER = "power";
-	public static String CATEGORY_MISC = "misc";
-	public static int euPerFU;
-	public static boolean ShowStackInfoHUD;
-	public static int stackInfoCorner;
-	public static int stackInfoX;
-	public static int stackInfoY;
-	public static boolean versionCheck;
-	public static boolean easterEggs;
-	public static boolean oreDebug;
+	@ConfigRegistry(comment = "The Amount of FU to output from EU", category = "power")
+	public static int euPerFU = 4;
+
+	@ConfigRegistry(comment = "Contains some debug tools to help fix issues with ores.", category = "debug")
+	public static boolean oreDebug = false;
+
+	@ConfigRegistry(comment = "AutoUpdates none user chnaged config values, when the mod default changes.")
 	public static boolean configUpdating = true;
-	private static RebornCoreConfig instance = null;
-	public static boolean wrenchRequired = true;
 
-	public RebornCoreConfig(File configFile) {
-		config = new Configuration(configFile);
-		config.load();
+	@ConfigRegistry(comment = "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
+	public static boolean wrenchRequired = false;
 
-		RebornCoreConfig.Configs();
+	@ConfigRegistry(comment = "Show Stack Info HUD (ClientSideOnly)", category = "client")
+	public static boolean ShowStackInfoHUD = true;
 
-		config.save();
-	}
+	@ConfigRegistry(comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left (ClientSideOnly)", category = "client")
+	public static int stackInfoCorner = 0;
 
-	public static RebornCoreConfig initialize(File configFile) {
+	@ConfigRegistry(comment = "X padding for HUD", category = "client")
+	public static int stackInfoX = 2;
 
-		if (instance == null)
-			instance = new RebornCoreConfig(configFile);
-		else
-			throw new IllegalStateException("Cannot initialize TechReborn Config twice");
+	@ConfigRegistry(comment = "Y padding for HUD", category = "client")
+	public static int stackInfoY = 7;
 
-		return instance;
-	}
-
-	public static RebornCoreConfig instance() {
-		if (instance == null) {
-
-			throw new IllegalStateException("Instance of TechReborn Config requested before initialization");
-		}
-		return instance;
-	}
-
-	public static void Configs() {
-
-		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU")
-				.getInt();
-
-		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker")
-				.getBoolean();
-
-		ShowStackInfoHUD = config.get(CATEGORY_POWER, "Show Stack Info HUD", true, "Show Stack Info HUD (ClientSideOnly)")
-				.getBoolean(true);
-		
-		stackInfoCorner = config.get(CATEGORY_POWER, "Stack Info Corner", 0, "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left (ClientSideOnly)")
-				.getInt();
-
-		stackInfoX = config.get(CATEGORY_POWER, "Stack Info X", 2, "X padding for HUD (ClientSideOnly)")
-				.getInt();
-		
-		stackInfoY = config.get(CATEGORY_POWER, "Stack Info Y", 7, "Y padding for HUD (ClientSideOnly)")
-				.getInt();
-
-		easterEggs = config.get(CATEGORY_MISC, "Enable Seasonal Easter Eggs", true, "Disable this is you don't want seasonal easter eggs")
-				.getBoolean();
-
-		oreDebug = config.get(CATEGORY_MISC, "Enable Debug tools for ores", false, "Contains some debug tools to help fix issues with ores.")
-			.getBoolean();
-
-		configUpdating = config.get(CATEGORY_MISC, "Config Updater", true, "AutoUpdates none user chnaged config values, when the mod default changes.")
-			.getBoolean();
-
-
-		wrenchRequired = config.get(CATEGORY_MISC, "Wrench required", true, "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
-				.getBoolean(true);
-
-	}
+	@ConfigRegistry(comment = "Enable Seasonal Easter Eggs", category = "client")
+	public static boolean easterEggs = true;
 
 }

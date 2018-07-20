@@ -73,7 +73,6 @@ public class RebornCore implements IModInfo {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static LogHelper logHelper;
-	public static RebornCoreConfig config;
 	@Mod.Instance
 	public static RebornCore INSTANCE;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
@@ -92,7 +91,6 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
-		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
