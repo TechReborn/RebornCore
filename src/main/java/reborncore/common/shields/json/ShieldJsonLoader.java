@@ -61,7 +61,7 @@ public class ShieldJsonLoader {
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ShieldJsonFile jsonFile = new ShieldJsonFile();
 		jsonFile.userList = new ArrayList<>();
 		File folder = new File("src/main/resources/assets/reborncore/textures/shields/people/");

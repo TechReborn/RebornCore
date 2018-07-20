@@ -81,7 +81,7 @@ public class MultiblockRenderEvent {
 	}
 
 	@SubscribeEvent
-	public void onWorldRenderLast(RenderWorldLastEvent event) throws Throwable {
+	public void onWorldRenderLast(RenderWorldLastEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.player != null && mc.objectMouseOver != null && !mc.player.isSneaking()) {
 			if (currentMultiblock != null) {

@@ -58,7 +58,7 @@ public class CustomDescriptionPacket implements INetworkPacket<CustomDescription
 	}
 
 	@Override
-	public void writeData(ExtendedPacketBuffer buffer) throws IOException {
+	public void writeData(ExtendedPacketBuffer buffer) {
 		buffer.writeBlockPos(blockPos);
 		buffer.writeCompoundTag(nbt);
 	}

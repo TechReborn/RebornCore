@@ -59,7 +59,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 	}
 
 	@Override
-	public void writeData(ExtendedPacketBuffer buffer) throws IOException {
+	public void writeData(ExtendedPacketBuffer buffer) {
 		buffer.writeBlockPos(pos);
 		buffer.writeInt(slotID);
 		buffer.writeBoolean(input);
@@ -68,7 +68,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 	}
 
 	@Override
-	public void readData(ExtendedPacketBuffer buffer) throws IOException {
+	public void readData(ExtendedPacketBuffer buffer) {
 		pos = buffer.readBlockPos();
 		slotID = buffer.readInt();
 		input = buffer.readBoolean();

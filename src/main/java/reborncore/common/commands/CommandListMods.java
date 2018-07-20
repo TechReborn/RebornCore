@@ -53,7 +53,7 @@ public class CommandListMods extends CommandBase {
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
 		StringJoiner stringJoiner = new StringJoiner(System.lineSeparator());
 		Loader.instance().getActiveModList().forEach(modContainer -> stringJoiner.add(modContainer.getModId()));
 

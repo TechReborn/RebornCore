@@ -55,7 +55,7 @@ public class CommandListRecipes extends CommandBase {
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
 		if(!(sender instanceof EntityPlayer)){
 			sender.sendMessage(new TextComponentString("Command must be ran as a player!"));
 			return;

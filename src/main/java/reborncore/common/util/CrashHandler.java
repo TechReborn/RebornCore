@@ -44,7 +44,7 @@ public class CrashHandler implements ICrashCallable {
 	}
 
 	@Override
-	public String call() throws Exception {
+	public String call() {
 		StringBuilder builder = new StringBuilder();
 		for (String str : getInfo()) {
 			builder.append("\n" + "\t\t" + str);

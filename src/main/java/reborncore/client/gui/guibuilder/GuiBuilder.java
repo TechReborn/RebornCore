@@ -147,10 +147,6 @@ public class GuiBuilder {
 		buttonList.add(new GuiButton(0, x, y, 20, 20, "i"));
 	}
 
-	public void handleInfoButtonClick(int buttonID, List<GuiButton> buttonList) {
-		//        buttonList.get(buttonID).
-	}
-
 	public void drawInfo(GuiScreen gui, int x, int y, int height, int width, boolean draw) {
 		if (draw) {
 			Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);

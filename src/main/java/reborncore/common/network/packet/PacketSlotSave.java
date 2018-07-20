@@ -55,7 +55,7 @@ public class PacketSlotSave implements INetworkPacket<PacketSlotSave> {
 	}
 
 	@Override
-	public void writeData(ExtendedPacketBuffer buffer) throws IOException {
+	public void writeData(ExtendedPacketBuffer buffer) {
 		buffer.writeBlockPos(pos);
 		buffer.writeCompoundTag(slotConfig.serializeNBT());
 	}

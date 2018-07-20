@@ -54,8 +54,4 @@ public class GuiBulderTest extends GuiContainer {
 		builder.drawPlayerSlots(this, guiLeft + xSize / 2, guiTop + 80, true);
 	}
 
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-		super.actionPerformed(button);
-	}
 }

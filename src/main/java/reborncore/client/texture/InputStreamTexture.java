@@ -87,7 +87,7 @@ public class InputStreamTexture extends AbstractTexture {
 					}
 
 					@Override
-					public void close() throws IOException {
+					public void close() {
 
 					}
 				};
