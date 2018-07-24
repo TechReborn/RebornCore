@@ -39,7 +39,7 @@ import reborncore.common.network.INetworkPacket;
 
 import java.io.IOException;
 
-public class CustomDescriptionPacket implements INetworkPacket<CustomDescriptionPacket> {
+public class CustomDescriptionPacket implements INetworkPacket {
 
 	private BlockPos blockPos;
 	private NBTTagCompound nbt;
@@ -70,15 +70,15 @@ public class CustomDescriptionPacket implements INetworkPacket<CustomDescription
 	}
 
 	@Override
-	public void processData(CustomDescriptionPacket message, MessageContext context) {
-		if (message.blockPos == null || message.nbt == null) {
+	public void processData(MessageContext context) {
+		if (blockPos == null || nbt == null) {
 			return;
 		}
 		World world = RebornCore.proxy.getClientWorld();
-		if (world.isBlockLoaded(message.blockPos)) {
-			TileEntity tileentity = world.getTileEntity(message.blockPos);
-			if (tileentity != null && message.nbt != null) {
-				tileentity.readFromNBT(message.nbt);
+		if (world.isBlockLoaded(blockPos)) {
+			TileEntity tileentity = world.getTileEntity(blockPos);
+			if (tileentity != null && nbt != null) {
+				tileentity.readFromNBT(nbt);
 			}
 		}
 	}

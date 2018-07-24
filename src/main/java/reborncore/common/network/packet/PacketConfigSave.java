@@ -42,7 +42,7 @@ import java.io.IOException;
 /**
  * Used to update certian slot detilas on the server
  */
-public class PacketConfigSave implements INetworkPacket<PacketConfigSave> {
+public class PacketConfigSave implements INetworkPacket {
 
 	BlockPos pos;
 	SlotConfiguration slotConfig;
@@ -69,7 +69,7 @@ public class PacketConfigSave implements INetworkPacket<PacketConfigSave> {
 	}
 
 	@Override
-	public void processData(PacketConfigSave message, MessageContext context) {
+	public void processData(MessageContext context) {
 		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
 		legacyMachineBase.slotConfiguration.deserializeNBT(tagCompound);
 		legacyMachineBase.markDirty();

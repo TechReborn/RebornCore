@@ -120,7 +120,7 @@ public class RebornCore implements IModInfo {
 		NetworkManager.load();
 
 		RebornCoreShields.init();
-		
+
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());

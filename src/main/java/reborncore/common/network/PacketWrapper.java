@@ -83,7 +83,7 @@ public class PacketWrapper implements IMessage {
 
 		@Override
 		public IMessage onMessage(PacketWrapper message, MessageContext ctx) {
-			message.packet.processData(message.packet, ctx);
+			message.packet.processData(ctx);
 			return null;
 		}
 	}

@@ -42,7 +42,7 @@ import java.io.IOException;
 /**
  * Used to sync all the slot details to the client
  */
-public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
+public class  PacketSlotSync implements INetworkPacket {
 
 	BlockPos pos;
 	SlotConfiguration slotConfig;
@@ -68,7 +68,7 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 	}
 
 	@Override
-	public void processData(PacketSlotSync message, MessageContext context) {
+	public void processData(MessageContext context) {
 		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
 			return;
 		}

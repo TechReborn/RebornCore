@@ -41,7 +41,7 @@ import java.io.IOException;
 /**
  * Used to update certian slot detilas on the server
  */
-public class PacketIOSave implements INetworkPacket<PacketIOSave> {
+public class PacketIOSave implements INetworkPacket {
 
 	BlockPos pos;
 	int slotID;
@@ -77,7 +77,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 	}
 
 	@Override
-	public void processData(PacketIOSave message, MessageContext context) {
+	public void processData(MessageContext context) {
 		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
 		SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
 		if(holder == null){

@@ -32,13 +32,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.io.IOException;
 
-public interface INetworkPacket<T> {
+public interface INetworkPacket {
 
 	void writeData(ExtendedPacketBuffer buffer) throws IOException;
 
 	void readData(ExtendedPacketBuffer buffer) throws IOException;
 
-	@Deprecated //Message isnt needed change in 1.13
-	void processData(T message, MessageContext context);
+	void processData(MessageContext context);
 
 }
