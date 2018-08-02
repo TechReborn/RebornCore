@@ -549,4 +549,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		}
 	}
 
+	public boolean hasSlotConfig(){
+		return true;
+	}
+
 }
