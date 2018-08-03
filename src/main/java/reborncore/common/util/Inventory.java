@@ -29,6 +29,7 @@
 package reborncore.common.util;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -53,7 +54,7 @@ public class Inventory implements IInventory {
 			contents[i] = ItemStack.EMPTY;
 		}
 		name = invName;
-		stackLimit = invStackLimit;
+		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 	}
 
