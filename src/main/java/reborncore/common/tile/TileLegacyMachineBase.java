@@ -45,6 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -61,6 +62,7 @@ import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
+import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -73,6 +75,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
 	public SlotConfiguration slotConfiguration;
+	public FluidConfiguration fluidConfiguration;
 
 	/**
 	 * This is used to change the speed of the crafting operation.
@@ -103,6 +106,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			} else {
 				slotConfiguration = new SlotConfiguration();
 			}
+		}
+		if(fluidConfiguration == null){
+			fluidConfiguration = new FluidConfiguration();
 		}
 	}
 
@@ -147,6 +153,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			}
 			if (slotConfiguration != null) {
 				slotConfiguration.update(this);
+			}
+			if(fluidConfiguration != null){
+				fluidConfiguration.update(this);
 			}
 		}
 
@@ -480,6 +489,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return true;
 		}
+		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			return true;
+		}
 		return super.hasCapability(capability, facing);
 	}
 
@@ -487,6 +499,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
+		}
+		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getTank());
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -551,6 +566,15 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public boolean hasSlotConfig(){
 		return true;
+	}
+
+	@Nullable
+	public Tank getTank(){
+		return null;
+	}
+
+	public boolean showTankConfig(){
+		return getTank() != null;
 	}
 
 }
