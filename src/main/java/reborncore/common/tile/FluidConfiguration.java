@@ -1,8 +1,13 @@
 package reborncore.common.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +49,34 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		if (!input && !output) {
 			return;
 		}
-		//TODO handle push and pull of fluids
+		if(machineBase.getTank() == null || machineBase.getWorld().getTotalWorldTime() % 5 != 0){
+			return;
+		}
+		for(EnumFacing facing : EnumFacing.VALUES){
+			FluidConfig fluidConfig = getSideDetail(facing);
+			if(fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()){
+				continue;
+			}
+			IFluidHandler fluidHandler = getFluidHandler(machineBase, facing);
+			if(fluidHandler == null){
+				continue;
+			}
+			if(autoInput() && fluidConfig.getIoConfig().isInsert()){
+				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, 250, true);
+			}
+			if(autoOutput() && fluidConfig.getIoConfig().isExtact()){
+				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), 250, true);
+			}
+		}
+	}
+
+	private IFluidHandler getFluidHandler(TileLegacyMachineBase machine, EnumFacing facing){
+		BlockPos pos = machine.getPos().offset(facing);
+		TileEntity tileEntity = machine.getWorld().getTileEntity(pos);
+		if(tileEntity == null){
+			return null;
+		}
+		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
 	}
 
 	public boolean autoInput() {

@@ -45,6 +45,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidUtil;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
@@ -52,7 +53,9 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.items.WrenchHelper;
+import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.InventoryHelper;
+import reborncore.common.util.Tank;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -129,15 +132,20 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (fillBlockWithFluid(worldIn, pos, playerIn)) {
-			return true;
-		}
+
 		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 
 		// We extended BlockTileBase. Thus we should always have tile entity. I hope.
 		if (tileEntity == null) {
 			return false;
+		}
+
+		if(tileEntity instanceof TileLegacyMachineBase){
+			Tank tank = ((TileLegacyMachineBase) tileEntity).getTank();
+			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
+				return true;
+			}
 		}
 
 		if (!stack.isEmpty()) {
@@ -164,132 +172,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		}
 
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
-	}
-
-	//	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer)
-	//	{
-	//		ItemStack current = entityplayer.inventory.getCurrentItem();
-	//
-	//		if (current != ItemStack.EMPTY)
-	//		{
-	//			TileEntity tile = world.getTileEntity(pos);
-	//
-	//			if (tile instanceof IFluidHandler)
-	//			{
-	//				IFluidHandler tank = (IFluidHandler) tile;
-	//				// Handle FluidContainerRegistry
-	//				if (FluidContainerRegistry.isContainer(current))
-	//				{
-	//					FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
-	//					// Handle filled containers
-	//					if (liquid != null)
-	//					{
-	//						int qty = tank.fill(null, liquid, true);
-	//
-	//						if (qty != 0 && !entityplayer.capabilities.isCreativeMode)
-	//						{
-	//							if (current.getCount() > 1)
-	//							{
-	//								if (!entityplayer.inventory
-	//										.addItemStackToInventory(FluidContainerRegistry.drainFluidContainer(current)))
-	//								{
-	//									entityplayer.dropItem(
-	//											FluidContainerRegistry.drainFluidContainer(current), false);
-	//								}
-	//
-	//								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
-	//										consumeItem(current));
-	//							} else
-	//							{
-	//								entityplayer.inventory.setInventorySlotContents(entityplayer.inventory.currentItem,
-	//										FluidContainerRegistry.drainFluidContainer(current));
-	//							}
-	//						}
-	//
-	//						return true;
-	//
-	//						// Handle empty containers
-	//					} else
-	//					{
-	//						FluidStack available = tank.getTankInfo(null)[0].fluid;
-	//
-	//						if (available != null)
-	//						{
-	//							ItemStack filled = FluidContainerRegistry.fillFluidContainer(available, current);
-	//
-	//							liquid = FluidContainerRegistry.getFluidForFilledItem(filled);
-	//
-	//							if (liquid != null)
-	//							{
-	//								if (!entityplayer.capabilities.isCreativeMode)
-	//								{
-	//									if (current.getCount() > 1)
-	//									{
-	//										if (!entityplayer.inventory.addItemStackToInventory(filled))
-	//										{
-	//											return false;
-	//										} else
-	//										{
-	//											entityplayer.inventory.setInventorySlotContents(
-	//													entityplayer.inventory.currentItem, consumeItem(current));
-	//										}
-	//									} else
-	//									{
-	//										entityplayer.inventory.setInventorySlotContents(
-	//												entityplayer.inventory.currentItem, consumeItem(current));
-	//										entityplayer.inventory
-	//												.setInventorySlotContents(entityplayer.inventory.currentItem, filled);
-	//									}
-	//								}
-	//
-	//								tank.drain(null, liquid.amount, true);
-	//
-	//								return true;
-	//							}
-	//						}
-	//					}
-	//				} else if (current.getItem() instanceof IFluidContainerItem)
-	//				{
-	//					if (current.getCount() != 1)
-	//					{
-	//						return false;
-	//					}
-	//
-	//					if (!world.isRemote)
-	//					{
-	//						IFluidContainerItem container = (IFluidContainerItem) current.getItem();
-	//						FluidStack liquid = container.getFluid(current);
-	//						FluidStack tankLiquid = tank.getTankInfo(null)[0].fluid;
-	//						boolean mustDrain = liquid == null || liquid.amount == 0;
-	//						boolean mustFill = tankLiquid == null || tankLiquid.amount == 0;
-	//						if (mustDrain && mustFill)
-	//						{
-	//							// Both are empty, do nothing
-	//						} else if (mustDrain || !entityplayer.isSneaking())
-	//						{
-	//							liquid = tank.drain(null, 1000, false);
-	//							int qtyToFill = container.fill(current, liquid, true);
-	//							tank.drain(null, qtyToFill, true);
-	//						} else if (mustFill || entityplayer.isSneaking())
-	//						{
-	//							if (liquid.amount > 0)
-	//							{
-	//								int qty = tank.fill(null, liquid, false);
-	//								tank.fill(null, container.drain(current, qty, true), true);
-	//							}
-	//						}
-	//					}
-	//
-	//					return true;
-	//				}
-	//			}
-	//		}
-	//		return false;
-	//	}
-
-	//TODO 1.11 rewrite when I have something to test with
-	public boolean fillBlockWithFluid(World world, BlockPos pos, EntityPlayer entityplayer) {
-		return false;
 	}
 
 	@Override
