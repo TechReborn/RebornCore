@@ -107,8 +107,10 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
-		if(fluidConfiguration == null){
-			fluidConfiguration = new FluidConfiguration();
+		if(getTank() != null){
+			if(fluidConfiguration == null){
+				fluidConfiguration = new FluidConfiguration();
+			}
 		}
 	}
 
@@ -261,6 +263,11 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
+		if(tagCompound.hasKey("fluidConfig") && getTank() != null){
+			fluidConfiguration = new FluidConfiguration(tagCompound.getCompoundTag("fluidConfig"));
+		} else if (getTank() != null && fluidConfiguration == null){
+			fluidConfiguration = new FluidConfiguration();
+		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
 
@@ -275,6 +282,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		}
 		if (slotConfiguration != null) {
 			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+		}
+		if(fluidConfiguration != null){
+			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
 		}
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
