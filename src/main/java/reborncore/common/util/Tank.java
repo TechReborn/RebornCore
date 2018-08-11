@@ -29,12 +29,16 @@
 package reborncore.common.util;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
+import reborncore.common.tile.FluidConfiguration;
+import reborncore.common.tile.TileLegacyMachineBase;
+
+import javax.annotation.Nullable;
 
 public class Tank extends FluidTank {
 
@@ -45,10 +49,15 @@ public class Tank extends FluidTank {
 	Fluid lastFluid;
 	int lastAmmount;
 
-	public Tank(String name, int capacity, TileEntity tile) {
+	@Nullable
+	private EnumFacing side = null;
+	TileLegacyMachineBase machine;
+
+	public Tank(String name, int capacity, TileLegacyMachineBase tile) {
 		super(capacity);
 		this.name = name;
 		this.tile = tile;
+		this.machine = tile;
 	}
 
 	public boolean isEmpty() {
@@ -87,6 +96,45 @@ public class Tank extends FluidTank {
 			super.readFromNBT(tankData);
 		}
 		return this;
+	}
+
+	@Nullable
+	public EnumFacing getSide() {
+		return side;
+	}
+
+	public void setSide(
+		@Nullable
+			EnumFacing side) {
+		this.side = side;
+	}
+
+	@Override
+	public boolean canFill() {
+		if(side != null){
+			if(machine.fluidConfiguration != null){
+				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
+				if(fluidConfig == null){
+					return super.canFill();
+				}
+				return fluidConfig.getIoConfig().isInsert();
+			}
+		}
+		return super.canFill();
+	}
+
+	@Override
+	public boolean canDrain() {
+		if(side != null){
+			if(machine.fluidConfiguration != null){
+				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
+				if(fluidConfig == null){
+					return super.canDrain();
+				}
+				return fluidConfig.getIoConfig().isExtact();
+			}
+		}
+		return super.canDrain();
 	}
 
 	//TODO optimise

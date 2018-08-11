@@ -25,6 +25,9 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 	}
 
 	public FluidConfig getSideDetail(EnumFacing side) {
+		if(side == null){
+			return sideMap.get(EnumFacing.NORTH);
+		}
 		return sideMap.get(side);
 	}
 
@@ -34,7 +37,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 
 	public void updateFluidConfig(FluidConfig config) {
 		FluidConfig toEdit = sideMap.get(config.side);
-		toEdit.FluidIO = config.FluidIO;
+		toEdit.ioConfig = config.ioConfig;
 	}
 
 	public void update(TileLegacyMachineBase machineBase) {
@@ -83,16 +86,16 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 
 	public static class FluidConfig implements INBTSerializable<NBTTagCompound> {
 		EnumFacing side;
-		FluidIO FluidIO;
+		FluidConfiguration.ExtractConfig ioConfig;
 
 		public FluidConfig(EnumFacing side) {
 			this.side = side;
-			this.FluidIO = new FluidConfiguration.FluidIO(FluidConfiguration.ExtractConfig.NONE);
+			this.ioConfig = ExtractConfig.ALL;
 		}
 
-		public FluidConfig(EnumFacing side, FluidConfiguration.FluidIO FluidIO) {
+		public FluidConfig(EnumFacing side, FluidConfiguration.ExtractConfig ioConfig) {
 			this.side = side;
-			this.FluidIO = FluidIO;
+			this.ioConfig = ioConfig;
 		}
 
 		public FluidConfig(NBTTagCompound tagCompound) {
@@ -103,57 +106,31 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 			return side;
 		}
 
-		public FluidConfiguration.FluidIO getFluidIO() {
-			return FluidIO;
+		public ExtractConfig getIoConfig() {
+			return ioConfig;
 		}
 
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound tagCompound = new NBTTagCompound();
 			tagCompound.setInteger("side", side.ordinal());
-			tagCompound.setTag("config", FluidIO.serializeNBT());
+			tagCompound.setInteger("config", ioConfig.ordinal());
 			return tagCompound;
 		}
 
 		@Override
 		public void deserializeNBT(NBTTagCompound nbt) {
 			side = EnumFacing.VALUES[nbt.getInteger("side")];
-			FluidIO = new FluidConfiguration.FluidIO(nbt.getCompoundTag("config"));
-		}
-	}
-
-	public static class FluidIO implements INBTSerializable<NBTTagCompound> {
-		FluidConfiguration.ExtractConfig ioConfig;
-
-		public FluidIO(NBTTagCompound tagCompound) {
-			deserializeNBT(tagCompound);
-		}
-
-		public FluidIO(FluidConfiguration.ExtractConfig ioConfig) {
-			this.ioConfig = ioConfig;
-		}
-
-		public FluidConfiguration.ExtractConfig getIoConfig() {
-			return ioConfig;
-		}
-
-		@Override
-		public NBTTagCompound serializeNBT() {
-			NBTTagCompound compound = new NBTTagCompound();
-			compound.setInteger("config", ioConfig.ordinal());
-			return compound;
-		}
-
-		@Override
-		public void deserializeNBT(NBTTagCompound nbt) {
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInteger("config")];
 		}
 	}
 
+
 	public enum ExtractConfig {
 		NONE(false, false),
 		INPUT(false, true),
-		OUTPUT(true, false);
+		OUTPUT(true, false),
+		ALL(true, true);
 
 		boolean extact;
 		boolean insert;
@@ -169,6 +146,10 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 
 		public boolean isInsert() {
 			return insert;
+		}
+
+		public boolean isEnabled(){
+			return extact || insert;
 		}
 
 		public FluidConfiguration.ExtractConfig getNext() {

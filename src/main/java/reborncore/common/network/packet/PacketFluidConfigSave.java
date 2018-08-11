@@ -28,7 +28,9 @@
 
 package reborncore.common.network.packet;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
@@ -74,5 +76,15 @@ public class PacketFluidConfigSave implements INetworkPacket<PacketFluidConfigSa
 
 		PacketFluidConfigSync packetFluidConfigSync = new PacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
 		NetworkManager.sendToWorld(packetFluidConfigSync, legacyMachineBase.getWorld());
+
+		context.getServerHandler().player.world.getMinecraftServer().callFromMainThread(() -> {
+			//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
+			World world = legacyMachineBase.getWorld();
+			IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());
+			world.markAndNotifyBlock(legacyMachineBase.getPos(), world.getChunkFromBlockCoords(legacyMachineBase.getPos()), blockState, blockState, 3);
+			return null;
+		});
+
+
 	}
 }

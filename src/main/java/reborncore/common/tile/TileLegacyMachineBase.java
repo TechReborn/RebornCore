@@ -490,6 +490,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			return true;
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				if(!fluidConfig.getIoConfig().isEnabled()){
+					return false;
+				}
+			}
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -501,6 +507,13 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				if(!fluidConfig.getIoConfig().isEnabled()){
+					return null;
+				}
+			}
+			getTank().setSide(facing);
 			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getTank());
 		}
 		return super.getCapability(capability, facing);
