@@ -49,7 +49,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		if (!input && !output) {
 			return;
 		}
-		if(machineBase.getTank() == null || machineBase.getWorld().getTotalWorldTime() % 5 != 0){
+		if(machineBase.getTank() == null || machineBase.getWorld().getTotalWorldTime() % machineBase.slotTransferSpeed() != 0){
 			return;
 		}
 		for(EnumFacing facing : EnumFacing.VALUES){
@@ -62,10 +62,10 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 				continue;
 			}
 			if(autoInput() && fluidConfig.getIoConfig().isInsert()){
-				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, 250, true);
+				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, machineBase.fluidTransferAmount(), true);
 			}
 			if(autoOutput() && fluidConfig.getIoConfig().isExtact()){
-				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), 250, true);
+				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), machineBase.fluidTransferAmount(), true);
 			}
 		}
 	}

@@ -373,6 +373,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		if(slotConfiguration == null){
+			return false;
+		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
 			RecipeCrafter crafter = getCrafterForTile().get();
@@ -598,6 +601,16 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public boolean showTankConfig(){
 		return getTank() != null;
+	}
+
+	//The amount of ticks between a slot tranfer atempt, less is faster
+	public int slotTransferSpeed(){
+		return 4;
+	}
+
+	//The amount of fluid transfured each tick buy the fluid config
+	public int fluidTransferAmount(){
+		return 250;
 	}
 
 }
