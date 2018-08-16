@@ -128,6 +128,8 @@ public class PowerSystem {
 		}
 
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient() && doFormat) {
+			if(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()==null) ret += value;
+			else
 			ret += NumberFormat
 					.getNumberInstance(Locale.forLanguageTag(
 							Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
