@@ -42,7 +42,7 @@ import java.io.IOException;
 /**
  * Used to sync all the slot details to the client
  */
-public class PacketFluidConfigSync implements INetworkPacket<PacketFluidConfigSync> {
+public class PacketFluidConfigSync implements INetworkPacket {
 
 	BlockPos pos;
 	FluidConfiguration fluidConfiguration;
@@ -68,7 +68,7 @@ public class PacketFluidConfigSync implements INetworkPacket<PacketFluidConfigSy
 	}
 
 	@Override
-	public void processData(PacketFluidConfigSync message, MessageContext context) {
+	public void processData(MessageContext context) {
 		if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
 			return;
 		}

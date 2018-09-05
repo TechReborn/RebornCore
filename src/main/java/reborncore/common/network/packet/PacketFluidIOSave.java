@@ -41,7 +41,7 @@ import java.io.IOException;
 /**
  * Used to update certian slot detilas on the server
  */
-public class PacketFluidIOSave implements INetworkPacket<PacketFluidIOSave> {
+public class PacketFluidIOSave implements INetworkPacket {
 
 	BlockPos pos;
 	boolean input, output;
@@ -70,7 +70,7 @@ public class PacketFluidIOSave implements INetworkPacket<PacketFluidIOSave> {
 	}
 
 	@Override
-	public void processData(PacketFluidIOSave message, MessageContext context) {
+	public void processData(MessageContext context) {
 		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
 		FluidConfiguration config = legacyMachineBase.fluidConfiguration;
 		if (config == null) {
