@@ -64,7 +64,7 @@ public class RecipeRemover {
 		}
 	}
 
-	private static void removeRecipe(IRecipe recipe) {
+	public static void removeRecipe(IRecipe recipe) {
 		RegistryManager.ACTIVE.getRegistry(GameData.RECIPES).remove(recipe.getRegistryName());
 	}
 }

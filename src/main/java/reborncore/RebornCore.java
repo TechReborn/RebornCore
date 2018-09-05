@@ -157,9 +157,12 @@ public class RebornCore implements IModInfo {
 	public void registerPackets(RegisterPacketEvent event){
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
+		event.registerPacket(PacketFluidConfigSave.class, Side.SERVER);
 		event.registerPacket(PacketConfigSave.class, Side.SERVER);
 		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
+		event.registerPacket(PacketFluidConfigSync.class, Side.CLIENT);
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
+		event.registerPacket(PacketFluidIOSave.class, Side.SERVER);
 	}
 
 	@Mod.EventHandler

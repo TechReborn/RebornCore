@@ -80,7 +80,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				}
 			}
 		}
-		if(!machineBase.getWorld().isRemote && machineBase.getWorld().getTotalWorldTime() % 5 == 0){
+		if(!machineBase.getWorld().isRemote && machineBase.getWorld().getTotalWorldTime() % machineBase.slotTransferSpeed() == 0){
 			getSlotDetails().forEach(slotConfigHolder -> slotConfigHolder.handleItemIO(machineBase));
 		}
 	}

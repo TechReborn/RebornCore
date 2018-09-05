@@ -45,6 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -61,6 +62,7 @@ import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
+import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -73,6 +75,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
 	public SlotConfiguration slotConfiguration;
+	public FluidConfiguration fluidConfiguration;
 
 	/**
 	 * This is used to change the speed of the crafting operation.
@@ -102,6 +105,11 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
 			} else {
 				slotConfiguration = new SlotConfiguration();
+			}
+		}
+		if(getTank() != null){
+			if(fluidConfiguration == null){
+				fluidConfiguration = new FluidConfiguration();
 			}
 		}
 	}
@@ -147,6 +155,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			}
 			if (slotConfiguration != null) {
 				slotConfiguration.update(this);
+			}
+			if(fluidConfiguration != null){
+				fluidConfiguration.update(this);
 			}
 		}
 
@@ -252,6 +263,11 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
+		if(tagCompound.hasKey("fluidConfig") && getTank() != null){
+			fluidConfiguration = new FluidConfiguration(tagCompound.getCompoundTag("fluidConfig"));
+		} else if (getTank() != null && fluidConfiguration == null){
+			fluidConfiguration = new FluidConfiguration();
+		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
 	}
 
@@ -266,6 +282,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		}
 		if (slotConfiguration != null) {
 			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+		}
+		if(fluidConfiguration != null){
+			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
 		}
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
 		return tagCompound;
@@ -354,6 +373,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		if(slotConfiguration == null){
+			return false;
+		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
 			RecipeCrafter crafter = getCrafterForTile().get();
@@ -480,6 +502,15 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return true;
 		}
+		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				if(!fluidConfig.getIoConfig().isEnabled()){
+					return false;
+				}
+			}
+			return true;
+		}
 		return super.hasCapability(capability, facing);
 	}
 
@@ -487,6 +518,16 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
+		}
+		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				if(!fluidConfig.getIoConfig().isEnabled()){
+					return null;
+				}
+			}
+			getTank().setSide(facing);
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getTank());
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -551,6 +592,25 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	public boolean hasSlotConfig(){
 		return true;
+	}
+
+	@Nullable
+	public Tank getTank(){
+		return null;
+	}
+
+	public boolean showTankConfig(){
+		return getTank() != null;
+	}
+
+	//The amount of ticks between a slot tranfer atempt, less is faster
+	public int slotTransferSpeed(){
+		return 4;
+	}
+
+	//The amount of fluid transfured each tick buy the fluid config
+	public int fluidTransferAmount(){
+		return 250;
 	}
 
 }
