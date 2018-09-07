@@ -100,6 +100,9 @@ public class RecipeHandler {
 			Validate.notNull(output.getItem());
 		}
 		recipeMap.put(recipe, machineName);
+
+		//TODO fix above
+		recipeList.add(recipe);
 		
 	}
 	/*public static void addRecipe(IBaseRecipeType recipe) {
