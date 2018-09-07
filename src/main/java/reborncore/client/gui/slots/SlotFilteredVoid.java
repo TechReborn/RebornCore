@@ -28,8 +28,8 @@
 
 package reborncore.client.gui.slots;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +38,12 @@ public class SlotFilteredVoid extends BaseSlot {
 
 	private List<ItemStack> filter = new ArrayList<ItemStack>();
 
-	public SlotFilteredVoid(IInventory par1iInventory, int id, int x, int y) {
-		super(par1iInventory, id, x, y);
+	public SlotFilteredVoid(IItemHandler itemHandler, int id, int x, int y) {
+		super(itemHandler, id, x, y);
 	}
 
-	public SlotFilteredVoid(IInventory par1iInventory, int id, int x, int y, ItemStack[] filterList) {
-		super(par1iInventory, id, x, y);
+	public SlotFilteredVoid(IItemHandler itemHandler, int id, int x, int y, ItemStack[] filterList) {
+		super(itemHandler, id, x, y);
 		for (ItemStack itemStack : filterList)
 			this.filter.add(itemStack);
 	}

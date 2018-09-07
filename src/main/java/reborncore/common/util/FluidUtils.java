@@ -28,13 +28,13 @@
 
 package reborncore.common.util;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +57,7 @@ public class FluidUtils {
 		return s1.equals(s2);
 	}
 
-	public static boolean drainContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot) {
+	public static boolean drainContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot, int outputSlot) {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 
@@ -82,8 +82,8 @@ public class FluidUtils {
 				 */
 				if (drained != null && !inputFluidHandler.getContainer().isEmpty())
 					if (output.isEmpty()) {
-						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
-						inv.decrStackSize(inputSlot, 1);
+						inv.setStackInSlot(outputSlot, inputFluidHandler.getContainer());
+						inv.getStackInSlot(inputSlot).shrink(1);
 					} else {
 
 						/*
@@ -93,7 +93,7 @@ public class FluidUtils {
 						 */
 						if (ItemUtils.isItemEqual(output, inputFluidHandler.getContainer(), true, true) && output.getCount() <= output.getMaxStackSize()) {
 							inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
-							inv.decrStackSize(inputSlot, 1);
+							inv.getStackInSlot(inputSlot).shrink(1);
 						} else {
 
 							/*
@@ -111,7 +111,7 @@ public class FluidUtils {
 		return false;
 	}
 
-	public static boolean fillContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot,
+	public static boolean fillContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot, int outputSlot,
 	                                     Fluid fluidToFill) {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
@@ -147,10 +147,10 @@ public class FluidUtils {
 
 					// The inventory is modified and stacks are merged.
 					if (output.isEmpty())
-						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
+						inv.setStackInSlot(outputSlot, inputFluidHandler.getContainer());
 					else
 						inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
-					inv.decrStackSize(inputSlot, 1);
+					inv.getStackInSlot(inputSlot).shrink(1);
 					return true;
 				}
 			}

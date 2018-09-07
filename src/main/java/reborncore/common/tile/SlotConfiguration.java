@@ -61,7 +61,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 	public SlotConfiguration(Inventory inventory) {
 		this.inventory = inventory;
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+		for (int i = 0; i < inventory.getSlots(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));
 		}
 	}
@@ -70,8 +70,8 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		if(inventory == null && machineBase.getInventoryForTile().isPresent()){
 			inventory = machineBase.getInventoryForTile().get();
 		}
-		if(inventory != null && slotDetails.size() != inventory.getSizeInventory()){
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
+		if(inventory != null && slotDetails.size() != inventory.getSlots()){
+			for (int i = 0; i < inventory.getSlots(); i++) {
 				SlotConfigHolder holder = getSlotDetails(i);
 				if(holder == null){
 					RebornCore.logHelper.debug("Fixed slot " + i + " in " + machineBase);
@@ -302,11 +302,11 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 				}
 				ItemStack extractedStack = sourceHandler.extractItem(i, extract, false);
 				if(targetStack.isEmpty()){
-					inventory.setInventorySlotContents(slotID, extractedStack);
+					inventory.setStackInSlot(slotID, extractedStack);
 				} else {
 					inventory.getStackInSlot(slotID).grow(extractedStack.getCount());
 				}
-				inventory.hasChanged = true;
+				inventory.setChanged();
 				break;
 			}
 		}
@@ -323,7 +323,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			}
 			IItemHandler destHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
 			ItemStack stack = ItemHandlerHelper.insertItemStacked(destHandler, sourceStack, false);
-			inventory.setInventorySlotContents(slotID, stack);
+			inventory.setStackInSlot(slotID, stack);
 		}
 
 		@Override

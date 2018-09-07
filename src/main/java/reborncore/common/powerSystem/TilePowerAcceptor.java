@@ -104,7 +104,10 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (chargeEnergy <= 0.0 ) {
 			return;
 		}
-		ItemStack batteryStack = getStackInSlot(slot);
+		if(!getInventoryForTile().isPresent()){
+			return;
+		}
+		ItemStack batteryStack = getInventoryForTile().get().getStackInSlot(slot);
 		if (batteryStack.isEmpty()) {
 			return;
 		}

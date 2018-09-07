@@ -39,7 +39,7 @@ import net.minecraft.world.World;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
 import reborncore.common.misc.ModSounds;
-import reborncore.common.util.InventoryHelper;
+import reborncore.common.util.ItemHandlerUtils;
 
 
 /**
@@ -62,7 +62,7 @@ public class WrenchHelper {
 						return false;
 					}
 					if (!worldIn.isRemote) {
-						InventoryHelper.dropInventoryItems(worldIn, pos);
+						ItemHandlerUtils.dropContainedItems(worldIn, pos);
 						if (!drop.isEmpty()) {
 							net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
 									(double) pos.getY(), (double) pos.getZ(), drop);

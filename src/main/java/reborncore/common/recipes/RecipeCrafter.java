@@ -28,7 +28,6 @@
 
 package reborncore.common.recipes;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -80,7 +79,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	/**
 	 * This is the inventory to use for the crafting
 	 */
-	public IInventory inventory;
+	public Inventory inventory;
 
 	/**
 	 * This is the list of the slots that the crafting logic should look for the
@@ -277,7 +276,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 						count = RecipeTranslator.getStackFromObject(input).getCount();
 					}
 					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
-						inventory.decrStackSize(inputSlot, count);
+						inventory.shrinkSlot(inputSlot, count);
 						break;	
 					}
 				}
@@ -305,7 +304,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		if (inventory.getStackInSlot(slot).isEmpty()) {// If the slot is empty set the contents
-			inventory.setInventorySlotContents(slot, stack);
+			inventory.setStackInSlot(slot, stack);
 			return;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, currentRecipe.useOreDic())) {// If the slot has stuff in
@@ -316,7 +315,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				// new
 				// stack
 				// size
-				inventory.setInventorySlotContents(slot, newStack);
+				inventory.setStackInSlot(slot, newStack);
 			}
 		}
 	}
@@ -390,20 +389,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public boolean isInvDirty() {
-		if (inventory instanceof Inventory) {
-			return ((Inventory) inventory).isDirty;
-		} else if (inventory instanceof reborncore.common.util.Inventory) {
-			return ((reborncore.common.util.Inventory) inventory).hasChanged;
-		}
-		return true;
+		return inventory.hasChanged();
 	}
 
 	public void setInvDirty(boolean isDiry) {
-		if (inventory instanceof Inventory) {
-			((Inventory) inventory).isDirty = isDiry;
-		} else if (inventory instanceof reborncore.common.util.Inventory) {
-			((reborncore.common.util.Inventory) inventory).hasChanged = isDiry;
-		}
+		inventory.setChanged(isDiry);
 	}
 
 	public boolean isStackValidInput(ItemStack stack) {

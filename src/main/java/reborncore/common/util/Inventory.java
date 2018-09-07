@@ -28,44 +28,59 @@
 
 package reborncore.common.util;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class Inventory implements IInventory {
+import javax.annotation.Nonnull;
 
-	public ItemStack[] contents;
+public class Inventory extends ItemStackHandler {
+
 	private final String name;
 	private final int stackLimit;
 	private TileEntity tile;
-	public boolean hasChanged = false;
-	public boolean isDirty = false;
+	private boolean hasChanged = false;
 
 	public Inventory(int size, String invName, int invStackLimit, TileEntity tileEntity) {
-		contents = new ItemStack[size];
-		for (int i = 0; i < getSizeInventory(); i++) {
-			contents[i] = ItemStack.EMPTY;
-		}
+		super(size);
 		name = invName;
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return contents.length;
+	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+		super.setStackInSlot(slot, stack);
+		setChanged();
 	}
 
+	@Nonnull
 	@Override
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		ItemStack result = super.insertItem(slot, stack, simulate);
+		setChanged();
+		return result;
+	}
+
+	@Nonnull
+	@Override
+	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+		ItemStack stack = super.extractItem(slot, amount, simulate);
+		setChanged();
+		return stack;
+	}
+
+	public ItemStack shrinkSlot(int slot, int count) {
+		ItemStack stack = getStackInSlot(slot);
+		stack.shrink(count);
+		setChanged();
+		return stack;
+	}
+
 	public boolean isEmpty() {
-		for (ItemStack itemstack : contents) {
+		for (ItemStack itemstack : stacks) {
 			if (!itemstack.isEmpty()) {
 				return false;
 			}
@@ -73,81 +88,13 @@ public class Inventory implements IInventory {
 		return true;
 	}
 
-	@Override
-	public ItemStack getStackInSlot(int slotId) {
-		return contents[slotId];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slotId, int count) {
-		if (slotId < contents.length && !contents[slotId].isEmpty()) {
-			if (contents[slotId].getCount() > count) {
-				ItemStack result = contents[slotId].splitStack(count);
-				markDirty();
-				hasChanged = true;
-				return result;
-			}
-			ItemStack stack = contents[slotId];
-			setInventorySlotContents(slotId, ItemStack.EMPTY);
-			hasChanged = true;
-			return stack;
-		}
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slotId, ItemStack itemstack) {
-		if (slotId >= contents.length) {
-			return;
-		}
-		contents[slotId] = itemstack;
-
-		if (!itemstack.isEmpty() && itemstack.getCount() > this.getInventoryStackLimit()) {
-			itemstack.setCount(this.getInventoryStackLimit());
-		}
-		markDirty();
-		hasChanged = true;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return stackLimit;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer) {
-		return true;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-
-	}
-
 	public void readFromNBT(NBTTagCompound data) {
 		readFromNBT(data, "Items");
 	}
 
 	public void readFromNBT(NBTTagCompound data, String tag) {
-		NBTTagList nbttaglist = data.getTagList(tag, Constants.NBT.TAG_COMPOUND);
-
-		for (int j = 0; j < nbttaglist.tagCount(); ++j) {
-			NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
-			int index;
-			if (slot.hasKey("index")) {
-				index = slot.getInteger("index");
-			} else {
-				index = slot.getByte("Slot");
-			}
-			if (index >= 0 && index < contents.length) {
-				setInventorySlotContents(index, new ItemStack(slot));
-			}
-		}
+		NBTTagCompound nbttaglist = data.getCompoundTag(tag);
+		deserializeNBT(nbttaglist);
 		hasChanged = true;
 	}
 
@@ -156,84 +103,34 @@ public class Inventory implements IInventory {
 	}
 
 	public void writeToNBT(NBTTagCompound data, String tag) {
-		NBTTagList slots = new NBTTagList();
-		for (byte index = 0; index < contents.length; ++index) {
-			if (!contents[index].isEmpty() && contents[index].getCount() > 0) {
-				NBTTagCompound slot = new NBTTagCompound();
-				slots.appendTag(slot);
-				slot.setByte("Slot", index);
-				contents[index].writeToNBT(slot);
-			}
-		}
-		data.setTag(tag, slots);
+		data.setTag(tag, serializeNBT());
 	}
 
 	public void setTile(TileEntity tileEntity) {
 		tile = tileEntity;
 	}
 
-	@Override
-	public ItemStack removeStackFromSlot(int slotId) {
-		if (this.contents[slotId].isEmpty()) {
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack stackToTake = this.contents[slotId];
-		setInventorySlotContents(slotId, ItemStack.EMPTY);
-		hasChanged = true;
-		return stackToTake;
-	}
-
-	public ItemStack[] getStacks() {
-		return contents;
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return true;
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-
-	}
-
-	@Override
-	public void markDirty() {
-		tile.markDirty();
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return new TextComponentString(name);
-	}
-
 	public TileEntity getTileBase() {
 		return tile;
+	}
+
+	public boolean hasChanged() {
+		return hasChanged;
+	}
+
+	public void setChanged() {
+		this.hasChanged = true;
+	}
+
+	public void setChanged(boolean changed) {
+		this.hasChanged = changed;
+	}
+
+	public void resetChanged() {
+		this.hasChanged = false;
+	}
+
+	public int getStackLimit() {
+		return stackLimit;
 	}
 }

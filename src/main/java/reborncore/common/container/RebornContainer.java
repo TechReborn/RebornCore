@@ -260,7 +260,7 @@ public abstract class RebornContainer extends Container {
 		int i;
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new BaseSlot(player.inventory, j + i * 9 + 9, x + j * 18, y + i * 18));
+				this.addSlotToContainer(new Slot(player.inventory, j + i * 9 + 9, x + j * 18, y + i * 18));
 			}
 		}
 
@@ -269,7 +269,7 @@ public abstract class RebornContainer extends Container {
 	public void drawPlayersHotBar(EntityPlayer player, int x, int y) {
 		int i;
 		for (i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new BaseSlot(player.inventory, i, x + i * 18, y));
+			this.addSlotToContainer(new Slot(player.inventory, i, x + i * 18, y));
 		}
 	}
 

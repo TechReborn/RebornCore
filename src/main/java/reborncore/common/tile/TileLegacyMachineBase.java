@@ -30,9 +30,6 @@ package reborncore.common.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,18 +39,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.items.IItemHandler;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
-import reborncore.api.tile.IInventoryProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.api.tile.ItemHandlerProvider;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
@@ -71,7 +67,7 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileLegacyMachineBase extends TileEntity implements ITickable, IInventory, ISidedInventory, IUpgradeable, IUpgradeHandler {
+public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
 
 	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
 	public SlotConfiguration slotConfiguration;
@@ -210,8 +206,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	public Optional<Inventory> getInventoryForTile() {
-		if (this instanceof IInventoryProvider) {
-			IInventoryProvider inventory = (IInventoryProvider) this;
+		if (this instanceof ItemHandlerProvider) {
+			ItemHandlerProvider inventory = (ItemHandlerProvider) this;
 			if (inventory.getInventory() == null) {
 				return Optional.empty();
 			}
@@ -290,88 +286,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		return tagCompound;
 	}
 
-	//Inventory Start
-	@Override
-	public int getSizeInventory() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getSizeInventory();
-		}
-		return 0;
-	}
+	//TODO fix me for new system
 
-	@Override
-	public boolean isEmpty() {
-		if (!getInventoryForTile().isPresent()) {
-			return true;
-		}
-		for (ItemStack itemstack : getInventoryForTile().get().contents) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getStackInSlot(index);
-		}
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().decrStackSize(index, count);
-		}
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().removeStackFromSlot(index);
-		}
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().setInventorySlotContents(index, stack);
-		}
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getInventoryStackLimit();
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(this.pos) == this &&
-			player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().openInventory(player);
-		}
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().closeInventory(player);
-		}
-	}
-
-	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		if(slotConfiguration == null){
 			return false;
@@ -383,67 +299,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 				return false;
 			}
 		}
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().isItemValidForSlot(index, stack);
-		}
 		return false;
 	}
 
-	@Override
-	public int getField(int id) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getField(id);
-		}
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().setField(id, value);
-		}
-	}
-
-	@Override
-	public int getFieldCount() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getFieldCount();
-		}
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().clear();
-		}
-	}
-
-	@Override
-	public String getName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getName();
-		}
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().hasCustomName();
-		}
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getDisplayName();
-		}
-		return null;
-	}
-
-	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
 		if(slotConfiguration == null){
 			return new int[]{}; //I think should be ok, if needed this can return all the slots
@@ -454,7 +312,6 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			.mapToInt(value -> value.slotID).toArray();
 	}
 
-	@Override
 	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
@@ -478,7 +335,6 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		return false;
 	}
 
-	@Override
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
@@ -495,11 +351,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 		}
 		return false;
 	}
-	//Inventory end
+
+	//
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getContainerForTile().isPresent()) {
 			return true;
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
@@ -516,8 +373,8 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getContainerForTile().isPresent()) {
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get());
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
 			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
@@ -533,7 +390,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
-	public IInventory getUpgradeInvetory() {
+	public IItemHandler getUpgradeInvetory() {
 		return upgradeInventory;
 	}
 

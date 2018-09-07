@@ -46,6 +46,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.ItemHandlerHelper;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
@@ -54,7 +55,7 @@ import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.items.WrenchHelper;
 import reborncore.common.tile.TileLegacyMachineBase;
-import reborncore.common.util.InventoryHelper;
+import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
@@ -107,7 +108,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		InventoryHelper.dropInventoryItems(worldIn, pos);
+		ItemHandlerUtils.dropContainedItems(worldIn, pos);
 		super.breakBlock(worldIn, pos, state);
 	}
 
@@ -156,9 +157,9 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
-					if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack,
-							null) > 0) {
-						InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInvetory(), stack);
+					if (ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
+							true).getCount() > 0) {
+						stack = ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
 						return true;
 					}

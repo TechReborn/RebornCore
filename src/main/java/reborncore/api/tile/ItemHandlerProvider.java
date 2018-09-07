@@ -28,10 +28,10 @@
 
 package reborncore.api.tile;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
-public interface IInventoryProvider {
+public interface ItemHandlerProvider {
 
-	IInventory getInventory();
+	IItemHandler getInventory();
 
 }

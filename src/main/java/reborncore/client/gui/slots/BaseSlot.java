@@ -28,14 +28,14 @@
 
 package reborncore.client.gui.slots;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 /**
  * Created by modmuss50 on 11/04/2016.
  */
-public class BaseSlot extends Slot {
-	public BaseSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+public class BaseSlot extends SlotItemHandler {
+	public BaseSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
 	}
 
