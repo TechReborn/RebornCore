@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class Torus {
 
@@ -60,7 +61,7 @@ public class Torus {
 			return;
 		}
 		long start = System.currentTimeMillis();
-		for (int radius = 0; radius < maxRadius + 10; radius++) { //10 is added as the control computer has a base of around 6 less
+		IntStream.range(0, maxRadius + 10).parallel().forEach(radius -> { //10 is added as the control computer has a base of around 6 less
 			int size = 0;
 			for (int x = -radius; x < radius; x++) {
 				for (int y = -radius; y < radius; y++) {
@@ -72,7 +73,7 @@ public class Torus {
 				}
 			}
 			TORUS_SIZE_MAP.put(radius, size);
-		}
+		});
 		RebornCore.logHelper.info("Loaded torus size map in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
