@@ -31,9 +31,9 @@ package reborncore.common.util;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.ItemStackHandler;
+import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileLegacyMachineBase;
 
 import javax.annotation.Nonnull;
@@ -55,6 +55,7 @@ public class Inventory<T extends TileLegacyMachineBase> extends ItemStackHandler
 		this.inventoryAccess = access;
 	}
 
+	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity) {
 		this(size, invName, invStackLimit, tileEntity, (slotID, stack, facing, direction, tile) -> true);
 	}
@@ -105,6 +106,25 @@ public class Inventory<T extends TileLegacyMachineBase> extends ItemStackHandler
 
 	public Inventory<T> getWithSide(EnumFacing facing){
 		this.facing = facing;
+		return this;
+	}
+
+	public boolean configuredAccess;
+
+	/**
+	 * This enables the default IO access that is setup to use the SlotConfiguration of the tile
+	 */
+	public Inventory<T> withConfiguredAccess(){
+		configuredAccess = true;
+		this.inventoryAccess = (slotID, stack, facing, direction, tile) -> {
+			switch (direction){
+				case INSERT:
+					return SlotConfiguration.canInsertItem(slotID, stack, facing, tile);
+				case EXTRACT:
+					return SlotConfiguration.canExtractItem(slotID, stack, facing, tile);
+			}
+			return false;
+		};
 		return this;
 	}
 

@@ -28,6 +28,7 @@
 
 package reborncore.common.tile;
 
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -38,7 +39,11 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.Validate;
 import reborncore.RebornCore;
+import reborncore.client.gui.slots.BaseSlot;
+import reborncore.common.container.RebornContainer;
+import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
 
@@ -61,6 +66,9 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 
 	public SlotConfiguration(Inventory inventory) {
 		this.inventory = inventory;
+		//This is done to ensure that the inventory is set to use configured access,
+		Validate.isTrue(inventory.configuredAccess);
+
 		for (int i = 0; i < inventory.getSlots(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));
 		}
@@ -418,4 +426,47 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 		deserializeNBT(compound.getCompoundTag("data"));
 	}
+
+	//DO NOT CALL THIS, use the inventory access on the inventory
+	public static boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction, TileLegacyMachineBase tile) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if (slotConfig.slotIO.ioConfig.isInsert()) {
+			if (slotConfigHolder.filter() && tile.getCrafterForTile().isPresent()) {
+				RecipeCrafter crafter = tile.getCrafterForTile().get();
+				if (!crafter.isStackValidInput(itemStackIn)) {
+					return false;
+				}
+			}
+			if (tile.getContainerForTile().isPresent()) {
+				RebornContainer container = tile.getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					Slot slot = container.slotMap.get(index);
+					return slot.isItemValid(itemStackIn);
+				}
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//DO NOT CALL THIS, use the inventory access on the inventory
+	public static  boolean canExtractItem(int index, ItemStack stack, EnumFacing direction, TileLegacyMachineBase tile) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if (slotConfig.slotIO.ioConfig.isExtact()) {
+			if (tile.getContainerForTile().isPresent()) {
+				RebornContainer container = tile.getContainerForTile().get();
+				if (container.slotMap.containsKey(index)) {
+					BaseSlot slot = container.slotMap.get(index);
+					return slot.canWorldBlockRemove();
+				}
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

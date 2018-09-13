@@ -30,7 +30,6 @@ package reborncore.common.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -50,19 +49,16 @@ import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.api.tile.ItemHandlerProvider;
-import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
-import reborncore.common.util.IInventoryAccess;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -70,7 +66,7 @@ import java.util.Optional;
  */
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
 
-	public Inventory<TileLegacyMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, getInventoryAccess());
+	public Inventory<TileLegacyMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
 	public SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 
@@ -303,74 +299,9 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 		return false;
 	}
 
-//	private int[] getSlotsForFace(EnumFacing side) {
-//		if(slotConfiguration == null){
-//			return new int[]{}; //I think should be ok, if needed this can return all the slots
-//		}
-//		return slotConfiguration.getSlotsForSide(side).stream()
-//			.filter(Objects::nonNull)
-//			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
-//			.mapToInt(value -> value.slotID).toArray();
-//	}
-
-	//Note this is static
-	private static IInventoryAccess<TileLegacyMachineBase> getInventoryAccess(){
-		return (slotID, stack, facing, direction, tile) -> {
-			switch (direction){
-				case INSERT:
-					return tile.canInsertItem(slotID, stack, facing);
-				case EXTRACT:
-					return tile.canExtractItem(slotID, stack, facing);
-			}
-			return true;
-		};
-	}
-
-	private boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isInsert()) {
-			if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
-				RecipeCrafter crafter = getCrafterForTile().get();
-				if (!crafter.isStackValidInput(itemStackIn)) {
-					return false;
-				}
-			}
-			if (getContainerForTile().isPresent()) {
-				RebornContainer container = getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					Slot slot = container.slotMap.get(index);
-					return slot.isItemValid(itemStackIn);
-				}
-			} else {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isExtact()) {
-			if (getContainerForTile().isPresent()) {
-				RebornContainer container = getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					BaseSlot slot = container.slotMap.get(index);
-					return slot.canWorldBlockRemove();
-				}
-			} else {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	//
-
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getContainerForTile().isPresent()) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return true;
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
@@ -387,7 +318,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getContainerForTile().isPresent()) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getWithSide(facing));
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
