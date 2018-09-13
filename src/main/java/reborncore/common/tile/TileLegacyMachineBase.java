@@ -57,6 +57,7 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
+import reborncore.common.util.IInventoryAccess;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.Tank;
 
@@ -69,7 +70,7 @@ import java.util.Optional;
  */
 public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
 
-	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
+	public Inventory<TileLegacyMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, getInventoryAccess());
 	public SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 
@@ -288,7 +289,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 
 	//TODO fix me for new system
 
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	private boolean isItemValidForSlot(int index, ItemStack stack) {
 		if(slotConfiguration == null){
 			return false;
 		}
@@ -302,17 +303,30 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 		return false;
 	}
 
-	public int[] getSlotsForFace(EnumFacing side) {
-		if(slotConfiguration == null){
-			return new int[]{}; //I think should be ok, if needed this can return all the slots
-		}
-		return slotConfiguration.getSlotsForSide(side).stream()
-			.filter(Objects::nonNull)
-			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
-			.mapToInt(value -> value.slotID).toArray();
+//	private int[] getSlotsForFace(EnumFacing side) {
+//		if(slotConfiguration == null){
+//			return new int[]{}; //I think should be ok, if needed this can return all the slots
+//		}
+//		return slotConfiguration.getSlotsForSide(side).stream()
+//			.filter(Objects::nonNull)
+//			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
+//			.mapToInt(value -> value.slotID).toArray();
+//	}
+
+	//Note this is static
+	private static IInventoryAccess<TileLegacyMachineBase> getInventoryAccess(){
+		return (slotID, stack, facing, direction, tile) -> {
+			switch (direction){
+				case INSERT:
+					return tile.canInsertItem(slotID, stack, facing);
+				case EXTRACT:
+					return tile.canExtractItem(slotID, stack, facing);
+			}
+			return true;
+		};
 	}
 
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+	private boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.slotIO.ioConfig.isInsert()) {
@@ -335,7 +349,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 		return false;
 	}
 
-	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+	private boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.slotIO.ioConfig.isExtact()) {
@@ -374,7 +388,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpg
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getContainerForTile().isPresent()) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get());
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getWithSide(facing));
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
 			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){

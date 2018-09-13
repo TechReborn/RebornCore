@@ -32,22 +32,31 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.ItemStackHandler;
+import reborncore.common.tile.TileLegacyMachineBase;
 
 import javax.annotation.Nonnull;
 
-public class Inventory extends ItemStackHandler {
+public class Inventory<T extends TileLegacyMachineBase> extends ItemStackHandler {
 
 	private final String name;
 	private final int stackLimit;
-	private TileEntity tile;
+	private T tile;
 	private boolean hasChanged = false;
+	private IInventoryAccess<T> inventoryAccess;
+	private EnumFacing facing = null;
 
-	public Inventory(int size, String invName, int invStackLimit, TileEntity tileEntity) {
+	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
 		name = invName;
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
+		this.inventoryAccess = access;
+	}
+
+	public Inventory(int size, String invName, int invStackLimit, T tileEntity) {
+		this(size, invName, invStackLimit, tileEntity, (slotID, stack, facing, direction, tile) -> true);
 	}
 
 	@Override
@@ -59,6 +68,9 @@ public class Inventory extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		if(!inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, tile)){
+			return stack;
+		}
 		ItemStack result = super.insertItem(slot, stack, simulate);
 		setChanged();
 		return result;
@@ -67,6 +79,9 @@ public class Inventory extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+		if(!inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, tile)){
+			return ItemStack.EMPTY;
+		}
 		ItemStack stack = super.extractItem(slot, amount, simulate);
 		setChanged();
 		return stack;
@@ -88,6 +103,11 @@ public class Inventory extends ItemStackHandler {
 		return true;
 	}
 
+	public Inventory<T> getWithSide(EnumFacing facing){
+		this.facing = facing;
+		return this;
+	}
+
 	public void readFromNBT(NBTTagCompound data) {
 		readFromNBT(data, "Items");
 	}
@@ -106,11 +126,11 @@ public class Inventory extends ItemStackHandler {
 		data.setTag(tag, serializeNBT());
 	}
 
-	public void setTile(TileEntity tileEntity) {
+	public void setTile(T tileEntity) {
 		tile = tileEntity;
 	}
 
-	public TileEntity getTileBase() {
+	public T getTile() {
 		return tile;
 	}
 
