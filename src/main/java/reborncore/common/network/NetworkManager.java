@@ -100,7 +100,7 @@ public class NetworkManager {
 			return packageWrapperMap.get(wrapperName);
 		} else {
 			SimpleNetworkWrapper newNetworkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(wrapperName);
-			RebornCore.logHelper.info("Created new network wrapper " + wrapperName);
+			RebornCore.LOGGER.info("Created new network wrapper " + wrapperName);
 			packageWrapperMap.put(wrapperName, newNetworkWrapper);
 			return newNetworkWrapper;
 		}
@@ -120,7 +120,7 @@ public class NetworkManager {
 		int id = getNextIDForWrapper(wrapper);
 		wrapper.registerMessage(PacketWrapper.PacketWrapperHandler.class, PacketWrapper.class, id, side);
 		packetWrapperMap.put(packetClass, wrapper);
-		RebornCore.logHelper.info("Registed packet to " + getWrapperName(packetClass) + " side: " + side + " id:" + id);
+		RebornCore.LOGGER.info("Registed packet to " + getWrapperName(packetClass) + " side: " + side + " id:" + id);
 		PacketDetails packetDetails = new PacketDetails(packetClass, id, wrapper);
 		packetList.add(packetDetails);
 		return packetDetails;

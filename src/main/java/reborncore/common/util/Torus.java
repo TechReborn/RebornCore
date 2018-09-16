@@ -74,7 +74,7 @@ public class Torus {
 			}
 			TORUS_SIZE_MAP.put(radius, size);
 		});
-		RebornCore.logHelper.info("Loaded torus size map in " + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.LOGGER.info("Loaded torus size map in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 }

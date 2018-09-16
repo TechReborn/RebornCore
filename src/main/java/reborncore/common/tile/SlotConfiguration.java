@@ -82,7 +82,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			for (int i = 0; i < inventory.getSlots(); i++) {
 				SlotConfigHolder holder = getSlotDetails(i);
 				if(holder == null){
-					RebornCore.logHelper.debug("Fixed slot " + i + " in " + machineBase);
+					RebornCore.LOGGER.debug("Fixed slot " + i + " in " + machineBase);
 					//humm somthing has gone wrong
 					updateSlotDetails(new SlotConfigHolder(i));
 				}

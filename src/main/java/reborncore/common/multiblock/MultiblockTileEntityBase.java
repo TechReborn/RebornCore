@@ -105,7 +105,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	@Override
 	public void assertDetached() {
 		if (this.controller != null) {
-			RebornCore.logHelper.info(
+			RebornCore.LOGGER.info(
 				String.format("[assert] Part @ (%d, %d, %d) should be detached already, but detected that it was not. This is not a fatal error, and will be repaired, but is unusual.",
 					getPos().getX(), getPos().getY(), getPos().getZ()));
 			this.controller = null;

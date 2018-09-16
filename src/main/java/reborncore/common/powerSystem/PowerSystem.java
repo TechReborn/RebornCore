@@ -175,7 +175,7 @@ public class PowerSystem {
 				config = SerializationUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
 			} catch (Exception e) {
 				e.printStackTrace();
-				RebornCore.logHelper.error("Failed to read power config, will reset to defautls and save a new file.");
+				RebornCore.LOGGER.error("Failed to read power config, will reset to defautls and save a new file.");
 			}
 			if (config == null) {
 				config = new EnergyPriorityConfig();

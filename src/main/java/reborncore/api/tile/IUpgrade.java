@@ -28,11 +28,7 @@
 
 package reborncore.api.tile;
 
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.tile.TileLegacyMachineBase;
 
@@ -40,7 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Added to an item to say that it is a valid upgrade
+ * Added to an item to say that it is a valid behavior
  */
 public interface IUpgrade {
 
@@ -51,8 +47,4 @@ public interface IUpgrade {
 			IUpgradeHandler handler,
 		@Nonnull
 			ItemStack stack);
-
-	@SideOnly(Side.CLIENT)
-	public void handleRightClick(TileEntity tile, ItemStack stack, Container container, int slotID);
-
 }

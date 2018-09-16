@@ -38,7 +38,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  * In your mod, subscribe this on both the client and server sides side to
  * handle chunk load events for your multiblock machines. Chunks can load
- * asynchronously in environments like MCPC+, so we cannot process any blocks
+ * asynchronously in environments like MCPC+, so we cannot behavior any blocks
  * that are in chunks which are still loading.
  */
 public class MultiblockEventHandler {

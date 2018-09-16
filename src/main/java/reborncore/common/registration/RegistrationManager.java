@@ -57,7 +57,7 @@ public class RegistrationManager {
 		ASMDataTable asmDataTable = event.getAsmData();
 		loadFactorys(asmDataTable);
 
-		Set<ASMDataTable.ASMData> asmDataSet = asmDataTable.getAll(RebornRegistry.class.getName());
+		Set<ASMDataTable.ASMData> asmDataSet = asmDataTable.getAll(RebornRegister.class.getName());
 		List<ASMDataTable.ASMData> asmDataList = new ArrayList<>(asmDataSet);
 		asmDataList.sort(Comparator.comparingInt(RegistrationManager::getPriority));
 		for (ASMDataTable.ASMData data : asmDataList) {
@@ -76,7 +76,7 @@ public class RegistrationManager {
 		//Sorts all the classes to (try) and ensure they are loaded in the same oder on the client/server.
 		//Hopefully this fixes the issue with packets being misaligned
 		registryClasses.sort(Comparator.comparing(Class::getCanonicalName));
-		RebornCore.logHelper.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.LOGGER.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	private static int getPriority(ASMDataTable.ASMData asmData){
@@ -106,11 +106,11 @@ public class RegistrationManager {
 			setActiveModContainer(activeMod);
 		}
 
-		RebornCore.logHelper.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.LOGGER.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	private static void handleClass(Class clazz, ModContainer activeMod){
-		RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
+		RebornRegister annotation = (RebornRegister) getAnnoation(clazz.getAnnotations(), RebornRegister.class);
 		if (annotation != null) {
 			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
 				setActiveMod(annotation.modID());

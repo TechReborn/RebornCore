@@ -70,7 +70,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	@Override
 	public void handleField(Field field) {
 		try {
-			RebornRegistry rebornRegistry = (RebornRegistry) RegistrationManager.getAnnoation(field.getDeclaringClass().getAnnotations(), RebornRegistry.class);
+			RebornRegister rebornRegistry = (RebornRegister) RegistrationManager.getAnnoation(field.getDeclaringClass().getAnnotations(), RebornRegister.class);
 			ConfigRegistry annotation = (ConfigRegistry) RegistrationManager.getAnnoationFromArray(field.getAnnotations(), this);
 
 			Configuration configuration = getOrCreateConfig(annotation, rebornRegistry);
@@ -98,7 +98,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			try {
 				value = getObjectFromProperty(property, field);
 			} catch (Exception e){
-				RebornCore.logHelper.error("Failed to read config value " + annotation.category() + "." + annotation.key() + " resetting to default value");
+				RebornCore.LOGGER.error("Failed to read config value " + annotation.category() + "." + annotation.key() + " resetting to default value");
 				e.printStackTrace();
 				value = defaultValue;
 			}
@@ -163,7 +163,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		throw new RuntimeException("Type not supported: " + type);
 	}
 
-	public static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegistry rebornRegistry){
+	public static Configuration getOrCreateConfig(ConfigRegistry annotation, RebornRegister rebornRegistry){
 		return getOrCreateConfig(rebornRegistry.modID(), annotation.config());
 	}
 
@@ -224,7 +224,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 				Field field = data.fieldMap.get(data.getName(category, property));
 				if(field == null){
 					//This is a possible outcome, as some configs dont have a field for them.
-					RebornCore.logHelper.debug("failed to find field for " + property.getName());
+					RebornCore.LOGGER.debug("failed to find field for " + property.getName());
 					continue;
 				}
 				try {
@@ -246,8 +246,8 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 				configVersionTag = CompressedStreamTools.read(dataFile);
 			} catch (IOException e) {
 				e.printStackTrace();
-				RebornCore.logHelper.error("Failed to read config data");
-				RebornCore.logHelper.error(e);
+				RebornCore.LOGGER.error("Failed to read config data");
+				RebornCore.LOGGER.error(e);
 				//Just reset it, I cannot be dealing with crashes for things being off.
 				dataFile.delete();
 				configVersionTag = new NBTTagCompound();
@@ -268,7 +268,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		String savedDefault = propertyTag.getString("default");
 		boolean shouldReset = false;
 		if(configValue.equals(savedDefault) && !configValue.equals(property.getDefault())){
-			RebornCore.logHelper.info(configRegistry.key() + " is being reset to new mod default:" + property.getDefault());
+			RebornCore.LOGGER.info(configRegistry.key() + " is being reset to new mod default:" + property.getDefault());
 			shouldReset = true;
 		} else {
 			propertyTag.setString("default", property.getDefault());

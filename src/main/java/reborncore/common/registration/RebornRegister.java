@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface RebornRegistry {
+public @interface RebornRegister {
 
 	/**
 	 * The mod id that should be active when the annotion is being proccessed.

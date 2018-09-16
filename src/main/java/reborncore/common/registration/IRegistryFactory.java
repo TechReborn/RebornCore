@@ -86,7 +86,7 @@ public interface IRegistryFactory {
 	 *
 	 * The deafult is for all
 	 *
-	 * @return A list of RegistryTarget's that this factory will atempt to process
+	 * @return A list of RegistryTarget's that this factory will atempt to behavior
 	 */
 	public default List<RegistryTarget> getTargets() {
 		return Arrays.asList(RegistryTarget.CLASS, RegistryTarget.MEHTOD, RegistryTarget.FIELD);

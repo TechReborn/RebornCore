@@ -48,7 +48,7 @@ public class CalenderUtils {
 		if (month == 12) {
 			if (day >= 24 && day <= 26) {
 				christmas = true;
-				RebornCore.logHelper.info("Merry christmas from reborn core! :)");
+				RebornCore.LOGGER.info("Merry christmas from reborn core! :)");
 			}
 		}
 

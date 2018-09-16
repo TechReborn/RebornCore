@@ -28,11 +28,11 @@
 
 package reborncore.common;
 
-import reborncore.common.registration.RebornRegistry;
+import reborncore.common.registration.RebornRegister;
 import reborncore.common.registration.impl.ConfigRegistry;
 
 
-@RebornRegistry
+@RebornRegister
 public class RebornCoreConfig {
 
 	@ConfigRegistry(comment = "The Amount of FU to output from EU", category = "power")

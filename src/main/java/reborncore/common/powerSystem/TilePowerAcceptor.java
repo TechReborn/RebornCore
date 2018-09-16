@@ -60,25 +60,25 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	public double extraPowerStoage;
 	public double extraPowerInput;
-	public int extraTeir;
+	public int extraTier;
 	public double powerChange;
 	public double powerLastTick;
 	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
 
 	public TilePowerAcceptor() {
-		checkTeir();
+		checkTier();
 	}
 
 	public TilePowerAcceptor(EnumPowerTier tier) {
-		checkTeir();
+		checkTier();
 	}
 
-	public void checkTeir() {
+	public void checkTier() {
 		if (getBaseTier() == null) {
 			if (this.getMaxInput() == 0) {
-				tier = EnumPowerTier.getTeir((int) this.getBaseMaxOutput());
+				tier = EnumPowerTier.getTier((int) this.getBaseMaxOutput());
 			} else {
-				tier = EnumPowerTier.getTeir((int) this.getBaseMaxInput());
+				tier = EnumPowerTier.getTier((int) this.getBaseMaxInput());
 			}
 		}
 	}
@@ -238,7 +238,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void resetUpgrades() {
 		super.resetUpgrades();
 		extraPowerStoage = 0;
-		extraTeir = 0;
+		extraTier = 0;
 		extraPowerInput = 0;
 	}
 	
@@ -344,7 +344,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public double getMaxOutput() {
 		double maxOutput = 0;
-		if (this.extraTeir > 0) {
+		if (this.extraTier > 0) {
 			maxOutput = this.getTier().getMaxOutput();
 		}
 		else {
@@ -356,7 +356,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public double getMaxInput() {
 		double maxInput = 0;
-		if (this.extraTeir > 0) {
+		if (this.extraTier > 0) {
 			maxInput = this.getTier().getMaxInput();
 		}
 		else {
@@ -374,13 +374,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		EnumPowerTier baseTier = getBaseTier();
 		if (baseTier == null) {
 			if (tier == null) {
-				checkTeir();
+				checkTier();
 			}
 			baseTier = tier;
 		}
-		if (extraTeir > 0) {
+		if (extraTier > 0) {
 			for (EnumPowerTier tier : EnumPowerTier.values()) {
-				if (tier.ordinal() == baseTier.ordinal() + extraTeir) {
+				if (tier.ordinal() == baseTier.ordinal() + extraTier) {
 					return tier;
 				}
 			}

@@ -83,7 +83,7 @@ public class OreUtil {
 				}
 			}
 		}
-		RebornCore.logHelper.info("Found " + oreNames.size() + " ores");
+		RebornCore.LOGGER.info("Found " + oreNames.size() + " ores");
 	}
 
 	public static boolean isValidName(String name){

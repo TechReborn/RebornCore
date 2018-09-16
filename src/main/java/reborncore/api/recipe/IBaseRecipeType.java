@@ -65,7 +65,7 @@ public interface IBaseRecipeType {
 
 	/**
 	 * This is the name to check that the recipe is the one that should be used
-	 * in the tile entity that is set up to process this recipe.
+	 * in the tile entity that is set up to behavior this recipe.
 	 *
 	 * @return The recipeName
 	 */

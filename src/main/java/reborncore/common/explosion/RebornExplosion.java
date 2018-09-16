@@ -103,7 +103,7 @@ public class RebornExplosion extends Explosion {
 				}
 			}
 		}
-		RebornCore.logHelper.info("The explosion took" + watch + " to explode");
+		RebornCore.LOGGER.info("The explosion took" + watch + " to explode");
 	}
 
 	@Override

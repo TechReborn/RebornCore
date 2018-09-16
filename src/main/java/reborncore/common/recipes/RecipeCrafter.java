@@ -118,7 +118,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		this.inputSlots = inputSlots;
 		this.outputSlots = outputSlots;
 		if (!(parentTile instanceof IRecipeCrafterProvider)) {
-			RebornCore.logHelper.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
+			RebornCore.LOGGER.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
 		}
 	}
 

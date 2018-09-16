@@ -74,7 +74,7 @@ public class PacketFluidConfigSync implements INetworkPacket {
 		}
 		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
 		if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
-			RebornCore.logHelper.error("Failed to sync fluid config data to " + pos);
+			RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
 		}
 		Minecraft.getMinecraft().addScheduledTask(() -> {
 			fluidConfiguration.getAllSides().forEach(fluidConfig -> machineBase.fluidConfiguration.updateFluidConfig(fluidConfig));

@@ -128,7 +128,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	/* 
 	 *  Right-click should open GUI for all non-wrench items
-	 *  Shift-Right-click should apply special action, like fill\drain bucket, install upgrade, etc.
+	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,

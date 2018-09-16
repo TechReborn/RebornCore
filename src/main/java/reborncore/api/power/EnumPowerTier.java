@@ -56,7 +56,7 @@ public enum EnumPowerTier {
 		return maxOutput;
 	}
 
-	public static EnumPowerTier getTeir(int power) {
+	public static EnumPowerTier getTier(int power) {
 		for (EnumPowerTier tier : EnumPowerTier.values()) {
 			if (tier.maxInput >= power) {
 				return tier;

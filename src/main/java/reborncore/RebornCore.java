@@ -36,10 +36,9 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
-import reborncore.common.IModInfo;
-import reborncore.common.LootManager;
-import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.commands.CommandListMods;
 import reborncore.common.commands.CommandListRecipes;
@@ -59,23 +58,19 @@ import reborncore.common.util.*;
 import java.io.File;
 
 @Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.12]", dependencies = "required-after:forge@[14.21.0.2359,);", certificateFingerprint = "8727a3141c8ec7f173b87aa78b9b9807867c4e6b")
-public class RebornCore implements IModInfo {
+public class RebornCore {
 
 	public static final String MOD_NAME = "Reborn Core";
 	public static final String MOD_ID = "reborncore";
 	public static final String MOD_VERSION = "@MODVERSION@";
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
-	public static LogHelper logHelper;
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	@Mod.Instance
 	public static RebornCore INSTANCE;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
 	public static File configDir;
-
-	public RebornCore() {
-		logHelper = new LogHelper(this);
-	}
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -137,24 +132,24 @@ public class RebornCore implements IModInfo {
 		try {
 			OreUtil.remove("blockMetal");
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			RebornCore.logHelper.error("Failed to remove ore");
-			RebornCore.logHelper.error(e);
+			LOGGER.error("Failed to remove ore");
+			LOGGER.error(e);
 		}
 	}
 
 	@Mod.EventHandler
-	public void loaded(FMLLoadCompleteEvent event){
+	public void loaded(FMLLoadCompleteEvent event) {
 		OreRegistationEvent.loadComplete();
 	}
 
 	@Mod.EventHandler
 	public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		logHelper.error("Invalid fingerprint detected for RebornCore!");
-		RebornCore.proxy.invalidFingerprints.add("Invalid fingerprint detected for RebornCore!");
+		LOGGER.error("Invalid fingerprint detected for Reborn Core!");
+		RebornCore.proxy.invalidFingerprints.add("Invalid fingerprint detected for Reborn Core!");
 	}
 
 	@SubscribeEvent
-	public void registerPackets(RegisterPacketEvent event){
+	public void registerPackets(RegisterPacketEvent event) {
 		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
 		event.registerPacket(PacketSlotSave.class, Side.SERVER);
 		event.registerPacket(PacketFluidConfigSave.class, Side.SERVER);
@@ -166,28 +161,8 @@ public class RebornCore implements IModInfo {
 	}
 
 	@Mod.EventHandler
-	public void serverStarting(FMLServerStartingEvent event){
+	public void serverStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandListRecipes());
 		event.registerServerCommand(new CommandListMods());
-	}
-
-	@Override
-	public String MOD_NAME() {
-		return MOD_NAME;
-	}
-
-	@Override
-	public String MOD_ID() {
-		return MOD_ID;
-	}
-
-	@Override
-	public String MOD_VERSION() {
-		return MOD_VERSION;
-	}
-
-	@Override
-	public String MOD_DEPENDENCIES() {
-		return "";
 	}
 }

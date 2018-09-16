@@ -74,7 +74,7 @@ public class  PacketSlotSync implements INetworkPacket {
 		}
 		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
 		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
-			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
+			RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
 		}
 		Minecraft.getMinecraft().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));
 

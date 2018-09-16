@@ -135,7 +135,7 @@ public class MultiblockRegistry {
 		if (registries.containsKey(world)) {
 			registries.get(world).addDeadController(controller);
 		} else {
-			RebornCore.logHelper.warn(String.format(
+			RebornCore.LOGGER.warn(String.format(
 				"Controller %d in world %s marked as dead, but that world is not tracked! Controller is being ignored.",
 				controller.hashCode(), world));
 		}

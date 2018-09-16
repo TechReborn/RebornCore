@@ -87,7 +87,7 @@ public abstract class RebornContainer extends Container {
 					}
 				}
 				if (container == null) {
-					RebornCore.logHelper.error("Failed to create container for " + clazz.getName() + " bad things may happen, please report to devs");
+					RebornCore.LOGGER.error("Failed to create container for " + clazz.getName() + " bad things may happen, please report to devs");
 				}
 				containerMap.put(clazz.getCanonicalName(), container);
 				return container;

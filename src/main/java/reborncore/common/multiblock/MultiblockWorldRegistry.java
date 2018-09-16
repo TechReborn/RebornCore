@@ -228,7 +228,7 @@ public class MultiblockWorldRegistry {
 				}
 
 				if (newMaster == null) {
-					RebornCore.logHelper.fatal(
+					RebornCore.LOGGER.fatal(
 						String.format("Multiblock system checked a merge pool of size %d, found no master candidates. This should never happen.",
 							mergePool.size()));
 				} else {
@@ -285,7 +285,7 @@ public class MultiblockWorldRegistry {
 				// potentially dead.
 				// Validate that they are empty/dead, then unregister them.
 				if (!controller.isEmpty()) {
-					RebornCore.logHelper.fatal(
+					RebornCore.LOGGER.fatal(
 						"Found a non-empty controller. Forcing it to shed its blocks and die. This should never happen!");
 					detachedParts.addAll(controller.detachAllBlocks());
 				}
