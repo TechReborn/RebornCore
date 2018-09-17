@@ -64,9 +64,9 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileLegacyMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
+public class TileMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
 
-	public Inventory<TileLegacyMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
+	public Inventory<TileMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
 	public SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 

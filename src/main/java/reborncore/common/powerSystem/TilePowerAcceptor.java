@@ -43,14 +43,14 @@ import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
+public abstract class TilePowerAcceptor extends TileMachineBase implements
 	IEnergyInterfaceTile, IListInfoProvider // TechReborn
 {
 	private EnumPowerTier tier;
@@ -154,7 +154,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		this.powerChange = powerChange;
 	}
 
-	// TileLegacyMachineBase
+	// TileMachineBase
 	@Override
 	public void update() {
 		super.update();

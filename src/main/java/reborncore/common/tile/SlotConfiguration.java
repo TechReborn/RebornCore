@@ -74,7 +74,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 	}
 
-	public void update(TileLegacyMachineBase machineBase){
+	public void update(TileMachineBase machineBase){
 		if(inventory == null && machineBase.getInventoryForTile().isPresent()){
 			inventory = machineBase.getInventoryForTile().get();
 		}
@@ -178,7 +178,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			toEdit.slotIO = config.slotIO;
 		}
 
-		private void handleItemIO(TileLegacyMachineBase machineBase){
+		private void handleItemIO(TileMachineBase machineBase){
 			if(!input && !output){
 				return;
 			}
@@ -279,7 +279,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			return slotID;
 		}
 
-		private void handleItemInput(TileLegacyMachineBase machineBase){
+		private void handleItemInput(TileMachineBase machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
 			ItemStack targetStack = inventory.getStackInSlot(slotID);
 			if(targetStack.getMaxStackSize() == targetStack.getCount()){
@@ -316,7 +316,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			}
 		}
 
-		private void handleItemOutput(TileLegacyMachineBase machineBase){
+		private void handleItemOutput(TileMachineBase machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
 			ItemStack sourceStack = inventory.getStackInSlot(slotID);
 			if(sourceStack.isEmpty()){
@@ -428,7 +428,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 	}
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
-	public static boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction, TileLegacyMachineBase tile) {
+	public static boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction, TileMachineBase tile) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.slotIO.ioConfig.isInsert()) {
@@ -452,7 +452,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 	}
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
-	public static  boolean canExtractItem(int index, ItemStack stack, EnumFacing direction, TileLegacyMachineBase tile) {
+	public static  boolean canExtractItem(int index, ItemStack stack, EnumFacing direction, TileMachineBase tile) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.slotIO.ioConfig.isExtact()) {

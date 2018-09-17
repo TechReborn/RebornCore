@@ -54,7 +54,7 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.items.WrenchHelper;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 
@@ -142,8 +142,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			return false;
 		}
 
-		if(tileEntity instanceof TileLegacyMachineBase){
-			Tank tank = ((TileLegacyMachineBase) tileEntity).getTank();
+		if(tileEntity instanceof TileMachineBase){
+			Tank tank = ((TileMachineBase) tileEntity).getTank();
 			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
 				return true;
 			}

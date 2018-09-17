@@ -36,7 +36,7 @@ import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 
 import java.io.IOException;
 
@@ -70,7 +70,7 @@ public class PacketFluidConfigSave implements INetworkPacket {
 
 	@Override
 	public void processData(MessageContext context) {
-		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
+		TileMachineBase legacyMachineBase = (TileMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
 		legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
 		legacyMachineBase.markDirty();
 

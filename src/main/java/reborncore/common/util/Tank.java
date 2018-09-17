@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.FluidTank;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nullable;
 
@@ -51,9 +51,9 @@ public class Tank extends FluidTank {
 
 	@Nullable
 	private EnumFacing side = null;
-	TileLegacyMachineBase machine;
+	TileMachineBase machine;
 
-	public Tank(String name, int capacity, TileLegacyMachineBase tile) {
+	public Tank(String name, int capacity, TileMachineBase tile) {
 		super(capacity);
 		this.name = name;
 		this.tile = tile;

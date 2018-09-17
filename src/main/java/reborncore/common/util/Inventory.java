@@ -34,11 +34,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.ItemStackHandler;
 import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nonnull;
 
-public class Inventory<T extends TileLegacyMachineBase> extends ItemStackHandler {
+public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 
 	private final String name;
 	private final int stackLimit;

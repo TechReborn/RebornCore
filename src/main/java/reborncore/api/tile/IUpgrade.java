@@ -30,7 +30,7 @@ package reborncore.api.tile;
 
 import net.minecraft.item.ItemStack;
 import reborncore.common.recipes.IUpgradeHandler;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public interface IUpgrade {
 
 	public void process(
 		@Nonnull
-			TileLegacyMachineBase machineBase,
+			TileMachineBase machineBase,
 		@Nullable
 			IUpgradeHandler handler,
 		@Nonnull
