@@ -41,78 +41,91 @@ import javax.annotation.Nullable;
 
 public class FluidUtils {
 
-	public static boolean fluidEquals(Fluid f1, Fluid f2){
-		if(f1.equals(f2)){
+	public static boolean fluidEquals(Fluid f1, Fluid f2) {
+		if (f1.equals(f2)) {
 			return true;
 		}
-		//This is a work around TR's fucked fluid names that we dont want to break worlds in 1.12 to fix. //TODO remove in 1.13
+		// This is a work around TR's fucked fluid names that we dont want to break
+		// worlds in 1.12 to fix. //TODO remove in 1.13
 		String s1 = f1.getName();
 		String s2 = f2.getName();
-		if(s1.startsWith("fluid")){
+		if (s1.startsWith("fluid")) {
 			s1 = s1.replaceFirst("fluid", "");
 		}
-		if(s2.startsWith("fluid")){
+		if (s2.startsWith("fluid")) {
 			s2 = s2.replaceFirst("fluid", "");
 		}
 		return s1.equals(s2);
 	}
 
 	public static boolean drainContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot) {
-		ItemStack input = inv.getStackInSlot(inputSlot);
-		ItemStack output = inv.getStackInSlot(outputSlot);
+		ItemStack inputStack = inv.getStackInSlot(inputSlot);
+		ItemStack outputStack = inv.getStackInSlot(outputSlot);
+		IFluidHandlerItem inputFluidHandler = getFluidHandler(inputStack);
 
-		IFluidHandlerItem inputFluidHandler = getFluidHandler(input);
+		if (inputFluidHandler == null) {
+			return false;
+		}
 
-		if (inputFluidHandler != null) {
+		int inputFluidHandlerCapacity = inputFluidHandler.getTankProperties()[0].getCapacity();
+
+		/*
+		 * Making a simulation to check if the fluid can be drained into the
+		 * fluidhandler.
+		 */
+		if (FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler, inputFluidHandlerCapacity, false) == null) {
+			return false;
+		}
+
+		// Changes are really applied and the fluid is drained.
+		FluidStack drained = FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler, inputFluidHandlerCapacity,
+				true);
+
+		if (drained == null) {
+			// How that could be?
+			return false;
+		}
+
+		// Proceed with inventory changes
+		ItemStack inputFluidHandlerItemStack = inputFluidHandler.getContainer();
+		if (inputFluidHandlerItemStack.isEmpty()) {
+			inv.decrStackSize(inputSlot, 1);
+		} else {
 
 			/*
-			 * Making a simulation to check if the fluid can be drained into the
-			 * fluidhandler.
+			 * If the drained container doesn't disappear we need to update the inventory
+			 * accordingly.
 			 */
-			if (FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler,
-				inputFluidHandler.getTankProperties()[0].getCapacity(), false) != null) {
-
-				// Changes are really applied and the fluid is drained.
-				FluidStack drained = FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler,
-					inputFluidHandler.getTankProperties()[0].getCapacity(), true);
+			if (outputStack.isEmpty()) {
+				inv.setInventorySlotContents(outputSlot, inputFluidHandlerItemStack);
+				inv.decrStackSize(inputSlot, 1);
+			} else {
 
 				/*
-				 * If the drained container doesn't disappear we need to update
-				 * the inventory accordingly.
+				 * When output is not EMPTY, it is needed to check if the two stacks can be
+				 * merged together, there was no simple way to make that check before.
 				 */
-				if (drained != null && !inputFluidHandler.getContainer().isEmpty())
-					if (output.isEmpty()) {
-						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
-						inv.decrStackSize(inputSlot, 1);
-					} else {
+				if (ItemUtils.isItemEqual(outputStack, inputFluidHandlerItemStack, true, true)
+						&& outputStack.getCount() <= outputStack.getMaxStackSize()) {
+					outputStack.setCount(outputStack.getCount() + 1);
+					inv.decrStackSize(inputSlot, 1);
+				} else {
 
-						/*
-						 * When output is not EMPTY, it is needed to check if
-						 * the two stacks can be merged together, there was no
-						 * simple way to make that check before.
-						 */
-						if (ItemUtils.isItemEqual(output, inputFluidHandler.getContainer(), true, true) && output.getCount() <= output.getMaxStackSize()) {
-							inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
-							inv.decrStackSize(inputSlot, 1);
-						} else {
-
-							/*
-							 * Due to the late check of stacks merge we need to
-							 * reverse any changes made to the FluidHandlers
-							 * when the merge fail.
-							 */
-							FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, drained.amount, true);
-							return false;
-						}
-					}
-				return true;
+					/*
+					 * Due to the late check of stacks merge we need to reverse any changes made to
+					 * the FluidHandlers when the merge fail.
+					 */
+					FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, drained.amount, true);
+					return false;
+				}
 			}
+			return true;
 		}
 		return false;
 	}
 
 	public static boolean fillContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot,
-	                                     Fluid fluidToFill) {
+			Fluid fluidToFill) {
 		ItemStack input = inv.getStackInSlot(inputSlot);
 		ItemStack output = inv.getStackInSlot(outputSlot);
 
@@ -120,30 +133,30 @@ public class FluidUtils {
 			IFluidHandlerItem inputFluidHandler = getFluidHandler(input);
 
 			/*
-			 * The copy is needed to get the filled container without altering
-			 * the original ItemStack.
+			 * The copy is needed to get the filled container without altering the original
+			 * ItemStack.
 			 */
 			ItemStack containerCopy = input.copy();
 			containerCopy.setCount(1);
 
 			/*
-			 * It's necessary to check before any alterations that the resulting
-			 * ItemStack can be placed into the outputSlot.
+			 * It's necessary to check before any alterations that the resulting ItemStack
+			 * can be placed into the outputSlot.
 			 */
-			if (inputFluidHandler != null && (output.isEmpty()
-				|| (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(
-				FluidUtils.getFilledContainer(fluidToFill, containerCopy), output, true, true)))) {
+			if (inputFluidHandler != null
+					&& (output.isEmpty() || (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(
+							FluidUtils.getFilledContainer(fluidToFill, containerCopy), output, true, true)))) {
 
 				/*
-				 * Making a simulation to check if the fluid can be transfered
-				 * into the fluidhandler.
+				 * Making a simulation to check if the fluid can be transfered into the
+				 * fluidhandler.
 				 */
 				if (FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler,
-					inputFluidHandler.getTankProperties()[0].getCapacity(), false) != null) {
+						inputFluidHandler.getTankProperties()[0].getCapacity(), false) != null) {
 
 					// Changes are really applied and the fluid is transfered.
 					FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler,
-						inputFluidHandler.getTankProperties()[0].getCapacity(), true);
+							inputFluidHandler.getTankProperties()[0].getCapacity(), true);
 
 					// The inventory is modified and stacks are merged.
 					if (output.isEmpty())
@@ -166,9 +179,7 @@ public class FluidUtils {
 	}
 
 	@Nullable
-	public static FluidStack getFluidStackInContainer(
-		@Nonnull
-			ItemStack container) {
+	public static FluidStack getFluidStackInContainer(@Nonnull ItemStack container) {
 		if (!container.isEmpty()) {
 			container = container.copy();
 			container.setCount(1);
