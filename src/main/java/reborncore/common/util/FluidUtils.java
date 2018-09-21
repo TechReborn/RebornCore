@@ -45,68 +45,72 @@ public class FluidUtils {
 		if(f1.equals(f2)){
 			return true;
 		}
-		//This is a work around TR's fucked fluid names that we dont want to break worlds in 1.12 to fix. //TODO remove in 1.13
-		String s1 = f1.getName();
-		String s2 = f2.getName();
-		if(s1.startsWith("fluid")){
-			s1 = s1.replaceFirst("fluid", "");
-		}
-		if(s2.startsWith("fluid")){
-			s2 = s2.replaceFirst("fluid", "");
-		}
-		return s1.equals(s2);
+		return false;
 	}
 
 	public static boolean drainContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot, int outputSlot) {
-		ItemStack input = inv.getStackInSlot(inputSlot);
-		ItemStack output = inv.getStackInSlot(outputSlot);
+		ItemStack inputStack = inv.getStackInSlot(inputSlot);
+		ItemStack outputStack = inv.getStackInSlot(outputSlot);
+		IFluidHandlerItem inputFluidHandler = getFluidHandler(inputStack);
 
-		IFluidHandlerItem inputFluidHandler = getFluidHandler(input);
+		if (inputFluidHandler == null) {
+			return false;
+		}
 
-		if (inputFluidHandler != null) {
+		int inputFluidHandlerCapacity = inputFluidHandler.getTankProperties()[0].getCapacity();
+
+		/*
+		 * Making a simulation to check if the fluid can be drained into the
+		 * fluidhandler.
+		 */
+		if (FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler, inputFluidHandlerCapacity, false) == null) {
+			return false;
+		}
+
+		// Changes are really applied and the fluid is drained.
+		FluidStack drained = FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler, inputFluidHandlerCapacity,
+				true);
+
+		if (drained == null) {
+			// How that could be?
+			return false;
+		}
+
+		// Proceed with inventory changes
+		ItemStack inputFluidHandlerItemStack = inputFluidHandler.getContainer();
+		if (inputFluidHandlerItemStack.isEmpty()) {
+// TODO: FIx this. ItemStack should not be modified
+			inv.getStackInSlot(inputSlot).shrink(1);
+		} else {
 
 			/*
-			 * Making a simulation to check if the fluid can be drained into the
-			 * fluidhandler.
+			 * If the drained container doesn't disappear we need to update the inventory
+			 * accordingly.
 			 */
-			if (FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler,
-				inputFluidHandler.getTankProperties()[0].getCapacity(), false) != null) {
-
-				// Changes are really applied and the fluid is drained.
-				FluidStack drained = FluidUtil.tryFluidTransfer(fluidHandler, inputFluidHandler,
-					inputFluidHandler.getTankProperties()[0].getCapacity(), true);
+			if (outputStack.isEmpty()) {
+				inv.setStackInSlot(outputSlot, inputFluidHandlerItemStack);
+				inv.getStackInSlot(inputSlot).shrink(1);
+			} else {
 
 				/*
-				 * If the drained container doesn't disappear we need to update
-				 * the inventory accordingly.
+				 * When output is not EMPTY, it is needed to check if the two stacks can be
+				 * merged together, there was no simple way to make that check before.
 				 */
-				if (drained != null && !inputFluidHandler.getContainer().isEmpty())
-					if (output.isEmpty()) {
-						inv.setStackInSlot(outputSlot, inputFluidHandler.getContainer());
-						inv.getStackInSlot(inputSlot).shrink(1);
-					} else {
+				if (ItemUtils.isItemEqual(outputStack, inputFluidHandlerItemStack, true, true)
+						&& outputStack.getCount() <= outputStack.getMaxStackSize()) {
+					outputStack.setCount(outputStack.getCount() + 1);
+					inv.getStackInSlot(inputSlot).shrink(1);
+				} else {
 
-						/*
-						 * When output is not EMPTY, it is needed to check if
-						 * the two stacks can be merged together, there was no
-						 * simple way to make that check before.
-						 */
-						if (ItemUtils.isItemEqual(output, inputFluidHandler.getContainer(), true, true) && output.getCount() <= output.getMaxStackSize()) {
-							inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
-							inv.getStackInSlot(inputSlot).shrink(1);
-						} else {
-
-							/*
-							 * Due to the late check of stacks merge we need to
-							 * reverse any changes made to the FluidHandlers
-							 * when the merge fail.
-							 */
-							FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, drained.amount, true);
-							return false;
-						}
-					}
-				return true;
+					/*
+					 * Due to the late check of stacks merge we need to reverse any changes made to
+					 * the FluidHandlers when the merge fail.
+					 */
+					FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, drained.amount, true);
+					return false;
+				}
 			}
+			return true;
 		}
 		return false;
 	}
