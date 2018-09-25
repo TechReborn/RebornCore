@@ -69,9 +69,9 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-		if(!inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, tile)){
-			return stack;
-		}
+//		if(!inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, tile)){
+//			return stack;
+//		}
 		ItemStack result = super.insertItem(slot, stack, simulate);
 		setChanged();
 		return result;
@@ -80,9 +80,9 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if(!inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, tile)){
-			return ItemStack.EMPTY;
-		}
+//		if(!inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, tile)){
+//			return ItemStack.EMPTY;
+//		}
 		ItemStack stack = super.extractItem(slot, amount, simulate);
 		setChanged();
 		return stack;
@@ -144,6 +144,17 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 
 	public void writeToNBT(NBTTagCompound data, String tag) {
 		data.setTag(tag, serializeNBT());
+	}
+
+	public int getContents(){
+		int count = 0;
+		for(ItemStack stack : stacks){
+			if(stack.isEmpty()){
+				continue;
+			}
+			count += stack.getCount();
+		}
+		return count;
 	}
 
 	public void setTile(T tileEntity) {

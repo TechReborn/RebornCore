@@ -28,6 +28,7 @@
 
 package reborncore.common.items;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
+import reborncore.common.BaseTileBlock;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.util.ItemHandlerUtils;
 
@@ -61,8 +63,21 @@ public class WrenchHelper {
 					if (drop == null) {
 						return false;
 					}
+
+					boolean dropContents = true;
+					Block block = tileEntity.getBlockType();
+					if(block instanceof BaseTileBlock){
+						ItemStack tileDrop = ((BaseTileBlock) block).getDropWithContents(worldIn, pos, drop).orElse(ItemStack.EMPTY);
+						if(!tileDrop.isEmpty()){
+							dropContents = false;
+							drop = tileDrop;
+						}
+					}
+
 					if (!worldIn.isRemote) {
-						ItemHandlerUtils.dropContainedItems(worldIn, pos);
+						if(dropContents){
+							ItemHandlerUtils.dropContainedItems(worldIn, pos);
+						}
 						if (!drop.isEmpty()) {
 							net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
 									(double) pos.getY(), (double) pos.getZ(), drop);

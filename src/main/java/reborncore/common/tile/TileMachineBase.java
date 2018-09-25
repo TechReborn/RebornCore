@@ -38,12 +38,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IUpgrade;
@@ -59,12 +61,13 @@ import reborncore.common.util.Inventory;
 import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler {
+public class TileMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler, IListInfoProvider {
 
 	public Inventory<TileMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
 	public SlotConfiguration slotConfiguration;
@@ -301,7 +304,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
 			return true;
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
@@ -318,7 +321,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getWithSide(facing));
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
@@ -415,4 +418,15 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		return 250;
 	}
 
+	@Override
+	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {
+		if(hasData){
+			if(getInventoryForTile().isPresent()){
+				info.add(TextFormatting.GOLD + "" + getInventoryForTile().get().getContents() + TextFormatting.GRAY + " items");
+			}
+			if(!upgradeInventory.isEmpty()){
+				info.add(TextFormatting.GOLD + "" + upgradeInventory.getContents() + TextFormatting.GRAY + " upgrades");
+			}
+		}
+	}
 }

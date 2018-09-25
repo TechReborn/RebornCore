@@ -32,8 +32,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.Optional;
 
 public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
 	protected BaseTileBlock(Material materialIn) {
@@ -45,5 +51,43 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		super.breakBlock(worldIn, pos, state);
 		worldIn.removeTileEntity(pos);
+	}
+
+	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack){
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if(tileEntity == null){
+			return Optional.empty();
+		}
+		ItemStack newStack = stack.copy();
+		NBTTagCompound tileData = tileEntity.writeToNBT(new NBTTagCompound());
+		stripLocationData(tileData);
+		if(!newStack.hasTagCompound()){
+			newStack.setTagCompound(new NBTTagCompound());
+		}
+		newStack.getTagCompound().setTag("tile_data", tileData);
+		return Optional.of(newStack);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("tile_data")){
+			TileEntity tileEntity = worldIn.getTileEntity(pos);
+			NBTTagCompound nbt = stack.getTagCompound().getCompoundTag("tile_data");
+			injectLocationData(nbt, pos);
+			tileEntity.readFromNBT(nbt);
+			tileEntity.markDirty();
+		}
+	}
+
+	private void stripLocationData(NBTTagCompound compound){
+		compound.removeTag("x");
+		compound.removeTag("y");
+		compound.removeTag("z");
+	}
+
+	private void injectLocationData(NBTTagCompound compound, BlockPos pos){
+		compound.setInteger("x", pos.getX());
+		compound.setInteger("y", pos.getY());
+		compound.setInteger("z", pos.getZ());
 	}
 }

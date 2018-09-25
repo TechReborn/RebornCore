@@ -391,7 +391,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	
 	// IListInfoProvider
 	@Override
-	public void addInfo(List<String> info, boolean isRealTile) {
+	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {
 		info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
 				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
 		if (getMaxInput() != 0) {
@@ -408,6 +408,13 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
 				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t");
 		}
+
+		if(hasData){
+			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
+				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy));
+		}
+
+		super.addInfo(info, isRealTile, hasData);
 	}
 
 	public boolean canConnectEnergy(EnumFacing from) {
