@@ -32,6 +32,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
@@ -45,7 +47,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	private T tile;
 	private boolean hasChanged = false;
 	private IInventoryAccess<T> inventoryAccess;
-	private EnumFacing facing = null;
+	private ExternalInventory externalInventory;
 
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
@@ -53,6 +55,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
+		this.externalInventory = new ExternalInventory<>(this);
 	}
 
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
@@ -69,9 +72,6 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-//		if(!inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, tile)){
-//			return stack;
-//		}
 		ItemStack result = super.insertItem(slot, stack, simulate);
 		setChanged();
 		return result;
@@ -80,9 +80,6 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	@Nonnull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-//		if(!inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, tile)){
-//			return ItemStack.EMPTY;
-//		}
 		ItemStack stack = super.extractItem(slot, amount, simulate);
 		setChanged();
 		return stack;
@@ -104,9 +101,8 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		return true;
 	}
 
-	public Inventory<T> getWithSide(EnumFacing facing){
-		this.facing = facing;
-		return this;
+	public IItemHandler getExternal(EnumFacing facing){
+		return externalInventory.withFacing(facing);
 	}
 
 	public boolean configuredAccess;
@@ -184,4 +180,66 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	public int getStackLimit() {
 		return stackLimit;
 	}
+
+	/**
+	 * This is used to provide a filtered inv to external machines
+	 */
+	public static class ExternalInventory<T extends TileMachineBase> implements IItemHandler, IItemHandlerModifiable {
+
+		Inventory<T> baseInv;
+		private EnumFacing facing = null;
+
+		public ExternalInventory(Inventory<T> baseInv) {
+			this.baseInv = baseInv;
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack insertItem(int slot,
+		                            @Nonnull
+			                            ItemStack stack, boolean simulate) {
+			if(!baseInv.inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, baseInv.tile)){
+				return stack;
+			}
+			return baseInv.insertItem(slot, stack, simulate);
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate) {
+			if(!baseInv.inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, baseInv.tile)){
+				return ItemStack.EMPTY;
+			}
+			return baseInv.extractItem(slot, amount, simulate);
+		}
+
+		@Override
+		public void setStackInSlot(int slot,
+		                           @Nonnull
+			                           ItemStack stack) {
+			baseInv.setStackInSlot(slot, stack);
+		}
+
+		@Override
+		public int getSlots() {
+			return baseInv.getSlots();
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack getStackInSlot(int slot) {
+			return baseInv.getStackInSlot(slot);
+		}
+
+		@Override
+		public int getSlotLimit(int slot) {
+			return baseInv.getStackLimit();
+		}
+
+		public ExternalInventory withFacing(EnumFacing facing) {
+			this.facing = facing;
+			return this;
+		}
+	}
+
 }

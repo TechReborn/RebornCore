@@ -322,7 +322,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getWithSide(facing));
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getExternal(facing));
 		}
 		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
 			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
