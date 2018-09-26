@@ -66,7 +66,6 @@ public class RebornRegistry {
 	}
 
 	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
-		block.setRegistryName(name);
 		GameData.register_impl(block);
 		try {
 			ItemBlock itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
@@ -88,6 +87,12 @@ public class RebornRegistry {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void registerBlock(Block block, ItemBlock itemBlock, String name) {
+		GameData.register_impl(block);
+		itemBlock.setRegistryName(name);
+		GameData.register_impl(itemBlock);
+	}
 
 	public static void registerBlock(Block block, ItemBlock itemBlock, ResourceLocation name) {
 		block.setRegistryName(name);
@@ -98,6 +103,10 @@ public class RebornRegistry {
 
 	public static void registerBlockNoItem(Block block, ResourceLocation name) {
 		block.setRegistryName(name);
+		GameData.register_impl(block);
+	}
+	
+	public static void registerBlockNoItem(Block block) {
 		GameData.register_impl(block);
 	}
 
