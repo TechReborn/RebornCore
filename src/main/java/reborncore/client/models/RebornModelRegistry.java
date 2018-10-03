@@ -78,8 +78,8 @@ public class RebornModelRegistry {
 		setMRL(item, meta, item.getRegistryName(), "inventory");
 	}
 
-	public static void registerItemModel(Item item, String fileName, String path) {
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
+	public static void registerItemModel(Item item, String fileName) {
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), fileName);
 		setMRL(item, 0, loc, "inventory");
 	}
 
