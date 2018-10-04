@@ -64,7 +64,7 @@ public class RebornModelRegistry {
 					if (compound.getFileName().equals("modelregistration.undefinedfilename"))
 						setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
 					else
-						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getIgnoreProperties());
+						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant(), compound.getIgnoreProperties());
 				}
 			}
 		}
@@ -116,15 +116,15 @@ public class RebornModelRegistry {
 		ModelLoader.setCustomStateMapper(block, mapper);
 	}
 
-	public static void setBlockStateMapper(Block block, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, IProperty<?>... ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getPath(), ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty<?>... ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getPath(), blockstatePath, ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty<?>... ignoredProperties) {
 		final String slash = !path.isEmpty() ? "/" : "";
 		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
 			@Override
@@ -134,6 +134,27 @@ public class RebornModelRegistry {
 					map.remove(iproperty);
 				}
 				return new ModelResourceLocation(new ResourceLocation(block.getRegistryName().getNamespace(), path + slash + fileName), this.getPropertyString(map));
+			}
+		});
+	}
+	
+	public static void setBlockStateMapper(Block block, String fileName, String path, String invVariant, IProperty<?>... ignoredProperties) {
+		final String slash = !path.isEmpty() ? "/" : "";
+		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+				Map<IProperty<?>, Comparable<?>> map = Maps.<IProperty<?>, Comparable<?>>newLinkedHashMap(state.getProperties());
+				String propertyString = "";
+				for (IProperty<?> iproperty : ignoredProperties) {
+					map.remove(iproperty);
+				}
+				if (map.size() == 0) {
+					propertyString = invVariant;
+				}
+				else {
+					propertyString = this.getPropertyString(map) + invVariant;
+				}
+				return new ModelResourceLocation(new ResourceLocation(block.getRegistryName().getNamespace(), path + slash + fileName), propertyString);
 			}
 		});
 	}

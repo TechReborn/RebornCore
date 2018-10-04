@@ -42,7 +42,7 @@ public class ModelCompound {
 	private Item item = null;
 	private int meta;
 
-	public ModelCompound(String modid, Block block, int meta, String blockstatePath, IProperty... ignoreProperties) {
+	public ModelCompound(String modid, Block block, int meta, String blockstatePath, IProperty<?>... ignoreProperties) {
 		this.modid = modid;
 		this.block = block;
 		this.blockstatePath = blockstatePath;
@@ -50,15 +50,15 @@ public class ModelCompound {
 		this.meta = meta;
 	}
 
-	public ModelCompound(String modid, Block block, int meta, IProperty... ignoreProperties) {
+	public ModelCompound(String modid, Block block, int meta, IProperty<?>... ignoreProperties) {
 		this(modid, block, meta, "", ignoreProperties);
 	}
 
-	public ModelCompound(String modid, Block block, IProperty... ignoreProperties) {
+	public ModelCompound(String modid, Block block, IProperty<?>... ignoreProperties) {
 		this(modid, block, 0, "", ignoreProperties);
 	}
 
-	public ModelCompound(String modid, Block block, String blockstatePath, IProperty... ignoreProperties) {
+	public ModelCompound(String modid, Block block, String blockstatePath, IProperty<?>... ignoreProperties) {
 		this(modid, block, 0, blockstatePath, ignoreProperties);
 	}
 

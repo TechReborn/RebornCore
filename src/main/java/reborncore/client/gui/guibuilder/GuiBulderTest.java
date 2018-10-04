@@ -28,11 +28,8 @@
 
 package reborncore.client.gui.guibuilder;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
-
-import java.io.IOException;
 
 /**
  * Created by Gigabit101 on 08/08/2016.

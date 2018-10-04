@@ -29,7 +29,6 @@
 package reborncore.common.commands;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.crafting.CraftingManager;
