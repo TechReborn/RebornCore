@@ -223,8 +223,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (Object input : currentRecipe.getInputs()) {
 			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || currentRecipe.useOreDic();
-			boolean checkSize = input instanceof ItemStack;
+			boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || currentRecipe.useOreDic();
+			boolean checkSize = input instanceof ItemStack || input instanceof OreRecipeInput;
 			for (int inputslot : inputSlots) {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
 					useOreDict)) {
@@ -246,8 +246,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (Object input : recipeType.getInputs()) {
 			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || recipeType.useOreDic();
-			boolean checkSize = input instanceof ItemStack;
+			boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || recipeType.useOreDic();
+			boolean checkSize = input instanceof ItemStack || input instanceof OreRecipeInput;
 			for (int inputslot : inputSlots) {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
 					useOreDict)) {
@@ -273,7 +273,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputSlot), true, true,
 					currentRecipe.useOreDic())) {
 					int count = 1;
-					if (input instanceof ItemStack) {
+					if (input instanceof ItemStack || input instanceof OreRecipeInput) {
 						count = RecipeTranslator.getStackFromObject(input).getCount();
 					}
 					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
@@ -412,7 +412,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
 			for (Object input : recipe.getInputs()) {
-				boolean useOreDict = input instanceof String || recipe.useOreDic();
+				boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || recipe.useOreDic();
 				if (ItemUtils.isInputEqual(input, stack, true, true,
 					useOreDict)) {
 					return true;

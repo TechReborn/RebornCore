@@ -36,6 +36,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.oredict.OreDictionary;
+import reborncore.common.recipes.IRecipeInput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,13 @@ public class ItemUtils {
 		} else if (input instanceof String) {
 			NonNullList<ItemStack> ores = OreDictionary.getOres((String) input);
 			for (ItemStack stack : ores) {
+				if (isItemEqual(stack, other, matchDamage, matchNBT, false)) {
+					return true;
+				}
+			}
+		} else if (input instanceof IRecipeInput){
+			List<ItemStack> inputs = ((IRecipeInput) input).getAllStacks();
+			for (ItemStack stack : inputs) {
 				if (isItemEqual(stack, other, matchDamage, matchNBT, false)) {
 					return true;
 				}
