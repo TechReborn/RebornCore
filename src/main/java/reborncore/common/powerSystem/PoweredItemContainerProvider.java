@@ -56,6 +56,12 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 		}
 	}
 
+	public PoweredItemContainerProvider(ItemStack stack, IEnergyItemInfo itemPowerInfo) {
+		isEnergyItem = true;
+		this.capEnergy = new ForgePowerItemManager(stack, itemPowerInfo);
+		this.stack = stack;
+	}
+
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
 		if (isEnergyItem && capability == CapabilityEnergy.ENERGY) {

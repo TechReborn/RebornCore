@@ -47,6 +47,12 @@ public class ForgePowerItemManager implements IEnergyStorage {
 		validateNBT();
 	}
 
+	public ForgePowerItemManager(ItemStack stack, IEnergyItemInfo itemPowerInfo) {
+		this.stack = stack;
+		this.itemPowerInfo = itemPowerInfo;
+		validateNBT();
+	}
+
 	private int getEnergyInStack(){
 		validateNBT();
 		return stack.getTagCompound().getInteger("energy");
