@@ -78,4 +78,8 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 		}
 		return null;
 	}
+
+	public ForgePowerItemManager getCapEnergy() {
+		return capEnergy;
+	}
 }
