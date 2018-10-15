@@ -34,7 +34,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 
-public class ForgePowerItemManager implements IEnergyStorage {
+public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModifiable {
 
 	ItemStack stack;
 	IEnergyItemInfo itemPowerInfo;
@@ -125,5 +125,10 @@ public class ForgePowerItemManager implements IEnergyStorage {
 	@Override
 	public boolean canReceive() {
 		return itemPowerInfo.canAcceptEnergy(stack);
+	}
+
+	@Override
+	public void setEnergy(int energy) {
+		setEnergyInStack(energy);
 	}
 }
