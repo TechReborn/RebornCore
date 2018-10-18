@@ -37,6 +37,7 @@ import java.util.*;
 /**
  * Created by covers1624 on 2/6/2016.
  */
+//Todo: get rid of this abomination of a 1.8 workaround
 public class PropertyString extends PropertyHelper<String> {
 
 	private final LinkedList<String> valuesSet;

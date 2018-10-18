@@ -53,7 +53,7 @@ import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.items.WrenchHelper;
+import reborncore.common.util.WrenchUtils;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
@@ -151,7 +151,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 		if (!stack.isEmpty()) {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
-				if (WrenchHelper.handleWrench(stack, worldIn, pos, playerIn, side)) {
+				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, side)) {
 					return true;
 				}			
 			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {

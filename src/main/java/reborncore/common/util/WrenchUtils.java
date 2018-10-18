@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.items;
+package reborncore.common.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +48,7 @@ import reborncore.common.util.ItemHandlerUtils;
  * @author drcrazy
  *
  */
-public class WrenchHelper {
+public class WrenchUtils {
 
 	public static boolean handleWrench(ItemStack stack, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumFacing side) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
