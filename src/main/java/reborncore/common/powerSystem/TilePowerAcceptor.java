@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -125,7 +126,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 				int extracted = batteryEnergy.extractEnergy((int) (chargeEnergy * RebornCoreConfig.euPerFU), false);
 				addEnergy( extracted / RebornCoreConfig.euPerFU);
 			}
-		} else if (RebornCore.proxy.ic2Loaded) {
+		} else if (RebornCoreConfig.isIC2Loaded) {
 			IC2ItemCharger.dischargeIc2Item(this, batteryStack);
 		}
 
@@ -173,7 +174,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if(world.isRemote){
 			return;
 		}
-		if (getPowerConfig().eu() && !addedToEnet && RebornCore.proxy.ic2Loaded) {
+		if (getPowerConfig().eu() && !addedToEnet && RebornCoreConfig.isIC2Loaded) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnet = true;
 		}
@@ -197,6 +198,9 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 				if (canProvideEnergy(side)) {
 					TileEntity tile = world.getTileEntity(pos.offset(side));
 					if (tile == null) {
+						continue;
+					} else if (RebornCoreConfig.isIC2Loaded && tile instanceof IEnergyTile) {
+						// IC2 grid will take care about this
 						continue;
 					} else if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
@@ -227,8 +231,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 										+ (side.getFrontOffsetX() / 2);
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble()
-										+ (side.getFrontOffsetZ() / 2);
-								world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
+										+ (side.getFrontOffsetZ() / 2);							
+								((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
 							double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
@@ -323,7 +327,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void onChunkUnload() {
 		super.onChunkUnload();
 		if (getPowerConfig().eu()) {
-			if (addedToEnet && RebornCore.proxy.ic2Loaded) {
+			if (addedToEnet && RebornCoreConfig.isIC2Loaded) {
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 				addedToEnet = false;
 			}
