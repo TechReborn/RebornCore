@@ -53,6 +53,7 @@ public class RebornCoreConfig {
 	protected static boolean enableEU;
 	protected static boolean enableTesla;
 	protected static boolean enableForge;
+	public static boolean smokeHighTeir;
 	private static RebornCoreConfig instance = null;
 	private static IPowerConfig powerConfig = null;
 	public static boolean isIC2Loaded = false;
@@ -98,6 +99,9 @@ public class RebornCoreConfig {
 
 		euPerFU = config.get(CATEGORY_POWER, "EU - FU ratio", 4, "The Amount of FU to output from EU")
 				.getInt();
+
+		smokeHighTeir = config.get(CATEGORY_POWER, "Energy smoking", false, "When enabled machines that try to insert power into a machine with a lower teir will smoke")
+			.getBoolean();
 
 		versionCheck = config.get(CATEGORY_MISC, "Check for new versions", true, "Enable version checker")
 				.getBoolean();

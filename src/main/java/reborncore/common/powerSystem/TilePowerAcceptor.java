@@ -43,7 +43,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
-import reborncore.RebornCore;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
@@ -225,7 +224,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					TileEntity tile = entry.getValue();
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-						if (handleTierWithPower() && (eFace.getTier().ordinal() < getPushingTier().ordinal())) {
+						if (RebornCoreConfig.smokeHighTeir && handleTierWithPower() && (eFace.getTier().ordinal() < getPushingTier().ordinal())) {
 							for (int j = 0; j < 2; ++j) {
 								double d3 = (double) pos.getX() + world.rand.nextDouble()
 										+ (side.getFrontOffsetX() / 2);
@@ -356,7 +355,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public double addEnergy(double energy, boolean simulate) {
-		double energyReceived = Math.min(getMaxInput(), Math.min(getFreeSpace(), energy));
+		double energyReceived = Math.min(getMaxPower(), Math.min(getFreeSpace(), energy));
 
 		if (!simulate) {
 			setEnergy(getEnergy() + energyReceived);
