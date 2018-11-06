@@ -29,6 +29,7 @@
 package reborncore.common.util;
 
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * @author Prospector on 11/05/16
@@ -70,6 +71,21 @@ public class StringUtils {
 	 */
 	public static String t(String translationKey, Object... format) {
 		return new TextComponentTranslation(translationKey, format).getFormattedText();
+	}
+	
+	/**
+	 * Returns red-yellow-green text formatting depending on percentage
+	 * @param percentage int percentage amount
+	 * @return TextFormatting Red or Yellow or Green
+	 */
+	public static TextFormatting getPercentageColour(int percentage) {
+		if (percentage <= 10) {
+			return TextFormatting.RED;
+		} else if (percentage >= 75) {
+			return TextFormatting.GREEN;
+		} else {
+			return TextFormatting.YELLOW;
+		}
 	}
 
 }
