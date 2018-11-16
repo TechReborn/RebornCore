@@ -28,11 +28,13 @@
 
 package reborncore.common.registration;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import reborncore.RebornCore;
 
 import java.lang.annotation.Annotation;
@@ -62,14 +64,17 @@ public class RegistrationManager {
 		asmDataList.sort(Comparator.comparingInt(RegistrationManager::getPriority));
 		for (ASMDataTable.ASMData data : asmDataList) {
 			try {
+				if(!isModPresent(data, asmDataTable)){
+					continue;
+				}
 				Class clazz = Class.forName(data.getClassName());
 				if(isEarlyReg(data)){
-					handleClass(clazz, null);
+					handleClass(clazz, null, factoryList);
 					continue;
 				}
 				registryClasses.add(clazz);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				throw new RuntimeException("Failed to load class", e);
 			}
 		}
 
@@ -93,6 +98,34 @@ public class RegistrationManager {
 		return false;
 	}
 
+	private static boolean isModPresent(ASMDataTable.ASMData asmData, ASMDataTable dataTable){
+		if(!asmData.getAnnotationInfo().containsKey("modOnly")){ //Doesnt have any details about if its only to be loaded along with a specfic mod, so we assume true
+			return true;
+		}
+		String modOnly = (String) asmData.getAnnotationInfo().get("modOnly");
+		if(modOnly == null || modOnly.isEmpty()){
+			return true;
+		}
+		for (String modid : modOnly.split(",")) {
+			if (modid.startsWith("@")) {
+				if (modid.equals("@client")) {
+					if (FMLCommonHandler.instance().getSide() != Side.CLIENT) {
+						return false;
+					}
+				}
+			} else if (modid.startsWith("!")) {
+				if (Loader.isModLoaded(modid.replaceAll("!", ""))) {
+					return false;
+				}
+			} else {
+				if (!Loader.isModLoaded(modid)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public static void load(FMLStateEvent event) {
 		long start = System.currentTimeMillis();
 		final ModContainer activeMod = Loader.instance().activeModContainer();
@@ -100,7 +133,7 @@ public class RegistrationManager {
 		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
 		if (!factoryList.isEmpty()) {
 			for (Class clazz : registryClasses) {
-				handleClass(clazz, activeMod);
+				handleClass(clazz, activeMod, factoryList);
 			}
 			factoryList.forEach(IRegistryFactory::factoryComplete);
 			setActiveModContainer(activeMod);
@@ -109,14 +142,14 @@ public class RegistrationManager {
 		RebornCore.logHelper.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static void handleClass(Class clazz, ModContainer activeMod){
+	private static void handleClass(Class clazz, ModContainer activeMod, List<IRegistryFactory> factories){
 		RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
 		if (annotation != null) {
 			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
 				setActiveMod(annotation.modID());
 			}
 		}
-		for (IRegistryFactory regFactory : factoryList) {
+		for (IRegistryFactory regFactory : factories) {
 			for (Field field : clazz.getDeclaredFields()) {
 				if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
 					continue;
