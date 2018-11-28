@@ -36,6 +36,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.oredict.OreDictionary;
+import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.recipes.IRecipeInput;
 
 import java.util.ArrayList;
@@ -170,6 +171,12 @@ public class ItemUtils {
 	
 	public static double getPowerForDurabilityBar(ItemStack stack) {
 		if (stack.isEmpty()) {
+			return 0.0;
+		}
+		if (! (stack.getItem() instanceof IEnergyItemInfo) ) {
+			return 0.0;
+		}
+		if (!stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
 			return 0.0;
 		}
 		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
