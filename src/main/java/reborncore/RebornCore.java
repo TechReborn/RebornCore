@@ -155,7 +155,7 @@ public class RebornCore implements IModInfo {
 		RegistrationManager.load(event);
 		try {
 			OreUtil.remove("blockMetal");
-		} catch (NoSuchFieldException | IllegalAccessException e) {
+		} catch (Exception e) {
 			RebornCore.logHelper.error("Failed to remove ore");
 			RebornCore.logHelper.error(e);
 		}
