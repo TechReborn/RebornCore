@@ -37,6 +37,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
 import reborncore.client.models.HolidayRenderEvent;
 import reborncore.common.multiblock.MultiblockClientTickHandler;
@@ -51,6 +52,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
 		MinecraftForge.EVENT_BUS.register(HolidayRenderEvent.class);
+		MinecraftForge.EVENT_BUS.register(new IconSupplier());
 	}
 
 	@Override
