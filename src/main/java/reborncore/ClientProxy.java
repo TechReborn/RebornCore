@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
 import reborncore.client.models.HolidayRenderEvent;
+import reborncore.client.multiblock.MultiblockRenderEvent;
 import reborncore.common.multiblock.MultiblockClientTickHandler;
 import reborncore.shields.client.RebornItemStackRenderer;
 import reborncore.shields.client.ShieldTextureStore;
@@ -47,6 +48,8 @@ import reborncore.shields.client.ShieldTextureStore;
 import java.util.List;
 
 public class ClientProxy extends CommonProxy {
+
+	public static MultiblockRenderEvent multiblockRenderEvent;
 
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -59,6 +62,8 @@ public class ClientProxy extends CommonProxy {
 	public void init(FMLInitializationEvent event) {
 		super.init(event);
 		MinecraftForge.EVENT_BUS.register(new StackInfoHUD());
+		multiblockRenderEvent = new MultiblockRenderEvent();
+		MinecraftForge.EVENT_BUS.register(multiblockRenderEvent);
 	}
 
 	@Override
