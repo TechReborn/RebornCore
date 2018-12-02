@@ -36,6 +36,8 @@ import net.minecraft.inventory.Slot;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.util.ObjectConsumer;
+import reborncore.common.util.ObjectSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<LongSupplier, LongConsumer>> longValues;
+	final List<Pair<ObjectSupplier, ObjectConsumer>> objectValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;
 
@@ -67,6 +70,7 @@ public class ContainerBuilder {
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
 		this.longValues = new ArrayList<>();
+		this.objectValues = new ArrayList<>();
 
 		this.craftEvents = new ArrayList<>();
 	}
@@ -107,6 +111,8 @@ public class ContainerBuilder {
 			built.addIntegerSync(this.integerValues);
 		if (!this.longValues.isEmpty())
 			built.addLongSync(longValues);
+		if (!this.objectValues.isEmpty())
+			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty())
 			built.addCraftEvents(this.craftEvents);
 

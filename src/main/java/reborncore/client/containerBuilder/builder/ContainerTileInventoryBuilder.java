@@ -41,13 +41,15 @@ import reborncore.RebornCore;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
+import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.util.IC2ItemCharger;
-import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
-import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
+import reborncore.common.util.ObjectConsumer;
+import reborncore.common.util.ObjectSupplier;
 
 import java.util.function.*;
 
@@ -151,6 +153,17 @@ public class ContainerTileInventoryBuilder {
 	 */
 	public ContainerTileInventoryBuilder syncLongValue(final LongSupplier supplier, final LongConsumer setter) {
 		this.parent.longValues.add(Pair.of(supplier, setter));
+		return this;
+	}
+
+	/**
+	 * @param supplier The supplier it can supply a variable holding in an Object it
+	 * will be synced with a custom packet
+	 * @param setter The setter to call when the variable has been updated.
+	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
+	 */
+	public <T> ContainerTileInventoryBuilder sync(final ObjectSupplier<T> supplier, final ObjectConsumer<T> setter) {
+		this.parent.objectValues.add(Pair.of(supplier, setter));
 		return this;
 	}
 

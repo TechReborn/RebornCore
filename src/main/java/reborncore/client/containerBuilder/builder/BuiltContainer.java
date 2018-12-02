@@ -36,9 +36,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
+import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.ItemUtils;
-import reborncore.client.containerBuilder.IRightClickHandler;
+import reborncore.common.util.ObjectConsumer;
+import reborncore.common.util.ObjectSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
 	private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
+	private final ArrayList<MutableTriple<ObjectSupplier, ObjectConsumer, Object>> objectValues;
 	private List<Consumer<InventoryCrafting>> craftEvents;
 	private Integer[] integerParts;
 
@@ -73,6 +76,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
 		this.longValues = new ArrayList<>();
+		this.objectValues = new ArrayList<>();
 
 		this.tile = tile;
 	}
@@ -97,6 +101,13 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			this.integerValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), 0));
 		this.integerValues.trimToSize();
 		this.integerParts = new Integer[this.integerValues.size()];
+	}
+
+	public void addObjectSync(final List<Pair<ObjectSupplier, ObjectConsumer>> syncables) {
+
+		for (final Pair<ObjectSupplier, ObjectConsumer> syncable : syncables)
+			this.objectValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
+		this.objectValues.trimToSize();
 	}
 
 	public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents) {
@@ -176,6 +187,18 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					longs++;
 				}
 			}
+
+			if (!this.objectValues.isEmpty()){
+				int objects = 0;
+				for (final MutableTriple<ObjectSupplier, ObjectConsumer, Object> value : this.objectValues) {
+					final Object supplied = value.getLeft();
+					if(supplied != value.getRight()){
+						sendObject(listener,this, objects, supplied);
+						value.setRight(supplied);
+					}
+					objects++;
+				}
+			}
 		}
 	}
 
@@ -212,11 +235,26 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				longs++;
 			}
 		}
+
+		if (!this.objectValues.isEmpty()){
+			int objects = 0;
+			for (final MutableTriple<ObjectSupplier, ObjectConsumer, Object> value : this.objectValues) {
+				final Object supplied = value.getLeft();
+				sendObject(listener,this, objects, supplied);
+				value.setRight(supplied);
+				objects++;
+			}
+		}
 	}
 
 	@Override
 	public void handleLong(int var, long value) {
 		this.longValues.get(var).getMiddle().accept(value);
+	}
+
+	@Override
+	public void handleObject(int var, Object value) {
+		this.objectValues.get(var).getMiddle().accept(value);
 	}
 
 	@SideOnly(Side.CLIENT)

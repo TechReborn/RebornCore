@@ -184,6 +184,7 @@ public class RebornCore implements IModInfo {
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
 		event.registerPacket(PacketFluidIOSave.class, Side.SERVER);
 		event.registerPacket(PacketSendLong.class, Side.CLIENT);
+		event.registerPacket(PacketSendObject.class, Side.CLIENT);
 	}
 
 	@Mod.EventHandler
