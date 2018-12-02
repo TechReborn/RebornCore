@@ -49,10 +49,7 @@ import reborncore.common.util.IC2ItemCharger;
 import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
 import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public class ContainerTileInventoryBuilder {
 
@@ -143,6 +140,17 @@ public class ContainerTileInventoryBuilder {
 	 */
 	public ContainerTileInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter) {
 		this.parent.integerValues.add(Pair.of(supplier, setter));
+		return this;
+	}
+
+	/**
+	 * @param supplier The supplier it can supply a variable holding in an Long it
+	 * will be synced with a custom packet
+	 * @param setter The setter to call when the variable has been updated.
+	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
+	 */
+	public ContainerTileInventoryBuilder syncLongValue(final LongSupplier supplier, final LongConsumer setter) {
+		this.parent.longValues.add(Pair.of(supplier, setter));
 		return this;
 	}
 

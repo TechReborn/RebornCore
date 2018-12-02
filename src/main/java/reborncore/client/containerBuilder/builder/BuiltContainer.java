@@ -42,12 +42,9 @@ import reborncore.client.containerBuilder.IRightClickHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Predicate;
+import java.util.function.*;
 
-public class BuiltContainer extends Container {
+public class BuiltContainer extends Container implements IExtendedContainerListener {
 
 	private final String name;
 
@@ -57,6 +54,7 @@ public class BuiltContainer extends Container {
 
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
+	private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
 	private List<Consumer<InventoryCrafting>> craftEvents;
 	private Integer[] integerParts;
 
@@ -74,6 +72,7 @@ public class BuiltContainer extends Container {
 
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
+		this.longValues = new ArrayList<>();
 
 		this.tile = tile;
 	}
@@ -83,6 +82,13 @@ public class BuiltContainer extends Container {
 		for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
 			this.shortValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (short) 0));
 		this.shortValues.trimToSize();
+	}
+
+	public void addLongSync(final List<Pair<LongSupplier, LongConsumer>> syncables) {
+
+		for (final Pair<LongSupplier, LongConsumer> syncable : syncables)
+			this.longValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (long) 0));
+		this.longValues.trimToSize();
 	}
 
 	public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
@@ -158,6 +164,18 @@ public class BuiltContainer extends Container {
 					}
 					i += 2;
 				}
+
+			if (!this.longValues.isEmpty()){
+				int longs = 0;
+				for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
+					final long supplied = value.getLeft().getAsLong();
+					if(supplied != value.getRight()){
+						sendLong(listener,this, longs, supplied);
+						value.setRight(supplied);
+					}
+					longs++;
+				}
+			}
 		}
 	}
 
@@ -185,6 +203,20 @@ public class BuiltContainer extends Container {
 				i += 2;
 			}
 
+		if (!this.longValues.isEmpty()){
+			int longs = 0;
+			for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
+				final long supplied = value.getLeft().getAsLong();
+				sendLong(listener,this, longs, supplied);
+				value.setRight(supplied);
+				longs++;
+			}
+		}
+	}
+
+	@Override
+	public void handleLong(int var, long value) {
+		this.longValues.get(var).getMiddle().accept(value);
 	}
 
 	@SideOnly(Side.CLIENT)

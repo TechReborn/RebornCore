@@ -39,10 +39,7 @@ import reborncore.common.tile.TileLegacyMachineBase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public class ContainerBuilder {
 
@@ -55,6 +52,7 @@ public class ContainerBuilder {
 
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
+	final List<Pair<LongSupplier, LongConsumer>> longValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;
 
@@ -68,6 +66,7 @@ public class ContainerBuilder {
 
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
+		this.longValues = new ArrayList<>();
 
 		this.craftEvents = new ArrayList<>();
 	}
@@ -106,8 +105,11 @@ public class ContainerBuilder {
 			built.addShortSync(this.shortValues);
 		if (!this.integerValues.isEmpty())
 			built.addIntegerSync(this.integerValues);
+		if (!this.longValues.isEmpty())
+			built.addLongSync(longValues);
 		if (!this.craftEvents.isEmpty())
 			built.addCraftEvents(this.craftEvents);
+
 
 		this.slots.forEach(built::addSlot);
 
@@ -123,6 +125,8 @@ public class ContainerBuilder {
 			built.addShortSync(this.shortValues);
 		if (!this.integerValues.isEmpty())
 			built.addIntegerSync(this.integerValues);
+		if (!this.longValues.isEmpty())
+			built.addLongSync(longValues);
 		if (!this.craftEvents.isEmpty())
 			built.addCraftEvents(this.craftEvents);
 
