@@ -43,10 +43,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
+import reborncore.api.IListInfoProvider;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.guibuilder.GuiBuilder;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
@@ -90,13 +90,15 @@ public class TRBuilder extends GuiBuilder {
 			TextFormatting powerColour = TextFormatting.GOLD;
 			list.add(powerColour + PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " " + PowerSystem.getDisplayPower().abbreviation);
 			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " Charged");
-			if(gui.tile instanceof TilePowerAcceptor && GuiScreen.isShiftKeyDown()){
-				((TilePowerAcceptor) gui.tile).addInfo(list, true);
-				list.add("");
-				list.add(TextFormatting.BLUE + "Click to change display unit");
-			} else {
-				list.add("");
-				list.add(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " for more info");
+			if(gui.tile instanceof IListInfoProvider){
+				if(GuiScreen.isShiftKeyDown()){
+					((IListInfoProvider) gui.tile).addInfo(list, true);
+					list.add("");
+					list.add(TextFormatting.BLUE + "Click to change display unit");
+				} else {
+					list.add("");
+					list.add(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " for more info");
+				}
 			}
 			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
 			GlStateManager.disableLighting();
