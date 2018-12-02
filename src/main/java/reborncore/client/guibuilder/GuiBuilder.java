@@ -105,6 +105,10 @@ public class GuiBuilder {
 		gui.mc.fontRenderer.drawString(string, x, y, 16777215);
 	}
 
+	public void drawString(GuiScreen gui, String string, int x, int y, int color) {
+		gui.mc.fontRenderer.drawString(string, x, y, color);
+	}
+
 	public void drawProgressBar(GuiScreen gui, double progress, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 150, 18, 22, 15);
