@@ -50,7 +50,6 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.client.guibuilder.GuiBuilder;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.StringUtils;
-import techreborn.client.gui.TRBuilder.TipsList;
 
 import java.util.ArrayList;
 import java.util.List;
