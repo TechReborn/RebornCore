@@ -60,10 +60,10 @@ public class GuiSlotConfiguration  {
 
 	static HashMap<Integer, ConfigSlotElement> slotElementMap = new HashMap<>();
 
-	public static int slectedSlot = 0;
+	public static int selectedSlot = 0;
 
 	public static void reset() {
-		slectedSlot = -1;
+		selectedSlot = -1;
 	}
 
 	public static void init(GuiBase guiBase) {
@@ -93,17 +93,17 @@ public class GuiSlotConfiguration  {
 			GlStateManager.color(255, 255, 255);
 		}
 
-		if (slectedSlot != -1) {
-			slotElementMap.get(slectedSlot).draw(guiBase);
+		if (selectedSlot != -1) {
+			slotElementMap.get(selectedSlot).draw(guiBase);
 		}
 	}
 
 	public static List<ConfigSlotElement> getVisibleElements() {
-		if(slectedSlot == -1){
+		if(selectedSlot == -1){
 			return Collections.emptyList();
 		}
 		return slotElementMap.values().stream()
-			.filter(configSlotElement -> configSlotElement.getId() == slectedSlot)
+			.filter(configSlotElement -> configSlotElement.getId() == selectedSlot)
 			.collect(Collectors.toList());
 	}
 
@@ -111,7 +111,7 @@ public class GuiSlotConfiguration  {
 	@SubscribeEvent
 	public static void keyboardEvent(GuiScreenEvent.KeyboardInputEvent event){
 		if(!getVisibleElements().isEmpty() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE){
-			slectedSlot = -1;
+			selectedSlot = -1;
 			event.setCanceled(true);
 		}
 	}
@@ -182,7 +182,7 @@ public class GuiSlotConfiguration  {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPos, slot.yPos, 18, 18, mouseX, mouseY)) {
-					slectedSlot = slot.getSlotIndex();
+					selectedSlot = slot.getSlotIndex();
 					return true;
 				}
 			}
@@ -241,11 +241,11 @@ public class GuiSlotConfiguration  {
 	}
 
 	public static List<Rectangle> getExtraSpace(GuiBase guiBase){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || slectedSlot == -1){
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1){
 			return Collections.emptyList();
 		}
 		List<Rectangle> list = new ArrayList<>();
-		ConfigSlotElement slotElement = slotElementMap.get(slectedSlot);
+		ConfigSlotElement slotElement = slotElementMap.get(selectedSlot);
 
 		if(slotElement == null || guiBase == null){
 			return Collections.emptyList();
