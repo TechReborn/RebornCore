@@ -170,16 +170,16 @@ public class ItemUtils {
 	}
 	
 	public static double getPowerForDurabilityBar(ItemStack stack) {
-		if (stack.isEmpty() || stack.isEmpty()) {
+		if (stack.isEmpty()) {
 			return 0.0;
 		}
 		if (! (stack.getItem() instanceof IEnergyItemInfo) ) {
 			return 0.0;
 		}
-		if (stack.getCapability(CapabilityEnergy.ENERGY, null) == null) {
+		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if (capEnergy == null) {
 			return 0.0;
 		}
-		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
 		double energy = (double) capEnergy.getEnergyStored();
 		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
 		return energy /  maxEnergy;
