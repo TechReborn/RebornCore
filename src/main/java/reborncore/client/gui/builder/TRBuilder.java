@@ -43,7 +43,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.GuiScrollingList;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.tile.IUpgradeable;
@@ -215,20 +214,6 @@ public class TRBuilder extends GuiBuilder {
 				break;
 		}
 		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-	}
-
-	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (Loader.isModLoaded("jei")) {
-			if (layer == GuiBase.Layer.BACKGROUND) {
-				x += gui.getGuiLeft();
-				y += gui.getGuiTop();
-			}
-			gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-			gui.drawTexturedModalRect(x, y, 184, 70, 20, 12);
-		}
 	}
 
 	public void drawLockButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
@@ -485,6 +470,7 @@ public class TRBuilder extends GuiBuilder {
 	
 	private class TipsList extends GuiScrollingList {
 		
+		@SuppressWarnings("unused")
 		private GuiScreen gui;
 
 		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight) {

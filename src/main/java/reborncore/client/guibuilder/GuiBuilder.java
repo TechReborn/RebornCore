@@ -34,7 +34,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.client.RenderUtil;
+import reborncore.client.gui.builder.GuiBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,7 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 08/08/2016.
  */
+@SideOnly(Side.CLIENT)
 public class GuiBuilder {
 	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guielements.png");
 	static ResourceLocation resourceLocation;
@@ -162,6 +167,20 @@ public class GuiBuilder {
 			gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 			gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
 			gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+		}
+	}
+	
+	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (Loader.isModLoaded("jei")) {
+			if (layer == GuiBase.Layer.BACKGROUND) {
+				x += gui.getGuiLeft();
+				y += gui.getGuiTop();
+			}
+			gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+			gui.drawTexturedModalRect(x, y, 202, 0, 12, 12);
 		}
 	}
 }
