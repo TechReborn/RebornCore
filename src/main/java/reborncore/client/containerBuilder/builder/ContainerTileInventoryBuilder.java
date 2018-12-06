@@ -48,8 +48,6 @@ import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.util.IC2ItemCharger;
-import reborncore.common.util.ObjectConsumer;
-import reborncore.common.util.ObjectSupplier;
 
 import java.util.function.*;
 
@@ -162,7 +160,7 @@ public class ContainerTileInventoryBuilder {
 	 * @param setter The setter to call when the variable has been updated.
 	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
 	 */
-	public <T> ContainerTileInventoryBuilder sync(final ObjectSupplier<T> supplier, final ObjectConsumer<T> setter) {
+	public <T> ContainerTileInventoryBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
 		this.parent.objectValues.add(Pair.of(supplier, setter));
 		return this;
 	}

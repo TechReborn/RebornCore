@@ -36,8 +36,6 @@ import net.minecraft.inventory.Slot;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.tile.TileLegacyMachineBase;
-import reborncore.common.util.ObjectConsumer;
-import reborncore.common.util.ObjectSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<LongSupplier, LongConsumer>> longValues;
-	final List<Pair<ObjectSupplier, ObjectConsumer>> objectValues;
+	final List<Pair<Supplier, Consumer>> objectValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;
 

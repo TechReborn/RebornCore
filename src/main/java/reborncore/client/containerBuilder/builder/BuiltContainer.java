@@ -39,8 +39,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.ItemUtils;
-import reborncore.common.util.ObjectConsumer;
-import reborncore.common.util.ObjectSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
 	private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
-	private final ArrayList<MutableTriple<ObjectSupplier, ObjectConsumer, Object>> objectValues;
+	private final ArrayList<MutableTriple<Supplier, Consumer, Object>> objectValues;
 	private List<Consumer<InventoryCrafting>> craftEvents;
 	private Integer[] integerParts;
 
@@ -103,9 +101,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.integerParts = new Integer[this.integerValues.size()];
 	}
 
-	public void addObjectSync(final List<Pair<ObjectSupplier, ObjectConsumer>> syncables) {
+	public void addObjectSync(final List<Pair<Supplier, Consumer>> syncables) {
 
-		for (final Pair<ObjectSupplier, ObjectConsumer> syncable : syncables)
+		for (final Pair<Supplier, Consumer> syncable : syncables)
 			this.objectValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
 		this.objectValues.trimToSize();
 	}
@@ -190,7 +188,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 			if (!this.objectValues.isEmpty()){
 				int objects = 0;
-				for (final MutableTriple<ObjectSupplier, ObjectConsumer, Object> value : this.objectValues) {
+				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 					final Object supplied = value.getLeft();
 					if(supplied != value.getRight()){
 						sendObject(listener,this, objects, supplied);
@@ -238,7 +236,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 		if (!this.objectValues.isEmpty()){
 			int objects = 0;
-			for (final MutableTriple<ObjectSupplier, ObjectConsumer, Object> value : this.objectValues) {
+			for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 				final Object supplied = value.getLeft();
 				sendObject(listener,this, objects, supplied);
 				value.setRight(supplied);
