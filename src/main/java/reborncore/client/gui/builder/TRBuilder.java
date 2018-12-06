@@ -216,64 +216,6 @@ public class TRBuilder extends GuiBuilder {
 		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
 	}
 
-
-
-	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		if (layer == GuiBase.Layer.FOREGROUND) {
-			mouseX -= gui.getGuiLeft();
-			mouseY -= gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		if (ClientProxy.multiblockRenderEvent.currentMultiblock == null) {
-			gui.drawTexturedModalRect(x, y, 184, 94, 20, 12);
-		} else {
-			gui.drawTexturedModalRect(x, y, 184, 106, 20, 12);
-		}
-		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			list.add("Toggle Multiblock Hologram");
-			GlStateManager.pushMatrix();
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
-			GlStateManager.popMatrix();
-		}
-	}
-	
-	public void drawUpDownButtons(GuiBase gui, int x, int y, GuiBase.Layer layer){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(x, y, 150, 70, 12, 12);
-		gui.drawTexturedModalRect(x + 12, y, 150, 82, 12, 12);
-		gui.drawTexturedModalRect(x + 24, y, 150, 94, 12, 12);
-		gui.drawTexturedModalRect(x + 36, y, 150, 106, 12, 12);
-	}
-
-	public void drawUpDownButtonsSmall(GuiBase gui, int x, int y, GuiBase.Layer layer){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		//gui.drawTexturedModalRect(x, y, 150, 70, 12, 12);
-		gui.drawTexturedModalRect(x + 12, y, 150, 82, 12, 12);
-		gui.drawTexturedModalRect(x + 24, y, 150, 94, 12, 12);
-		//gui.drawTexturedModalRect(x + 36, y, 150, 106, 12, 12);
-	}
 	
 	public void drawEnergyOutput(GuiBase gui, int right, int top, int maxOutput, GuiBase.Layer layer){
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){

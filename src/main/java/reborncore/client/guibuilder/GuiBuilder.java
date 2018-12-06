@@ -37,6 +37,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import reborncore.ClientProxy;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.util.StringUtils;
@@ -196,7 +197,7 @@ public class GuiBuilder {
 	/**
 	 *  Draws lock button in either locked or unlocked state
 	 *  
-	 * @param gui GUI to draw on
+	 * @param gui GuiBase GUI to draw on
 	 * @param x int Top left corner where to place button
 	 * @param y int Top left corner where to place button
 	 * @param mouseX int Mouse cursor position to check for tooltip
@@ -217,9 +218,9 @@ public class GuiBuilder {
 		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			if(locked){
-				list.add(StringUtils.t("reborncore.tooltip.unlock_items"));
+				list.add(StringUtils.t("reborncore.gui.tooltip.unlock_items"));
 			} else {
-				list.add(StringUtils.t("reborncore.tooltip.lock_items"));
+				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
 			}
 
 			GlStateManager.pushMatrix();
@@ -227,4 +228,65 @@ public class GuiBuilder {
 			GlStateManager.popMatrix();
 		}
 	}
+	
+	/**
+	 *  Draws hologram toggle button
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		if (layer == GuiBase.Layer.FOREGROUND) {
+			mouseX -= gui.getGuiLeft();
+			mouseY -= gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		if (ClientProxy.multiblockRenderEvent.currentMultiblock == null) {
+			gui.drawTexturedModalRect(x, y, 174, 50, 20, 12);
+		} else {
+			gui.drawTexturedModalRect(x, y, 174, 62, 20, 12);
+		}
+		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.hologram"));
+			GlStateManager.pushMatrix();
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
+			GlStateManager.popMatrix();
+		}
+	}
+	
+	/**
+	 *  Draws four buttons in a raw to increase or decrease values
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawUpDownButtons(GuiBase gui, int x, int y, GuiBase.Layer layer){
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 174, 74, 12, 12);
+		gui.drawTexturedModalRect(x + 12, y, 174, 86, 12, 12);
+		gui.drawTexturedModalRect(x + 24, y, 174, 98, 12, 12);
+		gui.drawTexturedModalRect(x + 36, y, 174, 110, 12, 12);
+	}
+	
 }
