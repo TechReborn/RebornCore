@@ -33,6 +33,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -40,8 +41,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.GuiScrollingList;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.tile.IUpgradeable;
@@ -215,43 +216,7 @@ public class TRBuilder extends GuiBuilder {
 		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
 	}
 
-	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (Loader.isModLoaded("jei")) {
-			if (layer == GuiBase.Layer.BACKGROUND) {
-				x += gui.getGuiLeft();
-				y += gui.getGuiTop();
-			}
-			gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-			gui.drawTexturedModalRect(x, y, 184, 70, 20, 12);
-		}
-	}
 
-	public void drawLockButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(x, y, 204, 70 + (locked ? 12 : 0) , 20, 12);
-		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			if(locked){
-				list.add("Unlock items");
-			} else {
-				list.add("Lock Items");
-			}
-
-			GlStateManager.pushMatrix();
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, 80, gui.mc.fontRenderer);
-			GlStateManager.popMatrix();
-		}
-	}
 
 	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
@@ -459,6 +424,57 @@ public class TRBuilder extends GuiBuilder {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
 		gui.drawTexturedModalRect(posX - 26, posY + 84 - offset, 157, 149, 30, 30);
 		renderItemStack(stack, posX - 19, posY + 92 - offset);
+	}
+	
+	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
+		int offset = -1;
+		if(!upgrades){
+			offset = 80;
+		}
+		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
+		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
+		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
+		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
+		renderItemStack(stack, posX - 19, posY + 92 - offset);
+//		String explanation = "Click on slot to configure.\r\n";
+//		explanation += "Orange side means output, blue side means input.\r\n";
+//		explanation += "Ctrl+C to copy slot config, Ctrl+V to paste slot config.";
+//		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
+		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset,
+				posX - 75, 10);
+		explanation.drawScreen(mouseX, mouseY, 1.0f);
+		GlStateManager.color(1, 1, 1, 1);
+	}
+	
+	private class TipsList extends GuiScrollingList {
+		
+		@SuppressWarnings("unused")
+		private GuiScreen gui;
+
+		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight) {
+			super(gui.mc, width, height, top, bottom, left, entryHeight, gui.width, gui.height);
+			this.gui = gui;
+		}
+
+		@Override
+		protected int getSize() {
+			return 1;
+		}
+
+		@Override
+		protected void elementClicked(int index, boolean doubleClick) {	}
+
+		@Override
+		protected boolean isSelected(int index) {
+			return false;
+		}
+
+		@Override
+		protected void drawBackground() {}
+
+		@Override
+		protected void drawSlot(int slotIdx, int entryRight, int slotTop, int slotBuffer, Tessellator tess) {}
+		
 	}
 
 	public void renderItemStack(ItemStack stack, int x, int y) {

@@ -61,7 +61,7 @@ public class ConfigSlotElement extends ElementBase {
 
 		elements.add(popupElement = new SlotConfigPopupElement(this.id, x - 22, y - 22, this));
 		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
-			GuiSlotConfiguration.slectedSlot = -1;
+			GuiSlotConfiguration.selectedSlot = -1;
 			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
 			return true;
 		}));
