@@ -115,7 +115,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 			configData.fieldMap.put(configData.getName(annotation.category(), property), field);
 
 		} catch (IllegalAccessException e) {
-			throw new Error("Failed to load config", e);
+			throw new Error("Failed to tick config", e);
 		}
 	}
 

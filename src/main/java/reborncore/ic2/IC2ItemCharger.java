@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.util;
+package reborncore.ic2;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
@@ -35,7 +35,7 @@ import reborncore.common.powerSystem.TilePowerAcceptor;
 
 public class IC2ItemCharger {
 
-	public static void chargeIc2Item(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
+	protected static void chargeIc2Item(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
 		if(stack.isEmpty()){
 			return;
 		}
@@ -44,7 +44,7 @@ public class IC2ItemCharger {
 		}
 	}
 
-	public static void dischargeIc2Item(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
+	protected static void dischargeIc2Item(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
 		if(stack.isEmpty()){
 			return;
 		}
@@ -53,7 +53,7 @@ public class IC2ItemCharger {
 		}
 	}
 
-	public static boolean isIC2PoweredItem(ItemStack stack){
+	protected static boolean isIC2PoweredItem(ItemStack stack){
 		if(stack.isEmpty()){
 			return false;
 		}

@@ -28,9 +28,6 @@
 
 package reborncore.common.powerSystem;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -38,34 +35,25 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.Optional;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.EnumPowerTier;
-import reborncore.api.power.IEnergyInterfaceTile;
-import reborncore.api.power.IPowerConfig;
+import reborncore.api.power.*;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
 import reborncore.common.tile.TileLegacyMachineBase;
-import reborncore.common.util.IC2ItemCharger;
 import reborncore.common.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@Optional.InterfaceList(value = { @Optional.Interface(iface = "ic2.api.energy.tile.IEnergyTile", modid = "ic2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "ic2"),
-	@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "ic2") })
 public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
-	IEnergyInterfaceTile, IListInfoProvider, // TechReborn
-	IEnergyTile, IEnergySink, IEnergySource // Ic2
+	IEnergyInterfaceTile, IListInfoProvider // TechReborn
 {
 	private EnumPowerTier tier;
-	protected boolean addedToEnet;
 	ForgePowerManager forgePowerManager = new ForgePowerManager(this, null);
 	private double energy;
 
@@ -76,13 +64,22 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public double powerLastTick;
 	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
 
+	List<ExternalPowerHandler> powerManagers;
+
 	public TilePowerAcceptor() {
 		checkTeir();
+		final TilePowerAcceptor tile = this;
+		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream().map(externalPowerManager -> externalPowerManager.createPowerHandler(tile)).collect(Collectors.toList());
 	}
 
 	public TilePowerAcceptor(EnumPowerTier tier) {
 		checkTeir();
+
+		final TilePowerAcceptor tile = this;
+		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream().map(externalPowerManager -> externalPowerManager.createPowerHandler(tile)).collect(Collectors.toList());
 	}
+
+
 
 	public void checkTeir() {
 		if (getBaseTier() == null) {
@@ -125,18 +122,14 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 				int extracted = batteryEnergy.extractEnergy((int) (chargeEnergy * RebornCoreConfig.euPerFU), false);
 				addEnergy( extracted / RebornCoreConfig.euPerFU);
 			}
-		} else if (RebornCoreConfig.isIC2Loaded) {
-			IC2ItemCharger.dischargeIc2Item(this, batteryStack);
+		} else if (ExternalPowerSystems.isPoweredItem(batteryStack)) {
+			ExternalPowerSystems.dischargeItem(this, batteryStack);
 		}
 
 	}
 
 	public int getEnergyScaled(int scale) {
 		return (int) ((getEnergy() * scale / getMaxPower()));
-	}
-
-	public IPowerConfig getPowerConfig() {
-		return RebornCoreConfig.getRebornPower();
 	}
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
@@ -167,17 +160,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void setPowerChange(double powerChange) {
 		this.powerChange = powerChange;
 	}
-	
-	@Optional.Method(modid = "ic2")
-	public void onLoaded() {
-		if(world.isRemote){
-			return;
-		}
-		if (getPowerConfig().eu() && !addedToEnet && RebornCoreConfig.isIC2Loaded) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnet = true;
-		}
-	}
+
 
 	// TileLegacyMachineBase
 	@Override
@@ -186,10 +169,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if(world.isRemote){
 			return;
 		}
-		
-		if (RebornCoreConfig.isIC2Loaded && getPowerConfig().eu()) {
-			onLoaded();
-		}
+
+		powerManagers.forEach(ExternalPowerHandler::tick);
 		
 		Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
 		if (getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
@@ -198,8 +179,8 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 					TileEntity tile = world.getTileEntity(pos.offset(side));
 					if (tile == null) {
 						continue;
-					} else if (RebornCoreConfig.isIC2Loaded && tile instanceof IEnergyTile) {
-						// IC2 grid will take care about this
+					} else if (ExternalPowerSystems.isPoweredTile(tile)) {
+						//Other power net will take care about this
 						continue;
 					} else if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
@@ -281,25 +262,30 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
-				return true;
-			}
+		if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
+			return true;
+		}
+		if(powerManagers.stream().anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
+			return true;
 		}
 		return super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (getPowerConfig().forge()) {
-			if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
-				if (forgePowerManager == null) {
-					forgePowerManager = new ForgePowerManager(this, facing);
-				}
-				forgePowerManager.setFacing(facing);
-				return CapabilityEnergy.ENERGY.cast(forgePowerManager);
+		if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
+			if (forgePowerManager == null) {
+				forgePowerManager = new ForgePowerManager(this, facing);
 			}
+			forgePowerManager.setFacing(facing);
+			return CapabilityEnergy.ENERGY.cast(forgePowerManager);
 		}
+
+		T externalCap = powerManagers.stream().map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing)).findFirst().orElse(null);
+		if(externalCap != null){
+			return externalCap;
+		}
+
 		return super.getCapability(capability, facing);
 	}
 	
@@ -318,19 +304,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		onChunkUnload();
+		powerManagers.forEach(ExternalPowerHandler::invalidate);
 	}
 
 	@Override
-	@Optional.Method(modid = "ic2")
 	public void onChunkUnload() {
 		super.onChunkUnload();
-		if (getPowerConfig().eu()) {
-			if (addedToEnet && RebornCoreConfig.isIC2Loaded) {
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-				addedToEnet = false;
-			}
-		}
+		powerManagers.forEach(ExternalPowerHandler::unload);
 	}
 	
 	// IEnergyInterfaceTile
@@ -461,67 +441,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
 				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t");
 		}
-	}
-	
-	// IEnergySink
-	@Override
-	@Optional.Method(modid = "ic2")
-	public double getDemandedEnergy() {
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return 0;
-		return getMaxPower() - getEnergy();
-	}
-
-	@Override
-	@Optional.Method(modid = "ic2")
-	public int getSinkTier() {
-		return getTier().getIC2Tier();
-	}
-
-	@Override
-	@Optional.Method(modid = "ic2")
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		double used = addEnergy(amount);
-		return (amount - used);
-	}
-
-	// IEnergyAcceptor
-	@Override
-	@Optional.Method(modid = "ic2")
-	public boolean acceptsEnergyFrom(IEnergyEmitter iEnergyEmitter, EnumFacing enumFacing) {
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return false;
-		return canAcceptEnergy(enumFacing);
-	}
-	
-	// IEnergySource
-	@Override
-	@Optional.Method(modid = "ic2")
-	public double getOfferedEnergy() {
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return 0;
-		return Math.min(getEnergy(), getMaxOutput());
-	}
-
-	@Override
-	@Optional.Method(modid = "ic2")
-	public void drawEnergy(double amount) {
-		useEnergy((int) amount);
-	}
-
-	@Override
-	@Optional.Method(modid = "ic2")
-	public int getSourceTier() {
-		return getTier().getIC2Tier();
-	}
-
-	// IEnergyEmitter
-	@Override
-	@Optional.Method(modid = "ic2")
-	public boolean emitsEnergyTo(IEnergyAcceptor iEnergyAcceptor, EnumFacing enumFacing) {
-		if (!RebornCoreConfig.getRebornPower().eu())
-			return false;
-		return canProvideEnergy(enumFacing);
 	}
 
 	// Old cofh stuff, still used to implement Forge Energy, should be removed at somepoint

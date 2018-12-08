@@ -31,7 +31,6 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -74,7 +73,6 @@ public class RebornCore implements IModInfo {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static LogHelper logHelper;
-	public static RebornCoreConfig config;
 	@Mod.Instance
 	public static RebornCore INSTANCE;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
@@ -93,15 +91,14 @@ public class RebornCore implements IModInfo {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
-		config = RebornCoreConfig.initialize(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
 		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
 		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
-		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
-		PowerSystem.reloadConfig();
+		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
+		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
@@ -125,7 +122,6 @@ public class RebornCore implements IModInfo {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
-		RebornCoreConfig.isIC2Loaded = Loader.isModLoaded("ic2");
 		// packets
 		OreUtil.scanForOres();
 		NetworkManager.load();

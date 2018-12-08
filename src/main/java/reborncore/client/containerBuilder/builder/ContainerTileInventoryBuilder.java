@@ -46,8 +46,8 @@ import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
+import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
-import reborncore.common.util.IC2ItemCharger;
 
 import java.util.function.*;
 
@@ -90,7 +90,7 @@ public class ContainerTileInventoryBuilder {
 	public ContainerTileInventoryBuilder energySlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
 			.setFilter(stack -> stack.hasCapability(CapabilityEnergy.ENERGY, EnumFacing.UP)
-				|| (RebornCore.proxy.ic2Loaded && IC2ItemCharger.isIC2PoweredItem(stack))));
+				|| ExternalPowerSystems.isPoweredItem(stack)));
 		return this;
 	}
 

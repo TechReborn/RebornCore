@@ -313,7 +313,7 @@ public class MultiblockWorldRegistry {
 
 	/**
 	 * Called when a multiblock part is added to the world, either via
-	 * chunk-load or user action. If its chunk is loaded, it will be processed
+	 * chunk-tick or user action. If its chunk is loaded, it will be processed
 	 * during the next tick. If the chunk is not loaded, it will be added to a
 	 * list of objects waiting for a chunkload.
 	 *
@@ -323,7 +323,7 @@ public class MultiblockWorldRegistry {
 		BlockPos pos = part.getWorldLocation();
 
 		if (!this.worldObj.isBlockLoaded(pos)) {
-			// Part goes into the waiting-for-chunk-load list
+			// Part goes into the waiting-for-chunk-tick list
 			Set<IMultiblockPart> partSet;
 			int chunkHash = new ChunkPos(pos).hashCode();
 
@@ -401,7 +401,7 @@ public class MultiblockWorldRegistry {
 
 	/**
 	 * Called when a chunk has finished loading. Adds all of the parts which are
-	 * awaiting load to the list of parts which are orphans and therefore will
+	 * awaiting tick to the list of parts which are orphans and therefore will
 	 * be added to machines after the next world tick.
 	 *
 	 * @param chunk Chunk that was

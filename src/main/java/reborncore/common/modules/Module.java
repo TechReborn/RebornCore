@@ -42,10 +42,10 @@ public class Module {
 	 */
 	private String moduleID;
 
-	/* Mod ids that must be present in order to load this module */
+	/* Mod ids that must be present in order to tick this module */
 	private String[] modsRequired;
 
-	/* Module ids that must be present in order to load this module */
+	/* Module ids that must be present in order to tick this module */
 	private String[] modulesRequired;
 
 	public boolean isActive = true;
