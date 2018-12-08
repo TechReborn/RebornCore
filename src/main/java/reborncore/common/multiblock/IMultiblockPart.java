@@ -163,7 +163,7 @@ public abstract class IMultiblockPart extends TileEntity {
 	public abstract void forfeitMultiblockSaveDelegate();
 
 	/**
-	 * Is this block the designated save/tick & network delegate?
+	 * Is this block the designated save/load & network delegate?
 	 * @return Boolean 
 	 */
 	public abstract boolean isMultiblockSaveDelegate();
@@ -218,7 +218,7 @@ public abstract class IMultiblockPart extends TileEntity {
 
 	/**
 	 * Called when this part should check its neighbors. This method MUST NOT
-	 * cause additional chunks to tick. ALWAYS check to see if a chunk is loaded
+	 * cause additional chunks to load. ALWAYS check to see if a chunk is loaded
 	 * before querying for its tile entity This part should inform the
 	 * controller that it is attaching at this time.
 	 *

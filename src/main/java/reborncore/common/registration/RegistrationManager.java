@@ -74,7 +74,7 @@ public class RegistrationManager {
 				}
 				registryClasses.add(clazz);
 			} catch (ClassNotFoundException e) {
-				throw new RuntimeException("Failed to tick class", e);
+				throw new RuntimeException("Failed to load class", e);
 			}
 		}
 

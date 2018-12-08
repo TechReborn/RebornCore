@@ -82,7 +82,7 @@ public interface IRegistryFactory {
 	}
 
 	/**
-	 * This is used to determine what type of targetes the factory should target. Try and only list the targets that are of use to keep tick times down.
+	 * This is used to determine what type of targetes the factory should target. Try and only list the targets that are of use to keep load times down.
 	 *
 	 * The deafult is for all
 	 *
