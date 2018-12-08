@@ -8,7 +8,7 @@ import reborncore.api.power.ExternalPowerManager;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.registration.RebornRegistry;
 
-@RebornRegistry(modOnly = "ic2")
+@RebornRegistry(modOnly = "ic2,!ic2-classic-spmod")
 public class RebronCoreIC2 implements ExternalPowerManager {
 	@Override
 	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
