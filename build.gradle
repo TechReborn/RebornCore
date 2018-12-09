@@ -38,11 +38,6 @@ repositories {
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
 	}
-	maven {
-	 	//IC2
-	 	name = "player-ic2"
-	 	url = "http://maven.ic2.player.to/"
-	}
 }
 
 configurations {
@@ -67,10 +62,6 @@ minecraft {
 
 group = 'RebornCore'
 
-
-dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.8.26-ex112:api'
-}
 
 processResources
 	{

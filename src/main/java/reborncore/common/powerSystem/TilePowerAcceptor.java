@@ -48,6 +48,8 @@ import reborncore.common.util.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
@@ -69,16 +71,24 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public TilePowerAcceptor() {
 		checkTeir();
 		final TilePowerAcceptor tile = this;
-		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream().map(externalPowerManager -> externalPowerManager.createPowerHandler(tile)).collect(Collectors.toList());
+		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
+			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
+			.collect(Collectors.toList());
 	}
 
 	public TilePowerAcceptor(EnumPowerTier tier) {
 		checkTeir();
-
-		final TilePowerAcceptor tile = this;
-		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream().map(externalPowerManager -> externalPowerManager.createPowerHandler(tile)).collect(Collectors.toList());
+		setupManagers();
 	}
 
+
+	private void setupManagers(){
+		final TilePowerAcceptor tile = this;
+		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
+			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+	}
 
 
 	public void checkTeir() {
