@@ -48,7 +48,6 @@ import java.util.List;
 /**
  * Created by Gigabit101 on 08/08/2016.
  */
-@SideOnly(Side.CLIENT)
 public class GuiBuilder {
 	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guielements.png");
 	static ResourceLocation resourceLocation;
