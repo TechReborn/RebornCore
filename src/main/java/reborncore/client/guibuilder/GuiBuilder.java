@@ -33,6 +33,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
@@ -284,6 +285,94 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(x + 12, y, 174, 86, 12, 12);
 		gui.drawTexturedModalRect(x + 24, y, 174, 98, 12, 12);
 		gui.drawTexturedModalRect(x + 36, y, 174, 110, 12, 12);
+	}
+	
+	/**
+	 *  Draws big horizontal bar for heat value
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
+	 * @param value int Current heat value
+	 * @param max int Maximum heat value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawBigHeatBar(GuiBase gui, int x, int y, int value, int max, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
+		if (value != 0) {
+			int j = (int) ((double) value / (double) max * 106);
+			if (j < 0) {
+				j = 0;
+			}
+			gui.drawTexturedModalRect(x + 4, y + 4, 26, 246, j, 10);
+			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
+		}
+	}
+	
+	/**
+	 *  Draws big horizontal blue bar
+	 *   
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
+	 * @param value int Current value
+	 * @param max int Maximum value
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param suffix String String to put on the bar after percentage value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		if (!suffix.equals("")) {
+			suffix = " " + suffix;
+		}
+		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
+		int j = (int) ((double) value / (double) max * 106);
+		if (j < 0)
+			j = 0;
+		gui.drawTexturedModalRect(x + 4, y + 4, 26, 236, j, 10);
+		gui.drawCentredString(value + suffix, y + 5, 0xFFFFFF, layer);
+		if (isInRect(x, y, 114, 18, mouseX, mouseY)) {
+			int percentage = percentage(max, value);
+			List<String> list = new ArrayList<>();
+			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " Full");
+
+			if (value > max) {
+				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
+				list.add(TextFormatting.GRAY + "prolly a bug");
+				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
+			}
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+	}
+	
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
+		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", layer);
+	}
+	
+	protected int percentage(int MaxValue, int CurrentValue) {
+		if (CurrentValue == 0)
+			return 0;
+		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
 	
 }

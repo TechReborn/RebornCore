@@ -233,60 +233,8 @@ public class TRBuilder extends GuiBuilder {
 		gui.drawTexturedModalRect(right - 16, top, 162, 101, 16, 17);
 	}
 
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		if (!suffix.equals("")) {
-			suffix = " " + suffix;
-		}
-		gui.drawTexturedModalRect(x, y, 0, 218, 114, 18);
-		int j = (int) ((double) value / (double) max * 106);
-		if (j < 0)
-			j = 0;
-		gui.drawTexturedModalRect(x + 4, y + 4, 0, 236, j, 10);
-		gui.drawCentredString(value + suffix, y + 5, 0xFFFFFF, layer);
-		if (isInRect(x, y, 114, 18, mouseX, mouseY)) {
-			int percentage = percentage(max, value);
-			List<String> list = new ArrayList<>();
-			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " Full");
+	
 
-			if (value > max) {
-				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
-				list.add(TextFormatting.GRAY + "prolly a bug");
-				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
-			}
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
-			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
-		}
-	}
-
-	public void drawBigHeatBar(GuiBase gui, int x, int y, int value, int max, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(x, y, 0, 218, 114, 18);
-		if (value != 0) {
-			int j = (int) ((double) value / (double) max * 106);
-			if (j < 0)
-				j = 0;
-			gui.drawTexturedModalRect(x + 4, y + 4, 0, 246, j, 10);
-			gui.drawCentredString(value + " Heat", y + 5, 0xFFFFFF, layer);
-
-		}
-	}
 
 	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
@@ -310,9 +258,6 @@ public class TRBuilder extends GuiBuilder {
 		gui.drawCentredString(I18n.format("techreborn.message.missingmultiblock"), 43, 0xFFFFFF, layer);
 	}
 
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
-		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", layer);
-	}
 
 	public void drawSelectedStack(GuiBase gui, int x, int y) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
@@ -465,11 +410,7 @@ public class TRBuilder extends GuiBuilder {
 		return (int) (((float) burnTime / (float) totalBurnTime) * scale);
 	}
 
-	public int percentage(int MaxValue, int CurrentValue) {
-		if (CurrentValue == 0)
-			return 0;
-		return (int) ((CurrentValue * 100.0f) / MaxValue);
-	}
+
 
 	public enum ProgressDirection {
 		RIGHT(84, 151, 100, 151, 16, 10), LEFT(100, 161, 84, 161, 16, 10), DOWN(104, 171, 114, 171, 10, 16), UP(84, 171, 94, 171, 10, 16);

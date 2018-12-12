@@ -208,7 +208,7 @@ public class GuiBase extends GuiContainer {
 		drawCentredString(I18n.format(tile.getBlockType().getUnlocalizedName() + ".name"), 6, 4210752, Layer.FOREGROUND);
 	}
 
-	protected void drawCentredString(String string, int y, int colour, Layer layer) {
+	public void drawCentredString(String string, int y, int colour, Layer layer) {
 		drawString(string, (xSize / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour, layer);
 	}
 
