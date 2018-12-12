@@ -41,7 +41,6 @@ import reborncore.api.ToolManager;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.commands.CommandListMods;

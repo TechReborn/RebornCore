@@ -43,7 +43,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.GuiScrollingList;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.guibuilder.GuiBuilder;

@@ -35,8 +35,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.ClientProxy;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
