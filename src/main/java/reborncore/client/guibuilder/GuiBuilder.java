@@ -32,9 +32,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
 import reborncore.client.RenderUtil;
@@ -367,6 +369,33 @@ public class GuiBuilder {
 	
 	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
 		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", layer);
+	}
+	
+	/**
+	 *  Shades GUI and draw gray bar on top of GUI
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		int x = 0;
+		int y = 4;
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		GlStateManager.disableLighting();
+		GlStateManager.disableDepth();
+		GlStateManager.colorMask(true, true, true, false);
+		GuiUtils.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
+		GuiUtils.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
+		GuiUtils.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
+		GlStateManager.colorMask(true, true, true, true);
+		GlStateManager.enableDepth();
+		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
 	}
 	
 	protected int percentage(int MaxValue, int CurrentValue) {

@@ -233,31 +233,6 @@ public class TRBuilder extends GuiBuilder {
 		gui.drawTexturedModalRect(right - 16, top, 162, 101, 16, 17);
 	}
 
-	
-
-
-	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		int x = 0;
-		int y = 4;
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		GlStateManager.disableLighting();
-		GlStateManager.disableDepth();
-		GlStateManager.colorMask(true, true, true, false);
-		GuiUtils.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
-		GuiUtils.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
-		GuiUtils.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
-		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.enableDepth();
-		gui.drawCentredString(I18n.format("techreborn.message.missingmultiblock"), 43, 0xFFFFFF, layer);
-	}
-
 
 	public void drawSelectedStack(GuiBase gui, int x, int y) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
@@ -289,12 +264,6 @@ public class TRBuilder extends GuiBuilder {
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
-	}
-
-	@Override
-	public void drawSlot(GuiScreen gui, int posX, int posY) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(posX, posY, 150, 0, 18, 18);
 	}
 
 	public void drawUpgrades(GuiScreen gui, IUpgradeable upgradeable, int posX, int posY) {
@@ -374,11 +343,6 @@ public class TRBuilder extends GuiBuilder {
 
 			GlStateManager.disableLighting();
 		}
-	}
-
-	public void drawScrapSlot(GuiScreen gui, int posX, int posY) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(posX, posY, 150, 0, 18, 18);
 	}
 
 	public void drawOutputSlotBar(GuiScreen gui, int posX, int posY, int count) {
