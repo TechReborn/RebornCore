@@ -36,15 +36,12 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.GuiScrollingList;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.tile.IUpgradeable;
 import reborncore.client.guibuilder.GuiBuilder;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.StringUtils;
@@ -266,10 +263,7 @@ public class TRBuilder extends GuiBuilder {
 		}
 	}
 
-	public void drawUpgrades(GuiScreen gui, IUpgradeable upgradeable, int posX, int posY) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(posX - 27, posY + 4, 126, 151, 30, 87);
-	}
+
 
 	public void drawSlotTab(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack){
 		int offset = -1;

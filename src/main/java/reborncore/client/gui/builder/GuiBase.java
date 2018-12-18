@@ -82,14 +82,6 @@ public class GuiBase extends GuiContainer {
 		builder.drawSlot(this, x - 1, y - 1);
 	}
 
-	protected void drawScrapSlot(int x, int y, Layer layer) {
-		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
-		}
-		builder.drawScrapSlot(this, x - 1, y - 1);
-	}
-
 	protected void drawOutputSlotBar(int x, int y, int count, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += guiLeft;
@@ -135,7 +127,7 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		builder.drawDefaultBackground(this, guiLeft, guiTop, xSize, ySize);
 		if (drawPlayerSlots()) {
@@ -144,7 +136,7 @@ public class GuiBase extends GuiContainer {
 		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) tile;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, upgradeable, guiLeft, guiTop);
+				builder.drawUpgrades(this, guiLeft - 27, guiTop + 4, mouseX, mouseY);
 				upgrades = true;
 			}
 		}

@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidTank;
@@ -396,6 +395,27 @@ public class GuiBuilder {
 		GlStateManager.colorMask(true, true, true, true);
 		GlStateManager.enableDepth();
 		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
+	}
+	
+	/**
+	 *  Draws upgrade slots on the left side on machine GUI
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place slots
+	 * @param y int Top left corner where to place slots
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 */
+	public void drawUpgrades(GuiBase gui, int x, int y, int mouseX, int mouseY) {
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 215, 0, 30, 87);
+		if (isInRect(x, y, 30, 87, mouseX, mouseY)) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
+			GlStateManager.pushMatrix();
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
+			GlStateManager.popMatrix();
+		}
 	}
 	
 	protected int percentage(int MaxValue, int CurrentValue) {
