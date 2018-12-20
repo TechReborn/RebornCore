@@ -274,7 +274,7 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
 			return true;
 		}
-		if(powerManagers.stream().anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
+		if(powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -290,7 +290,13 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 			return CapabilityEnergy.ENERGY.cast(forgePowerManager);
 		}
 
-		T externalCap = powerManagers.stream().map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing)).findFirst().orElse(null);
+		T externalCap = powerManagers.stream()
+			.filter(Objects::nonNull)
+			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
+			.filter(Objects::nonNull)
+			.findFirst()
+			.orElse(null);
+
 		if(externalCap != null){
 			return externalCap;
 		}
