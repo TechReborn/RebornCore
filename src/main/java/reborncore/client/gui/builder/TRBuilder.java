@@ -213,24 +213,6 @@ public class TRBuilder extends GuiBuilder {
 	}
 
 	
-	public void drawEnergyOutput(GuiBase gui, int right, int top, int maxOutput, GuiBase.Layer layer){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
-			return;
-		}
-		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
-				+ PowerSystem.getDisplayPower().abbreviation + "/t";
-		int width = gui.mc.fontRenderer.getStringWidth(text);
-		gui.drawString(text, right - 17 - width, top + 5, 0, layer);
-		
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			right += gui.getGuiLeft();
-			top += gui.getGuiTop();
-		}
-		gui.mc.getTextureManager().bindTexture(GUI_SHEET);
-		gui.drawTexturedModalRect(right - 16, top, 162, 101, 16, 17);
-	}
-
-
 	public void drawSelectedStack(GuiBase gui, int x, int y) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(GUI_SHEET);
 		gui.drawTexturedModalRect(x - 4, y - 4, 202, 44, 24, 24);

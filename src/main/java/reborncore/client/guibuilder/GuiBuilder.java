@@ -40,6 +40,7 @@ import net.minecraftforge.fml.common.Loader;
 import reborncore.ClientProxy;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
@@ -416,6 +417,32 @@ public class GuiBuilder {
 			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	/**
+	 *  Draws energy output value and icon 
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place energy output
+	 * @param y int Top left corner where to place energy output
+	 * @param maxOutput int Energy output value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawEnergyOutput(GuiBase gui, int x, int y, int maxOutput, GuiBase.Layer layer){
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		
+		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
+				+ PowerSystem.getDisplayPower().abbreviation + "/t";
+		int width = gui.mc.fontRenderer.getStringWidth(text);
+		gui.drawString(text, x - width, y + 5, 0, layer);
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 162, 101, 16, 17);
 	}
 	
 	protected int percentage(int MaxValue, int CurrentValue) {

@@ -208,7 +208,7 @@ public class GuiBase extends GuiContainer {
 		drawString(string, (xSize / 2 - (mc.fontRenderer.getStringWidth(string)) / 2) + modifier, y, colour, layer);
 	}
 
-	protected void drawString(String string, int x, int y, int colour, Layer layer) {
+	public void drawString(String string, int x, int y, int colour, Layer layer) {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
