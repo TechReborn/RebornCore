@@ -432,17 +432,16 @@ public class GuiBuilder {
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
 			return;
 		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
 				+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.mc.fontRenderer.getStringWidth(text);
 		gui.drawString(text, x - width, y + 5, 0, layer);
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
 		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
-		gui.drawTexturedModalRect(x, y, 162, 101, 16, 17);
+		gui.drawTexturedModalRect(x, y, 150, 91, 16, 17);
 	}
 	
 	protected int percentage(int MaxValue, int CurrentValue) {
