@@ -404,19 +404,10 @@ public class GuiBuilder {
 	 * @param gui GuiBase GUI to draw on
 	 * @param x int Top left corner where to place slots
 	 * @param y int Top left corner where to place slots
-	 * @param mouseX int Mouse cursor position to check for tooltip
-	 * @param mouseY int Mouse cursor position to check for tooltip
 	 */
-	public void drawUpgrades(GuiBase gui, int x, int y, int mouseX, int mouseY) {
+	public void drawUpgrades(GuiBase gui, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
 		gui.drawTexturedModalRect(x, y, 215, 0, 30, 87);
-		if (isInRect(x, y, 30, 87, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
-			GlStateManager.pushMatrix();
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
-			GlStateManager.popMatrix();
-		}
 	}
 	
 	/**

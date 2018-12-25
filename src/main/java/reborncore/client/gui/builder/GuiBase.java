@@ -42,6 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
@@ -64,6 +65,7 @@ public class GuiBase extends GuiContainer {
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
+	
 
 	public boolean upgrades;
 
@@ -136,7 +138,7 @@ public class GuiBase extends GuiContainer {
 		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) tile;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, guiLeft - 27, guiTop + 4, mouseX, mouseY);
+				builder.drawUpgrades(this, guiLeft - 27, guiTop + 4);
 				upgrades = true;
 			}
 		}
@@ -173,6 +175,7 @@ public class GuiBase extends GuiContainer {
 		if(!upgrades){
 			offset = 80;
 		}
+		
 		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset, 12, 12, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add("Configure slots");
@@ -193,6 +196,13 @@ public class GuiBase extends GuiContainer {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
+		if (builder.isInRect(guiLeft - 27, guiTop + 4, 30, 87, mouseX, mouseY) && upgrades) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
+			GuiUtils.drawHoveringText(list, mouseX, mouseY, width, height, -1, mc.fontRenderer);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
