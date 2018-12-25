@@ -1,0 +1,17 @@
+reborncore.message.active=Aktiv
+reborncore.message.inactive=Inaktiv
+
+item.reborncore.manual.name=Team Reborn-Handbuch
+
+reborncore.tooltip.energy.maxEnergy=Maximale Energie
+reborncore.tooltip.energy.inputRate=Eingangs-Rate
+reborncore.tooltip.energy.outputRate=Ausgangs-Rate
+reborncore.tooltip.energy.tier=Stufe
+reborncore.tooltip.energy.change=Energie-Änderung
+
+reborncore.gui.heat=Wärme
+reborncore.gui.missingmultiblock=Unvollständiger Multiblock
+reborncore.gui.tooltip.lock_items=Gegenstände sperren
+reborncore.gui.tooltip.unlock_items=Gegenstände entsperren
+reborncore.gui.tooltip.upgrades=Maschinenaufrüstung
+reborncore.gui.tooltip.hologram=Multiblock-Hologramm umschalten
