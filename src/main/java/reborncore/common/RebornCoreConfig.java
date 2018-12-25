@@ -40,6 +40,9 @@ public class RebornCoreConfig {
 	@ConfigRegistry(config = "power", key = "EU - FU ratio", comment = "The Amount of FU to output from EU")
 	public static int euPerFU = 4;
 
+	@ConfigRegistry(config = "power", key = "Enable FE support", comment = "Whether energy blocks will accept and emit Forge Energy (FE/RF/etc)")
+	public static boolean enableFE = true;
+
 	@ConfigRegistry(config = "client", key = "Show Stack Info HUD", comment = "Show Stack Info HUD")
 	public static boolean ShowStackInfoHUD = true;
 

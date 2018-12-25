@@ -73,15 +73,15 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	private void setupManagers(){
-		ForgePowerHandler forgePowerHandler = new ForgePowerHandler(this);
-
 		final TilePowerAcceptor tile = this;
 		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
 			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 
-		powerManagers.add(0, forgePowerHandler);
+		if(RebornCoreConfig.enableFE) {
+			powerManagers.add(0, new ForgePowerHandler(this));
+		}
 	}
 
 
