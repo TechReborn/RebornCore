@@ -59,7 +59,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public double powerLastTick;
 	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
 
-	private ForgePowerHandler forgePowerHandler;
 	private List<ExternalPowerHandler> powerManagers;
 
 	public TilePowerAcceptor() {
@@ -74,13 +73,15 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	}
 
 	private void setupManagers(){
-		forgePowerHandler = new ForgePowerHandler(this);
+		ForgePowerHandler forgePowerHandler = new ForgePowerHandler(this);
 
 		final TilePowerAcceptor tile = this;
 		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
 			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
+
+		powerManagers.add(0, forgePowerHandler);
 	}
 
 
@@ -174,7 +175,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 		}
 
 		powerManagers.forEach(ExternalPowerHandler::tick);
-		forgePowerHandler.tick();
 
 		powerChange = getEnergy() - powerLastTick;
 		powerLastTick = getEnergy();
@@ -207,10 +207,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(forgePowerHandler.hasCapability(capability, facing)) {
-			return true;
-		}
-
 		if(powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
 			return true;
 		}
@@ -219,12 +215,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		T internalCap = forgePowerHandler.getCapability(capability, facing);
-
-		if(internalCap != null) {
-			return internalCap;
-		}
-
 		T externalCap = powerManagers.stream()
 			.filter(Objects::nonNull)
 			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
@@ -255,7 +245,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void invalidate() {
 		super.invalidate();
 
-		forgePowerHandler.invalidate();
 		powerManagers.forEach(ExternalPowerHandler::invalidate);
 	}
 
@@ -263,7 +252,6 @@ public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
 	public void onChunkUnload() {
 		super.onChunkUnload();
 
-		forgePowerHandler.unload();
 		powerManagers.forEach(ExternalPowerHandler::unload);
 	}
 	
