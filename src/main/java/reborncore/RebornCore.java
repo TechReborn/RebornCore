@@ -86,8 +86,8 @@ public class RebornCore {
 		RegistrationManager.load(new RegistryConstructionEvent());
 		ConfigRegistryFactory.saveAll();
 		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
-		PowerSystem.priorityConfig = (new File(configDir, "energy_priority.json"));
-		PowerSystem.reloadConfig();
+		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
+		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
 		ShieldJsonLoader.load(event);
@@ -158,6 +158,8 @@ public class RebornCore {
 		event.registerPacket(PacketFluidConfigSync.class, Side.CLIENT);
 		event.registerPacket(PacketIOSave.class, Side.SERVER);
 		event.registerPacket(PacketFluidIOSave.class, Side.SERVER);
+		event.registerPacket(PacketSendLong.class, Side.CLIENT);
+		event.registerPacket(PacketSendObject.class, Side.CLIENT);
 	}
 
 	@Mod.EventHandler

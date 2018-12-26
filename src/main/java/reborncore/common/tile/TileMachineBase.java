@@ -30,6 +30,10 @@ package reborncore.common.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -38,6 +42,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,6 +50,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
@@ -62,6 +68,7 @@ import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -286,8 +293,6 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		return tagCompound;
 	}
 
-	//TODO fix me for new system
-
 	private boolean isItemValidForSlot(int index, ItemStack stack) {
 		if(slotConfiguration == null){
 			return false;
@@ -301,6 +306,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		}
 		return false;
 	}
+	//Inventory end
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -417,6 +423,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	public int fluidTransferAmount(){
 		return 250;
 	}
+
 
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {

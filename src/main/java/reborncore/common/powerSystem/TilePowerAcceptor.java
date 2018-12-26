@@ -31,31 +31,30 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.IListInfoProvider;
+import reborncore.api.power.*;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.forge.ForgePowerHandler;
 import reborncore.common.powerSystem.forge.ForgePowerManager;
+
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class TilePowerAcceptor extends TileMachineBase implements
 	IEnergyInterfaceTile, IListInfoProvider // TechReborn
 {
 	private EnumPowerTier tier;
-	protected boolean addedToEnet;
-	ForgePowerManager forgePowerManager = new ForgePowerManager(this, null);
 	private double energy;
 
 	public double extraPowerStoage;
@@ -65,13 +64,31 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public double powerLastTick;
 	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
 
+	private List<ExternalPowerHandler> powerManagers;
+
 	public TilePowerAcceptor() {
 		checkTier();
+		setupManagers();
 	}
 
+	// don't manually set tiers
+	@Deprecated
 	public TilePowerAcceptor(EnumPowerTier tier) {
-		checkTier();
+		this();
 	}
+
+	private void setupManagers(){
+		final TilePowerAcceptor tile = this;
+		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
+			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+
+		if(RebornCoreConfig.enableFE) {
+			powerManagers.add(0, new ForgePowerHandler(this));
+		}
+	}
+
 
 	public void checkTier() {
 		if (getBaseTier() == null) {
@@ -117,6 +134,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 				int extracted = batteryEnergy.extractEnergy((int) (chargeEnergy * RebornCoreConfig.euPerFU), false);
 				addEnergy( extracted / RebornCoreConfig.euPerFU);
 			}
+		} else if (ExternalPowerSystems.isPoweredItem(batteryStack)) {
+			ExternalPowerSystems.dischargeItem(this, batteryStack);
 		}
 
 	}
@@ -158,63 +177,14 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	@Override
 	public void update() {
 		super.update();
-		if(!world.isRemote){
-			Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
-			if (getEnergy() > 0 && !world.isRemote) { //Tesla or IC2 should handle this if enabled, so only do this without tesla
-				for (EnumFacing side : EnumFacing.values()) {
-					if (canProvideEnergy(side)) {
-						TileEntity tile = world.getTileEntity(pos.offset(side));
-						if (tile == null) {
-							continue;
-						}
-						else if (tile instanceof IEnergyInterfaceTile) {
-							IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-							if (eFace.canAcceptEnergy(side.getOpposite())) {
-								acceptors.put(side, tile);
-							}
-						}
-						else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
-							acceptors.put(side, tile);
-						}
-					}
-				}
-			}
-
-			if (acceptors.size() > 0){
-				double drain = useEnergy(Math.min(getEnergy(), getMaxOutput()), true);
-				double energyShare = drain / acceptors.size();
-				double remainingEnergy = drain;
-
-				if (energyShare > 0) {
-					for (Map.Entry<EnumFacing, TileEntity> entry : acceptors.entrySet()){
-						EnumFacing side = entry.getKey();
-						TileEntity tile = entry.getValue();
-						if (tile instanceof IEnergyInterfaceTile) {
-							IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
-							if (handleTierWithPower() && (eFace.getTier().ordinal() < getPushingTier().ordinal())) {
-								for (int j = 0; j < 2; ++j) {
-									double d3 = (double) pos.getX() + world.rand.nextDouble() + (side.getXOffset() / 2);
-									double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
-									double d13 = (double) pos.getZ() + world.rand.nextDouble() + (side.getZOffset() / 2);
-									world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d3, d8, d13, 0.0D, 0.0D, 0.0D);
-								}
-							} else {
-								double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
-								remainingEnergy -= useEnergy(filled, false);
-							}
-						} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
-							IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
-							if (forgePowerManager != null && energyStorage != null && energyStorage.canReceive() && this.canProvideEnergy(side)) {
-								int filled = energyStorage.receiveEnergy((int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
-								remainingEnergy -= useEnergy(filled / RebornCoreConfig.euPerFU, false);
-							}
-						} 
-					}
-				}
-			}
-			powerChange = getEnergy() - powerLastTick;
-			powerLastTick = getEnergy();
+		if(world.isRemote){
+			return;
 		}
+
+		powerManagers.forEach(ExternalPowerHandler::tick);
+
+		powerChange = getEnergy() - powerLastTick;
+		powerLastTick = getEnergy();
 	}
 	
 	@Override
@@ -244,21 +214,25 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
-				return true;
+		if(powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
+			return true;
 		}
 		return super.hasCapability(capability, facing);
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityEnergy.ENERGY && (canAcceptEnergy(facing) || canProvideEnergy(facing))) {
-			if (forgePowerManager == null) {
-				forgePowerManager = new ForgePowerManager(this, facing);
-			}
-			forgePowerManager.setFacing(facing);
-			return CapabilityEnergy.ENERGY.cast(forgePowerManager);
+		T externalCap = powerManagers.stream()
+			.filter(Objects::nonNull)
+			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
+			.filter(Objects::nonNull)
+			.findFirst()
+			.orElse(null);
+
+		if(externalCap != null){
+			return externalCap;
 		}
+
 		return super.getCapability(capability, facing);
 	}
 	
@@ -277,7 +251,15 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		onChunkUnload();
+
+		powerManagers.forEach(ExternalPowerHandler::invalidate);
+	}
+
+	@Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+
+		powerManagers.forEach(ExternalPowerHandler::unload);
 	}
 	
 	// IEnergyInterfaceTile
@@ -417,6 +399,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		super.addInfo(info, isRealTile, hasData);
 	}
 
+	// Old cofh stuff, still used to implement Forge Energy, should be removed at somepoint
+	@Deprecated
 	public boolean canConnectEnergy(EnumFacing from) {
 		return canAcceptEnergy(from) || canProvideEnergy(from);
 	}

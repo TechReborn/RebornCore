@@ -33,8 +33,15 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.common.Loader;
+import reborncore.ClientProxy;
 import reborncore.client.RenderUtil;
+import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +112,10 @@ public class GuiBuilder {
 		gui.mc.fontRenderer.drawString(string, x, y, 16777215);
 	}
 
+	public void drawString(GuiScreen gui, String string, int x, int y, int color) {
+		gui.mc.fontRenderer.drawString(string, x, y, color);
+	}
+
 	public void drawProgressBar(GuiScreen gui, double progress, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 150, 18, 22, 15);
@@ -156,4 +167,274 @@ public class GuiBuilder {
 			gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 		}
 	}
+	
+	/**
+	 * Draws button with JEI icon in the given coords.
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (Loader.isModLoaded("jei")) {
+			if (layer == GuiBase.Layer.BACKGROUND) {
+				x += gui.getGuiLeft();
+				y += gui.getGuiTop();
+			}
+			gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+			gui.drawTexturedModalRect(x, y, 202, 0, 12, 12);
+		}
+	}
+	
+	/**
+	 *  Draws lock button in either locked or unlocked state
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param layer Layer Layer to draw on
+	 * @param locked boolean Set to true if it is in locked state
+	 */
+	public void drawLockButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 174, 26 + (locked ? 12 : 0) , 20, 12);
+		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
+			List<String> list = new ArrayList<>();
+			if(locked){
+				list.add(StringUtils.t("reborncore.gui.tooltip.unlock_items"));
+			} else {
+				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
+			}
+
+			GlStateManager.pushMatrix();
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, 80, gui.mc.fontRenderer);
+			GlStateManager.popMatrix();
+		}
+	}
+	
+	/**
+	 *  Draws hologram toggle button
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		if (layer == GuiBase.Layer.FOREGROUND) {
+			mouseX -= gui.getGuiLeft();
+			mouseY -= gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		if (ClientProxy.multiblockRenderEvent.currentMultiblock == null) {
+			gui.drawTexturedModalRect(x, y, 174, 50, 20, 12);
+		} else {
+			gui.drawTexturedModalRect(x, y, 174, 62, 20, 12);
+		}
+		if (isInRect(x, y, 20, 12, mouseX, mouseY)) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.hologram"));
+			GlStateManager.pushMatrix();
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
+			GlStateManager.popMatrix();
+		}
+	}
+	
+	/**
+	 *  Draws four buttons in a raw to increase or decrease values
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawUpDownButtons(GuiBase gui, int x, int y, GuiBase.Layer layer){
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 174, 74, 12, 12);
+		gui.drawTexturedModalRect(x + 12, y, 174, 86, 12, 12);
+		gui.drawTexturedModalRect(x + 24, y, 174, 98, 12, 12);
+		gui.drawTexturedModalRect(x + 36, y, 174, 110, 12, 12);
+	}
+	
+	/**
+	 *  Draws big horizontal bar for heat value
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
+	 * @param value int Current heat value
+	 * @param max int Maximum heat value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawBigHeatBar(GuiBase gui, int x, int y, int value, int max, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
+		if (value != 0) {
+			int j = (int) ((double) value / (double) max * 106);
+			if (j < 0) {
+				j = 0;
+			}
+			gui.drawTexturedModalRect(x + 4, y + 4, 26, 246, j, 10);
+			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
+		}
+	}
+	
+	/**
+	 *  Draws big horizontal blue bar
+	 *   
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
+	 * @param value int Current value
+	 * @param max int Maximum value
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param suffix String String to put on the bar after percentage value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		if (!suffix.equals("")) {
+			suffix = " " + suffix;
+		}
+		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
+		int j = (int) ((double) value / (double) max * 106);
+		if (j < 0)
+			j = 0;
+		gui.drawTexturedModalRect(x + 4, y + 4, 26, 236, j, 10);
+		gui.drawCentredString(value + suffix, y + 5, 0xFFFFFF, layer);
+		if (isInRect(x, y, 114, 18, mouseX, mouseY)) {
+			int percentage = percentage(max, value);
+			List<String> list = new ArrayList<>();
+			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " Full");
+
+			if (value > max) {
+				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
+				list.add(TextFormatting.GRAY + "prolly a bug");
+				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
+			}
+			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height, -1, gui.mc.fontRenderer);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+	}
+	
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
+		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", layer);
+	}
+	
+	/**
+	 *  Shades GUI and draw gray bar on top of GUI
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		int x = 0;
+		int y = 4;
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		GlStateManager.disableLighting();
+		GlStateManager.disableDepth();
+		GlStateManager.colorMask(true, true, true, false);
+		GuiUtils.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
+		GuiUtils.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
+		GuiUtils.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
+		GlStateManager.colorMask(true, true, true, true);
+		GlStateManager.enableDepth();
+		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
+	}
+	
+	/**
+	 *  Draws upgrade slots on the left side on machine GUI
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place slots
+	 * @param y int Top left corner where to place slots
+	 */
+	public void drawUpgrades(GuiBase gui, int x, int y) {
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 215, 0, 30, 87);
+	}
+	
+	/**
+	 *  Draws energy output value and icon 
+	 *  
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place energy output
+	 * @param y int Top left corner where to place energy output
+	 * @param maxOutput int Energy output value
+	 * @param layer Layer Layer to draw on
+	 */
+	public void drawEnergyOutput(GuiBase gui, int x, int y, int maxOutput, GuiBase.Layer layer){
+		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE){
+			return;
+		}
+		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
+				+ PowerSystem.getDisplayPower().abbreviation + "/t";
+		int width = gui.mc.fontRenderer.getStringWidth(text);
+		gui.drawString(text, x - width, y + 5, 0, layer);
+		if (layer == GuiBase.Layer.BACKGROUND) {
+			x += gui.getGuiLeft();
+			y += gui.getGuiTop();
+		}
+		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
+		gui.drawTexturedModalRect(x, y, 150, 91, 16, 17);
+	}
+	
+	protected int percentage(int MaxValue, int CurrentValue) {
+		if (CurrentValue == 0)
+			return 0;
+		return (int) ((CurrentValue * 100.0f) / MaxValue);
+	}
+	
 }

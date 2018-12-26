@@ -35,31 +35,40 @@ import reborncore.common.registration.impl.ConfigRegistry;
 @RebornRegister
 public class RebornCoreConfig {
 
-	@ConfigRegistry(comment = "The Amount of FU to output from EU", category = "power")
+	@ConfigRegistry(config = "power", key = "EU - FU ratio", comment = "The Amount of FU to output from EU")
 	public static int euPerFU = 4;
 
-	@ConfigRegistry(comment = "Contains some debug tools to help fix issues with ores.", category = "debug")
-	public static boolean oreDebug = false;
+	@ConfigRegistry(config = "power", key = "Enable FE support", comment = "Whether energy blocks will accept and emit Forge Energy (FE/RF/etc)")
+	public static boolean enableFE = true;
 
-	@ConfigRegistry(comment = "AutoUpdates none user chnaged config values, when the mod default changes.")
-	public static boolean configUpdating = true;
-
-	@ConfigRegistry(comment = "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
-	public static boolean wrenchRequired = false;
-
-	@ConfigRegistry(comment = "Show Stack Info HUD (ClientSideOnly)", category = "client")
+	@ConfigRegistry(config = "client", key = "Show Stack Info HUD", comment = "Show Stack Info HUD")
 	public static boolean ShowStackInfoHUD = true;
 
-	@ConfigRegistry(comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left (ClientSideOnly)", category = "client")
+	@ConfigRegistry(config = "client", key = "Stack Info Corner", comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left")
 	public static int stackInfoCorner = 0;
 
-	@ConfigRegistry(comment = "X padding for HUD", category = "client")
+	@ConfigRegistry(config = "client", key = "Stack Info X", comment = "X padding for HUD ")
 	public static int stackInfoX = 2;
 
-	@ConfigRegistry(comment = "Y padding for HUD", category = "client")
+	@ConfigRegistry(config = "client", key = "Stack Info Y", comment = "Y padding for HUD ")
 	public static int stackInfoY = 7;
 
-	@ConfigRegistry(comment = "Enable Seasonal Easter Eggs", category = "client")
+	@ConfigRegistry(config = "misc", key = "Version Check", comment = "Enable version checker")
+	public static boolean versionCheck = true;
+
+	@ConfigRegistry(config = "misc", key = "Enable Seasonal Easter Eggs", comment = "Disable this is you don't want seasonal easter eggs")
 	public static boolean easterEggs = true;
+
+	@ConfigRegistry(config = "misc", category = "debug", key = "Enable Debug tools for ores", comment = "Contains some debug tools to help fix issues with ores")
+	public static boolean oreDebug = false;
+
+	@ConfigRegistry(config = "misc", key = "Config Updater", comment = "AutoUpdates none user chnaged config values, when the mod default changes.")
+	public static boolean configUpdating = true;
+
+	@ConfigRegistry(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower teir will smoke")
+	public static boolean smokeHighTeir = false;
+
+	@ConfigRegistry(config = "misc", key = "Wrench Required", comment = "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
+	public static boolean wrenchRequired = true;
 
 }

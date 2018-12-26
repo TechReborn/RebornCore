@@ -30,20 +30,19 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import reborncore.RebornCore;
+import org.apache.commons.io.FileUtils;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.util.serialization.SerializationUtil;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class PowerSystem {
-	public static File priorityConfig;
-	private static int euPriority;
-	private static int forgePriority;
-	private static int euPriorityDefault = 0;
-	private static int forgePriorityDefault = 1;
+	public static File selectedFile;
+	private static EnergySystem selectedSystem = EnergySystem.values()[0];
+
 	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
 
 	public static String getLocaliszedPower(double eu) {
@@ -146,58 +145,45 @@ public class PowerSystem {
 	}
 
 	public static EnergySystem getDisplayPower() {
-		int eu = euPriority;
-		int fe = forgePriority;
-/*		if ( eu > fe && RebornCoreConfig.getRebornPower().eu())
-			return EnergySystem.EU;*/
-		return EnergySystem.FE;
+		return selectedSystem;
 	}
 
 	public static void bumpPowerConfig() {
-		EnergyPriorityConfig config = new EnergyPriorityConfig();
-		if (getDisplayPower() == EnergySystem.EU) {
-			config.setEuPriority(0);
-			config.setForgePriority(1);
-		} else if (getDisplayPower() == EnergySystem.FE) {
-			config.setEuPriority(1);
-			config.setForgePriority(0);
+		int value = selectedSystem.ordinal() + 1;
+		if(value == EnergySystem.values().length){
+			value = 0;
 		}
-		writeConfig(config);
+		selectedSystem = EnergySystem.values()[value];
+		writeFile();
 	}
 
-	public static void reloadConfig() {
-		if (!priorityConfig.exists()) {
-			writeConfig(new EnergyPriorityConfig());
+	public static void readFile() {
+		if (!selectedFile.exists()) {
+			writeFile();
 		}
-		if (priorityConfig.exists()) {
-			EnergyPriorityConfig config = null;
-			try (Reader reader = new FileReader(priorityConfig)) {
-				config = SerializationUtil.GSON.fromJson(reader, EnergyPriorityConfig.class);
-			} catch (Exception e) {
+		if (selectedFile.exists()) {
+
+			try {
+				String value = FileUtils.readFileToString(selectedFile, StandardCharsets.UTF_8);
+				selectedSystem = Arrays.stream(EnergySystem.values()).filter(energySystem -> energySystem.abbreviation.equalsIgnoreCase(value)).findFirst().orElse(EnergySystem.values()[0]);
+			} catch (IOException e) {
 				e.printStackTrace();
-				RebornCore.LOGGER.error("Failed to read power config, will reset to defautls and save a new file.");
 			}
-			if (config == null) {
-				config = new EnergyPriorityConfig();
-				writeConfig(config);
-			}
-			euPriority = config.euPriority;
-			forgePriority = config.forgePriority;
 		}
 	}
 
-	public static void writeConfig(EnergyPriorityConfig config) {
-		try (Writer writer = new FileWriter(priorityConfig)) {
-			SerializationUtil.GSON.toJson(config, writer);
-		} catch (Exception e) {
-
+	public static void writeFile() {
+		try {
+			FileUtils.write(selectedFile, selectedSystem.abbreviation, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		reloadConfig();
+		readFile();
 	}
 
 	public enum EnergySystem {
-		EU(0xFF800600, "EU", 43, 151, 0xFF670000),
-		FE(0xFFBE281A, "FE", 15, 151, 0xFF960D0D);
+		FE(0xFFBE281A, "FE", 15, 151, 0xFF960D0D),
+		EU(0xFF800600, "EU", 43, 151, 0xFF670000);
 
 		public int colour;
 		public int altColour;
@@ -211,27 +197,6 @@ public class PowerSystem {
 			this.xBar = xBar;
 			this.yBar = yBar;
 			this.altColour = altColour;
-		}
-	}
-
-	public static class EnergyPriorityConfig {
-		public int euPriority = euPriorityDefault;
-		public int forgePriority = forgePriorityDefault;
-
-		public int getEuPriority() {
-			return euPriority;
-		}
-
-		public void setEuPriority(int euPriority) {
-			this.euPriority = euPriority;
-		}
-
-		public int getForgePriority() {
-			return forgePriority;
-		}
-
-		public void setForgePriority(int forgePriority) {
-			this.forgePriority = forgePriority;
 		}
 	}
 }

@@ -28,27 +28,37 @@
 
 package reborncore.common.util;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FluidUtils {
 
-	public static boolean fluidEquals(Fluid f1, Fluid f2){
-		if(f1.equals(f2)){
+	public static boolean fluidEquals(Fluid f1, Fluid f2) {
+		if (f1.equals(f2)) {
 			return true;
 		}
-		return false;
+		// This is a work around TR's fucked fluid names that we dont want to break
+		// worlds in 1.12 to fix. //TODO remove in 1.13
+		String s1 = f1.getName();
+		String s2 = f2.getName();
+		if (s1.startsWith("fluid")) {
+			s1 = s1.replaceFirst("fluid", "");
+		}
+		if (s2.startsWith("fluid")) {
+			s2 = s2.replaceFirst("fluid", "");
+		}
+		return s1.equals(s2);
 	}
 
-	public static boolean drainContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot, int outputSlot) {
+	public static boolean drainContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot) {
 		ItemStack inputStack = inv.getStackInSlot(inputSlot);
 		ItemStack outputStack = inv.getStackInSlot(outputSlot);
 		IFluidHandlerItem inputFluidHandler = getFluidHandler(inputStack);
@@ -79,8 +89,7 @@ public class FluidUtils {
 		// Proceed with inventory changes
 		ItemStack inputFluidHandlerItemStack = inputFluidHandler.getContainer();
 		if (inputFluidHandlerItemStack.isEmpty()) {
-		// TODO: FIx this. ItemStack should not be modified
-			inv.getStackInSlot(inputSlot).shrink(1);
+			inv.decrStackSize(inputSlot, 1);
 		} else {
 
 			/*
@@ -88,8 +97,8 @@ public class FluidUtils {
 			 * accordingly.
 			 */
 			if (outputStack.isEmpty()) {
-				inv.setStackInSlot(outputSlot, inputFluidHandlerItemStack);
-				inv.getStackInSlot(inputSlot).shrink(1);
+				inv.setInventorySlotContents(outputSlot, inputFluidHandlerItemStack);
+				inv.decrStackSize(inputSlot, 1);
 			} else {
 
 				/*
@@ -99,7 +108,7 @@ public class FluidUtils {
 				if (ItemUtils.isItemEqual(outputStack, inputFluidHandlerItemStack, true, true)
 						&& outputStack.getCount() <= outputStack.getMaxStackSize()) {
 					outputStack.setCount(outputStack.getCount() + 1);
-					inv.getStackInSlot(inputSlot).shrink(1);
+					inv.decrStackSize(inputSlot, 1);
 				} else {
 
 					/*
@@ -115,58 +124,51 @@ public class FluidUtils {
 		return false;
 	}
 
-	public static boolean fillContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot,
-			int outputSlot, Fluid fluidToFill) {
-		ItemStack inputStack = inv.getStackInSlot(inputSlot);
-		ItemStack outputStack = inv.getStackInSlot(outputSlot);
+	public static boolean fillContainers(IFluidHandler fluidHandler, IInventory inv, int inputSlot, int outputSlot,
+			Fluid fluidToFill) {
+		ItemStack input = inv.getStackInSlot(inputSlot);
+		ItemStack output = inv.getStackInSlot(outputSlot);
 
-		if (inputStack.isEmpty()) {
-			return false;
+		if (!input.isEmpty()) {
+			IFluidHandlerItem inputFluidHandler = getFluidHandler(input);
+
+			/*
+			 * The copy is needed to get the filled container without altering the original
+			 * ItemStack.
+			 */
+			ItemStack containerCopy = input.copy();
+			containerCopy.setCount(1);
+
+			/*
+			 * It's necessary to check before any alterations that the resulting ItemStack
+			 * can be placed into the outputSlot.
+			 */
+			if (inputFluidHandler != null
+					&& (output.isEmpty() || (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(
+							FluidUtils.getFilledContainer(fluidToFill, containerCopy), output, true, true)))) {
+
+				/*
+				 * Making a simulation to check if the fluid can be transfered into the
+				 * fluidhandler.
+				 */
+				if (FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler,
+						inputFluidHandler.getTankProperties()[0].getCapacity(), false) != null) {
+
+					// Changes are really applied and the fluid is transfered.
+					FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler,
+							inputFluidHandler.getTankProperties()[0].getCapacity(), true);
+
+					// The inventory is modified and stacks are merged.
+					if (output.isEmpty())
+						inv.setInventorySlotContents(outputSlot, inputFluidHandler.getContainer());
+					else
+						inv.getStackInSlot(outputSlot).setCount(inv.getStackInSlot(outputSlot).getCount() + 1);
+					inv.decrStackSize(inputSlot, 1);
+					return true;
+				}
+			}
 		}
-		IFluidHandlerItem inputFluidHandler = getFluidHandler(inputStack);
-
-		if (inputFluidHandler == null) {
-			return false;
-		}
-
-		/*
-		 * The copy is needed to get the filled container without altering the original
-		 * ItemStack.
-		 */
-		ItemStack containerCopy = inputStack.copy();
-		containerCopy.setCount(1);
-
-		/*
-		 * It's necessary to check before any alterations that the resulting ItemStack
-		 * can be placed into the outputSlot.
-		 */
-		if (!outputStack.isEmpty() || (outputStack.getCount() >= outputStack.getMaxStackSize() && !ItemUtils
-				.isItemEqual(FluidUtils.getFilledContainer(fluidToFill, containerCopy), outputStack, true, true))) {
-			return false;
-		}
-
-		/*
-		 * Making a simulation to check if the fluid can be transfered into the
-		 * fluidhandler.
-		 */
-
-		int inputFluidHandlerCapacity = inputFluidHandler.getTankProperties()[0].getCapacity();
-
-		if (FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, inputFluidHandlerCapacity, false) == null) {
-			return false;
-		}
-
-		// Changes are really applied and the fluid is transfered.
-		FluidUtil.tryFluidTransfer(inputFluidHandler, fluidHandler, inputFluidHandlerCapacity, true);
-
-		// The inventory is modified and stacks are merged.
-		if (outputStack.isEmpty()) {
-			inv.setStackInSlot(outputSlot, inputFluidHandler.getContainer());
-		} else {
-			outputStack.setCount(outputStack.getCount() + 1);
-			inputStack.shrink(1);
-		}
-		return true;
+		return false;
 	}
 
 	@Nullable
@@ -178,14 +180,13 @@ public class FluidUtils {
 
 	@Nullable
 	public static FluidStack getFluidStackInContainer(@Nonnull ItemStack container) {
-		if (container.isEmpty()) {
-			return null;
-		}
-		container = container.copy();
-		container.setCount(1);
-		final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(container);
-		if (fluidHandler != null) {
-			return fluidHandler.drain(Fluid.BUCKET_VOLUME, false);
+		if (!container.isEmpty()) {
+			container = container.copy();
+			container.setCount(1);
+			final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(container);
+			if (fluidHandler != null) {
+				return fluidHandler.drain(Fluid.BUCKET_VOLUME, false);
+			}
 		}
 		return null;
 	}

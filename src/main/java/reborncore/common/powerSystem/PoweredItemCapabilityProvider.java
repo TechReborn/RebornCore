@@ -47,9 +47,9 @@ import javax.annotation.Nullable;
  */
 
 public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NBTTagInt> {
-	
+
 	private IEnergyStorage energyStorage = null;
-	
+
 
 	public PoweredItemCapabilityProvider(ItemStack stack) {
 		// Done to ensure that the item that is being handled is only one of TechReborns, this shouldn't be false but this protects against it.
@@ -60,7 +60,6 @@ public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NB
 		}
 	}
 
-
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
 		if (energyStorage != null  && capability == CapabilityEnergy.ENERGY) {
@@ -68,7 +67,7 @@ public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NB
 		}
 		return false;
 	}
-	
+
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
@@ -90,7 +89,7 @@ public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NB
 	@Override
 	public void deserializeNBT(NBTTagInt nbt) {
 		if (energyStorage != null) {
-			CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, energyStorage, null, nbt);	
+			CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, energyStorage, null, nbt);
 		}
 	}
 
