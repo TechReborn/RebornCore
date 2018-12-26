@@ -15,3 +15,5 @@ reborncore.gui.tooltip.lock_items=Lock Items
 reborncore.gui.tooltip.unlock_items=Unlock Items
 reborncore.gui.tooltip.upgrades=Machine upgrades
 reborncore.gui.tooltip.hologram=Toggle Multiblock Hologram
+reborncore.gui.tooltip.config_slots=Configure slots
+reborncore.gui.tooltip.config_fluids=Configure Fluids

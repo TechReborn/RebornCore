@@ -407,7 +407,7 @@ public class GuiBuilder {
 	 */
 	public void drawUpgrades(GuiBase gui, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(defaultTextureSheet);
-		gui.drawTexturedModalRect(x, y, 215, 0, 30, 87);
+		gui.drawTexturedModalRect(x, y, 215, 0, 26, 83);
 	}
 	
 	/**

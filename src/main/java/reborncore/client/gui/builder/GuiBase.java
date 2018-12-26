@@ -36,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -170,40 +169,40 @@ public class GuiBase extends GuiContainer {
 		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
 			GuiFluidConfiguration.draw(this, mouseX, mouseY);
 		}
-
-		int offset = 0;
-		if(!upgrades){
-			offset = 80;
-		}
-		
-		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset, 12, 12, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add("Configure slots");
-			GuiUtils.drawHoveringText(list, mouseX - guiLeft  ,  mouseY - guiTop , width, height, -1, mc.fontRenderer);
-			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
-		}
-		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset + 27, 12, 12, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add("Configure Fluids");
-			GuiUtils.drawHoveringText(list, mouseX - guiLeft  ,  mouseY - guiTop , width, height, -1, mc.fontRenderer);
-			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
-		}
 	}
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		if (builder.isInRect(guiLeft - 27, guiTop + 4, 30, 87, mouseX, mouseY) && upgrades) {
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+	
+	@Override 
+	protected void renderHoveredToolTip(int mouseX, int mouseY) {
+		if (this.isPointInRect(-27, 4, 26, 83, mouseX, mouseY) && upgrades) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
-			GuiUtils.drawHoveringText(list, mouseX, mouseY, width, height, -1, mc.fontRenderer);
+			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
-		this.renderHoveredToolTip(mouseX, mouseY);
+		int offset = upgrades ? 81 : 0;
+		if (isPointInRect(-26, 5 + offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
+			drawHoveringText(list, mouseX,  mouseY);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+		if (isPointInRect(-26, 5 + offset + 30, 30, 30, mouseX, mouseY) && getMachine().showTankConfig()) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
+			drawHoveringText(list, mouseX,  mouseY);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	protected void drawTitle() {
