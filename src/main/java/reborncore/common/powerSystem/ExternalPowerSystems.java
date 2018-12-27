@@ -28,7 +28,7 @@
 
 package reborncore.common.powerSystem;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -76,8 +76,8 @@ public class ExternalPowerSystems implements IRegistryFactory {
 				.forEach(externalPowerManager -> externalPowerManager.chargeItem(powerAcceptor, stack));
 	}
 
-	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityPlayer player) {
-		externalPowerHandlerList.forEach(externalPowerManager -> externalPowerManager.requestEnergyFromArmor(powerAcceptor, player));
+	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityLivingBase entity) {
+		externalPowerHandlerList.forEach(externalPowerManager -> externalPowerManager.requestEnergyFromArmor(powerAcceptor, entity));
 	}
 
 	@Override
