@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 public interface ExternalPowerManager {
 
@@ -42,7 +43,8 @@ public interface ExternalPowerManager {
 	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side);
 
 	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+	public void dischargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
 
 	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
-
+	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
 }
