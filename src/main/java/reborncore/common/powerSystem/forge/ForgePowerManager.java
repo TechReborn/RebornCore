@@ -36,6 +36,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.registration.RebornRegistry;
 
@@ -66,7 +67,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void dischargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE) {
+		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
@@ -87,7 +88,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void dischargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE) {
+		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
@@ -104,7 +105,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void chargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE) {
+		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
@@ -123,7 +124,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE) {
+		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
@@ -137,5 +138,14 @@ public class ForgePowerManager implements ExternalPowerManager {
 		if (maxReceive > 0) {
 			powerItem.receiveEnergy(powerAcceptor.extractEnergy(maxReceive, false), false);
 		}
+	}
+
+	/**
+	 * Checks whether the provided tile is considered a powered tile by other power systems already
+	 */
+	private static boolean isOtherPoweredItem(ItemStack stack) {
+		return ExternalPowerSystems.externalPowerHandlerList.stream()
+				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
+				.anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
 	}
 }
