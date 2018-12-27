@@ -34,6 +34,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.api.power.IEnergyItemInfo;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 import javax.annotation.Nonnull;
@@ -64,7 +65,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-		if (isEnergyItem && capability == CapabilityEnergy.ENERGY) {
+		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return true;
 		}
 		return false;
@@ -73,7 +74,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		if (isEnergyItem && capability == CapabilityEnergy.ENERGY) {
+		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
