@@ -87,23 +87,6 @@ public class ForgePowerManager implements ExternalPowerManager {
 		}
 	}
 
-	public void dischargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
-			return;
-		}
-
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
-		if(powerItem == null) {
-			return;
-		}
-
-		int chargeEnergy = powerAcceptor.receiveEnergy(powerItem.extractEnergy(powerItem.getEnergyStored(), true), true);
-
-		if (chargeEnergy > 0) {
-			powerAcceptor.receiveEnergy(powerItem.extractEnergy(chargeEnergy, false), false);
-		}
-	}
-
 	public void chargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
 		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;

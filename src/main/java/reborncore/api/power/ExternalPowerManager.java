@@ -28,6 +28,7 @@
 
 package reborncore.api.power;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -43,8 +44,15 @@ public interface ExternalPowerManager {
 	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side);
 
 	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
-	public void dischargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
 
 	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
 	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
+
+	/**
+	 * Requests that the specified power acceptor be charged from the armor slots in the player's inventory.
+	 *
+	 * @param powerAcceptor The item requesting to be charged
+	 * @param player The player whose inventory contains the power acceptor
+	 */
+	default void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityPlayer player) { }
 }
