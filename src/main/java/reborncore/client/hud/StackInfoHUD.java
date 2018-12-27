@@ -38,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,6 +47,7 @@ import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
@@ -132,8 +134,11 @@ public class StackInfoHUD {
 			
 		String text = "";
 		if (stack.getItem() instanceof IEnergyItemInfo) {
-			int maxCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
-			int currentCharge = stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
+			IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
+
+			int maxCharge = capEnergy.getMaxEnergyStored();
+			int currentCharge = capEnergy.getEnergyStored();
+
 			TextFormatting color = TextFormatting.GREEN;
 			double quarter = maxCharge / 4;
 			double half = maxCharge / 2;

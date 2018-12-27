@@ -30,6 +30,7 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import reborncore.RebornCore;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.common.registration.IRegistryFactory;
@@ -59,8 +60,8 @@ public class ExternalPowerSystems implements IRegistryFactory {
 		externalPowerHandlerList.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
 	}
 
-	public static boolean isPoweredTile(TileEntity tileEntity){
-		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity));
+	public static boolean isPoweredTile(TileEntity tileEntity, EnumFacing facing) {
+		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
 	}
 
 	@Override

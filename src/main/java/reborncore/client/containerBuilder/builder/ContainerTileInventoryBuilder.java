@@ -89,8 +89,7 @@ public class ContainerTileInventoryBuilder {
 
 	public ContainerTileInventoryBuilder energySlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.tile, index, x, y)
-			.setFilter(stack -> stack.hasCapability(CapabilityEnergy.ENERGY, EnumFacing.UP)
-				|| ExternalPowerSystems.isPoweredItem(stack)));
+			.setFilter(ExternalPowerSystems::isPoweredItem));
 		return this;
 	}
 

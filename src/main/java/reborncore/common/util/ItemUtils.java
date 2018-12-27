@@ -37,6 +37,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.oredict.OreDictionary;
 import reborncore.api.power.IEnergyItemInfo;
+import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.recipes.IRecipeInput;
 
 import java.util.ArrayList;
@@ -173,13 +174,13 @@ public class ItemUtils {
 		if (stack.isEmpty()) {
 			return 0.0;
 		}
+
 		if (! (stack.getItem() instanceof IEnergyItemInfo) ) {
 			return 0.0;
 		}
-		IEnergyStorage capEnergy = stack.getCapability(CapabilityEnergy.ENERGY, null);
-		if (capEnergy == null) {
-			return 0.0;
-		}
+
+		IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
+
 		double energy = (double) capEnergy.getEnergyStored();
 		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
 		return energy /  maxEnergy;
