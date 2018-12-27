@@ -55,23 +55,15 @@ public class ExternalPowerSystems implements IRegistryFactory {
 	}
 
 	public static void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
-		externalPowerHandlerList.forEach(externalPowerManager -> {
-			if (!externalPowerManager.isPoweredItem(stack)) {
-				return;
-			}
-
-			externalPowerManager.dischargeItem(tilePowerAcceptor, stack);
-		});
+		externalPowerHandlerList.stream()
+				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+				.forEach(externalPowerManager -> externalPowerManager.dischargeItem(tilePowerAcceptor, stack));
 	}
 
 	public static void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
-		externalPowerHandlerList.forEach(externalPowerManager -> {
-			if(!externalPowerManager.isPoweredItem(stack)) {
-				return;
-			}
-
-			externalPowerManager.chargeItem(tilePowerAcceptor, stack);
-		});
+		externalPowerHandlerList.stream()
+				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+				.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
 	}
 
 	public static boolean isPoweredTile(TileEntity tileEntity, EnumFacing facing) {
@@ -79,13 +71,9 @@ public class ExternalPowerSystems implements IRegistryFactory {
 	}
 
 	public static void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
-		externalPowerHandlerList.forEach(externalPowerManager -> {
-			if(!externalPowerManager.isPoweredItem(stack)) {
-				return;
-			}
-
-			externalPowerManager.chargeItem(powerAcceptor, stack);
-		});
+		externalPowerHandlerList.stream()
+				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+				.forEach(externalPowerManager -> externalPowerManager.chargeItem(powerAcceptor, stack));
 	}
 
 	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityPlayer player) {
