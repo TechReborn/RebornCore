@@ -26,23 +26,60 @@
  * THE SOFTWARE.
  */
 
-package reborncore.api.power;
+package reborncore.common.powerSystem.forge;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 
-public interface ExternalPowerManager {
+import javax.annotation.Nullable;
 
-	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor);
+public class ForgeEnergyStorage implements IEnergyStorage {
 
-	public boolean isPoweredItem(ItemStack stack);
+	TilePowerAcceptor acceptor;
+	@Nullable
+	EnumFacing facing;
 
-	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side);
+	public ForgeEnergyStorage(TilePowerAcceptor acceptor,
+	                          @Nullable
+		                         EnumFacing facing) {
+		this.acceptor = acceptor;
+		this.facing = facing;
+	}
 
-	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+	@Override
+	public int receiveEnergy(int maxReceive, boolean simulate) {
+		return acceptor.receiveEnergy(facing, maxReceive, simulate);
+	}
 
-	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+	@Override
+	public int extractEnergy(int maxExtract, boolean simulate) {
+		return acceptor.extractEnergy(facing, maxExtract, simulate);
+	}
 
+	@Override
+	public int getEnergyStored() {
+		return acceptor.getEnergyStored(facing);
+	}
+
+	@Override
+	public int getMaxEnergyStored() {
+		return acceptor.getMaxEnergyStored(facing);
+	}
+
+	@Override
+	public boolean canExtract() {
+		return acceptor.canProvideEnergy(facing);
+	}
+
+	@Override
+	public boolean canReceive() {
+		return acceptor.canAcceptEnergy(facing);
+	}
+
+	public void setFacing(
+		@Nullable
+			EnumFacing facing) {
+		this.facing = facing;
+	}
 }

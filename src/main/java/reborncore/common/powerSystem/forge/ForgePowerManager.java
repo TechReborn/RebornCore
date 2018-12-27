@@ -28,58 +28,80 @@
 
 package reborncore.common.powerSystem.forge;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import reborncore.api.power.ExternalPowerHandler;
+import reborncore.api.power.ExternalPowerManager;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.registration.RebornRegistry;
 
-import javax.annotation.Nullable;
+@RebornRegistry
+public class ForgePowerManager implements ExternalPowerManager {
+	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
+		if(!RebornCoreConfig.enableFE) {
+			return null;
+		}
 
-public class ForgePowerManager implements IEnergyStorage {
-
-	TilePowerAcceptor acceptor;
-	@Nullable
-	EnumFacing facing;
-
-	public ForgePowerManager(TilePowerAcceptor acceptor,
-	                         @Nullable
-		                         EnumFacing facing) {
-		this.acceptor = acceptor;
-		this.facing = facing;
+		return new ForgePowerHandler(acceptor);
 	}
 
-	@Override
-	public int receiveEnergy(int maxReceive, boolean simulate) {
-		return acceptor.receiveEnergy(facing, maxReceive, simulate);
+	public boolean isPoweredItem(ItemStack stack) {
+		if(!RebornCoreConfig.enableFE) {
+			return false;
+		}
+
+		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
 	}
 
-	@Override
-	public int extractEnergy(int maxExtract, boolean simulate) {
-		return acceptor.extractEnergy(facing, maxExtract, simulate);
+	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side) {
+		if(!RebornCoreConfig.enableFE) {
+			return false;
+		}
+
+		return tileEntity.hasCapability(CapabilityEnergy.ENERGY, side);
 	}
 
-	@Override
-	public int getEnergyStored() {
-		return acceptor.getEnergyStored(facing);
+	public void dischargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
+		if(!RebornCoreConfig.enableFE) {
+			return;
+		}
+
+		if(!stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			return;
+		}
+
+		double chargeEnergy = Math.min(powerAcceptor.getFreeSpace(), powerAcceptor.getMaxInput()) * RebornCoreConfig.euPerFU;
+		if (chargeEnergy <= 0.0) {
+			return;
+		}
+
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if (powerItem.getEnergyStored() > 0) {
+			int extracted = powerItem.extractEnergy((int) chargeEnergy, false);
+			powerAcceptor.addEnergy(extracted / RebornCoreConfig.euPerFU);
+		}
 	}
 
-	@Override
-	public int getMaxEnergyStored() {
-		return acceptor.getMaxEnergyStored(facing);
-	}
+	public void chargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
+		if(!RebornCoreConfig.enableFE) {
+			return;
+		}
 
-	@Override
-	public boolean canExtract() {
-		return acceptor.canProvideEnergy(facing);
-	}
+		if(!stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			return;
+		}
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
 
-	@Override
-	public boolean canReceive() {
-		return acceptor.canAcceptEnergy(facing);
-	}
+		int maxReceive = powerItem.receiveEnergy((int)powerAcceptor.getMaxOutput() * RebornCoreConfig.euPerFU, true);
 
-	public void setFacing(
-		@Nullable
-			EnumFacing facing) {
-		this.facing = facing;
+		double maxUse = Math.min((double) (maxReceive / RebornCoreConfig.euPerFU), powerAcceptor.getMaxOutput());
+
+		if (powerAcceptor.getEnergy() >= 0.0 && maxReceive > 0) {
+			powerItem.receiveEnergy((int) powerAcceptor.useEnergy(maxUse) * RebornCoreConfig.euPerFU, false);
+		}
 	}
 }
