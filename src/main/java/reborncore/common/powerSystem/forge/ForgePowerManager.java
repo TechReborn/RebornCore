@@ -70,7 +70,8 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		if(!stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if(powerItem == null) {
 			return;
 		}
 
@@ -79,10 +80,26 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
 		if (powerItem.getEnergyStored() > 0) {
 			int extracted = powerItem.extractEnergy((int) chargeEnergy, false);
 			powerAcceptor.addEnergy(extracted / RebornCoreConfig.euPerFU);
+		}
+	}
+
+	public void dischargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
+		if(!RebornCoreConfig.enableFE) {
+			return;
+		}
+
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if(powerItem == null) {
+			return;
+		}
+
+		int chargeEnergy = powerAcceptor.receiveEnergy(powerItem.extractEnergy(powerItem.getEnergyStored(), true), true);
+
+		if (chargeEnergy > 0) {
+			powerAcceptor.receiveEnergy(powerItem.extractEnergy(chargeEnergy, false), false);
 		}
 	}
 
@@ -91,10 +108,10 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		if(!stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if(powerItem == null) {
 			return;
 		}
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
 
 		int maxReceive = powerItem.receiveEnergy((int)powerAcceptor.getMaxOutput() * RebornCoreConfig.euPerFU, true);
 
@@ -102,6 +119,23 @@ public class ForgePowerManager implements ExternalPowerManager {
 
 		if (powerAcceptor.getEnergy() >= 0.0 && maxReceive > 0) {
 			powerItem.receiveEnergy((int) powerAcceptor.useEnergy(maxUse) * RebornCoreConfig.euPerFU, false);
+		}
+	}
+
+	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
+		if(!RebornCoreConfig.enableFE) {
+			return;
+		}
+
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		if(powerItem == null) {
+			return;
+		}
+
+		int maxReceive = powerItem.receiveEnergy(powerAcceptor.extractEnergy(powerAcceptor.getEnergyStored(), true), true);
+
+		if (maxReceive > 0) {
+			powerItem.receiveEnergy(powerAcceptor.extractEnergy(maxReceive, false), false);
 		}
 	}
 }
