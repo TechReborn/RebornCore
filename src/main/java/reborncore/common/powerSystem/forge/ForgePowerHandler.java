@@ -67,6 +67,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 						continue;
 					} else if (isOtherPoweredTile(tile, side.getOpposite())) {
 						// Other power net will take care about this
+
 						continue;
 					} else if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
@@ -153,7 +154,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	 */
 	private static boolean isOtherPoweredTile(TileEntity tileEntity, EnumFacing facing) {
 		return ExternalPowerSystems.externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerHandler))
+				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
 				.anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
 	}
 }
