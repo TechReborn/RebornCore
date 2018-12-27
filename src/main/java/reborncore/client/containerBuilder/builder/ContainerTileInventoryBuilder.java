@@ -33,7 +33,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
