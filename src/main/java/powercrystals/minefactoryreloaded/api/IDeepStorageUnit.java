@@ -43,6 +43,7 @@ public interface IDeepStorageUnit {
 	/**
 	 * Sets the total amount of the item currently being stored, or zero if all
 	 * items are to be removed.
+	 * @param amount int Amount of items to be stored
 	 */
 	void setStoredItemCount(int amount);
 
@@ -51,6 +52,8 @@ public interface IDeepStorageUnit {
 	 * items to amount.
 	 * <p>
 	 * Will overwrite any existing stored items.
+	 * @param type 
+	 * @param amount 
 	 */
 	void setStoredItemType(ItemStack type, int amount);
 

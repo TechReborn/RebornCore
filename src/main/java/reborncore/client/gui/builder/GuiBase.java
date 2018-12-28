@@ -46,6 +46,7 @@ import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
+import reborncore.client.guibuilder.GuiBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,14 +59,13 @@ public class GuiBase extends GuiContainer {
 
 	public int xSize = 176;
 	public int ySize = 176;
-	public TRBuilder builder = new TRBuilder();
+	public GuiBuilder builder = new GuiBuilder();
 	public TileEntity tile;
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	
-
 	public boolean upgrades;
 
 	public GuiBase(EntityPlayer player, TileEntity tile, BuiltContainer container) {
@@ -110,14 +110,6 @@ public class GuiBase extends GuiContainer {
 		builder.drawOutputSlot(this, x - 5, y - 5);
 	}
 
-	protected void drawSelectedStack(int x, int y, Layer layer) {
-		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
-		}
-		builder.drawSelectedStack(this, x, y);
-	}
-
 	@Override
 	public void initGui() {
 		super.initGui();
@@ -137,15 +129,16 @@ public class GuiBase extends GuiContainer {
 		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) tile;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, guiLeft - 27, guiTop + 4);
+				builder.drawUpgrades(this, guiLeft - 24, guiTop + 6);
 				upgrades = true;
 			}
 		}
+		int offset = upgrades ? 86 : 6;
 		if(getMachine().hasSlotConfig()){
-			builder.drawSlotTab(this, guiLeft, guiTop, mouseX, mouseY, upgrades, wrenchStack);
+			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
 		if(getMachine().showTankConfig()){
-			builder.drawSlotTab(this, guiLeft, guiTop + 27, mouseX, mouseY, upgrades, fluidCellProvider.provide(FluidRegistry.LAVA));
+			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(FluidRegistry.LAVA));
 		}
 	}
 
@@ -180,7 +173,7 @@ public class GuiBase extends GuiContainer {
 	
 	@Override 
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		if (this.isPointInRect(-27, 4, 26, 83, mouseX, mouseY) && upgrades) {
+		if (isPointInRegion(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
 			drawHoveringText(list, mouseX, mouseY);
@@ -188,14 +181,14 @@ public class GuiBase extends GuiContainer {
 			GlStateManager.color(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 81 : 0;
-		if (isPointInRect(-26, 5 + offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
 			drawHoveringText(list, mouseX,  mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
-		if (isPointInRect(-26, 5 + offset + 30, 30, 30, mouseX, mouseY) && getMachine().showTankConfig()) {
+		if (isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
 			drawHoveringText(list, mouseX,  mouseY);
@@ -320,12 +313,23 @@ public class GuiBase extends GuiContainer {
 		super.onGuiClosed();
 	}
 
-	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
-		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
-	}
-
 	public TileLegacyMachineBase getMachine(){
 		return (TileLegacyMachineBase) tile;
+	}
+	
+	/**
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
+	 * 
+	 * @param rectX int Top left corner of region
+	 * @param rectY int Top left corner of region
+	 * @param rectWidth int Width of region
+	 * @param rectHeight  int Height of region
+	 * @param pointX int Mouse pointer 
+	 * @param pointY int Mouse pointer 
+	 * @return boolean Returns true if mouse pointer is in region specified
+	 */
+	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
+		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
 
 

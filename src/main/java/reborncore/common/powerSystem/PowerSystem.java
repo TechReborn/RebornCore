@@ -182,8 +182,8 @@ public class PowerSystem {
 	}
 
 	public enum EnergySystem {
-		FE(0xFFBE281A, "FE", 15, 151, 0xFF960D0D),
-		EU(0xFF800600, "EU", 43, 151, 0xFF670000);
+		FE(0xFFBE281A, "FE", 113, 151, 0xFF960D0D),
+		EU(0xFF800600, "EU", 141, 151, 0xFF670000);
 
 		public int colour;
 		public int altColour;
