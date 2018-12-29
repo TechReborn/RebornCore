@@ -768,7 +768,9 @@ public class GuiBuilder {
 	}
 	
 	public enum ProgressDirection {
-		RIGHT(58, 150, 74, 150, 16, 10), LEFT(58, 160, 74, 160, 16, 10), DOWN(78, 170, 88, 170, 10, 16),
+		RIGHT(58, 150, 74, 150, 16, 10), 
+		LEFT(74, 160, 58, 160, 16, 10), 
+		DOWN(78, 170, 88, 170, 10, 16),
 		UP(58, 170, 68, 170, 10, 16);
 		public int x;
 		public int y;
