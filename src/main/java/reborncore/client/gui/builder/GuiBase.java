@@ -45,6 +45,7 @@ import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
+import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
 import reborncore.client.guibuilder.GuiBuilder;
 
@@ -229,6 +230,16 @@ public class GuiBase extends GuiContainer {
 			factorY = guiTop;
 		}
 		buttonList.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
+	}
+	
+	public void addHologramButton(int x, int y, int id, Layer layer) {
+		int factorX = 0;
+		int factorY = 0;
+		if (layer == Layer.BACKGROUND) {
+			factorX = guiLeft;
+			factorY = guiTop;
+		}
+		buttonList.add(new GuiButtonHologram(id, x + factorX, y + factorY, this, layer));
 	}
 
 	@Override
