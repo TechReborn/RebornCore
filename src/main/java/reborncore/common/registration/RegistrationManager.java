@@ -30,11 +30,16 @@ package reborncore.common.registration;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.discovery.asm.ModAnnotation;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import reborncore.Distribution;
 import reborncore.RebornCore;
 
 import java.lang.annotation.Annotation;
@@ -67,6 +72,9 @@ public class RegistrationManager {
 				if(!isModPresent(data, asmDataTable)){
 					continue;
 				}
+				if(!isValidOnSide(data, asmDataTable)){
+					continue;
+				}
 				Class clazz = Class.forName(data.getClassName());
 				if(isEarlyReg(data)){
 					handleClass(clazz, null, factoryList);
@@ -81,7 +89,7 @@ public class RegistrationManager {
 		//Sorts all the classes to (try) and ensure they are loaded in the same oder on the client/server.
 		//Hopefully this fixes the issue with packets being misaligned
 		registryClasses.sort(Comparator.comparing(Class::getCanonicalName));
-		RebornCore.logHelper.info("Pre loaded registries in" + (System.currentTimeMillis() - start) + "ms");
+		RebornCore.logHelper.info("Pre loaded registries in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	private static int getPriority(ASMDataTable.ASMData asmData){
@@ -121,6 +129,56 @@ public class RegistrationManager {
 				if (!Loader.isModLoaded(modid)) {
 					return false;
 				}
+			}
+		}
+		return true;
+	}
+
+	//This ensures that the class that might be loaded doesnt have any of the common side only markers on it. Its slow but will save us from some common issues
+	private static boolean isValidOnSide(ASMDataTable.ASMData asmData, ASMDataTable dataTable){
+		String side = FMLLaunchHandler.side().toString().toUpperCase();
+		if(asmData.getAnnotationInfo().containsKey("side")){
+			ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) asmData.getAnnotationInfo().get("side");
+			String classSide = sideEnum.getValue();
+			if(classSide.equals(Distribution.UNIVERSAL.toString())){
+				//do nothing with univseral classes
+			}else if(!side.equals(classSide)){
+				return false;
+			}
+		}
+		//Checks the side only annotations
+		Set<ASMDataTable.ASMData> asmDataSet = dataTable.getAll(SideOnly.class.getName());
+		for(ASMDataTable.ASMData sideData : asmDataSet){
+			if(sideData.getClassName().equals(asmData.getClassName())){
+				if(sideData.getAnnotationInfo().containsKey("value")) {
+					ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) sideData.getAnnotationInfo().get("value");
+					String classSide = sideEnum.getValue();
+					if(!side.equals(classSide)){
+						return false;
+					}
+				}
+			}
+		}
+		//Checks for the mod annotation on a class
+		Set<ASMDataTable.ASMData> modDataSet = dataTable.getAll(Mod.class.getName());
+		for(ASMDataTable.ASMData sideData : modDataSet) {
+			if (sideData.getClassName().equals(asmData.getClassName())) {
+				if(FMLLaunchHandler.side() == Side.CLIENT){
+					if(sideData.getAnnotationInfo().containsKey("serverSideOnly")) {
+						boolean value = (boolean) sideData.getAnnotationInfo().get("serverSideOnly");
+						if(value){
+							return false;
+						}
+					}
+				} else {
+					if(sideData.getAnnotationInfo().containsKey("clientSideOnly")) {
+						boolean value = (boolean) sideData.getAnnotationInfo().get("clientSideOnly");
+						if(value){
+							return false;
+						}
+					}
+				}
+
 			}
 		}
 		return true;

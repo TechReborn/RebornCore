@@ -26,40 +26,19 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.registration;
+package reborncore;
 
-import reborncore.Distribution;
-import reborncore.RebornCore;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public enum Distribution {
+	UNIVERSAL,
+	CLIENT,
+	SERVER;
 
-/**
- * This anoation gets applied to any class that contains
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface RebornRegistry {
-
-	/**
-	 * The mod id that should be active when the annotion is being proccessed.
-	 *
-	 * @return mod id
-	 */
-	public String modID() default RebornCore.MOD_ID;
-
-	public int priority() default 0;
-
-	public boolean earlyReg() default false;
-
-	public Distribution side() default Distribution.UNIVERSAL;
-
-	/**
-	 * comma separted mod ids that must be present for the manager to atempt to load the class
-	 * @return
-	 */
-	public String modOnly() default "";
-
+	public boolean isInvalid(){
+		if(this == UNIVERSAL){
+			return false;
+		}
+		return FMLLaunchHandler.side().isClient() && this == CLIENT;
+	}
 }
