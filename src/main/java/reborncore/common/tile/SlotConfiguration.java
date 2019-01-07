@@ -104,6 +104,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 	/**
 	 * Replaces or adds a slot detail for the slot id
 	 * @param slotConfigHolder
+	 * @return SlotConfigHolder
 	 */
 	public SlotConfigHolder updateSlotDetails(SlotConfigHolder slotConfigHolder){
 		SlotConfigHolder lookup = getSlotDetails(slotConfigHolder.slotID);

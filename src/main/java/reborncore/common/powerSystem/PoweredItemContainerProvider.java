@@ -29,40 +29,43 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.IEnergyItemInfo;
+import reborncore.common.RebornCoreConfig;
+import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * @author drcrazy
- *
+ * Created by modmuss50 on 18/01/2017.
  */
+public class PoweredItemContainerProvider implements ICapabilityProvider {
 
-public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NBTTagInt> {
+	ItemStack stack;
+	ForgePowerItemManager capEnergy;
+	final boolean isEnergyItem;
 
-	private IEnergyStorage energyStorage = null;
-
-
-	public PoweredItemCapabilityProvider(ItemStack stack) {
-		// Done to ensure that the item that is being handled is only one of TechReborns, this shouldn't be false but this protects against it.
-		if(stack.getItem() instanceof IEnergyItemInfo){
-			IEnergyItemInfo poweredItem = (IEnergyItemInfo) stack.getItem();
-			// TODO Fix existing energy amnt
-			this.energyStorage = new EnergyStorage(poweredItem.getCapacity(), poweredItem.getMaxInput(), poweredItem.getMaxOutput(), 0);
+	public PoweredItemContainerProvider(ItemStack stack) {
+		this.stack = stack;
+		this.isEnergyItem = stack.getItem() instanceof IEnergyItemInfo;
+		if(isEnergyItem){ // Done to ensure that the item that is being handled is only one of TechReborns, this shouldnt be false but this protects agasinst it.
+			this.capEnergy = new ForgePowerItemManager(stack);
 		}
+	}
+
+	public PoweredItemContainerProvider(ItemStack stack, IEnergyItemInfo itemPowerInfo) {
+		isEnergyItem = true;
+		this.capEnergy = new ForgePowerItemManager(stack, itemPowerInfo);
+		this.stack = stack;
 	}
 
 	@Override
 	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-		if (energyStorage != null  && capability == CapabilityEnergy.ENERGY) {
+		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return true;
 		}
 		return false;
@@ -71,26 +74,13 @@ public class PoweredItemCapabilityProvider implements ICapabilitySerializable<NB
 	@Nullable
 	@Override
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-		if (energyStorage != null && capability == CapabilityEnergy.ENERGY) {
-			return CapabilityEnergy.ENERGY.cast(energyStorage);
+		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
+			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}
 		return null;
 	}
 
-	@Override
-	public NBTTagInt serializeNBT() {
-		NBTTagInt nbt = new NBTTagInt(0);
-		if (energyStorage != null) {
-			nbt =  (NBTTagInt) CapabilityEnergy.ENERGY.getStorage().writeNBT(CapabilityEnergy.ENERGY, energyStorage, null);
-		}
-		return nbt;
+	public ForgePowerItemManager getCapEnergy() {
+		return capEnergy;
 	}
-
-	@Override
-	public void deserializeNBT(NBTTagInt nbt) {
-		if (energyStorage != null) {
-			CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, energyStorage, null, nbt);
-		}
-	}
-
 }

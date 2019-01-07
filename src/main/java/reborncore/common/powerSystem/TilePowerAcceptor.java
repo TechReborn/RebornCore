@@ -34,8 +34,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.*;
 import reborncore.api.power.EnumPowerTier;
@@ -83,10 +81,6 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
-
-		if(RebornCoreConfig.enableFE) {
-			powerManagers.add(0, new ForgePowerHandler(this));
-		}
 	}
 
 
@@ -117,6 +111,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		if (world.isRemote) {
 			return;
 		}
+
 		double chargeEnergy = Math.min(getFreeSpace(), getMaxInput());
 		if (chargeEnergy <= 0.0 ) {
 			return;
@@ -128,13 +123,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		if (batteryStack.isEmpty()) {
 			return;
 		}
-		if (batteryStack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-			IEnergyStorage batteryEnergy = batteryStack.getCapability(CapabilityEnergy.ENERGY, null);
-			if (batteryEnergy.getEnergyStored() > 0) {
-				int extracted = batteryEnergy.extractEnergy((int) (chargeEnergy * RebornCoreConfig.euPerFU), false);
-				addEnergy( extracted / RebornCoreConfig.euPerFU);
-			}
-		} else if (ExternalPowerSystems.isPoweredItem(batteryStack)) {
+
+		if (ExternalPowerSystems.isPoweredItem(batteryStack)) {
 			ExternalPowerSystems.dischargeItem(this, batteryStack);
 		}
 

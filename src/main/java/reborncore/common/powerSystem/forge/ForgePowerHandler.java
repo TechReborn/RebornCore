@@ -50,11 +50,11 @@ import java.util.Map;
 
 public class ForgePowerHandler implements ExternalPowerHandler {
 	TilePowerAcceptor powerAcceptor;
-	ForgePowerManager powerManager;
+	ForgeEnergyStorage powerManager;
 
 	public ForgePowerHandler(TilePowerAcceptor powerAcceptor) {
 		this.powerAcceptor = powerAcceptor;
-		this.powerManager = new ForgePowerManager(powerAcceptor, null);
+		this.powerManager = new ForgeEnergyStorage(powerAcceptor, null);
 	}
 
 	public void tick() {
@@ -65,11 +65,9 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 					TileEntity tile = powerAcceptor.getWorld().getTileEntity(powerAcceptor.getPos().offset(side));
 					if (tile == null) {
 						continue;
-					} else if (ExternalPowerSystems.isPoweredTile(tile)) {
-						// NB: This means we can't register ForgePowerHandler in the ExternalPowerSystems list
-						// NB: Otherwise the check will not work.
-
+					} else if (isOtherPoweredTile(tile, side.getOpposite())) {
 						// Other power net will take care about this
+
 						continue;
 					} else if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
@@ -142,12 +140,21 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))) {
 			if (powerManager == null) {
-				powerManager = new ForgePowerManager(powerAcceptor, facing);
+				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
 			}
 			powerManager.setFacing(facing);
 			return CapabilityEnergy.ENERGY.cast(powerManager);
 		}
 
 		return null;
+	}
+
+	/**
+	 * Checks whether the provided tile is considered a powered tile by other power systems already
+	 */
+	private static boolean isOtherPoweredTile(TileEntity tileEntity, EnumFacing facing) {
+		return ExternalPowerSystems.externalPowerHandlerList.stream()
+				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
+				.anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
 	}
 }

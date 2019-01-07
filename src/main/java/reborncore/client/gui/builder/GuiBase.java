@@ -36,17 +36,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.tile.TileMachineBase;
+import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
+import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
+import reborncore.client.guibuilder.GuiBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,13 +61,12 @@ public class GuiBase extends GuiContainer {
 
 	public int xSize = 176;
 	public int ySize = 176;
-	public TRBuilder builder = new TRBuilder();
+	public GuiBuilder builder = new GuiBuilder();
 	public TileEntity tile;
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
-	
 
 	public boolean upgrades;
 
@@ -138,15 +139,16 @@ public class GuiBase extends GuiContainer {
 		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) tile;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, guiLeft - 27, guiTop + 4);
+				builder.drawUpgrades(this, guiLeft - 24, guiTop + 6);
 				upgrades = true;
 			}
 		}
+		int offset = upgrades ? 86 : 6;
 		if(getMachine().hasSlotConfig()){
-			builder.drawSlotTab(this, guiLeft, guiTop, mouseX, mouseY, upgrades, wrenchStack);
+			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
 		if(getMachine().showTankConfig()){
-			builder.drawSlotTab(this, guiLeft, guiTop + 27, mouseX, mouseY, upgrades, fluidCellProvider.provide(FluidRegistry.LAVA));
+			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(FluidRegistry.LAVA));
 		}
 	}
 
@@ -170,40 +172,40 @@ public class GuiBase extends GuiContainer {
 		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
 			GuiFluidConfiguration.draw(this, mouseX, mouseY);
 		}
-
-		int offset = 0;
-		if(!upgrades){
-			offset = 80;
-		}
-		
-		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset, 12, 12, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add("Configure slots");
-			GuiUtils.drawHoveringText(list, mouseX - guiLeft  ,  mouseY - guiTop , width, height, -1, mc.fontRenderer);
-			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
-		}
-		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset + 27, 12, 12, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add("Configure Fluids");
-			GuiUtils.drawHoveringText(list, mouseX - guiLeft  ,  mouseY - guiTop , width, height, -1, mc.fontRenderer);
-			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
-		}
 	}
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		if (builder.isInRect(guiLeft - 27, guiTop + 4, 30, 87, mouseX, mouseY) && upgrades) {
+		this.renderHoveredToolTip(mouseX, mouseY);
+	}
+
+	@Override
+	protected void renderHoveredToolTip(int mouseX, int mouseY) {
+		if (isPointInRegion(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
-			GuiUtils.drawHoveringText(list, mouseX, mouseY, width, height, -1, mc.fontRenderer);
+			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
 		}
-		this.renderHoveredToolTip(mouseX, mouseY);
+		int offset = upgrades ? 81 : 0;
+		if (isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
+			drawHoveringText(list, mouseX,  mouseY);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+		if (isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
+			List<String> list = new ArrayList<>();
+			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
+			drawHoveringText(list, mouseX,  mouseY);
+			GlStateManager.disableLighting();
+			GlStateManager.color(1, 1, 1, 1);
+		}
+		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	protected void drawTitle() {
@@ -237,6 +239,16 @@ public class GuiBase extends GuiContainer {
 			factorY = guiTop;
 		}
 		buttonList.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
+	}
+
+	public void addHologramButton(int x, int y, int id, Layer layer) {
+		int factorX = 0;
+		int factorY = 0;
+		if (layer == Layer.BACKGROUND) {
+			factorX = guiLeft;
+			factorY = guiTop;
+		}
+		buttonList.add(new GuiButtonHologram(id, x + factorX, y + factorY, this, layer));
 	}
 
 	@Override
@@ -321,6 +333,17 @@ public class GuiBase extends GuiContainer {
 		super.onGuiClosed();
 	}
 
+	/**
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
+	 *
+	 * @param rectX int Top left corner of region
+	 * @param rectY int Top left corner of region
+	 * @param rectWidth int Width of region
+	 * @param rectHeight  int Height of region
+	 * @param pointX int Mouse pointer
+	 * @param pointY int Mouse pointer
+	 * @return boolean Returns true if mouse pointer is in region specified
+	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
 		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
