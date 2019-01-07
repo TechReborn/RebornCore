@@ -40,6 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
@@ -48,7 +49,6 @@ import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
-import reborncore.client.guibuilder.GuiBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -111,15 +111,7 @@ public class GuiBase extends GuiContainer {
 		}
 		builder.drawOutputSlot(this, x - 5, y - 5);
 	}
-
-	protected void drawSelectedStack(int x, int y, Layer layer) {
-		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
-		}
-		builder.drawSelectedStack(this, x, y);
-	}
-
+	
 	@Override
 	public void initGui() {
 		super.initGui();

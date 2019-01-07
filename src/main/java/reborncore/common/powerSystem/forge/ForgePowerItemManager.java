@@ -83,11 +83,11 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (!itemPowerInfo.canAcceptEnergy(stack)) {
+		if (canReceive()) {
 			return 0;
 		}
 		int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
-				Math.min((int) itemPowerInfo.getMaxTransfer(stack), maxReceive));
+				Math.min((int) itemPowerInfo.getMaxInput(), maxReceive));
 
 		if (!simulate) {
 			setEnergyInStack(getEnergyInStack() + energyReceived);
@@ -97,7 +97,7 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		if (!itemPowerInfo.canAcceptEnergy(stack)) {
+		if (canExtract()) {
 			return 0;
 		}
 		int energyExtracted = Math.min(getEnergyStored(), maxExtract);
@@ -114,17 +114,17 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 
 	@Override
 	public int getMaxEnergyStored() {
-		return (int) itemPowerInfo.getMaxPower(stack);
+		return (int) itemPowerInfo.getCapacity();
 	}
 
 	@Override
 	public boolean canExtract() {
-		return itemPowerInfo.canProvideEnergy(stack);
+		return itemPowerInfo.getMaxOutput() != 0;
 	}
 
 	@Override
 	public boolean canReceive() {
-		return itemPowerInfo.canAcceptEnergy(stack);
+		return itemPowerInfo.getMaxInput() != 0;
 	}
 
 	@Override

@@ -50,6 +50,6 @@ public interface IEnergyItemInfo {
 	 * @return int FE per tick
 	 */
 	int getMaxOutput();
-	
-	
+
+
 }
