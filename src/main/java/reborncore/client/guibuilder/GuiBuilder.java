@@ -301,7 +301,7 @@ public class GuiBuilder {
 			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
 		}
 	}
-
+	
 	/**
 	 * Draws big horizontal blue bar
 	 * 
@@ -312,10 +312,12 @@ public class GuiBuilder {
 	 * @param max    int Maximum value
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param suffix String String to put on the bar after percentage value
+	 * @param suffix String String to put on the bar and tooltip after percentage value
+	 * @param line2  String String to put into tooltip as a second line
+	 * @param format String Formatted value to put on the bar
 	 * @param layer  Layer Layer to draw on
 	 */
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -324,26 +326,27 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
+        int j = (int) ((double) value / (double) max * 106);
+        if (j < 0) { j = 0; }
+        gui.drawTexturedModalRect(x + 4, y + 4, 0, 236, j, 10);
 		if (!suffix.equals("")) {
 			suffix = " " + suffix;
 		}
-		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
-		int j = (int) ((double) value / (double) max * 106);
-		if (j < 0)
-			j = 0;
-		gui.drawTexturedModalRect(x + 4, y + 4, 26, 236, j, 10);
-		gui.drawCentredString(value + suffix, y + 5, 0xFFFFFF, layer);
-		if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY)) {
-			int percentage = percentage(max, value);
-			List<String> list = new ArrayList<>();
-			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " Full");
+        gui.drawCentredString(format + suffix, y + 5, 0xFFFFFF, layer);
+        if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY))
+        {
+            int percentage = percentage(max, value);
+            List<String> list = new ArrayList<>();
+            list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
+            list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
+            list.add(line2);
 
-			if (value > max) {
-				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
-				list.add(TextFormatting.GRAY + "prolly a bug");
-				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
-			}
+            if (value > max)
+            {
+                list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
+                list.add(TextFormatting.GRAY + "prolly a bug");
+                list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
+            }
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
@@ -351,11 +354,16 @@ public class GuiBuilder {
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color(1, 1, 1, 1);
-		}
+        }
+    }
+
+	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, suffix, "", Integer.toString(value), layer);
+
 	}
 
 	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
-		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", layer);
+		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", "", "", layer);
 	}
 
 	/**
@@ -552,7 +560,7 @@ public class GuiBuilder {
 			GlStateManager.color(1, 1, 1, 1);
 		}
 	}
-
+	
 	/**
 	 * Draws multi-energy bar
 	 * 

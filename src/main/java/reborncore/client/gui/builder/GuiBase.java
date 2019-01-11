@@ -40,6 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.common.container.RebornContainer;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
@@ -73,6 +74,13 @@ public class GuiBase extends GuiContainer {
 		super(container);
 		this.tile = tile;
 		this.container = container;
+		slotConfigType = SlotConfigType.NONE;
+	}
+	
+	public GuiBase(EntityPlayer player, TileEntity tile, RebornContainer container) {
+		super(container);
+		this.tile = tile;
+		this.container = null;
 		slotConfigType = SlotConfigType.NONE;
 	}
 
