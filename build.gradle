@@ -82,13 +82,16 @@ license {
 	ignoreFailures = true //Stops the build from failing if a file does not have a license header
 }
 
-// jar {
-// 	exclude "**/*.psd"
-// 	classifier = 'universal'
-// 	manifest {
-// 		attributes 'FMLAT': 'reborncore_at.cfg'
-// 	}
-// }
+ jar {
+ 	classifier = 'universal'
+ }
+
+task deobfJar(type: Jar) {
+	from sourceSets.main.output
+	classifier = 'dev'
+}
+
+build.dependsOn deobfJar
 
 // task apiJar(type: Jar) {
 // 	from sourceSets.main.allSource
