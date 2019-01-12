@@ -43,6 +43,7 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.tile.TileMachineBase;
+import reborncore.common.container.RebornContainer;
 import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
@@ -74,6 +75,13 @@ public class GuiBase extends GuiContainer {
 		super(container);
 		this.tile = tile;
 		this.container = container;
+		slotConfigType = SlotConfigType.NONE;
+	}
+
+	public GuiBase(EntityPlayer player, TileEntity tile, RebornContainer container) {
+		super(container);
+		this.tile = tile;
+		this.container = null;
 		slotConfigType = SlotConfigType.NONE;
 	}
 
@@ -111,7 +119,7 @@ public class GuiBase extends GuiContainer {
 		}
 		builder.drawOutputSlot(this, x - 5, y - 5);
 	}
-	
+
 	@Override
 	public void initGui() {
 		super.initGui();
