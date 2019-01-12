@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import reborncore.client.models.ModelSantaHat;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.util.CalenderUtils;
@@ -73,7 +73,7 @@ public class HolidayRenderEvent {
 	private static class LayerRender implements LayerRenderer<AbstractClientPlayer> {
 
 		@Override
-		public void doRenderLayer(AbstractClientPlayer abstractClientPlayer,
+		public void render(AbstractClientPlayer abstractClientPlayer,
 		                          float limbSwing,
 		                          float limbSwingAmount,
 		                          float partialTicks,
@@ -83,17 +83,17 @@ public class HolidayRenderEvent {
 		                          float scale) {
 			float yaw = abstractClientPlayer.prevRotationYaw + (abstractClientPlayer.rotationYaw - abstractClientPlayer.prevRotationYaw) * partialTicks - (abstractClientPlayer.prevRenderYawOffset + (abstractClientPlayer.renderYawOffset - abstractClientPlayer.prevRenderYawOffset) * partialTicks);
 			float pitch = abstractClientPlayer.prevRotationPitch + (abstractClientPlayer.rotationPitch - abstractClientPlayer.prevRotationPitch) * partialTicks;
-			Minecraft.getInstance().renderEngine.bindTexture(TEXTURE);
+			Minecraft.getInstance().textureManager.bindTexture(TEXTURE);
 			GlStateManager.pushMatrix();
-			GlStateManager.rotate(yaw, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotatef(yaw, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotatef(pitch, 1.0F, 0.0F, 0.0F);
 			//GlStateManager.translate(-0.25F, -0.0F, 0.0F);
 			if (abstractClientPlayer.isSneaking()) {
-				GlStateManager.translate(0.0F, 0.26F, 0.0F);
+				GlStateManager.translatef(0.0F, 0.26F, 0.0F);
 			}
 
 			float scale2 = 1.0F;
-			GlStateManager.scale(scale2, scale2, scale2);
+			GlStateManager.scalef(scale2, scale2, scale2);
 			santaHat.render(0.0625F);
 			GlStateManager.popMatrix();
 

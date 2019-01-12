@@ -34,6 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class IconSupplier {
 	public static String armour_head_name = "reborncore:gui/slot_sprites/armour_head";

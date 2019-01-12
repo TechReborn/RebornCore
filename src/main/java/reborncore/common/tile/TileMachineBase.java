@@ -137,7 +137,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public void update() {
+	public void tick() {
 		@Nullable
 		RecipeCrafter crafter = null;
 		if (getCrafterForTile().isPresent()) {
@@ -197,7 +197,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	public boolean isActive() {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+			return world.getBlockState(pos).get(BlockMachineBase.ACTIVE);
 		}
 		return false;
 	}
@@ -249,8 +249,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound) {
-		super.readFromNBT(tagCompound);
+	public void read(NBTTagCompound tagCompound) {
+		super.read(tagCompound);
 		if (getInventoryForTile().isPresent()) {
 			getInventoryForTile().get().readFromNBT(tagCompound);
 		}
@@ -258,7 +258,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 			getCrafterForTile().get().readFromNBT(tagCompound);
 		}
 		if (tagCompound.hasKey("slotConfig")) {
-			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
+			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
 		} else {
 			if (getInventoryForTile().isPresent()) {
 				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
@@ -267,7 +267,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 			}
 		}
 		if(tagCompound.hasKey("fluidConfig") && getTank() != null){
-			fluidConfiguration = new FluidConfiguration(tagCompound.getCompoundTag("fluidConfig"));
+			fluidConfiguration = new FluidConfiguration(tagCompound.getCompound("fluidConfig"));
 		} else if (getTank() != null && fluidConfiguration == null){
 			fluidConfiguration = new FluidConfiguration();
 		}
@@ -275,8 +275,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
-		super.writeToNBT(tagCompound);
+	public NBTTagCompound write(NBTTagCompound tagCompound) {
+		super.write(tagCompound);
 		if (getInventoryForTile().isPresent()) {
 			getInventoryForTile().get().writeToNBT(tagCompound);
 		}

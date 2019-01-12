@@ -29,9 +29,9 @@
 package reborncore.client.shields;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelShield;
 import net.minecraft.client.renderer.BannerTextures;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.ModelShield;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.init.Items;
@@ -108,7 +108,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
 				return;
 			}
 			GlStateManager.pushMatrix();
-			GlStateManager.scale(1.0F, -1.0F, -1.0F);
+			GlStateManager.scalef(1.0F, -1.0F, -1.0F);
 			modelShield.render();
 			GlStateManager.popMatrix();
 			return;

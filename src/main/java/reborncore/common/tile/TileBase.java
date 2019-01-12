@@ -29,11 +29,16 @@
 package reborncore.common.tile;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 /**
  * Created by Mark on 19/10/2016.
  */
 public class TileBase extends TileEntity {
+
+	public TileBase(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	public void markBlockForUpdate() {
 		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);

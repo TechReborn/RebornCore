@@ -28,12 +28,12 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * In your mod, subscribe this on both the client and server sides side to
@@ -44,8 +44,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class MultiblockEventHandler {
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onChunkLoad(ChunkEvent.Load loadEvent) {
-		Chunk chunk = loadEvent.getChunk();
-		World world = loadEvent.getWorld();
+		IChunk chunk = loadEvent.getChunk();
+		IWorld world = loadEvent.getWorld();
 		MultiblockRegistry.onChunkLoaded(world, chunk);
 	}
 

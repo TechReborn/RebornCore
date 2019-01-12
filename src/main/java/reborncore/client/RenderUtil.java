@@ -49,7 +49,7 @@ public class RenderUtil {
 	public static final ResourceLocation BLOCK_TEX = TextureMap.LOCATION_BLOCKS_TEXTURE;
 
 	public static TextureManager engine() {
-		return Minecraft.getInstance().renderEngine;
+		return Minecraft.getInstance().getTextureManager();
 	}
 
 	public static void bindBlockTexture() {
@@ -68,7 +68,7 @@ public class RenderUtil {
 		if (iconKey == null) {
 			return null;
 		}
-		return Minecraft.getInstance().getTextureMapBlocks().getTextureExtry(iconKey.toString());
+		return Minecraft.getInstance().getTextureMap().getAtlasSprite(iconKey.toString());
 	}
 
 	public static void renderGuiTank(FluidTank tank, double x, double y, double zLevel, double width, double height) {

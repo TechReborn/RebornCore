@@ -29,7 +29,6 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.io.FileUtils;
 import reborncore.common.RebornCoreConfig;
 

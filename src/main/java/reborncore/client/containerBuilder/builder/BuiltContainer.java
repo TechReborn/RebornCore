@@ -368,4 +368,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public String getName() {
 		return this.name;
 	}
+
+	@Override
+	public Slot addSlot(Slot slotIn) {
+		return super.addSlot(slotIn);
+	}
 }

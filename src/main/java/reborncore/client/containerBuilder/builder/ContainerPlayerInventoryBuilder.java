@@ -31,6 +31,7 @@ package reborncore.client.containerBuilder.builder;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemArmor;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.apache.commons.lang3.Range;
 import reborncore.client.gui.slots.BaseSlot;
@@ -102,7 +103,7 @@ public final class ContainerPlayerInventoryBuilder {
 		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
 		                                                   final EntityEquipmentSlot slotType, final String sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(new InvWrapper(this.parent.player), index, xStart, yStart, sprite, 1)
-					.setFilter(stack -> stack.getItem().isValidArmor(stack, slotType, this.parent.player.player)));
+					.setFilter(stack -> stack.getItem() instanceof ItemArmor));
 			return this;
 		}
 

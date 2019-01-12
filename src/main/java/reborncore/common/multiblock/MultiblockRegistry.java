@@ -28,8 +28,10 @@
 
 package reborncore.common.multiblock;
 
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import reborncore.RebornCore;
 
 import java.util.HashMap;
@@ -43,7 +45,7 @@ import java.util.Set;
  */
 public class MultiblockRegistry {
 	// World > WorldRegistry map
-	private static HashMap<World, MultiblockWorldRegistry> registries = new HashMap<World, MultiblockWorldRegistry>();
+	private static HashMap<IWorld, MultiblockWorldRegistry> registries = new HashMap<>();
 
 	/**
 	 * Called before Tile Entities are ticked in the world. Do bookkeeping here.
@@ -64,7 +66,7 @@ public class MultiblockRegistry {
 	 * @param world The world which has finished loading a chunk
 	 * @param chunk Loaded chunk
 	 */
-	public static void onChunkLoaded(World world, Chunk chunk) {
+	public static void onChunkLoaded(IWorld world, IChunk chunk) {
 		if (registries.containsKey(world)) {
 			registries.get(world).onChunkLoaded(chunk);
 		}
@@ -101,7 +103,7 @@ public class MultiblockRegistry {
 	 *
 	 * @param world The world being unloaded.
 	 */
-	public static void onWorldUnloaded(World world) {
+	public static void onWorldUnloaded(IWorld world) {
 		if (registries.containsKey(world)) {
 			registries.get(world).onWorldUnloaded();
 			registries.remove(world);

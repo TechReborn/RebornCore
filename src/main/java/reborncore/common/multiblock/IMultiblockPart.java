@@ -31,6 +31,7 @@ package reborncore.common.multiblock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Set;
@@ -45,6 +46,10 @@ import java.util.Set;
  */
 public abstract class IMultiblockPart extends TileEntity {
 	public static final int INVALID_DISTANCE = Integer.MAX_VALUE;
+
+	public IMultiblockPart(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	/**
 	 * @return True if this block is connected to a multiblock controller. False
@@ -254,4 +259,9 @@ public abstract class IMultiblockPart extends TileEntity {
 	public abstract void onMultiblockDataAssimilated();
 
 	public abstract IBlockState getBlockState();
+
+	//TODO 1.13 seemed to have been removed in 1.13, not sure what its replacment is
+	public boolean isInvalid(){
+		return false;
+	}
 }

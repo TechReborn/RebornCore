@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import reborncore.RebornCore;
 
 import java.util.*;
@@ -407,7 +408,7 @@ public class MultiblockWorldRegistry {
 	 * @param chunk Chunk that was
 	 * loaded
 	 */
-	public void onChunkLoaded(Chunk chunk) {
+	public void onChunkLoaded(IChunk chunk) {
 		int chunkHash = chunk.getPos().hashCode();
 		if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
 			synchronized (partsAwaitingChunkLoadMutex) {

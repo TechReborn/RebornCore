@@ -43,19 +43,7 @@ public abstract class RCRecipeMethods {
 	}
 
 	static ItemStack getStack(Item item, int count) {
-		return getStack(item, count, 0);
-	}
-
-	static ItemStack getStack(Item item, boolean wildcard) {
-		return getStack(item, 1, true);
-	}
-
-	static ItemStack getStack(Item item, int count, boolean wildcard) {
-		return getStack(item, count, OreDictionary.WILDCARD_VALUE);
-	}
-
-	static ItemStack getStack(Item item, int count, int metadata) {
-		return new ItemStack(item, count, metadata);
+		return getStack(item, count);
 	}
 
 	static ItemStack getStack(Block block) {
@@ -63,18 +51,6 @@ public abstract class RCRecipeMethods {
 	}
 
 	static ItemStack getStack(Block block, int count) {
-		return getStack(block, count, 0);
-	}
-
-	static ItemStack getStack(Block block, boolean wildcard) {
-		return getStack(block, 1, true);
-	}
-
-	static ItemStack getStack(Block block, int count, boolean wildcard) {
-		return getStack(block, count, OreDictionary.WILDCARD_VALUE);
-	}
-
-	static ItemStack getStack(Block block, int count, int metadata) {
-		return getStack(Item.getItemFromBlock(block), count, OreDictionary.WILDCARD_VALUE);
+		return getStack(block, count);
 	}
 }

@@ -29,10 +29,8 @@
 package reborncore.client.shields;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 
 /**
  * Created by mark on 14/05/16.
@@ -40,12 +38,7 @@ import net.minecraft.item.ItemStack;
 public class ShieldModelLoader {
 
 	public static void load() {
-		Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Items.SHIELD, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) {
-				return new ModelResourceLocation("shield", "inventory");
-			}
-		});
+		Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(Items.SHIELD, new ModelResourceLocation("shield", "inventory"));
 	}
 
 }

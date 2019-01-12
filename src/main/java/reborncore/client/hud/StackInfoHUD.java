@@ -30,9 +30,8 @@ package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -40,8 +39,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
@@ -75,7 +74,7 @@ public class StackInfoHUD {
 		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
 			return;
 
-		if (mc.inGameHasFocus || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
+		if (mc.isGameFocused() || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
 			if (RebornCoreConfig.ShowStackInfoHUD)
 				drawStackInfoHud(event.getResolution());
 		}
@@ -111,7 +110,7 @@ public class StackInfoHUD {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			RenderHelper.enableGUIStandardItemLighting();
 
-			RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
+			ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 			itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
@@ -150,8 +149,8 @@ public class StackInfoHUD {
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
 					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
 					+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
-			if (stack.getTagCompound() != null && stack.getTagCompound().hasKey("isActive")) {
-				if (stack.getTagCompound().getBoolean("isActive")) {
+			if (stack.getTag() != null && stack.getTag().hasKey("isActive")) {
+				if (stack.getTag().getBoolean("isActive")) {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
 							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				} else {

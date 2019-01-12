@@ -115,21 +115,21 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	// /// Overrides from base TileEntity methods
 
 	@Override
-	public void readFromNBT(NBTTagCompound data) {
-		super.readFromNBT(data);
+	public void read(NBTTagCompound data) {
+		super.read(data);
 
 		// We can't directly initialize a multiblock controller yet, so we cache
 		// the data here until
 		// we receive a validate() call, which creates the controller and hands
 		// off the cached data.
 		if (data.hasKey("multiblockData")) {
-			this.cachedMultiblockData = data.getCompoundTag("multiblockData");
+			this.cachedMultiblockData = data.getCompound("multiblockData");
 		}
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound data) {
-		super.writeToNBT(data);
+	public NBTTagCompound write(NBTTagCompound data) {
+		super.write(data);
 
 		if (isMultiblockSaveDelegate() && isConnected()) {
 			NBTTagCompound multiblockData = new NBTTagCompound();
@@ -223,7 +223,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 */
 	protected void decodeDescriptionPacket(NBTTagCompound packetData) {
 		if (packetData.hasKey("multiblockData")) {
-			NBTTagCompound tag = packetData.getCompoundTag("multiblockData");
+			NBTTagCompound tag = packetData.getCompound("multiblockData");
 			if (isConnected()) {
 				getMultiblockController().decodeDescriptionPacket(tag);
 			} else {
@@ -335,7 +335,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
 		BlockPos neighborPosition, partPosition = this.getWorldLocation();
 
-		for (EnumFacing facing : EnumFacing.VALUES) {
+		for (EnumFacing facing : EnumFacing.values()) {
 
 			neighborPosition = partPosition.offset(facing);
 			te = this.world.getTileEntity(neighborPosition);
@@ -355,11 +355,11 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	// // Helper functions for notifying neighboring blocks
 	protected void notifyNeighborsOfBlockChange() {
-		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
 	}
 
 	protected void notifyNeighborsOfTileChange() {
-		world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
 	}
 
 	// /// Private/Protected Logic Helpers
