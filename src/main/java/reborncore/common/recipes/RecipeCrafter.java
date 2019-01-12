@@ -222,10 +222,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (Object input : currentRecipe.getInputs()) {
 			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || currentRecipe.useOreDic();
-			boolean checkSize = input instanceof ItemStack || input instanceof OreRecipeInput;
+			boolean useOreDict = input instanceof String || currentRecipe.useOreDic();
+			boolean checkSize = input instanceof ItemStack;
 			for (int inputslot : inputSlots) {
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
+				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true,
 					useOreDict)) {
 					ItemStack stack = RecipeTranslator.getStackFromObject(input);
 					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
@@ -246,10 +246,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (Object input : recipeType.getInputs()) {
 			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || recipeType.useOreDic();
-			boolean checkSize = input instanceof ItemStack || input instanceof OreRecipeInput;
+			boolean useOreDict = input instanceof String || recipeType.useOreDic();
+			boolean checkSize = input instanceof ItemStack;
 			for (int inputslot : inputSlots) {
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true, true,
+				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true,
 					useOreDict)) {
 					ItemStack stack = RecipeTranslator.getStackFromObject(input);
 					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
@@ -271,10 +271,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (Object input : currentRecipe.getInputs()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputSlot), true, true,
+				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputSlot), true,
 					currentRecipe.useOreDic())) {
 					int count = 1;
-					if (input instanceof ItemStack || input instanceof OreRecipeInput) {
+					if (input instanceof ItemStack) {
 						count = RecipeTranslator.getStackFromObject(input).getCount();
 					}
 					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
@@ -293,7 +293,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (inventory.getStackInSlot(slot).isEmpty()) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, oreDic)) {
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, oreDic)) {
 			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {
 				return true;
 			}
@@ -309,7 +309,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			inventory.setStackInSlot(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true, currentRecipe.useOreDic())) {// If the slot has stuff in
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, currentRecipe.useOreDic())) {// If the slot has stuff in
 			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
 				newStack.setCount(inventory.getStackInSlot(slot).getCount() + stack.getCount());// Sets
@@ -405,8 +405,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
 			for (Object input : recipe.getInputs()) {
-				boolean useOreDict = input instanceof String || input instanceof OreRecipeInput || recipe.useOreDic();
-				if (ItemUtils.isInputEqual(input, stack, true, true,
+				boolean useOreDict = input instanceof String || recipe.useOreDic();
+				if (ItemUtils.isInputEqual(input, stack, true,
 					useOreDict)) {
 					return true;
 				}

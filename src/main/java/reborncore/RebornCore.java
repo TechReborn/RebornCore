@@ -31,6 +31,7 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -71,7 +72,7 @@ public class RebornCore {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().registerCrashCallable(new CrashHandler());
+		CrashReportExtender.registerCrashCallable(new CrashHandler());
 		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
 		if (!configDir.exists()) {
 			configDir.mkdir();
