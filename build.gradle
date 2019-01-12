@@ -93,6 +93,10 @@ task deobfJar(type: Jar) {
 
 build.dependsOn deobfJar
 
+artifacts {
+	archives deobfJar
+}
+
 // task apiJar(type: Jar) {
 // 	from sourceSets.main.allSource
 // 	from sourceSets.main.output
