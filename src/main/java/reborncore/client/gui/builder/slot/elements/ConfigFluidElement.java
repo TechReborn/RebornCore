@@ -28,8 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import reborncore.common.util.Tank;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.util.Tank;
 
 import java.util.ArrayList;
 import java.util.List;

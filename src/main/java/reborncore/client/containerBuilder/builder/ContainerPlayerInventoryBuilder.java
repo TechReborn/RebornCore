@@ -34,7 +34,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.apache.commons.lang3.Range;
-import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.IconSupplier;
 import reborncore.client.containerBuilder.builder.slot.SpriteSlot;
 
@@ -53,17 +52,20 @@ public final class ContainerPlayerInventoryBuilder {
 
 	public ContainerPlayerInventoryBuilder inventory(final int xStart, final int yStart) {
 		final int startIndex = this.parent.slots.size();
-		for (int i = 0; i < 3; ++i)
-			for (int j = 0; j < 9; ++j)
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 9; ++j) {
 				this.parent.slots.add(new Slot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+			}
+		}
 		this.main = Range.between(startIndex, this.parent.slots.size() - 1);
 		return this;
 	}
 
 	public ContainerPlayerInventoryBuilder hotbar(final int xStart, final int yStart) {
 		final int startIndex = this.parent.slots.size();
-		for (int i = 0; i < 9; ++i)
+		for (int i = 0; i < 9; ++i) {
 			this.parent.slots.add(new Slot(this.player, i, xStart + i * 18, yStart));
+		}
 		this.hotbar = Range.between(startIndex, this.parent.slots.size() - 1);
 		return this;
 	}
@@ -81,12 +83,15 @@ public final class ContainerPlayerInventoryBuilder {
 	}
 
 	public ContainerBuilder addInventory() {
-		if (this.hotbar != null)
+		if (this.hotbar != null) {
 			this.parent.addPlayerInventoryRange(this.hotbar);
-		if (this.main != null)
+		}
+		if (this.main != null) {
 			this.parent.addPlayerInventoryRange(this.main);
-		if (this.armor != null)
+		}
+		if (this.armor != null) {
 			this.parent.addTileInventoryRange(this.armor);
+		}
 
 		return this.parent;
 	}
@@ -103,7 +108,7 @@ public final class ContainerPlayerInventoryBuilder {
 		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
 		                                                   final EntityEquipmentSlot slotType, final String sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(new InvWrapper(this.parent.player), index, xStart, yStart, sprite, 1)
-					.setFilter(stack -> stack.getItem() instanceof ItemArmor));
+				.setFilter(stack -> stack.getItem() instanceof ItemArmor));
 			return this;
 		}
 

@@ -39,8 +39,9 @@ public class ToolTip {
 	protected ArrayList<ToolTipLine> lines = new ArrayList<>();
 
 	public ToolTip(String... textLines) {
-		for (String text : textLines)
+		for (String text : textLines) {
 			lines.add(new ToolTipLine(text));
+		}
 	}
 
 	public ToolTip(ToolTipLine... toolTipLines) {
@@ -48,8 +49,9 @@ public class ToolTip {
 	}
 
 	public ToolTip(int linesSize) {
-		for (int i = 0; i < linesSize; i++)
+		for (int i = 0; i < linesSize; i++) {
 			lines.add(new ToolTipLine());
+		}
 	}
 
 	public void addLine(ToolTipLine toolTipLine) {
@@ -79,8 +81,9 @@ public class ToolTip {
 			toolTipLine.draw(font, textX, textY);
 			textY += (font.FONT_HEIGHT + 3);
 			int lineWidth = toolTipLine.getWidth(font);
-			if (lineWidth > maxLineLength)
+			if (lineWidth > maxLineLength) {
 				maxLineLength = lineWidth;
+			}
 		}
 		GuiUtil.drawTooltipBox(mouseX, mouseY, maxLineLength, textY + 3);
 	}

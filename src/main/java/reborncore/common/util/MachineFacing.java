@@ -31,7 +31,7 @@ package reborncore.common.util;
 import net.minecraft.util.EnumFacing;
 import reborncore.common.tile.TileMachineBase;
 
-public enum  MachineFacing {
+public enum MachineFacing {
 	FRONT,
 	BACK,
 	UP,
@@ -39,39 +39,39 @@ public enum  MachineFacing {
 	LEFT,
 	RIGHT;
 
-	public EnumFacing getFacing(TileMachineBase machineBase){
-		if(this == FRONT){
+	public EnumFacing getFacing(TileMachineBase machineBase) {
+		if (this == FRONT) {
 			return machineBase.getFacing();
 		}
-		if(this == BACK){
+		if (this == BACK) {
 			return machineBase.getFacing().getOpposite();
 		}
-		if(this == RIGHT){
+		if (this == RIGHT) {
 			//North -> West
-			int i = machineBase.getFacing().getOpposite().getHorizontalIndex() +1;
-			if(i > 3){
+			int i = machineBase.getFacing().getOpposite().getHorizontalIndex() + 1;
+			if (i > 3) {
 				i = 0;
 			}
-			if(i < 0){
+			if (i < 0) {
 				i = 3;
 			}
 			return EnumFacing.BY_HORIZONTAL_INDEX[i];
 		}
-		if(this == LEFT){
+		if (this == LEFT) {
 			//North -> East
 			int i = machineBase.getFacing().getOpposite().getHorizontalIndex() - 1;
-			if(i > 3){
+			if (i > 3) {
 				i = 0;
 			}
-			if(i < 0){
+			if (i < 0) {
 				i = 3;
 			}
 			return EnumFacing.BY_HORIZONTAL_INDEX[i];
 		}
-		if(this == UP){
+		if (this == UP) {
 			return EnumFacing.UP;
 		}
-		if(this == DOWN){
+		if (this == DOWN) {
 			return EnumFacing.DOWN;
 		}
 

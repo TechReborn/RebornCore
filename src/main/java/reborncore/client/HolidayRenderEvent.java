@@ -74,13 +74,13 @@ public class HolidayRenderEvent {
 
 		@Override
 		public void render(AbstractClientPlayer abstractClientPlayer,
-		                          float limbSwing,
-		                          float limbSwingAmount,
-		                          float partialTicks,
-		                          float ageInTicks,
-		                          float netHeadYaw,
-		                          float headPitch,
-		                          float scale) {
+		                   float limbSwing,
+		                   float limbSwingAmount,
+		                   float partialTicks,
+		                   float ageInTicks,
+		                   float netHeadYaw,
+		                   float headPitch,
+		                   float scale) {
 			float yaw = abstractClientPlayer.prevRotationYaw + (abstractClientPlayer.rotationYaw - abstractClientPlayer.prevRotationYaw) * partialTicks - (abstractClientPlayer.prevRenderYawOffset + (abstractClientPlayer.renderYawOffset - abstractClientPlayer.prevRenderYawOffset) * partialTicks);
 			float pitch = abstractClientPlayer.prevRotationPitch + (abstractClientPlayer.rotationPitch - abstractClientPlayer.prevRotationPitch) * partialTicks;
 			Minecraft.getInstance().textureManager.bindTexture(TEXTURE);

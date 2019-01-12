@@ -26,13 +26,15 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.items;
+package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.NonNullSupplier;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -47,10 +49,13 @@ import java.util.stream.IntStream;
 
 public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICapabilityProvider {
 
-	@Nonnull ItemStack stack;
+	@Nonnull
+	ItemStack stack;
 	int size;
 
-	private InventoryItem(@Nonnull ItemStack stack, int size) {
+	private InventoryItem(
+		@Nonnull
+			ItemStack stack, int size) {
 		Validate.notNull(stack);
 		Validate.isTrue(!stack.isEmpty());
 		this.size = size;
@@ -110,7 +115,9 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+	public void setStackInSlot(int slot,
+	                           @Nonnull
+		                           ItemStack stack) {
 		setSlotData(slot, stack.write(new NBTTagCompound()));
 	}
 
@@ -190,27 +197,23 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
 	}
 
-
-
+	@Nonnull
 	@Override
-	public boolean hasCapability(
+	public <T> OptionalCapabilityInstance<T> getCapability(
 		@Nonnull
-			Capability<?> capability,
+			Capability<T> cap,
 		@Nullable
-			EnumFacing facing) {
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
-	}
-
-	@Nullable
-	@Override
-	public <T> T getCapability(
-		@Nonnull
-			Capability<T> capability,
-		@Nullable
-			EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(this);
+			EnumFacing side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+				@Nonnull
+				@Override
+				public T get() {
+					return (T) this;
+				}
+			});
 		}
-		return null;
+		return OptionalCapabilityInstance.empty();
 	}
+
 }

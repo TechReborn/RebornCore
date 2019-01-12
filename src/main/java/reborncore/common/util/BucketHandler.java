@@ -28,12 +28,10 @@
 
 package reborncore.common.util;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 
 import java.util.HashMap;
@@ -49,19 +47,20 @@ public class BucketHandler {
 	}
 
 	private ItemStack fillCustomBucket(World world, RayTraceResult pos) {
-		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
-			Block block = world.getBlockState(pos.getBlockPos()).getBlock();
-			if (block instanceof BlockFluidBase) {
-				Fluid fluid = ((BlockFluidBase) block).getFluid();
-				if (buckets.containsKey(fluid)) {
-					Item bucket = buckets.get(fluid);
-					if (bucket != null) {
-						world.setBlockToAir(pos.getBlockPos());
-						return new ItemStack(bucket, 1);
-					}
-				}
-			}
-		}
+		//TODO 1.13 see IBucketPickupHandler
+		//		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
+		//			Block block = world.getBlockState(pos.getBlockPos()).getBlock();
+		//			if (block instanceof IBucketPickupHandler) {
+		//				Fluid fluid = ((IBucketPickupHandler) block).getFluid();
+		//				if (buckets.containsKey(fluid)) {
+		//					Item bucket = buckets.get(fluid);
+		//					if (bucket != null) {
+		//						world.setBlockToAir(pos.getBlockPos());
+		//						return new ItemStack(bucket, 1);
+		//					}
+		//				}
+		//			}
+		//		}
 		return ItemStack.EMPTY;
 	}
 

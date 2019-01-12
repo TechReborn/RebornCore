@@ -93,7 +93,7 @@ public class GuiButtonCustomTexture extends GuiButtonExt {
 	}
 
 	public void renderImage(int offsetX, int offsetY) {
-		TextureManager render = Minecraft.getInstance().renderEngine;
+		TextureManager render = Minecraft.getInstance().textureManager;
 		render.bindTexture(new ResourceLocation(imageprefix + this.texturename + ".png"));
 
 		GL11.glEnable(GL11.GL_BLEND);

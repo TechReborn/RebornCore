@@ -28,6 +28,7 @@
 
 package reborncore.common.registration;
 
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -67,14 +68,14 @@ public class RegistrationManager {
 		asmDataList.sort(Comparator.comparingInt(RegistrationManager::getPriority));
 		for (ASMDataTable.ASMData data : asmDataList) {
 			try {
-				if(!isModPresent(data, asmDataTable)){
+				if (!isModPresent(data, asmDataTable)) {
 					continue;
 				}
-				if(!isValidOnSide(data, asmDataTable)){
+				if (!isValidOnSide(data, asmDataTable)) {
 					continue;
 				}
 				Class clazz = Class.forName(data.getClassName());
-				if(isEarlyReg(data)){
+				if (isEarlyReg(data)) {
 					handleClass(clazz, null, factoryList);
 					continue;
 				}
@@ -90,26 +91,26 @@ public class RegistrationManager {
 		RebornCore.LOGGER.info("Pre loaded registries in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static int getPriority(ASMDataTable.ASMData asmData){
-		if(asmData.getAnnotationInfo().containsKey("priority")){
+	private static int getPriority(ASMDataTable.ASMData asmData) {
+		if (asmData.getAnnotationInfo().containsKey("priority")) {
 			return -(int) asmData.getAnnotationInfo().get("priority");
 		}
 		return 0;
 	}
 
-	private static boolean isEarlyReg(ASMDataTable.ASMData asmData){
-		if(asmData.getAnnotationInfo().containsKey("earlyReg")){
+	private static boolean isEarlyReg(ASMDataTable.ASMData asmData) {
+		if (asmData.getAnnotationInfo().containsKey("earlyReg")) {
 			return (boolean) asmData.getAnnotationInfo().get("earlyReg");
 		}
 		return false;
 	}
 
-	private static boolean isModPresent(ASMDataTable.ASMData asmData, ASMDataTable dataTable){
-		if(!asmData.getAnnotationInfo().containsKey("modOnly")){ //Doesnt have any details about if its only to be loaded along with a specfic mod, so we assume true
+	private static boolean isModPresent(ASMDataTable.ASMData asmData, ASMDataTable dataTable) {
+		if (!asmData.getAnnotationInfo().containsKey("modOnly")) { //Doesnt have any details about if its only to be loaded along with a specfic mod, so we assume true
 			return true;
 		}
 		String modOnly = (String) asmData.getAnnotationInfo().get("modOnly");
-		if(modOnly == null || modOnly.isEmpty()){
+		if (modOnly == null || modOnly.isEmpty()) {
 			return true;
 		}
 		for (String modid : modOnly.split(",")) {
@@ -120,11 +121,11 @@ public class RegistrationManager {
 					}
 				}
 			} else if (modid.startsWith("!")) {
-				if (Loader.isModLoaded(modid.replaceAll("!", ""))) {
+				if (ModList.get().isLoaded(modid.replaceAll("!", ""))) {
 					return false;
 				}
 			} else {
-				if (!Loader.isModLoaded(modid)) {
+				if (!ModList.get().isLoaded(modid)) {
 					return false;
 				}
 			}
@@ -133,25 +134,25 @@ public class RegistrationManager {
 	}
 
 	//This ensures that the class that might be loaded doesnt have any of the common side only markers on it. Its slow but will save us from some common issues
-	private static boolean isValidOnSide(ASMDataTable.ASMData asmData, ASMDataTable dataTable){
+	private static boolean isValidOnSide(ASMDataTable.ASMData asmData, ASMDataTable dataTable) {
 		String side = FMLLaunchHandler.side().toString().toUpperCase();
-		if(asmData.getAnnotationInfo().containsKey("side")){
+		if (asmData.getAnnotationInfo().containsKey("side")) {
 			ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) asmData.getAnnotationInfo().get("side");
 			String classSide = sideEnum.getValue();
-			if(classSide.equals(Distribution.UNIVERSAL.toString())){
+			if (classSide.equals(Distribution.UNIVERSAL.toString())) {
 				//do nothing with univseral classes
-			}else if(!side.equals(classSide)){
+			} else if (!side.equals(classSide)) {
 				return false;
 			}
 		}
 		//Checks the side only annotations
 		Set<ASMDataTable.ASMData> asmDataSet = dataTable.getAll(SideOnly.class.getName());
-		for(ASMDataTable.ASMData sideData : asmDataSet){
-			if(sideData.getClassName().equals(asmData.getClassName())){
-				if(sideData.getAnnotationInfo().containsKey("value")) {
+		for (ASMDataTable.ASMData sideData : asmDataSet) {
+			if (sideData.getClassName().equals(asmData.getClassName())) {
+				if (sideData.getAnnotationInfo().containsKey("value")) {
 					ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) sideData.getAnnotationInfo().get("value");
 					String classSide = sideEnum.getValue();
-					if(!side.equals(classSide)){
+					if (!side.equals(classSide)) {
 						return false;
 					}
 				}
@@ -159,19 +160,19 @@ public class RegistrationManager {
 		}
 		//Checks for the mod annotation on a class
 		Set<ASMDataTable.ASMData> modDataSet = dataTable.getAll(Mod.class.getName());
-		for(ASMDataTable.ASMData sideData : modDataSet) {
+		for (ASMDataTable.ASMData sideData : modDataSet) {
 			if (sideData.getClassName().equals(asmData.getClassName())) {
-				if(FMLLaunchHandler.side() == Side.CLIENT){
-					if(sideData.getAnnotationInfo().containsKey("serverSideOnly")) {
+				if (FMLLaunchHandler.side() == Side.CLIENT) {
+					if (sideData.getAnnotationInfo().containsKey("serverSideOnly")) {
 						boolean value = (boolean) sideData.getAnnotationInfo().get("serverSideOnly");
-						if(value){
+						if (value) {
 							return false;
 						}
 					}
 				} else {
-					if(sideData.getAnnotationInfo().containsKey("clientSideOnly")) {
+					if (sideData.getAnnotationInfo().containsKey("clientSideOnly")) {
 						boolean value = (boolean) sideData.getAnnotationInfo().get("clientSideOnly");
-						if(value){
+						if (value) {
 							return false;
 						}
 					}
@@ -198,7 +199,7 @@ public class RegistrationManager {
 		RebornCore.LOGGER.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static void handleClass(Class clazz, ModContainer activeMod, List<IRegistryFactory> factories){
+	private static void handleClass(Class clazz, ModContainer activeMod, List<IRegistryFactory> factories) {
 		RebornRegister annotation = (RebornRegister) getAnnoation(clazz.getAnnotations(), RebornRegister.class);
 		if (annotation != null) {
 			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
@@ -223,8 +224,8 @@ public class RegistrationManager {
 				}
 
 			}
-			if(regFactory.getTargets().contains(RegistryTarget.CLASS)){
-				if(clazz.isAnnotationPresent(regFactory.getAnnotation())){
+			if (regFactory.getTargets().contains(RegistryTarget.CLASS)) {
+				if (clazz.isAnnotationPresent(regFactory.getAnnotation())) {
 					regFactory.handleClass(clazz);
 				}
 			}
@@ -262,7 +263,7 @@ public class RegistrationManager {
 				if (!registryFactory.side().canExcetue()) {
 					continue;
 				}
-				if (!Loader.isModLoaded(registryFactory.modID())) {
+				if (!ModList.get().isLoaded(registryFactory.modID())) {
 					continue;
 				}
 				Object object = clazz.newInstance();

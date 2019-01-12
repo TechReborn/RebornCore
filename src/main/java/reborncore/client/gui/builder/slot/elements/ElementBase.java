@@ -33,9 +33,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.tile.TileMachineBase;
-import reborncore.client.gui.builder.GuiBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,7 +243,7 @@ public class ElementBase {
 
 	public boolean onRelease(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
 		for (ElementBase.Action action : releaseActions) {
-			if(action.execute(this, gui, provider, mouseX, mouseY)){
+			if (action.execute(this, gui, provider, mouseX, mouseY)) {
 				return true;
 			}
 		}
@@ -288,8 +288,8 @@ public class ElementBase {
 		float f7 = (float) (endColor & 255) / 255.0F;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
@@ -301,7 +301,7 @@ public class ElementBase {
 		tessellator.draw();
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture2D();
 	}
 
@@ -347,7 +347,7 @@ public class ElementBase {
 		Sprite sprite = iSprite.getSprite(gui.getMachine());
 		if (sprite != null) {
 			if (sprite.hasTextureInfo()) {
-				GlStateManager.color(1F, 1F, 1F);
+				GlStateManager.color3f(1F, 1F, 1F);
 				setTextureSheet(sprite.textureLocation);
 				gui.drawTexturedModalRect(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
 			}
@@ -357,7 +357,7 @@ public class ElementBase {
 				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 				RenderHelper.enableGUIStandardItemLighting();
 
-				RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
+				ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 				itemRenderer.renderItemAndEffectIntoGUI(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
 
 				GlStateManager.disableLighting();
@@ -371,13 +371,14 @@ public class ElementBase {
 	}
 
 	public int getPercentage(int MaxValue, int CurrentValue) {
-		if (CurrentValue == 0)
+		if (CurrentValue == 0) {
 			return 0;
+		}
 		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
 
 	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
 		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);

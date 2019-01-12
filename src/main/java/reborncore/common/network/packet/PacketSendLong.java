@@ -82,11 +82,11 @@ public class PacketSendLong implements INetworkPacket {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void handle(){
+	public void handle() {
 		GuiScreen gui = Minecraft.getInstance().currentScreen;
-		if(gui instanceof GuiContainer){
+		if (gui instanceof GuiContainer) {
 			Container container = ((GuiContainer) gui).inventorySlots;
-			if(container instanceof IExtendedContainerListener){
+			if (container instanceof IExtendedContainerListener) {
 				((IExtendedContainerListener) container).handleLong(id, value);
 			}
 		}

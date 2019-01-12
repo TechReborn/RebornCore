@@ -46,6 +46,7 @@ public interface ExternalPowerManager {
 	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
 
 	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+
 	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
 
 	/**

@@ -56,7 +56,7 @@ public class IconSupplier {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public void preTextureStitch(TextureStitchEvent.Pre event) {
-		TextureMap map  = event.getMap();
+		TextureMap map = event.getMap();
 		armour_head = map.registerSprite(new ResourceLocation(armour_head_name));
 		armour_chest = map.registerSprite(new ResourceLocation(armour_chest_name));
 		armour_legs = map.registerSprite(new ResourceLocation(armour_legs_name));

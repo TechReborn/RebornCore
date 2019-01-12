@@ -30,13 +30,14 @@ package reborncore.client.gui.builder.slot.elements;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.common.recipes.RecipeCrafter;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
+import reborncore.common.recipes.RecipeCrafter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,6 @@ public class ConfigSlotElement extends ElementBase {
 	int id;
 	public List<ElementBase> elements = new ArrayList<>();
 	boolean filter = false;
-
 
 	public ConfigSlotElement(IItemHandler slotInventory, int slotId, SlotType type, int x, int y, GuiBase gui) {
 		super(x, y, type.getButtonSprite());
@@ -76,9 +76,9 @@ public class ConfigSlotElement extends ElementBase {
 			return true;
 		}));
 
-		if(gui.getMachine() instanceof IRecipeCrafterProvider){
+		if (gui.getMachine() instanceof IRecipeCrafterProvider) {
 			RecipeCrafter recipeCrafter = ((IRecipeCrafterProvider) gui.getMachine()).getRecipeCrafter();
-			if(Arrays.stream(recipeCrafter.inputSlots).anyMatch(value -> value == slotId)){
+			if (Arrays.stream(recipeCrafter.inputSlots).anyMatch(value -> value == slotId)) {
 				elements.add(new CheckBoxElement("Filter Input", 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 					checkBoxElement -> checkBoxElement.machineBase.slotConfiguration.getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 					popupElement.updateCheckBox((CheckBoxElement) element, "filter", gui13);
@@ -99,15 +99,15 @@ public class ConfigSlotElement extends ElementBase {
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
 
-		GlStateManager.enableDepth();
+		GlStateManager.enableDepthTest();
 		GlStateManager.pushMatrix();
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		RenderHelper.enableGUIStandardItemLighting();
-		RenderItem renderItem = Minecraft.getInstance().getRenderItem();
+		ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
 		renderItem.renderItemAndEffectIntoGUI(gui.mc.player, stack, xPos, yPos);
 		renderItem.renderItemOverlayIntoGUI(gui.mc.fontRenderer, stack, xPos, yPos, null);
-		GlStateManager.disableDepth();
+		GlStateManager.disableDepthTest();
 		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();
 		if (isHovering) {

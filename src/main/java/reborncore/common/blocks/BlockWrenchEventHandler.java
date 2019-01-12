@@ -45,10 +45,10 @@ public class BlockWrenchEventHandler {
 	public static List<Block> wrenableBlocks = new ArrayList<>();
 
 	@SubscribeEvent
-	public static void rightClickBlockEvent(PlayerInteractEvent.RightClickBlock event){
-		if(ToolManager.INSTANCE.canHandleTool(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND))){
+	public static void rightClickBlockEvent(PlayerInteractEvent.RightClickBlock event) {
+		if (ToolManager.INSTANCE.canHandleTool(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND))) {
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
-			if(wrenableBlocks.contains(state.getBlock())){
+			if (wrenableBlocks.contains(state.getBlock())) {
 				Block block = state.getBlock();
 				block.onBlockActivated(event.getWorld(), event.getPos(), state, event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
 				event.setCanceled(true);
@@ -57,8 +57,8 @@ public class BlockWrenchEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void getDigSpeed(PlayerEvent.BreakSpeed event){
-		if (wrenableBlocks.contains(event.getState().getBlock())  && RebornCoreConfig.wrenchRequired) {
+	public static void getDigSpeed(PlayerEvent.BreakSpeed event) {
+		if (wrenableBlocks.contains(event.getState().getBlock()) && RebornCoreConfig.wrenchRequired) {
 			event.setNewSpeed(event.getOriginalSpeed() / 25);
 		}
 	}

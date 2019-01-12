@@ -28,15 +28,15 @@
 
 package reborncore.common.powerSystem;
 
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.io.FileUtils;
 import reborncore.common.RebornCoreConfig;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Locale;
 
 public class PowerSystem {
 	public static File selectedFile;
@@ -114,7 +114,7 @@ public class PowerSystem {
 			for (i = 0; ; i++) {
 				if (euValue < 10000 && euValue % 1000 >= 100) {
 					value = euValue / 1000;
-					value += ((float)euValue % 1000) / 1000;
+					value += ((float) euValue % 1000) / 1000;
 					break;
 				}
 				euValue /= 1000;
@@ -125,11 +125,8 @@ public class PowerSystem {
 			}
 		}
 
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient() && doFormat) {
-			ret += NumberFormat
-					.getNumberInstance(Locale.forLanguageTag(
-							Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getLanguageCode()))
-					.format(value);
+		if (EffectiveSide.get() == LogicalSide.CLIENT && doFormat) {
+
 		} else {
 			ret += value;
 		}
@@ -138,7 +135,9 @@ public class PowerSystem {
 			ret += magnitude[i];
 		}
 
-		if (units != "") { ret += " " + units; }
+		if (units != "") {
+			ret += " " + units;
+		}
 
 		return ret;
 	}
@@ -149,7 +148,7 @@ public class PowerSystem {
 
 	public static void bumpPowerConfig() {
 		int value = selectedSystem.ordinal() + 1;
-		if(value == EnergySystem.values().length){
+		if (value == EnergySystem.values().length) {
 			value = 0;
 		}
 		selectedSystem = EnergySystem.values()[value];

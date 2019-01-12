@@ -51,20 +51,20 @@ public class StringUtils {
 		String output = input.toLowerCase();
 		return output.substring(0, 1).toUpperCase() + output.substring(1);
 	}
-	
+
 	/**
 	 * Simple wrapper for text translation
-	 * 
+	 *
 	 * @param translationKey String Translation Key from language file
 	 * @return String Translated string
 	 */
 	public static String t(String translationKey) {
 		return new TextComponentTranslation(translationKey).getFormattedText();
 	}
-	
+
 	/**
 	 * Simple wrapper for formatted text translation
-	 * 
+	 *
 	 * @param translationKey String Translation Key from language file
 	 * @param format Text to insert into translation
 	 * @return String Translated string
@@ -72,9 +72,10 @@ public class StringUtils {
 	public static String t(String translationKey, Object... format) {
 		return new TextComponentTranslation(translationKey, format).getFormattedText();
 	}
-	
+
 	/**
 	 * Returns red-yellow-green text formatting depending on percentage
+	 *
 	 * @param percentage int percentage amount
 	 * @return TextFormatting Red or Yellow or Green
 	 */

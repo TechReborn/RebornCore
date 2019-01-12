@@ -30,16 +30,15 @@ package reborncore.client.gui.guibuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
@@ -73,7 +72,7 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
-				height / 2);
+			height / 2);
 	}
 
 	public void drawEnergyBar(GuiBase gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
@@ -88,7 +87,7 @@ public class GuiBuilder {
 			List<String> list = new ArrayList<String>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
 			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height,
-					-1, gui.mc.fontRenderer);
+				-1, gui.mc.fontRenderer);
 		}
 	}
 
@@ -151,23 +150,23 @@ public class GuiBuilder {
 			gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 			gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 			gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-			gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,height / 2);
+			gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 		}
 	}
 
 	/**
 	 * Draws button with JEI icon in the given coords.
 	 *
-	 * @param gui   GuiBase GUI to draw on
-	 * @param x     int Top left corner where to place button
-	 * @param y     int Top left corner where to place button
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
-		if (Loader.isModLoaded("jei")) {
+		if (ModList.get().isLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
 				x += gui.getGuiLeft();
 				y += gui.getGuiTop();
@@ -180,12 +179,12 @@ public class GuiBuilder {
 	/**
 	 * Draws lock button in either locked or unlocked state
 	 *
-	 * @param gui    GuiBase GUI to draw on
-	 * @param x      int Top left corner where to place button
-	 * @param y      int Top left corner where to place button
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param layer  Layer Layer to draw on
+	 * @param layer Layer Layer to draw on
 	 * @param locked boolean Set to true if it is in locked state
 	 */
 	public void drawLockButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
@@ -214,12 +213,12 @@ public class GuiBuilder {
 	/**
 	 * Draws hologram toggle button
 	 *
-	 * @param gui    GuiBase GUI to draw on
-	 * @param x      int Top left corner where to place button
-	 * @param y      int Top left corner where to place button
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param layer  Layer Layer to draw on
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -251,9 +250,9 @@ public class GuiBuilder {
 	/**
 	 * Draws four buttons in a raw to increase or decrease values
 	 *
-	 * @param gui   GuiBase GUI to draw on
-	 * @param x     int Top left corner where to place button
-	 * @param y     int Top left corner where to place button
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place button
+	 * @param y int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawUpDownButtons(GuiBase gui, int x, int y, GuiBase.Layer layer) {
@@ -274,11 +273,11 @@ public class GuiBuilder {
 	/**
 	 * Draws big horizontal bar for heat value
 	 *
-	 * @param gui   GuiBase GUI to draw on
-	 * @param x     int Top left corner where to place bar
-	 * @param y     int Top left corner where to place bar
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
 	 * @param value int Current heat value
-	 * @param max   int Maximum heat value
+	 * @param max int Maximum heat value
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigHeatBar(GuiBase gui, int x, int y, int value, int max, GuiBase.Layer layer) {
@@ -300,21 +299,21 @@ public class GuiBuilder {
 			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
 		}
 	}
-	
+
 	/**
 	 * Draws big horizontal blue bar
 	 *
-	 * @param gui    GuiBase GUI to draw on
-	 * @param x      int Top left corner where to place bar
-	 * @param y      int Top left corner where to place bar
-	 * @param value  int Current value
-	 * @param max    int Maximum value
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place bar
+	 * @param y int Top left corner where to place bar
+	 * @param value int Current value
+	 * @param max int Maximum value
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param suffix String String to put on the bar and tooltip after percentage value
-	 * @param line2  String String to put into tooltip as a second line
+	 * @param line2 String String to put into tooltip as a second line
 	 * @param format String Formatted value to put on the bar
-	 * @param layer  Layer Layer to draw on
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -325,27 +324,27 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-        int j = (int) ((double) value / (double) max * 106);
-        if (j < 0) { j = 0; }
-        gui.drawTexturedModalRect(x + 4, y + 4, 0, 236, j, 10);
+		int j = (int) ((double) value / (double) max * 106);
+		if (j < 0) {
+			j = 0;
+		}
+		gui.drawTexturedModalRect(x + 4, y + 4, 0, 236, j, 10);
 		if (!suffix.equals("")) {
 			suffix = " " + suffix;
 		}
-        gui.drawCentredString(format + suffix, y + 5, 0xFFFFFF, layer);
-        if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY))
-        {
-            int percentage = percentage(max, value);
-            List<String> list = new ArrayList<>();
-            list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
-            list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
-            list.add(line2);
+		gui.drawCentredString(format + suffix, y + 5, 0xFFFFFF, layer);
+		if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY)) {
+			int percentage = percentage(max, value);
+			List<String> list = new ArrayList<>();
+			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
+			list.add(line2);
 
-            if (value > max)
-            {
-                list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
-                list.add(TextFormatting.GRAY + "prolly a bug");
-                list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
-            }
+			if (value > max) {
+				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
+				list.add(TextFormatting.GRAY + "prolly a bug");
+				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
+			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
@@ -353,8 +352,8 @@ public class GuiBuilder {
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
-        }
-    }
+		}
+	}
 
 	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
 		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, suffix, "", Integer.toString(value), layer);
@@ -368,7 +367,7 @@ public class GuiBuilder {
 	/**
 	 * Shades GUI and draw gray bar on top of GUI
 	 *
-	 * @param gui   GuiBase GUI to draw on
+	 * @param gui GuiBase GUI to draw on
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
@@ -397,8 +396,8 @@ public class GuiBuilder {
 	 * level.
 	 *
 	 * @param gui GuiBase GUI to draw on
-	 * @param x   int Top left corner where to place slots
-	 * @param y   int Top left corner where to place slots
+	 * @param x int Top left corner where to place slots
+	 * @param y int Top left corner where to place slots
 	 */
 	public void drawUpgrades(GuiBase gui, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
@@ -408,9 +407,9 @@ public class GuiBuilder {
 	/**
 	 * Draws tab on the left side of machine GUI. Draws on the background level.
 	 *
-	 * @param gui   GuiBase GUI to draw on
-	 * @param x     int Top left corner where to place tab
-	 * @param y     int Top left corner where to place tab
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place tab
+	 * @param y int Top left corner where to place tab
 	 * @param stack ItemStack Item to show as tab icon
 	 */
 	public void drawSlotTab(GuiBase gui, int x, int y, ItemStack stack) {
@@ -421,7 +420,7 @@ public class GuiBuilder {
 
 	// This stuff is WIP
 	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades,
-			ItemStack stack) {
+	                                ItemStack stack) {
 		int offset = -1;
 		if (!upgrades) {
 			offset = 80;
@@ -430,31 +429,31 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
 		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
 		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
-//		renderItemStack(stack, posX - 19, posY + 92 - offset);
-//		String explanation = "Click on slot to configure.\r\n";
-//		explanation += "Orange side means output, blue side means input.\r\n";
-//		explanation += "Ctrl+C to copy slot config, Ctrl+V to paste slot config.";
-//		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
-	//	TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10);
-	//	explanation.drawScreen(mouseX, mouseY, 1.0f);
+		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
+		//		String explanation = "Click on slot to configure.\r\n";
+		//		explanation += "Orange side means output, blue side means input.\r\n";
+		//		explanation += "Ctrl+C to copy slot config, Ctrl+V to paste slot config.";
+		//		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
+		//	TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10);
+		//	explanation.drawScreen(mouseX, mouseY, 1.0f);
 		GlStateManager.color4f(1, 1, 1, 1);
 	}
 
 	/**
 	 * Draws energy output value and icon
 	 *
-	 * @param gui       GuiBase GUI to draw on
-	 * @param x         int Top left corner where to place energy output
-	 * @param y         int Top left corner where to place energy output
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place energy output
+	 * @param y int Top left corner where to place energy output
 	 * @param maxOutput int Energy output value
-	 * @param layer     Layer Layer to draw on
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawEnergyOutput(GuiBase gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
-				+ PowerSystem.getDisplayPower().abbreviation + "/t";
+			+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.mc.fontRenderer.getStringWidth(text);
 		gui.drawString(text, x - width, y + 5, 0, layer);
 		if (layer == GuiBase.Layer.BACKGROUND) {
@@ -468,15 +467,15 @@ public class GuiBuilder {
 	/**
 	 * Draws progress arrow in direction specified.
 	 *
-	 * @param gui         GuiBase GUI to draw on
-	 * @param progress    int Current progress
+	 * @param gui GuiBase GUI to draw on
+	 * @param progress int Current progress
 	 * @param maxProgress int Maximum progress
-	 * @param x           int Top left corner where to place progress arrow
-	 * @param y           int Top left corner where to place progress arrow
-	 * @param mouseX      int Mouse cursor position to check for tooltip
-	 * @param mouseY      int Mouse cursor position to check for tooltip
-	 * @param direction   ProgressDirection Direction of progress arrow
-	 * @param layer       Layer Layer to draw on
+	 * @param x int Top left corner where to place progress arrow
+	 * @param y int Top left corner where to place progress arrow
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param direction ProgressDirection Direction of progress arrow
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawProgressBar(GuiBase gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -495,20 +494,20 @@ public class GuiBuilder {
 		}
 
 		switch (direction) {
-		case RIGHT:
-			gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, j, 10);
-			break;
-		case LEFT:
-			gui.drawTexturedModalRect(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
-			break;
-		case UP:
-			gui.drawTexturedModalRect(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
-			break;
-		case DOWN:
-			gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, 10, j);
-			break;
-		default:
-			return;
+			case RIGHT:
+				gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, j, 10);
+				break;
+			case LEFT:
+				gui.drawTexturedModalRect(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
+				break;
+			case UP:
+				gui.drawTexturedModalRect(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
+				break;
+			case DOWN:
+				gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, 10, j);
+				break;
+			default:
+				return;
 		}
 
 		if (gui.isPointInRect(x, y, direction.width, direction.height, mouseX, mouseY)) {
@@ -524,19 +523,19 @@ public class GuiBuilder {
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
 	}
-	
+
 	/**
 	 * Draws multi-energy bar
 	 *
-	 * @param gui             GuiBase GUI to draw on
-	 * @param x               int Top left corner where to place energy bar
-	 * @param y               int Top left corner where to place energy bar
-	 * @param energyStored    int Current amount of energy
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place energy bar
+	 * @param y int Top left corner where to place energy bar
+	 * @param energyStored int Current amount of energy
 	 * @param maxEnergyStored int Maximum amount of energy
-	 * @param mouseX          int Mouse cursor position to check for tooltip
-	 * @param mouseY          int Mouse cursor position to check for tooltip
-	 * @param buttonID        int Button ID used to switch energy systems
-	 * @param layer           Layer Layer to draw on
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param buttonID int Button ID used to switch energy systems
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawMultiEnergyBar(GuiBase gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX, int mouseY, int buttonID, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -560,10 +559,10 @@ public class GuiBuilder {
 			List<String> list = new ArrayList<>();
 			TextFormatting powerColour = TextFormatting.GOLD;
 			list.add(powerColour + PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
-					+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
-					+ displayPower.abbreviation);
+				+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
+				+ displayPower.abbreviation);
 			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " "
-					+ StringUtils.t("reborncore.gui.tooltip.power_charged"));
+				+ StringUtils.t("reborncore.gui.tooltip.power_charged"));
 			if (gui.tile instanceof IListInfoProvider) {
 				if (GuiScreen.isShiftKeyDown()) {
 					((IListInfoProvider) gui.tile).addInfo(list, true, true);
@@ -572,7 +571,7 @@ public class GuiBuilder {
 				} else {
 					list.add("");
 					list.add(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " "
-							+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"));
+						+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"));
 				}
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
@@ -589,15 +588,15 @@ public class GuiBuilder {
 	/**
 	 * Draws tank and fluid inside it
 	 *
-	 * @param gui         GuiBase GUI to draw on
-	 * @param x           int Top left corner of tank
-	 * @param y           int Top left corner of tank
-	 * @param mouseX      int Mouse cursor position to check for tooltip
-	 * @param mouseY      int Mouse cursor position to check for tooltip
-	 * @param fluid       FluidStack Fluid to draw in tank
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner of tank
+	 * @param y int Top left corner of tank
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param fluid FluidStack Fluid to draw in tank
 	 * @param maxCapacity int Maximum tank capacity
 	 * @param isTankEmpty boolean True if tank is empty
-	 * @param layer       Layer Layer to draw on
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawTank(GuiBase gui, int x, int y, int mouseX, int mouseY, FluidStack fluid, int maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -629,7 +628,7 @@ public class GuiBuilder {
 				list.add(TextFormatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + fluid.getLocalizedName());
 			}
 			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " "
-					+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
+				+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
@@ -643,12 +642,12 @@ public class GuiBuilder {
 	/**
 	 * Draws fluid in tank
 	 *
-	 * @param gui         GuiBase GUI to draw on
-	 * @param fluid       FluidStack Fluid to draw
-	 * @param x           int Top left corner of fluid
-	 * @param y           int Top left corner of fluid
-	 * @param width       int Width of fluid to draw
-	 * @param height      int Height of fluid to draw
+	 * @param gui GuiBase GUI to draw on
+	 * @param fluid FluidStack Fluid to draw
+	 * @param x int Top left corner of fluid
+	 * @param y int Top left corner of fluid
+	 * @param width int Width of fluid to draw
+	 * @param height int Height of fluid to draw
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
 	public void drawFluid(GuiBase gui, FluidStack fluid, int x, int y, int width, int height, int maxCapacity) {
@@ -667,8 +666,9 @@ public class GuiBuilder {
 			gui.drawTexturedModalRect(x, y - offsetHeight, sprite, width, curHeight);
 			offsetHeight -= curHeight;
 			iteration++;
-			if (iteration > 50)
+			if (iteration > 50) {
 				break;
+			}
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
 	}
@@ -676,14 +676,14 @@ public class GuiBuilder {
 	/**
 	 * Draws burning progress, similar to vanilla furnace
 	 *
-	 * @param gui         GuiBase GUI to draw on
-	 * @param progress    int Current progress
+	 * @param gui GuiBase GUI to draw on
+	 * @param progress int Current progress
 	 * @param maxProgress int Maximum progress
-	 * @param x           int Top left corner where to place burn bar
-	 * @param y           int Top left corner where to place burn bar
-	 * @param mouseX      int Mouse cursor position to check for tooltip
-	 * @param mouseY      int Mouse cursor position to check for tooltip
-	 * @param layer       Layer Layer to draw on
+	 * @param x int Top left corner where to place burn bar
+	 * @param y int Top left corner where to place burn bar
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBurnBar(GuiBase gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
@@ -717,9 +717,9 @@ public class GuiBuilder {
 	/**
 	 * Draws bar containing output slots
 	 *
-	 * @param gui   GuiBase GUI to draw on
-	 * @param x     int Top left corner where to place slots bar
-	 * @param y     int Top left corner where to place slots bar
+	 * @param gui GuiBase GUI to draw on
+	 * @param x int Top left corner where to place slots bar
+	 * @param y int Top left corner where to place slots bar
 	 * @param count int Number of output slots
 	 */
 	public void drawOutputSlotBar(GuiBase gui, int x, int y, int count) {
@@ -734,11 +734,12 @@ public class GuiBuilder {
 	}
 
 	protected int percentage(int MaxValue, int CurrentValue) {
-		if (CurrentValue == 0)
+		if (CurrentValue == 0) {
 			return 0;
+		}
 		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
-	
+
 	public enum ProgressDirection {
 		RIGHT(58, 150, 74, 150, 16, 10),
 		LEFT(74, 160, 58, 160, 16, 10),

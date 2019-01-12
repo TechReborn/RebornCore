@@ -72,13 +72,12 @@ public class LootManager {
 
 	private static LootFunction[] countAndMeta(float minCount, float maxCount, int minMeta, int maxMeta) {
 		return new LootFunction[] {
-			new SetCount(new LootCondition[0], new RandomValueRange(minCount, maxCount))};
+			new SetCount(new LootCondition[0], new RandomValueRange(minCount, maxCount)) };
 	}
 
 	public static LootItem createLootEntry(Item item, double chance, ResourceLocation loottablelist) {
 		return new LootItem(new ItemStack(item), chance, 1, 1, loottablelist);
 	}
-
 
 	public static LootItem createLootEntry(Item item, int minStackSize, int maxStackSize, double chance, ResourceLocation loottablelist) {
 		return new LootItem(new ItemStack(item, 1), chance, minStackSize, maxStackSize, loottablelist);

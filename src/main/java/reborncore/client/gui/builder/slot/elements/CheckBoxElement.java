@@ -28,8 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import reborncore.common.tile.TileMachineBase;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.tile.TileMachineBase;
 
 import java.util.function.Predicate;
 
@@ -67,12 +67,12 @@ public class CheckBoxElement extends ElementBase {
 
 	@Override
 	public void draw(GuiBase gui) {
-	//	super.draw(gui);
+		//	super.draw(gui);
 		ISprite sprite = checkBoxSprite.getNormal();
-		if(ticked.test(this)){
+		if (ticked.test(this)) {
 			sprite = checkBoxSprite.getTicked();
 		}
-		drawSprite(gui, sprite, x, y );
+		drawSprite(gui, sprite, x, y);
 		drawString(gui, label, x + checkBoxSprite.getNormal().width + 5, ((y + getHeight(gui.getMachine()) / 2) - (gui.mc.fontRenderer.FONT_HEIGHT / 2)), labelColor);
 	}
 

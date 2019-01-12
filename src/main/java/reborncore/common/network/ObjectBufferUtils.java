@@ -59,14 +59,14 @@ public enum ObjectBufferUtils {
 		this.reader = reader;
 	}
 
-	public static void writeObject(Object object, PacketBuffer buffer){
+	public static void writeObject(Object object, PacketBuffer buffer) {
 		ObjectBufferUtils utils = Arrays.stream(values()).filter(objectBufferUtils -> objectBufferUtils.clazz == object.getClass()).findFirst().orElse(null);
 		Objects.requireNonNull(utils, "No support found for " + object.getClass());
 		buffer.writeInt(utils.ordinal());
 		utils.writer.write(object, buffer);
 	}
 
-	public static Object readObject(PacketBuffer buffer){
+	public static Object readObject(PacketBuffer buffer) {
 		ObjectBufferUtils utils = values()[buffer.readInt()];
 		Objects.requireNonNull(utils, "Could not find reader");
 		return utils.reader.read(buffer);

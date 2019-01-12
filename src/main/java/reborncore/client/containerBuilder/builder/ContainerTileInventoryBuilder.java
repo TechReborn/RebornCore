@@ -29,14 +29,11 @@
 package reborncore.client.containerBuilder.builder;
 
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.SlotFurnaceFuel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
@@ -169,19 +166,20 @@ public class ContainerTileInventoryBuilder {
 	}
 
 	public ContainerTileInventoryBuilder syncEnergyValue() {
-		if (this.itemHandler instanceof TilePowerAcceptor)
+		if (this.itemHandler instanceof TilePowerAcceptor) {
 			return this.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).getEnergy(),
 				((TilePowerAcceptor) this.itemHandler)::setEnergy)
 				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).extraPowerStoage,
 					((TilePowerAcceptor) this.itemHandler)::setExtraPowerStoage)
 				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).getPowerChange(),
 					((TilePowerAcceptor) this.itemHandler)::setPowerChange);
+		}
 		RebornCore.LOGGER.error(this.itemHandler + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder syncCrafterValue() {
-		if (this.itemHandler instanceof IRecipeCrafterProvider)
+		if (this.itemHandler instanceof IRecipeCrafterProvider) {
 			return this
 				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.itemHandler).getRecipeCrafter().currentTickTime,
 					(currentTickTime) -> ((IRecipeCrafterProvider) this.itemHandler)
@@ -189,6 +187,7 @@ public class ContainerTileInventoryBuilder {
 				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.itemHandler).getRecipeCrafter().currentNeededTicks,
 					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.itemHandler)
 						.getRecipeCrafter().currentNeededTicks = currentNeededTicks);
+		}
 		RebornCore.LOGGER
 			.error(this.itemHandler + " is not an instance of IRecipeCrafterProvider! Craft progress cannot be synced.");
 		return this;

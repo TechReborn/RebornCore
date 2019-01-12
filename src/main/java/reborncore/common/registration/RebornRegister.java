@@ -58,6 +58,7 @@ public @interface RebornRegister {
 
 	/**
 	 * comma separted mod ids that must be present for the manager to atempt to load the class
+	 *
 	 * @return
 	 */
 	public String modOnly() default "";

@@ -85,6 +85,5 @@ public class PacketFluidConfigSave implements INetworkPacket {
 			return null;
 		});
 
-
 	}
 }

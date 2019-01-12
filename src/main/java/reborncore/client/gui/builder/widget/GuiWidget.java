@@ -76,7 +76,7 @@ public abstract class GuiWidget<T extends Container> extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(background);
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
@@ -92,8 +92,9 @@ public abstract class GuiWidget<T extends Container> extends GuiContainer {
 		fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 6, 4210752);
 		fontRenderer.drawString(translate.translateKey("container.inventory"), 8, ySize - 94, 4210752);
 
-		for (Widget widget : widgets)
+		for (Widget widget : widgets) {
 			widget.drawWidget(this, x, y, mouseX, mouseY);
+		}
 	}
 
 	public FontRenderer getFontRenderer() {

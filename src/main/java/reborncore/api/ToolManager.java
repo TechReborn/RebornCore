@@ -44,14 +44,14 @@ public class ToolManager implements ICustomToolHandler {
 
 	@Override
 	public boolean handleTool(ItemStack stack, BlockPos pos, World world, EntityPlayer player, EnumFacing side, boolean damage) {
-		if(stack == null || stack.isEmpty()){
+		if (stack == null || stack.isEmpty()) {
 			return false;
 		}
-		if(stack.getItem() instanceof IToolHandler){
+		if (stack.getItem() instanceof IToolHandler) {
 			return ((IToolHandler) stack.getItem()).handleTool(stack, pos, world, player, side, damage);
 		}
-		for(ICustomToolHandler customToolHandler : customToolHandlerList){
-			if(customToolHandler.canHandleTool(stack)){
+		for (ICustomToolHandler customToolHandler : customToolHandlerList) {
+			if (customToolHandler.canHandleTool(stack)) {
 				return customToolHandler.handleTool(stack, pos, world, player, side, damage);
 			}
 		}
@@ -60,14 +60,14 @@ public class ToolManager implements ICustomToolHandler {
 
 	@Override
 	public boolean canHandleTool(ItemStack stack) {
-		if(stack == null || stack.isEmpty()){
+		if (stack == null || stack.isEmpty()) {
 			return false;
 		}
-		if(stack.getItem() instanceof IToolHandler){
+		if (stack.getItem() instanceof IToolHandler) {
 			return true;
 		}
-		for(ICustomToolHandler customToolHandler : customToolHandlerList){
-			if(customToolHandler.canHandleTool(stack)){
+		for (ICustomToolHandler customToolHandler : customToolHandlerList) {
+			if (customToolHandler.canHandleTool(stack)) {
 				return true;
 			}
 		}

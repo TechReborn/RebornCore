@@ -58,7 +58,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 	}
 
 	public FluidConfig getSideDetail(EnumFacing side) {
-		if(side == null){
+		if (side == null) {
 			return sideMap.get(EnumFacing.NORTH);
 		}
 		return sideMap.get(side);
@@ -77,34 +77,34 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		if (!input && !output) {
 			return;
 		}
-		if(machineBase.getTank() == null || machineBase.getWorld().getGameTime() % machineBase.slotTransferSpeed() != 0){
+		if (machineBase.getTank() == null || machineBase.getWorld().getGameTime() % machineBase.slotTransferSpeed() != 0) {
 			return;
 		}
-		for(EnumFacing facing : EnumFacing.values()){
+		for (EnumFacing facing : EnumFacing.values()) {
 			FluidConfig fluidConfig = getSideDetail(facing);
-			if(fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()){
+			if (fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()) {
 				continue;
 			}
 			IFluidHandler fluidHandler = getFluidHandler(machineBase, facing);
-			if(fluidHandler == null){
+			if (fluidHandler == null) {
 				continue;
 			}
-			if(autoInput() && fluidConfig.getIoConfig().isInsert()){
+			if (autoInput() && fluidConfig.getIoConfig().isInsert()) {
 				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, machineBase.fluidTransferAmount(), true);
 			}
-			if(autoOutput() && fluidConfig.getIoConfig().isExtact()){
+			if (autoOutput() && fluidConfig.getIoConfig().isExtact()) {
 				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), machineBase.fluidTransferAmount(), true);
 			}
 		}
 	}
 
-	private IFluidHandler getFluidHandler(TileMachineBase machine, EnumFacing facing){
+	private IFluidHandler getFluidHandler(TileMachineBase machine, EnumFacing facing) {
 		BlockPos pos = machine.getPos().offset(facing);
 		TileEntity tileEntity = machine.getWorld().getTileEntity(pos);
-		if(tileEntity == null){
+		if (tileEntity == null) {
 			return null;
 		}
-		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
+		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
 	}
 
 	public boolean autoInput() {
@@ -185,7 +185,6 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		}
 	}
 
-
 	public enum ExtractConfig {
 		NONE(false, false),
 		INPUT(false, true),
@@ -208,7 +207,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 			return insert;
 		}
 
-		public boolean isEnabled(){
+		public boolean isEnabled() {
 			return extact || insert;
 		}
 

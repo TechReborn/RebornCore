@@ -37,7 +37,6 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import reborncore.Distribution;
-import reborncore.RebornCore;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
@@ -78,12 +77,12 @@ public class NetworkManager {
 		INTERNAL_HANDLER.sendToServer(new PacketWrapper(packet));
 	}
 
-//	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
-//	//	INTERNAL_HANDLER.sendToAllAround(new PacketWrapper(packet), point);
-//	}
+	//	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
+	//	//	INTERNAL_HANDLER.sendToAllAround(new PacketWrapper(packet), point);
+	//	}
 
 	public static void sendToAll(INetworkPacket packet) {
-	//INTERNAL_HANDLER.sendToAll(new PacketWrapper(packet));
+		//INTERNAL_HANDLER.sendToAll(new PacketWrapper(packet));
 	}
 
 	public static void sendToPlayer(INetworkPacket packet, EntityPlayerMP playerMP) {
@@ -94,10 +93,8 @@ public class NetworkManager {
 		//INTERNAL_HANDLER.sendToDimension(new PacketWrapper(packet), world.provider.getDimension());
 	}
 
-
-	public static void registerPacket(Class<? extends INetworkPacket> packetClass, Distribution side){
+	public static void registerPacket(Class<? extends INetworkPacket> packetClass, Distribution side) {
 		throw new UnsupportedOperationException("Not working just yet");
 	}
-
 
 }

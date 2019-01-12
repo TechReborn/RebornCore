@@ -44,15 +44,18 @@ public class SlotFilteredVoid extends BaseSlot {
 
 	public SlotFilteredVoid(IItemHandler itemHandler, int id, int x, int y, ItemStack[] filterList) {
 		super(itemHandler, id, x, y);
-		for (ItemStack itemStack : filterList)
+		for (ItemStack itemStack : filterList) {
 			this.filter.add(itemStack);
+		}
 	}
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
-		for (ItemStack itemStack : filter)
-			if (itemStack.getItem().equals(stack.getItem()) && itemStack.getItemDamage() == stack.getItemDamage())
+		for (ItemStack itemStack : filter) {
+			if (itemStack.getItem().equals(stack.getItem()) && itemStack.getItemDamage() == stack.getItemDamage()) {
 				return false;
+			}
+		}
 
 		return super.isItemValid(stack);
 	}

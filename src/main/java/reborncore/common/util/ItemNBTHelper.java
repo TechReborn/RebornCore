@@ -46,8 +46,9 @@ public class ItemNBTHelper {
 	 * anything if the stack already has a tag compound
 	 **/
 	public static void initNBT(ItemStack stack) {
-		if (!detectNBT(stack))
+		if (!detectNBT(stack)) {
 			injectNBT(stack, new NBTTagCompound());
+		}
 	}
 
 	/**
@@ -100,7 +101,9 @@ public class ItemNBTHelper {
 
 	public static void setCompound(ItemStack stack, String tag, NBTTagCompound cmp) {
 		if (!tag.equalsIgnoreCase("ench")) // not override the enchantments
+		{
 			getNBT(stack).setTag(tag, cmp);
+		}
 	}
 
 	public static void setString(ItemStack stack, String tag, String s) {

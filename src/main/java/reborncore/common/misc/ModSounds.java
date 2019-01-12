@@ -37,7 +37,6 @@ import reborncore.RebornCore;
 
 /**
  * @author drcrazy
- *
  */
 
 @Mod.EventBusSubscriber(modid = RebornCore.MOD_ID)

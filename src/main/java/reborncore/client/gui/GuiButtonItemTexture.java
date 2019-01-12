@@ -29,8 +29,8 @@
 package reborncore.client.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.opengl.GL11;
@@ -75,7 +75,7 @@ public class GuiButtonItemTexture extends GuiButtonExt {
 			GL11.glEnable(32826);
 			RenderHelper.enableStandardItemLighting();
 			RenderHelper.enableGUIStandardItemLighting();
-			RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
+			ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 			itemRenderer.renderItemIntoGUI(itemstack, this.x, this.y);
 			this.drawString(mc.fontRenderer, this.NAME, this.x + 20, this.y + 3,
 				Color.white.getRGB());

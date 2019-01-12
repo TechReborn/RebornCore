@@ -42,7 +42,7 @@ public class ForgeEnergyStorage implements IEnergyStorage {
 
 	public ForgeEnergyStorage(TilePowerAcceptor acceptor,
 	                          @Nullable
-		                         EnumFacing facing) {
+		                          EnumFacing facing) {
 		this.acceptor = acceptor;
 		this.facing = facing;
 	}

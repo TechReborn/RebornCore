@@ -46,8 +46,9 @@ public final class VanillaPacketDispatcher {
 			WorldServer ws = ((WorldServer) tile.getWorld());
 			SPacketUpdateTileEntity packet = tile.getUpdatePacket();
 
-			if (packet == null)
+			if (packet == null) {
 				return;
+			}
 
 			for (EntityPlayer player : ws.playerEntities) {
 				EntityPlayerMP playerMP = ((EntityPlayerMP) player);
@@ -61,8 +62,9 @@ public final class VanillaPacketDispatcher {
 
 	public static void dispatchTEToNearbyPlayers(World world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile != null)
+		if (tile != null) {
 			dispatchTEToNearbyPlayers(tile);
+		}
 	}
 
 	public static float pointDistancePlane(double x1, double y1, double x2, double y2) {

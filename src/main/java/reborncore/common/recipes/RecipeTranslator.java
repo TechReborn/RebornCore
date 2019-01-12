@@ -50,7 +50,7 @@ public class RecipeTranslator {
 				NonNullList<ItemStack> list = OreDictionary.getOres(oreName);
 				return list.get(0).copy(); //The first entry
 			}
-		} else if (object instanceof IRecipeInput){
+		} else if (object instanceof IRecipeInput) {
 			return ((IRecipeInput) object).getItemStack();
 		}
 		return ItemStack.EMPTY;

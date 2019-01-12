@@ -33,16 +33,16 @@ import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import reborncore.client.HolidayRenderEvent;
 import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
+import reborncore.client.multiblock.MultiblockRenderEvent;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.client.shields.ShieldTextureStore;
-import reborncore.client.multiblock.MultiblockRenderEvent;
 import reborncore.common.multiblock.MultiblockClientTickHandler;
 
 import java.util.List;
@@ -92,6 +92,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void getCrashData(List<String> list) {
 		super.getCrashData(list);
-		list.add("RenderEngine: " + (FMLClientHandler.instance().hasOptifine() ? "1" : "0"));
+		list.add("RenderEngine: " + (ModList.get().isLoaded("optifine") ? "1" : "0"));
 	}
 }

@@ -35,18 +35,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
-import org.lwjgl.input.Keyboard;
-import reborncore.client.gui.GuiUtil;
-import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.PacketConfigSave;
-import reborncore.common.tile.TileMachineBase;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
+import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigSlotElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
+import reborncore.common.network.NetworkManager;
+import reborncore.common.network.packet.PacketConfigSave;
+import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -57,7 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuiSlotConfiguration  {
+public class GuiSlotConfiguration {
 
 	static HashMap<Integer, ConfigSlotElement> slotElementMap = new HashMap<>();
 
@@ -88,10 +87,10 @@ public class GuiSlotConfiguration  {
 			if (guiBase.tile != slot.inventory) {
 				continue;
 			}
-			GlStateManager.color(255, 0, 0);
+			GlStateManager.color3f(255, 0, 0);
 			Color color = new Color(255, 0, 0, 128);
 			GuiUtil.drawGradientRect(slot.xPos - 1, slot.yPos - 1, 18, 18, color.getRGB(), color.getRGB());
-			GlStateManager.color(255, 255, 255);
+			GlStateManager.color3f(255, 255, 255);
 		}
 
 		if (selectedSlot != -1) {
@@ -100,7 +99,7 @@ public class GuiSlotConfiguration  {
 	}
 
 	public static List<ConfigSlotElement> getVisibleElements() {
-		if(selectedSlot == -1){
+		if (selectedSlot == -1) {
 			return Collections.emptyList();
 		}
 		return slotElementMap.values().stream()
@@ -110,16 +109,16 @@ public class GuiSlotConfiguration  {
 
 	//Allows closing of the widget with the escape key
 	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardInputEvent event){
-		if(!getVisibleElements().isEmpty() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE){
+	public static void keyboardEvent(GuiScreenEvent.KeyboardInputEvent event) {
+		if (!getVisibleElements().isEmpty() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
 			selectedSlot = -1;
 			event.setCanceled(true);
 		}
 	}
 
-	public static void copyToClipboard(){
+	public static void copyToClipboard() {
 		TileMachineBase machine = getMachine();
-		if(machine == null || machine.slotConfiguration == null){
+		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
 		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
@@ -127,9 +126,9 @@ public class GuiSlotConfiguration  {
 		Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration copyied to clipboard"));
 	}
 
-	public static void pasteFromClipboard(){
+	public static void pasteFromClipboard() {
 		TileMachineBase machine = getMachine();
-		if(machine == null || machine.slotConfiguration == null){
+		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
 		String json = GuiScreen.getClipboardString();
@@ -143,12 +142,12 @@ public class GuiSlotConfiguration  {
 	}
 
 	@Nullable
-	private static TileMachineBase getMachine(){
-		if(!(Minecraft.getInstance().currentScreen instanceof GuiBase)){
+	private static TileMachineBase getMachine() {
+		if (!(Minecraft.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
 		GuiBase base = (GuiBase) Minecraft.getInstance().currentScreen;
-		if(!(base.tile instanceof TileMachineBase)){
+		if (!(base.tile instanceof TileMachineBase)) {
 			return null;
 		}
 		TileMachineBase machineBase = (TileMachineBase) base.tile;
@@ -167,8 +166,9 @@ public class GuiSlotConfiguration  {
 								e.isPressing = false;
 							}
 						}
-						if (action)
+						if (action) {
 							break;
+						}
 					} else {
 						element.isPressing = false;
 					}
@@ -177,7 +177,7 @@ public class GuiSlotConfiguration  {
 		}
 		BuiltContainer container = guiBase.container;
 
-		if(getVisibleElements().isEmpty()) {
+		if (getVisibleElements().isEmpty()) {
 			for (Slot slot : container.inventorySlots) {
 				if (guiBase.tile != slot.inventory) {
 					continue;
@@ -203,8 +203,9 @@ public class GuiSlotConfiguration  {
 								e.isDragging = false;
 							}
 						}
-						if (action)
+						if (action) {
 							break;
+						}
 					} else {
 						element.isDragging = false;
 					}
@@ -229,8 +230,9 @@ public class GuiSlotConfiguration  {
 								e.isReleasing = false;
 							}
 						}
-						if (action)
+						if (action) {
 							clicked = true;
+						}
 						break;
 					} else {
 						element.isReleasing = false;
@@ -241,19 +243,19 @@ public class GuiSlotConfiguration  {
 		return clicked;
 	}
 
-	public static List<Rectangle> getExtraSpace(GuiBase guiBase){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1){
+	public static List<Rectangle> getExtraSpace(GuiBase guiBase) {
+		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1) {
 			return Collections.emptyList();
 		}
 		List<Rectangle> list = new ArrayList<>();
 		ConfigSlotElement slotElement = slotElementMap.get(selectedSlot);
 
-		if(slotElement == null || guiBase == null){
+		if (slotElement == null || guiBase == null) {
 			return Collections.emptyList();
 		}
 
 		//I have no idea why this works, but it does. pls fix if you know how.
-		list.add(new Rectangle(slotElement.adjustX(guiBase, slotElement.getX()) + guiBase.getGuiLeft() - 25, slotElement.adjustY(guiBase, 0) -10, slotElement.getWidth() - 5, slotElement.getHeight() + 15));
+		list.add(new Rectangle(slotElement.adjustX(guiBase, slotElement.getX()) + guiBase.getGuiLeft() - 25, slotElement.adjustY(guiBase, 0) - 10, slotElement.getWidth() - 5, slotElement.getHeight() + 15));
 		return list;
 	}
 

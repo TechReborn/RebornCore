@@ -31,7 +31,6 @@ package reborncore.common.powerSystem.forge;
 import net.minecraft.init.Particles;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -100,10 +99,10 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 
 							for (int j = 0; j < 2; ++j) {
 								double d3 = (double) pos.getX() + world.rand.nextDouble()
-										+ (side.getXOffset() / 2);
+									+ (side.getXOffset() / 2);
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble()
-										+ (side.getZOffset() / 2);
+									+ (side.getZOffset() / 2);
 								((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
@@ -113,9 +112,9 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 					} else if (tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).isPresent()) {
 						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).orElseGet());
 						if (powerManager != null && energyStorage != null && energyStorage.canReceive()
-								&& powerAcceptor.canProvideEnergy(side)) {
+							&& powerAcceptor.canProvideEnergy(side)) {
 							int filled = energyStorage.receiveEnergy(
-									(int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
+								(int) Math.min(energyShare, remainingEnergy) * RebornCoreConfig.euPerFU, false);
 							remainingEnergy -= powerAcceptor.useEnergy(filled / RebornCoreConfig.euPerFU, false);
 						}
 					}
@@ -133,12 +132,21 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+	public boolean hasCapability(
+		@Nonnull
+			Capability<?> capability,
+		@Nullable
+			EnumFacing facing) {
 		return capability == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing));
 	}
 
-	@Nullable @Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+	@Nullable
+	@Override
+	public <T> T getCapability(
+		@Nonnull
+			Capability<T> capability,
+		@Nullable
+			EnumFacing facing) {
 		if (capability == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))) {
 			if (powerManager == null) {
 				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
@@ -155,7 +163,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	 */
 	private static boolean isOtherPoweredTile(TileEntity tileEntity, EnumFacing facing) {
 		return ExternalPowerSystems.externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
-				.anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
+			.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
+			.anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
 	}
 }

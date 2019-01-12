@@ -30,7 +30,6 @@ package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -53,10 +52,10 @@ import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.util.WrenchUtils;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
+import reborncore.common.util.WrenchUtils;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -68,7 +67,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	boolean hasCustomStaes;
 
 	public BlockMachineBase(Block.Builder builder) {
-		this(builder,false);
+		this(builder, false);
 	}
 
 	public BlockMachineBase(Block.Builder builder, boolean hasCustomStates) {
@@ -113,11 +112,10 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {	
-		if (RebornCoreConfig.wrenchRequired){
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+		if (RebornCoreConfig.wrenchRequired) {
 			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
-		}
-		else {
+		} else {
 			super.getDrops(drops, world, pos, state, fortune);
 		}
 	}
@@ -126,13 +124,13 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		return false;
 	}
 
-	/* 
+	/*
 	 *  Right-click should open GUI for all non-wrench items
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	                                EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 
 		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -142,7 +140,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			return false;
 		}
 
-		if(tileEntity instanceof TileMachineBase){
+		if (tileEntity instanceof TileMachineBase) {
 			Tank tank = ((TileMachineBase) tileEntity).getTank();
 			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
 				return true;
@@ -153,12 +151,12 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
 				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, side)) {
 					return true;
-				}			
+				}
 			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
 					if (ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
-							true).getCount() > 0) {
+						true).getCount() > 0) {
 						stack = ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
 						return true;

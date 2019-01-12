@@ -31,7 +31,6 @@ package reborncore.common.multiblock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
 import reborncore.RebornCore;
 
@@ -49,11 +48,11 @@ public class MultiblockWorldRegistry {
 	private World worldObj;
 
 	// Active controllers
-	private Set<MultiblockControllerBase> controllers; 
+	private Set<MultiblockControllerBase> controllers;
 	// Controllers whose parts lists have changed
-	private Set<MultiblockControllerBase> dirtyControllers; 
+	private Set<MultiblockControllerBase> dirtyControllers;
 	// Controllers which are empty
-	private Set<MultiblockControllerBase> deadControllers; 
+	private Set<MultiblockControllerBase> deadControllers;
 
 	// A list of orphan parts - parts which currently have no master, but should
 	// seek one this tick
@@ -145,7 +144,7 @@ public class MultiblockWorldRegistry {
 				// controller
 				for (IMultiblockPart orphan : orphansToProcess) {
 					coord = orphan.getWorldLocation();
-					if (!this.worldObj.isBlockLoaded(coord)){
+					if (!this.worldObj.isBlockLoaded(coord)) {
 						continue;
 					}
 

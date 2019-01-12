@@ -28,8 +28,6 @@
 
 package reborncore.common.network;
 
-
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.Event;
 import reborncore.Distribution;
 

@@ -30,7 +30,6 @@ package reborncore.common;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -54,15 +53,15 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 		}
 	}
 
-	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack){
+	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack) {
 		TileEntity tileEntity = world.getTileEntity(pos);
-		if(tileEntity == null){
+		if (tileEntity == null) {
 			return Optional.empty();
 		}
 		ItemStack newStack = stack.copy();
 		NBTTagCompound tileData = tileEntity.write(new NBTTagCompound());
 		stripLocationData(tileData);
-		if(!newStack.hasTag()){
+		if (!newStack.hasTag()) {
 			newStack.setTag(new NBTTagCompound());
 		}
 		newStack.getTag().setTag("tile_data", tileData);
@@ -71,7 +70,7 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		if(stack.hasTag() && stack.getTag().hasKey("tile_data")){
+		if (stack.hasTag() && stack.getTag().hasKey("tile_data")) {
 			TileEntity tileEntity = worldIn.getTileEntity(pos);
 			NBTTagCompound nbt = stack.getTag().getCompound("tile_data");
 			injectLocationData(nbt, pos);
@@ -80,13 +79,13 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 		}
 	}
 
-	private void stripLocationData(NBTTagCompound compound){
+	private void stripLocationData(NBTTagCompound compound) {
 		compound.removeTag("x");
 		compound.removeTag("y");
 		compound.removeTag("z");
 	}
 
-	private void injectLocationData(NBTTagCompound compound, BlockPos pos){
+	private void injectLocationData(NBTTagCompound compound, BlockPos pos) {
 		compound.setInt("x", pos.getX());
 		compound.setInt("y", pos.getY());
 		compound.setInt("z", pos.getZ());

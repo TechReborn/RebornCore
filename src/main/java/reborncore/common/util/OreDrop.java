@@ -70,11 +70,11 @@ public class OreDrop {
 
 	public ItemStack getDrops(int fortuneLevel, Random random) {
 		int count;
-		
+
 		// This always drops. Increase drop amount with fortune
 		if (baseChance == 100) {
 			count = calculateFortuneMulti(fortuneLevel, random);
-		} 
+		}
 		// This has a chance to drop. Increase that chance with fortune.
 		else if (calculateFortuneSingle(fortuneLevel, random)) {
 			count = this.calculateBaseQuantity(random);
@@ -109,7 +109,7 @@ public class OreDrop {
 		int roll = random.nextInt(100);
 		return roll <= total;
 	}
-	
+
 	private int calculateBaseQuantity(Random random) {
 		return this.minQuantity + random.nextInt(this.maxQuantity - this.minQuantity + 1);
 	}

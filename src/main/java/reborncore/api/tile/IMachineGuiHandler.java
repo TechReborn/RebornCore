@@ -34,6 +34,6 @@ import net.minecraft.world.World;
 
 public interface IMachineGuiHandler {
 
-    void open(EntityPlayer player, BlockPos pos, World world);
+	void open(EntityPlayer player, BlockPos pos, World world);
 
 }

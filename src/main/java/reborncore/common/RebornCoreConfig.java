@@ -31,7 +31,6 @@ package reborncore.common;
 import reborncore.common.registration.RebornRegister;
 import reborncore.common.registration.impl.ConfigRegistry;
 
-
 @RebornRegister
 public class RebornCoreConfig {
 

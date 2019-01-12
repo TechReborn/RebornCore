@@ -72,20 +72,23 @@ public class Multiblock {
 	}
 
 	private void changeAxisForNewComponent(int x, int y, int z) {
-		if (x < minX)
+		if (x < minX) {
 			minX = x;
-		else if (x > maxX)
+		} else if (x > maxX) {
 			maxX = x;
+		}
 
-		if (y < minY)
+		if (y < minY) {
 			minY = y;
-		else if (y > maxY)
+		} else if (y > maxY) {
 			maxY = y;
+		}
 
-		if (z < minZ)
+		if (z < minZ) {
 			minZ = z;
-		else if (z > maxZ)
+		} else if (z > maxZ) {
 			maxZ = z;
+		}
 	}
 
 	public void setRenderOffset(int x, int y, int z) {
@@ -103,14 +106,16 @@ public class Multiblock {
 	 * only multiples of pi/2.
 	 */
 	public void rotate(double angle) {
-		for (MultiblockComponent comp : getComponents())
+		for (MultiblockComponent comp : getComponents()) {
 			comp.rotate(angle);
+		}
 	}
 
 	public Multiblock copy() {
 		Multiblock mb = new Multiblock();
-		for (MultiblockComponent comp : getComponents())
+		for (MultiblockComponent comp : getComponents()) {
 			mb.addComponent(comp.copy());
+		}
 
 		return mb;
 	}

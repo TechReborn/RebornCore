@@ -111,10 +111,10 @@ public class Tank extends FluidTank {
 
 	@Override
 	public boolean canFill() {
-		if(side != null){
-			if(machine.fluidConfiguration != null){
+		if (side != null) {
+			if (machine.fluidConfiguration != null) {
 				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
-				if(fluidConfig == null){
+				if (fluidConfig == null) {
 					return super.canFill();
 				}
 				return fluidConfig.getIoConfig().isInsert();
@@ -125,10 +125,10 @@ public class Tank extends FluidTank {
 
 	@Override
 	public boolean canDrain() {
-		if(side != null){
-			if(machine.fluidConfiguration != null){
+		if (side != null) {
+			if (machine.fluidConfiguration != null) {
 				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
-				if(fluidConfig == null){
+				if (fluidConfig == null) {
 					return super.canDrain();
 				}
 				return fluidConfig.getIoConfig().isExtact();

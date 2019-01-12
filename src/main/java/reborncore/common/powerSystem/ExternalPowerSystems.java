@@ -49,21 +49,20 @@ public class ExternalPowerSystems implements IRegistryFactory {
 
 	public static List<ExternalPowerManager> externalPowerHandlerList = new ArrayList<>();
 
-
-	public static boolean isPoweredItem(ItemStack stack){
+	public static boolean isPoweredItem(ItemStack stack) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
 	}
 
-	public static void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
+	public static void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
 		externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-				.forEach(externalPowerManager -> externalPowerManager.dischargeItem(tilePowerAcceptor, stack));
+			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+			.forEach(externalPowerManager -> externalPowerManager.dischargeItem(tilePowerAcceptor, stack));
 	}
 
-	public static void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack){
+	public static void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
 		externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-				.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
+			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+			.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
 	}
 
 	public static boolean isPoweredTile(TileEntity tileEntity, EnumFacing facing) {
@@ -72,8 +71,8 @@ public class ExternalPowerSystems implements IRegistryFactory {
 
 	public static void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
 		externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-				.forEach(externalPowerManager -> externalPowerManager.chargeItem(powerAcceptor, stack));
+			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+			.forEach(externalPowerManager -> externalPowerManager.chargeItem(powerAcceptor, stack));
 	}
 
 	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityLivingBase entity) {

@@ -31,17 +31,15 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
 import reborncore.common.blocks.BlockWrenchEventHandler;
-import reborncore.common.commands.CommandListMods;
-import reborncore.common.commands.CommandListRecipes;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.NetworkManager;
@@ -50,14 +48,15 @@ import reborncore.common.network.packet.*;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
-import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
-import reborncore.common.util.*;
+import reborncore.common.util.CalenderUtils;
+import reborncore.common.util.CrashHandler;
+import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
 
-@Mod(modid = RebornCore.MOD_ID, name = RebornCore.MOD_NAME, version = RebornCore.MOD_VERSION, acceptedMinecraftVersions = "[1.12]", dependencies = "required-after:forge@[14.21.0.2359,);", certificateFingerprint = "8727a3141c8ec7f173b87aa78b9b9807867c4e6b")
+@Mod(RebornCore.MOD_ID)
 public class RebornCore {
 
 	public static final String MOD_NAME = "Reborn Core";
@@ -66,15 +65,12 @@ public class RebornCore {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	@Mod.Instance
-	public static RebornCore INSTANCE;
 	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
 	public static File configDir;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		INSTANCE = this;
 		FMLCommonHandler.instance().registerCrashCallable(new CrashHandler());
 		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
 		if (!configDir.exists()) {
@@ -111,7 +107,6 @@ public class RebornCore {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		// packets
-		OreUtil.scanForOres();
 		NetworkManager.load();
 
 		RebornCoreShields.init();
@@ -129,17 +124,6 @@ public class RebornCore {
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 		RegistrationManager.load(event);
-		try {
-			OreUtil.remove("blockMetal");
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			LOGGER.error("Failed to remove ore");
-			LOGGER.error(e);
-		}
-	}
-
-	@Mod.EventHandler
-	public void loaded(FMLLoadCompleteEvent event) {
-		OreRegistationEvent.loadComplete();
 	}
 
 	@Mod.EventHandler

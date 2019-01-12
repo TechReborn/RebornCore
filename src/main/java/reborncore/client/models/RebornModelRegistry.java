@@ -30,19 +30,18 @@ package reborncore.client.models;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.item.Item;
+import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 public class RebornModelRegistry {
 	protected static List<ModelCompound> modelList = new ArrayList<>();
@@ -55,16 +54,18 @@ public class RebornModelRegistry {
 		for (ModelCompound compound : modelList) {
 			if (compound.getModid().equals(modid)) {
 				if (compound.isBlock()) {
-					if (compound.getFileName().equals("modelregistration.undefinedfilename"))
+					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
 						registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
-					else
+					} else {
 						registerItemModel(compound.getItem(), compound.getMeta(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant());
+					}
 				}
 				if (compound.isBlock()) {
-					if (compound.getFileName().equals("modelregistration.undefinedfilename"))
+					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
 						setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
-					else
+					} else {
 						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant(), compound.getIgnoreProperties());
+					}
 				}
 			}
 		}
@@ -85,16 +86,18 @@ public class RebornModelRegistry {
 
 	public static void registerItemModel(Item item, int meta, String path, String invVariant) {
 		String slash = "";
-		if (!path.isEmpty())
+		if (!path.isEmpty()) {
 			slash = "/";
+		}
 		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
 		setMRL(item, meta, loc, invVariant);
 	}
 
 	public static void registerItemModel(Item item, int meta, String fileName, String path, String invVariant) {
 		String slash = "";
-		if (!path.isEmpty())
+		if (!path.isEmpty()) {
 			slash = "/";
+		}
 		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + fileName);
 		setMRL(item, meta, loc, invVariant);
 	}
@@ -137,7 +140,7 @@ public class RebornModelRegistry {
 			}
 		});
 	}
-	
+
 	public static void setBlockStateMapper(Block block, String fileName, String path, String invVariant, IProperty<?>... ignoredProperties) {
 		final String slash = !path.isEmpty() ? "/" : "";
 		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
@@ -150,8 +153,7 @@ public class RebornModelRegistry {
 				}
 				if (map.size() == 0) {
 					propertyString = invVariant;
-				}
-				else {
+				} else {
 					propertyString = this.getPropertyString(map) + invVariant;
 				}
 				return new ModelResourceLocation(new ResourceLocation(block.getRegistryName().getNamespace(), path + slash + fileName), propertyString);

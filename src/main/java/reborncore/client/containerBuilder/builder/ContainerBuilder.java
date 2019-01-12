@@ -30,7 +30,6 @@ package reborncore.client.containerBuilder.builder;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
@@ -104,17 +103,21 @@ public class ContainerBuilder {
 		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
 			this.playerInventoryRanges,
 			this.tileInventoryRanges, null);
-		if (!this.shortValues.isEmpty())
+		if (!this.shortValues.isEmpty()) {
 			built.addShortSync(this.shortValues);
-		if (!this.integerValues.isEmpty())
+		}
+		if (!this.integerValues.isEmpty()) {
 			built.addIntegerSync(this.integerValues);
-		if (!this.longValues.isEmpty())
+		}
+		if (!this.longValues.isEmpty()) {
 			built.addLongSync(longValues);
-		if (!this.objectValues.isEmpty())
+		}
+		if (!this.objectValues.isEmpty()) {
 			built.addObjectSync(objectValues);
-		if (!this.craftEvents.isEmpty())
+		}
+		if (!this.craftEvents.isEmpty()) {
 			built.addCraftEvents(this.craftEvents);
-
+		}
 
 		this.slots.forEach(built::addSlot);
 
@@ -124,16 +127,20 @@ public class ContainerBuilder {
 
 	public BuiltContainer create(final TileMachineBase tile) {
 		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
-				this.playerInventoryRanges,
-				this.tileInventoryRanges, tile);
-		if (!this.shortValues.isEmpty())
+			this.playerInventoryRanges,
+			this.tileInventoryRanges, tile);
+		if (!this.shortValues.isEmpty()) {
 			built.addShortSync(this.shortValues);
-		if (!this.integerValues.isEmpty())
+		}
+		if (!this.integerValues.isEmpty()) {
 			built.addIntegerSync(this.integerValues);
-		if (!this.longValues.isEmpty())
+		}
+		if (!this.longValues.isEmpty()) {
 			built.addLongSync(longValues);
-		if (!this.craftEvents.isEmpty())
+		}
+		if (!this.craftEvents.isEmpty()) {
 			built.addCraftEvents(this.craftEvents);
+		}
 
 		this.slots.forEach(built::addSlot);
 

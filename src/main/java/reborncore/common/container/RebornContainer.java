@@ -51,7 +51,7 @@ public abstract class RebornContainer extends Container {
 
 	private final TileEntity baseTile;
 
-	public RebornContainer(TileEntity tileEntity){
+	public RebornContainer(TileEntity tileEntity) {
 		this.baseTile = tileEntity;
 	}
 
@@ -178,7 +178,7 @@ public abstract class RebornContainer extends Container {
 						slot.onSlotChanged();
 						changed = true;
 					} else if (stackInSlot.getCount() < max) {
-						stackToShift.setCount(stackToShift.getCount()-(max-stackInSlot.getCount()));
+						stackToShift.setCount(stackToShift.getCount() - (max - stackInSlot.getCount()));
 						stackInSlot.setCount(max);
 						slot.onSlotChanged();
 						changed = true;
@@ -194,7 +194,7 @@ public abstract class RebornContainer extends Container {
 					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
 					stackInSlot = stackToShift.copy();
 					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.setCount(stackToShift.getCount()-stackInSlot.getCount());
+					stackToShift.setCount(stackToShift.getCount() - stackInSlot.getCount());
 					slot.putStack(stackInSlot);
 					slot.onSlotChanged();
 					changed = true;
@@ -210,10 +210,12 @@ public abstract class RebornContainer extends Container {
 			if (slot instanceof SlotFake) {
 				continue;
 			}
-			if (!slot.isItemValid(stackToShift))
+			if (!slot.isItemValid(stackToShift)) {
 				continue;
-			if (shiftItemStack(stackToShift, machineIndex, machineIndex + 1))
+			}
+			if (shiftItemStack(stackToShift, machineIndex, machineIndex + 1)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -285,7 +287,7 @@ public abstract class RebornContainer extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		if(baseTile != null){
+		if (baseTile != null) {
 			World world = player.getEntityWorld();
 			BlockPos pos = baseTile.getPos();
 			return world.getTileEntity(pos) == baseTile && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;

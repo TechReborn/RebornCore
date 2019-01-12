@@ -29,17 +29,15 @@
 package reborncore.client.containerBuilder.builder.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
-import reborncore.client.gui.slots.BaseSlot;
-import reborncore.common.util.Inventory;
 import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
+import reborncore.client.gui.slots.BaseSlot;
+import reborncore.common.util.Inventory;
 
 public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 

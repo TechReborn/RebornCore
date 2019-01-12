@@ -37,7 +37,6 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Random;
 
-
 /**
  * Created by Mark on 13/03/2016.
  */
@@ -51,7 +50,7 @@ public class WorldUtils {
 	public static boolean chunkExists(World world, int x, int z) {
 		return world.isBlockLoaded(new BlockPos(x << 4, 64, z << 4));
 	}
-	
+
 	public static void dropItem(ItemStack itemStack, World world, BlockPos pos) {
 		Random rand = new Random();
 
@@ -60,7 +59,7 @@ public class WorldUtils {
 		float dZ = rand.nextFloat() * 0.8F + 0.1F;
 
 		EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
-				itemStack.copy());
+			itemStack.copy());
 
 		if (itemStack.hasTag()) {
 			entityItem.getItem().setTag(itemStack.getTag().copy());

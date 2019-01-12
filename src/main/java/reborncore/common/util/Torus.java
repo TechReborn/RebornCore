@@ -41,12 +41,12 @@ public class Torus {
 
 	public static Map<Integer, Integer> TORUS_SIZE_MAP = new HashMap<>();
 
-	public static List<BlockPos> generate(BlockPos orgin, int radius){
+	public static List<BlockPos> generate(BlockPos orgin, int radius) {
 		List<BlockPos> posLists = new ArrayList<>();
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -radius; y < radius; y++) {
 				for (int z = -radius; z < radius; z++) {
-					if(Math.pow(radius /2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)){
+					if (Math.pow(radius / 2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)) {
 						posLists.add(orgin.add(x, z, y));
 					}
 				}
@@ -55,8 +55,8 @@ public class Torus {
 		return posLists;
 	}
 
-	public static void genSizeMap(int maxRadius){
-		if(!TORUS_SIZE_MAP.isEmpty()){
+	public static void genSizeMap(int maxRadius) {
+		if (!TORUS_SIZE_MAP.isEmpty()) {
 			//Lets not do this again
 			return;
 		}
@@ -66,7 +66,7 @@ public class Torus {
 			for (int x = -radius; x < radius; x++) {
 				for (int y = -radius; y < radius; y++) {
 					for (int z = -radius; z < radius; z++) {
-						if(Math.pow(radius /2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)){
+						if (Math.pow(radius / 2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)) {
 							size++;
 						}
 					}

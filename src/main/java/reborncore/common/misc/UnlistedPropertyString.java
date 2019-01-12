@@ -33,7 +33,6 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 public class UnlistedPropertyString implements IUnlistedProperty<String> {
 	private final String name;
 
-
 	private UnlistedPropertyString(String n) {
 		name = n;
 	}

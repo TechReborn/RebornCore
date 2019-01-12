@@ -53,23 +53,23 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 		validateNBT();
 	}
 
-	private int getEnergyInStack(){
+	private int getEnergyInStack() {
 		validateNBT();
 		return stack.getTag().getInt("energy");
 	}
 
-	private void setEnergyInStack(int energy){
+	private void setEnergyInStack(int energy) {
 		validateNBT();
 		stack.getTag().setInt("energy", energy);
 	}
 
 	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
-	private void validateNBT(){
-		if(!stack.hasTag()){
+	private void validateNBT() {
+		if (!stack.hasTag()) {
 			stack.setTag(new NBTTagCompound());
 			stack.getTag().setInt("energy", 0);
 		} else {
-			if(stack.getTag().hasKey("charge")){
+			if (stack.getTag().hasKey("charge")) {
 				//Upgrades the item from the old format to the new format
 				stack.getTag().setInt("energy", stack.getTag().getInt("charge") * RebornCoreConfig.euPerFU);
 				stack.getTag().removeTag("charge");
@@ -87,13 +87,13 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 			return 0;
 		}
 		int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
-				Math.min((int) itemPowerInfo.getMaxInput(), maxReceive));
+			Math.min((int) itemPowerInfo.getMaxInput(), maxReceive));
 
 		if (!simulate) {
 			setEnergyInStack(getEnergyInStack() + energyReceived);
 		}
 		return energyReceived;
-	} 
+	}
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) {

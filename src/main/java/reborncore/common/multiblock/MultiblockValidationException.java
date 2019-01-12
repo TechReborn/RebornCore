@@ -37,7 +37,7 @@ package reborncore.common.multiblock;
 public class MultiblockValidationException extends Exception {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4038176177468678877L;
 

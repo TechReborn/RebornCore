@@ -62,8 +62,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	private final TileMachineBase tile;
 
 	public BuiltContainer(final String name, final Predicate<EntityPlayer> canInteract,
-						  final List<Range<Integer>> playerSlotRange,
-						  final List<Range<Integer>> tileSlotRange, TileMachineBase tile) {
+	                      final List<Range<Integer>> playerSlotRange,
+	                      final List<Range<Integer>> tileSlotRange, TileMachineBase tile) {
 		this.name = name;
 
 		this.canInteract = canInteract;
@@ -81,30 +81,34 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
 
-		for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
+		for (final Pair<IntSupplier, IntConsumer> syncable : syncables) {
 			this.shortValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (short) 0));
+		}
 		this.shortValues.trimToSize();
 	}
 
 	public void addLongSync(final List<Pair<LongSupplier, LongConsumer>> syncables) {
 
-		for (final Pair<LongSupplier, LongConsumer> syncable : syncables)
+		for (final Pair<LongSupplier, LongConsumer> syncable : syncables) {
 			this.longValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (long) 0));
+		}
 		this.longValues.trimToSize();
 	}
 
 	public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
 
-		for (final Pair<IntSupplier, IntConsumer> syncable : syncables)
+		for (final Pair<IntSupplier, IntConsumer> syncable : syncables) {
 			this.integerValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), 0));
+		}
 		this.integerValues.trimToSize();
 		this.integerParts = new Integer[this.integerValues.size()];
 	}
 
 	public void addObjectSync(final List<Pair<Supplier, Consumer>> syncables) {
 
-		for (final Pair<Supplier, Consumer> syncable : syncables)
+		for (final Pair<Supplier, Consumer> syncable : syncables) {
 			this.objectValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
+		}
 		this.objectValues.trimToSize();
 	}
 
@@ -119,8 +123,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	@Override
 	public final void onCraftMatrixChanged(final IInventory inv) {
-		if (!this.craftEvents.isEmpty())
+		if (!this.craftEvents.isEmpty()) {
 			this.craftEvents.forEach(consumer -> consumer.accept((InventoryCrafting) inv));
+		}
 	}
 
 	@Override
@@ -143,7 +148,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		for (final IContainerListener listener : this.listeners) {
 
 			int i = 0;
-			if (!this.shortValues.isEmpty())
+			if (!this.shortValues.isEmpty()) {
 				for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues) {
 					final short supplied = (short) value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
@@ -153,8 +158,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					}
 					i++;
 				}
+			}
 
-			if (!this.integerValues.isEmpty())
+			if (!this.integerValues.isEmpty()) {
 				for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues) {
 					final int supplied = value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
@@ -165,25 +171,26 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					}
 					i += 2;
 				}
+			}
 
-			if (!this.longValues.isEmpty()){
+			if (!this.longValues.isEmpty()) {
 				int longs = 0;
 				for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
 					final long supplied = value.getLeft().getAsLong();
-					if(supplied != value.getRight()){
-						sendLong(listener,this, longs, supplied);
+					if (supplied != value.getRight()) {
+						sendLong(listener, this, longs, supplied);
 						value.setRight(supplied);
 					}
 					longs++;
 				}
 			}
 
-			if (!this.objectValues.isEmpty()){
+			if (!this.objectValues.isEmpty()) {
 				int objects = 0;
 				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 					final Object supplied = value.getLeft();
-					if(supplied != value.getRight()){
-						sendObject(listener,this, objects, supplied);
+					if (supplied != value.getRight()) {
+						sendObject(listener, this, objects, supplied);
 						value.setRight(supplied);
 					}
 					objects++;
@@ -197,7 +204,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		super.addListener(listener);
 
 		int i = 0;
-		if (!this.shortValues.isEmpty())
+		if (!this.shortValues.isEmpty()) {
 			for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues) {
 				final short supplied = (short) value.getLeft().getAsInt();
 
@@ -205,8 +212,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				value.setRight(supplied);
 				i++;
 			}
+		}
 
-		if (!this.integerValues.isEmpty())
+		if (!this.integerValues.isEmpty()) {
 			for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues) {
 				final int supplied = value.getLeft().getAsInt();
 
@@ -215,22 +223,23 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				value.setRight(supplied);
 				i += 2;
 			}
+		}
 
-		if (!this.longValues.isEmpty()){
+		if (!this.longValues.isEmpty()) {
 			int longs = 0;
 			for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
 				final long supplied = value.getLeft().getAsLong();
-				sendLong(listener,this, longs, supplied);
+				sendLong(listener, this, longs, supplied);
 				value.setRight(supplied);
 				longs++;
 			}
 		}
 
-		if (!this.objectValues.isEmpty()){
+		if (!this.objectValues.isEmpty()) {
 			int objects = 0;
 			for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 				final Object supplied = value.getLeft();
-				sendObject(listener,this, objects, supplied);
+				sendObject(listener, this, objects, supplied);
 				value.setRight(supplied);
 				objects++;
 			}
@@ -256,9 +265,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			this.shortValues.get(id).setRight((short) value);
 		} else if (id - this.shortValues.size() < this.integerValues.size() * 2) {
 
-			if ((id - this.shortValues.size()) % 2 == 0)
+			if ((id - this.shortValues.size()) % 2 == 0) {
 				this.integerParts[(id - this.shortValues.size()) / 2] = value;
-			else {
+			} else {
 				this.integerValues.get((id - this.shortValues.size()) / 2).getMiddle().accept(
 					(this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
 			}
@@ -279,33 +288,39 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 			boolean shifted = false;
 
-			for (final Range<Integer> range : this.playerSlotRanges)
+			for (final Range<Integer> range : this.playerSlotRanges) {
 				if (range.contains(index)) {
 
-					if (this.shiftToTile(stackInSlot))
+					if (this.shiftToTile(stackInSlot)) {
 						shifted = true;
+					}
 					break;
 				}
+			}
 
-			if (!shifted)
-				for (final Range<Integer> range : this.tileSlotRanges)
+			if (!shifted) {
+				for (final Range<Integer> range : this.tileSlotRanges) {
 					if (range.contains(index)) {
-						if (this.shiftToPlayer(stackInSlot))
+						if (this.shiftToPlayer(stackInSlot)) {
 							shifted = true;
+						}
 						break;
 					}
+				}
+			}
 
 			slot.onSlotChange(stackInSlot, originalStack);
-			if (stackInSlot.getCount() <= 0)
+			if (stackInSlot.getCount() <= 0) {
 				slot.putStack(ItemStack.EMPTY);
-			else
+			} else {
 				slot.onSlotChanged();
-			if (stackInSlot.getCount() == originalStack.getCount())
+			}
+			if (stackInSlot.getCount() == originalStack.getCount()) {
 				return ItemStack.EMPTY;
+			}
 			slot.onTake(player, stackInSlot);
 		}
 		return originalStack;
-
 
 	}
 
@@ -352,16 +367,20 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	private boolean shiftToTile(final ItemStack stackToShift) {
-		for (final Range<Integer> range : this.tileSlotRanges)
-			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
+		for (final Range<Integer> range : this.tileSlotRanges) {
+			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
 	private boolean shiftToPlayer(final ItemStack stackToShift) {
-		for (final Range<Integer> range : this.playerSlotRanges)
-			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
+		for (final Range<Integer> range : this.playerSlotRanges) {
+			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1)) {
 				return true;
+			}
+		}
 		return false;
 	}
 

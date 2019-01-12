@@ -78,7 +78,7 @@ public class PacketIOSave implements INetworkPacket {
 	public void processData(NetworkEvent.Context context) {
 		TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
 		SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
-		if(holder == null){
+		if (holder == null) {
 			return;
 		}
 		holder.setInput(input);

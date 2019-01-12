@@ -57,13 +57,13 @@ import static net.minecraft.item.ItemStack.EMPTY;
  * Created by Prospector
  */
 public class StackInfoHUD {
-	
+
 	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
 	private static Minecraft mc = Minecraft.getInstance();
 	private int x = 2;
 	private int y = 7;
-	
+
 	public static void registerElement(StackInfoElement element) {
 		ELEMENTS.add(element);
 	}
@@ -71,12 +71,14 @@ public class StackInfoHUD {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
+		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
 			return;
+		}
 
 		if (mc.isGameFocused() || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
-			if (RebornCoreConfig.ShowStackInfoHUD)
+			if (RebornCoreConfig.ShowStackInfoHUD) {
 				drawStackInfoHud(event.getResolution());
+			}
 		}
 	}
 
@@ -127,9 +129,9 @@ public class StackInfoHUD {
 
 	private void addInfo(ItemStack stack, ScaledResolution res) {
 		if (stack == ItemStack.EMPTY) {
-			return;	
+			return;
 		}
-			
+
 		String text = "";
 		if (stack.getItem() instanceof IEnergyItemInfo) {
 			IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
@@ -147,15 +149,15 @@ public class StackInfoHUD {
 				color = TextFormatting.DARK_RED;
 			}
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
-					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
-					+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
+				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
+				+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
 			if (stack.getTag() != null && stack.getTag().hasKey("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
-							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
+						+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				} else {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
-							+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
+						+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
 				}
 			}
 

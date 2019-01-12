@@ -109,7 +109,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (parentTile instanceof IEnergyInterfaceTile) {
 			energy = (IEnergyInterfaceTile) parentTile;
 		}
-		if(parentTile instanceof IUpgradeHandler){
+		if (parentTile instanceof IUpgradeHandler) {
 			parentUpgradeHandler = Optional.of((IUpgradeHandler) parentTile);
 		}
 		this.inputs = inputs;
@@ -139,7 +139,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (currentRecipe == null && isInvDirty()) {
 			updateCurrentRecipe();
 		}
-		if(currentRecipe != null) {
+		if (currentRecipe != null) {
 			// If it doesn't have all the inputs reset
 			if (isInvDirty() && !hasAllInputs()) {
 				currentRecipe = null;
@@ -173,7 +173,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 					currentTickTime = 0;
 					updateCurrentRecipe();
 					//Update active sate if the tile isnt going to start crafting again
-					if(currentRecipe == null){
+					if (currentRecipe == null) {
 						setIsActive();
 					}
 				}
@@ -182,8 +182,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 				if (energy.canUseEnergy(getEuPerTick(currentRecipe.euPerTick()))) {
 					energy.useEnergy(getEuPerTick(currentRecipe.euPerTick()));
 					// Increase the ticktime
-					currentTickTime ++;
-					if(currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null){
+					currentTickTime++;
+					if (currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null) {
 						soundHanlder.playSound(false, parentTile);
 					}
 				}
@@ -192,7 +192,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		setInvDirty(false);
 	}
 
-	public void updateCurrentRecipe(){
+	public void updateCurrentRecipe() {
 		currentTickTime = 0;
 		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
 			// This checks to see if it has all of the inputs
@@ -208,7 +208,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				}
 				// Sets the current recipe then syncs
 				setCurrentRecipe(recipe);
-				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime()* (1.0 - getSpeedMultiplier())), 1);
+				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
 				this.currentTickTime = 0;
 				setIsActive();
 				return;
@@ -233,8 +233,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 					}
 				}
 			}
-			if (!hasItem)
+			if (!hasItem) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -257,8 +258,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 				}
 			}
-			if (!hasItem)
+			if (!hasItem) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -277,7 +279,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 					}
 					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
 						inventory.shrinkSlot(inputSlot, count);
-						break;	
+						break;
 					}
 				}
 			}
@@ -323,8 +325,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public void readFromNBT(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompound("Crater");
 
-		if (data.hasKey("currentTickTime"))
+		if (data.hasKey("currentTickTime")) {
 			currentTickTime = data.getInt("currentTickTime");
+		}
 
 		if (parentTile != null && parentTile.getWorld() != null && parentTile.getWorld().isRemote) {
 			parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),

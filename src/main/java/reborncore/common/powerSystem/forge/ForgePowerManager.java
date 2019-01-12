@@ -43,7 +43,7 @@ import reborncore.common.registration.RebornRegister;
 @RebornRegister
 public class ForgePowerManager implements ExternalPowerManager {
 	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
-		if(!RebornCoreConfig.enableFE) {
+		if (!RebornCoreConfig.enableFE) {
 			return null;
 		}
 
@@ -51,7 +51,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public boolean isPoweredItem(ItemStack stack) {
-		if(!RebornCoreConfig.enableFE) {
+		if (!RebornCoreConfig.enableFE) {
 			return false;
 		}
 
@@ -59,7 +59,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side) {
-		if(!RebornCoreConfig.enableFE) {
+		if (!RebornCoreConfig.enableFE) {
 			return false;
 		}
 
@@ -67,12 +67,12 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void dischargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
+		if (!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
 		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
-		if(powerItem == null) {
+		if (powerItem == null) {
 			return;
 		}
 
@@ -88,16 +88,16 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void chargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
+		if (!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
 		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
-		if(powerItem == null) {
+		if (powerItem == null) {
 			return;
 		}
 
-		int maxReceive = powerItem.receiveEnergy((int)powerAcceptor.getMaxOutput() * RebornCoreConfig.euPerFU, true);
+		int maxReceive = powerItem.receiveEnergy((int) powerAcceptor.getMaxOutput() * RebornCoreConfig.euPerFU, true);
 
 		double maxUse = Math.min((double) (maxReceive / RebornCoreConfig.euPerFU), powerAcceptor.getMaxOutput());
 
@@ -107,12 +107,12 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
-		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
+		if (!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
 		}
 
 		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
-		if(powerItem == null) {
+		if (powerItem == null) {
 			return;
 		}
 
@@ -128,7 +128,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	 */
 	private static boolean isOtherPoweredItem(ItemStack stack) {
 		return ExternalPowerSystems.externalPowerHandlerList.stream()
-				.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
-				.anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
+			.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
+			.anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
 	}
 }

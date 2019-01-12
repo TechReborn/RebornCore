@@ -41,12 +41,9 @@ import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
 import reborncore.common.BaseTileBlock;
 import reborncore.common.misc.ModSounds;
-import reborncore.common.util.ItemHandlerUtils;
-
 
 /**
  * @author drcrazy
- *
  */
 public class WrenchUtils {
 
@@ -66,30 +63,29 @@ public class WrenchUtils {
 
 					boolean dropContents = true;
 					Block block = tileEntity.getBlockState().getBlock();
-					if(block instanceof BaseTileBlock){
+					if (block instanceof BaseTileBlock) {
 						ItemStack tileDrop = ((BaseTileBlock) block).getDropWithContents(worldIn, pos, drop).orElse(ItemStack.EMPTY);
-						if(!tileDrop.isEmpty()){
+						if (!tileDrop.isEmpty()) {
 							dropContents = false;
 							drop = tileDrop;
 						}
 					}
 
 					if (!worldIn.isRemote) {
-						if(dropContents){
+						if (dropContents) {
 							ItemHandlerUtils.dropContainedItems(worldIn, pos);
 						}
 						if (!drop.isEmpty()) {
 							net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
-									(double) pos.getY(), (double) pos.getZ(), drop);
+								(double) pos.getY(), (double) pos.getZ(), drop);
 						}
 						worldIn.removeTileEntity(pos);
 						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 					}
 					worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
-							SoundCategory.BLOCKS, 0.6F, 1F);
+						SoundCategory.BLOCKS, 0.6F, 1F);
 				}
-			} 
-			else {
+			} else {
 				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), worldIn, pos, side);
 			}
 			return true;

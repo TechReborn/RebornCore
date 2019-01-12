@@ -35,17 +35,17 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
+import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.PacketIOSave;
 import reborncore.common.network.packet.PacketSlotSave;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.MachineFacing;
-import reborncore.client.gui.builder.GuiBase;
 
 import java.awt.*;
 
@@ -55,7 +55,6 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	ConfigSlotElement slotElement;
 
-
 	public SlotConfigPopupElement(int slotId, int x, int y, ConfigSlotElement slotElement) {
 		super(x, y, Sprite.SLOT_CONFIG_POPUP);
 		this.id = slotId;
@@ -64,24 +63,23 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	@Override
 	public void draw(GuiBase gui) {
-		drawDefaultBackground(gui, adjustX(gui, getX() -8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
+		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
 		TileMachineBase machine = ((TileMachineBase) gui.tile);
-		IBlockAccess blockAccess = machine.getWorld();
+		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
-		IBlockState state = blockAccess.getBlockState(pos);
-		IBlockState actualState = state.getBlock().getDefaultState().getActualState(blockAccess, pos);
+		IBlockState state = world.getBlockState(pos);
+		IBlockState actualState = state.getBlock().getDefaultState().getActualState(world, pos);
 		BlockRendererDispatcher dispatcher = FMLClientHandler.instance().getClient().getBlockRendererDispatcher();
 		IBakedModel model = dispatcher.getBlockModelShapes().getModelForState(state.getBlock().getDefaultState());
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 4, 23); //left
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 23, 42, 90F, 1F, 0F, 0F); //bottom
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 26, 23, 180F, 0F, 1F, 0F); //right
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, 26, 42, 90F, 0F, 1F, 0F); //back
-
+		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, 42, 90F, 1F, 0F, 0F); //bottom
+		drawState(gui, world, model, actualState, pos, dispatcher, 26, 23, 180F, 0F, 1F, 0F); //right
+		drawState(gui, world, model, actualState, pos, dispatcher, 26, 42, 90F, 0F, 1F, 0F); //back
 
 		drawSlotSateColor(gui.getMachine(), MachineFacing.UP.getFacing(machine), id, 22, -1, gui);
 		drawSlotSateColor(gui.getMachine(), MachineFacing.FRONT.getFacing(machine), id, 22, 18, gui);
@@ -93,17 +91,17 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	@Override
 	public boolean onRelease(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
-		if(isInBox(23 , 4, 16, 16, mouseX, mouseY, gui)){
+		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.UP.getFacing(provider), gui);
-		} else if(isInBox(23 , 23, 16, 16, mouseX, mouseY, gui)){
+		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.FRONT.getFacing(provider), gui);
-		} else if(isInBox(42 , 23, 16, 16, mouseX, mouseY, gui)){
+		} else if (isInBox(42, 23, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.RIGHT.getFacing(provider), gui);
-		} else if(isInBox(4 , 23, 16, 16, mouseX, mouseY, gui)){
+		} else if (isInBox(4, 23, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.LEFT.getFacing(provider), gui);
-		} else if(isInBox(23 , 42, 16, 16, mouseX, mouseY, gui)){
+		} else if (isInBox(23, 42, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.DOWN.getFacing(provider), gui);
-		} else if(isInBox(42 , 42, 16, 16, mouseX, mouseY, gui)){
+		} else if (isInBox(42, 42, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.BACK.getFacing(provider), gui);
 		} else {
 			return false;
@@ -111,7 +109,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		return true;
 	}
 
-	public void cyleSlotConfig(EnumFacing side, GuiBase guiBase){
+	public void cyleSlotConfig(EnumFacing side, GuiBase guiBase) {
 		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().slotConfiguration.getSlotDetails(id).getSideDetail(side);
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(currentSlot.getSlotIO().getIoConfig().getNext());
@@ -120,18 +118,18 @@ public class SlotConfigPopupElement extends ElementBase {
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	public void updateCheckBox(CheckBoxElement checkBoxElement, String type, GuiBase guiBase){
+	public void updateCheckBox(CheckBoxElement checkBoxElement, String type, GuiBase guiBase) {
 		SlotConfiguration.SlotConfigHolder configHolder = guiBase.getMachine().slotConfiguration.getSlotDetails(id);
 		boolean input = configHolder.autoInput();
 		boolean output = configHolder.autoOutput();
 		boolean filter = configHolder.filter();
-		if(type.equalsIgnoreCase("input")){
+		if (type.equalsIgnoreCase("input")) {
 			input = !configHolder.autoInput();
 		}
-		if(type.equalsIgnoreCase("output")){
+		if (type.equalsIgnoreCase("output")) {
 			output = !configHolder.autoOutput();
 		}
-		if(type.equalsIgnoreCase("filter")){
+		if (type.equalsIgnoreCase("filter")) {
 			filter = !configHolder.filter();
 		}
 
@@ -139,26 +137,26 @@ public class SlotConfigPopupElement extends ElementBase {
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	private void drawSlotSateColor(TileMachineBase machineBase, EnumFacing side, int slotID, int inx, int iny, GuiBase gui){
+	private void drawSlotSateColor(TileMachineBase machineBase, EnumFacing side, int slotID, int inx, int iny, GuiBase gui) {
 		iny += 4;
 		int sx = inx + getX() + gui.getGuiLeft();
 		int sy = iny + getY() + gui.getGuiTop();
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = machineBase.slotConfiguration.getSlotDetails(slotID);
-		if(slotConfigHolder == null){
+		if (slotConfigHolder == null) {
 			RebornCore.LOGGER.debug("Humm, this isnt suppoed to happen");
 			return;
 		}
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(side);
 		Color color;
-		switch (slotConfig.getSlotIO().getIoConfig()){
+		switch (slotConfig.getSlotIO().getIoConfig()) {
 			case NONE:
-				color  = new Color(0, 0, 0, 0);
+				color = new Color(0, 0, 0, 0);
 				break;
 			case INPUT:
-				color  = new Color(0, 0, 255, 128);
+				color = new Color(0, 0, 255, 128);
 				break;
 			case OUTPUT:
-				color  = new Color(255, 69, 0, 128);
+				color = new Color(255, 69, 0, 128);
 				break;
 			default:
 				color = new Color(0, 0, 0, 0);
@@ -170,7 +168,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	}
 
-	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY, GuiBase guiBase){
+	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY, GuiBase guiBase) {
 		rectX += getX();
 		rectY += getY();
 		return isInRect(guiBase, rectX, rectY, rectWidth, rectHeight, pointX, pointY);
@@ -178,7 +176,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	public void drawState(GuiBase gui,
-	                      IBlockAccess blockAccess,
+	                      IWorld world,
 	                      IBakedModel model,
 	                      IBlockState actualState,
 	                      BlockPos pos,
@@ -217,7 +215,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		GlStateManager.popMatrix();*/
 	}
 
-	public void drawState(GuiBase gui, IBlockAccess blockAccess, IBakedModel model, IBlockState actualState, BlockPos pos, BlockRendererDispatcher dispatcher, int x, int y) {
-		drawState(gui, blockAccess, model, actualState, pos, dispatcher, x, y, 0, 0, 0, 0);
+	public void drawState(GuiBase gui, IWorld world, IBakedModel model, IBlockState actualState, BlockPos pos, BlockRendererDispatcher dispatcher, int x, int y) {
+		drawState(gui, world, model, actualState, pos, dispatcher, x, y, 0, 0, 0, 0);
 	}
 }

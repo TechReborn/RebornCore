@@ -29,15 +29,15 @@
 package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
-import reborncore.common.tile.TileMachineBase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
+import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class GuiFluidConfiguration {
 	}
 
 	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardInputEvent event) {
+	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent event) {
 		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
 			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
 			event.setCanceled(true);
@@ -80,8 +80,9 @@ public class GuiFluidConfiguration {
 								e.isPressing = false;
 							}
 						}
-						if (action)
+						if (action) {
 							break;
+						}
 					} else {
 						element.isPressing = false;
 					}
@@ -103,8 +104,9 @@ public class GuiFluidConfiguration {
 								e.isDragging = false;
 							}
 						}
-						if (action)
+						if (action) {
 							break;
+						}
 					} else {
 						element.isDragging = false;
 					}
@@ -129,8 +131,9 @@ public class GuiFluidConfiguration {
 								e.isReleasing = false;
 							}
 						}
-						if (action)
+						if (action) {
 							clicked = true;
+						}
 						break;
 					} else {
 						element.isReleasing = false;

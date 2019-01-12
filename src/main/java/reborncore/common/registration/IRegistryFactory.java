@@ -77,7 +77,7 @@ public interface IRegistryFactory {
 	/**
 	 * Called once all of the handle methods have finished
 	 */
-	public default void factoryComplete(){
+	public default void factoryComplete() {
 
 	}
 

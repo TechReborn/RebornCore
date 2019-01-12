@@ -28,17 +28,17 @@
 
 package reborncore;
 
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public enum Distribution {
 	UNIVERSAL,
 	CLIENT,
 	SERVER;
 
-	public boolean isInvalid(){
-		if(this == UNIVERSAL){
+	public boolean isInvalid() {
+		if (this == UNIVERSAL) {
 			return false;
 		}
-		return FMLLaunchHandler.side().isClient() && this == CLIENT;
+		return FMLEnvironment.dist.isClient() && this == CLIENT;
 	}
 }

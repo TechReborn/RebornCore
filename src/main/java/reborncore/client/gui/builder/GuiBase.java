@@ -38,18 +38,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
-import reborncore.client.gui.guibuilder.GuiBuilder;
-import reborncore.common.tile.TileMachineBase;
-import reborncore.common.tile.TileMachineBase;
-import reborncore.common.container.RebornContainer;
-import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
+import reborncore.client.gui.guibuilder.GuiBuilder;
+import reborncore.common.container.RebornContainer;
+import reborncore.common.tile.TileMachineBase;
+import reborncore.common.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -124,14 +122,14 @@ public class GuiBase extends GuiContainer {
 	public void initGui() {
 		super.initGui();
 		GuiSlotConfiguration.init(this);
-		if(getMachine().getTank() != null && getMachine().showTankConfig()){
+		if (getMachine().getTank() != null && getMachine().showTankConfig()) {
 			GuiFluidConfiguration.init(this);
 		}
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		builder.drawDefaultBackground(this, guiLeft, guiTop, xSize, ySize);
 		if (drawPlayerSlots()) {
 			builder.drawPlayerSlots(this, guiLeft + xSize / 2, guiTop + 93, true);
@@ -144,10 +142,10 @@ public class GuiBase extends GuiContainer {
 			}
 		}
 		int offset = upgrades ? 86 : 6;
-		if(getMachine().hasSlotConfig()){
+		if (getMachine().hasSlotConfig()) {
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
-		if(getMachine().showTankConfig()){
+		if (getMachine().showTankConfig()) {
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(FluidRegistry.LAVA));
 		}
 	}
@@ -163,13 +161,13 @@ public class GuiBase extends GuiContainer {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		this.buttonList.clear();
+		this.buttons.clear();
 		drawTitle();
-		if(slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()){
+		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			GuiSlotConfiguration.draw(this, mouseX, mouseY);
 		}
 
-		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
+		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			GuiFluidConfiguration.draw(this, mouseX, mouseY);
 		}
 	}
@@ -188,28 +186,28 @@ public class GuiBase extends GuiContainer {
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
 			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 81 : 0;
 		if (isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
-			drawHoveringText(list, mouseX,  mouseY);
+			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		if (isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
-			drawHoveringText(list, mouseX,  mouseY);
+			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	protected void drawTitle() {
-		drawCentredString(I18n.format(tile.getBlockType().getTranslationKey() + ".name"), 6, 4210752, Layer.FOREGROUND);
+		drawCentredString(I18n.format(tile.getBlockState().getBlock().getTranslationKey() + ".name"), 6, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
@@ -228,7 +226,7 @@ public class GuiBase extends GuiContainer {
 			factorY = guiTop;
 		}
 		mc.fontRenderer.drawString(string, x + factorX, y + factorY, colour);
-		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.color4f(1, 1, 1, 1);
 	}
 
 	public void addPowerButton(int x, int y, int id, Layer layer) {
@@ -238,7 +236,7 @@ public class GuiBase extends GuiContainer {
 			factorX = guiLeft;
 			factorY = guiTop;
 		}
-		buttonList.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
+		buttons.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
 	}
 
 	public void addHologramButton(int x, int y, int id, Layer layer) {
@@ -248,18 +246,18 @@ public class GuiBase extends GuiContainer {
 			factorX = guiLeft;
 			factorY = guiTop;
 		}
-		buttonList.add(new GuiButtonHologram(id, x + factorX, y + factorY, this, layer));
+		buttons.add(new GuiButtonHologram(id, x + factorX, y + factorY, this, layer));
 	}
 
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		if(slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()){
-			if(GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)){
+		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+			if (GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
 				return;
 			}
 		}
-		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
-			if(GuiFluidConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)){
+		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+			if (GuiFluidConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
 				return;
 			}
 		}
@@ -268,10 +266,10 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-		if(slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()){
+		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
 		}
-		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
+		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
 		}
 		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -280,33 +278,33 @@ public class GuiBase extends GuiContainer {
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		int offset = 0;
-		if(!upgrades){
+		if (!upgrades) {
 			offset = 80;
 		}
-		if(isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()){
-			if(slotConfigType != SlotConfigType.ITEMS){
+		if (isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+			if (slotConfigType != SlotConfigType.ITEMS) {
 				slotConfigType = SlotConfigType.ITEMS;
 			} else {
 				slotConfigType = SlotConfigType.NONE;
 			}
-			if(slotConfigType == SlotConfigType.ITEMS){
+			if (slotConfigType == SlotConfigType.ITEMS) {
 				GuiSlotConfiguration.reset();
 			}
 		}
-		if(isPointInRegion(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()){
-			if(slotConfigType != SlotConfigType.FLUIDS){
+		if (isPointInRegion(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+			if (slotConfigType != SlotConfigType.FLUIDS) {
 				slotConfigType = SlotConfigType.FLUIDS;
 			} else {
 				slotConfigType = SlotConfigType.NONE;
 			}
 		}
-		if(slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()){
-			if(GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)){
+		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+			if (GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
 				return;
 			}
 		}
-		if(slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()){
-			if(GuiFluidConfiguration.mouseReleased(mouseX, mouseY, state, this)){
+		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+			if (GuiFluidConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
 				return;
 			}
 		}
@@ -315,11 +313,11 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if(slotConfigType == SlotConfigType.ITEMS){
-			if(isCtrlKeyDown() && keyCode == Keyboard.KEY_C){
+		if (slotConfigType == SlotConfigType.ITEMS) {
+			if (isCtrlKeyDown() && keyCode == Keyboard.KEY_C) {
 				GuiSlotConfiguration.copyToClipboard();
 				return;
-			} else if(isCtrlKeyDown() && keyCode == Keyboard.KEY_V){
+			} else if (isCtrlKeyDown() && keyCode == Keyboard.KEY_V) {
 				GuiSlotConfiguration.pasteFromClipboard();
 				return;
 			}
@@ -334,30 +332,28 @@ public class GuiBase extends GuiContainer {
 	}
 
 	/**
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
-	 *
 	 * @param rectX int Top left corner of region
 	 * @param rectY int Top left corner of region
 	 * @param rectWidth int Width of region
-	 * @param rectHeight  int Height of region
+	 * @param rectHeight int Height of region
 	 * @param pointX int Mouse pointer
 	 * @param pointY int Mouse pointer
 	 * @return boolean Returns true if mouse pointer is in region specified
+	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
 	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
 		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
 
-	public TileMachineBase getMachine(){
+	public TileMachineBase getMachine() {
 		return (TileMachineBase) tile;
 	}
-
 
 	public enum Layer {
 		BACKGROUND, FOREGROUND
 	}
 
-	public enum SlotConfigType{
+	public enum SlotConfigType {
 		NONE,
 		ITEMS,
 		FLUIDS

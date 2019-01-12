@@ -52,7 +52,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 	public PoweredItemContainerProvider(ItemStack stack) {
 		this.stack = stack;
 		this.isEnergyItem = stack.getItem() instanceof IEnergyItemInfo;
-		if(isEnergyItem){ // Done to ensure that the item that is being handled is only one of TechReborns, this shouldnt be false but this protects agasinst it.
+		if (isEnergyItem) { // Done to ensure that the item that is being handled is only one of TechReborns, this shouldnt be false but this protects agasinst it.
 			this.capEnergy = new ForgePowerItemManager(stack);
 		}
 	}
@@ -64,7 +64,11 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 	}
 
 	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
+	public boolean hasCapability(
+		@Nonnull
+			Capability<?> capability,
+		@Nullable
+			EnumFacing facing) {
 		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return true;
 		}
@@ -73,7 +77,11 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	@Nullable
 	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+	public <T> T getCapability(
+		@Nonnull
+			Capability<T> capability,
+		@Nullable
+			EnumFacing facing) {
 		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return CapabilityEnergy.ENERGY.cast(capEnergy);
 		}

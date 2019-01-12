@@ -340,8 +340,9 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 			neighborPosition = partPosition.offset(facing);
 			te = this.world.getTileEntity(neighborPosition);
 
-			if (te instanceof IMultiblockPart)
-				neighborParts.add((IMultiblockPart)te);
+			if (te instanceof IMultiblockPart) {
+				neighborParts.add((IMultiblockPart) te);
+			}
 		}
 
 		return neighborParts.toArray(new IMultiblockPart[neighborParts.size()]);

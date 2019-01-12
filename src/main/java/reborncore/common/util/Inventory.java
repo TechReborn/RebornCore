@@ -64,14 +64,18 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+	public void setStackInSlot(int slot,
+	                           @Nonnull
+		                           ItemStack stack) {
 		super.setStackInSlot(slot, stack);
 		setChanged();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot,
+	                            @Nonnull
+		                            ItemStack stack, boolean simulate) {
 		ItemStack result = super.insertItem(slot, stack, simulate);
 		setChanged();
 		return result;
@@ -101,7 +105,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		return true;
 	}
 
-	public IItemHandler getExternal(EnumFacing facing){
+	public IItemHandler getExternal(EnumFacing facing) {
 		return externalInventory.withFacing(facing);
 	}
 
@@ -110,10 +114,10 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	/**
 	 * This enables the default IO access that is setup to use the SlotConfiguration of the tile
 	 */
-	public Inventory<T> withConfiguredAccess(){
+	public Inventory<T> withConfiguredAccess() {
 		configuredAccess = true;
 		this.inventoryAccess = (slotID, stack, facing, direction, tile) -> {
-			switch (direction){
+			switch (direction) {
 				case INSERT:
 					return SlotConfiguration.canInsertItem(slotID, stack, facing, tile);
 				case EXTRACT:
@@ -142,10 +146,10 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		data.setTag(tag, serializeNBT());
 	}
 
-	public int getContents(){
+	public int getContents() {
 		int count = 0;
-		for(ItemStack stack : stacks){
-			if(stack.isEmpty()){
+		for (ItemStack stack : stacks) {
+			if (stack.isEmpty()) {
 				continue;
 			}
 			count += stack.getCount();
@@ -198,7 +202,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		public ItemStack insertItem(int slot,
 		                            @Nonnull
 			                            ItemStack stack, boolean simulate) {
-			if(!baseInv.inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, baseInv.tile)){
+			if (!baseInv.inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, baseInv.tile)) {
 				return stack;
 			}
 			return baseInv.insertItem(slot, stack, simulate);
@@ -207,7 +211,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate) {
-			if(!baseInv.inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, baseInv.tile)){
+			if (!baseInv.inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, baseInv.tile)) {
 				return ItemStack.EMPTY;
 			}
 			return baseInv.extractItem(slot, amount, simulate);

@@ -87,15 +87,22 @@ public class ToolTipLine {
 	}
 
 	public void draw(FontRenderer fontRenderer, int x, int y) {
-		fontRenderer.drawString(getLine(), x, y, color, isShadowed());
+		if (!isShadowed()) {
+			fontRenderer.drawString(getLine(), x, y, color);
+		} else {
+			fontRenderer.drawStringWithShadow(getLine(), x, y, color);
+		}
+
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 		ToolTipLine that = (ToolTipLine) o;
 		return color == that.color &&
 			shadowed == that.shadowed &&

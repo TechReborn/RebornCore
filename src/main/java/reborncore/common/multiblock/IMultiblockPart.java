@@ -169,7 +169,8 @@ public abstract class IMultiblockPart extends TileEntity {
 
 	/**
 	 * Is this block the designated save/load & network delegate?
-	 * @return Boolean 
+	 *
+	 * @return Boolean
 	 */
 	public abstract boolean isMultiblockSaveDelegate();
 
@@ -261,7 +262,7 @@ public abstract class IMultiblockPart extends TileEntity {
 	public abstract IBlockState getBlockState();
 
 	//TODO 1.13 seemed to have been removed in 1.13, not sure what its replacment is
-	public boolean isInvalid(){
+	public boolean isInvalid() {
 		return false;
 	}
 }

@@ -42,7 +42,7 @@ import java.io.IOException;
 /**
  * Used to sync all the slot details to the client
  */
-public class  PacketSlotSync implements INetworkPacket {
+public class PacketSlotSync implements INetworkPacket {
 
 	BlockPos pos;
 	SlotConfiguration slotConfig;
@@ -69,11 +69,11 @@ public class  PacketSlotSync implements INetworkPacket {
 
 	@Override
 	public void processData(NetworkEvent.Context context) {
-		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
+		if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
 			return;
 		}
 		TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
+		if (machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
 			RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
 		}
 		Minecraft.getInstance().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));

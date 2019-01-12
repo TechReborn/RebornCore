@@ -30,10 +30,6 @@ package reborncore.common.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -42,7 +38,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,7 +45,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
@@ -68,7 +62,6 @@ import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -110,8 +103,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
-		if(getTank() != null){
-			if(fluidConfiguration == null){
+		if (getTank() != null) {
+			if (fluidConfiguration == null) {
 				fluidConfiguration = new FluidConfiguration();
 			}
 		}
@@ -159,7 +152,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 			if (slotConfiguration != null) {
 				slotConfiguration.update(this);
 			}
-			if(fluidConfiguration != null){
+			if (fluidConfiguration != null) {
 				fluidConfiguration.update(this);
 			}
 		}
@@ -266,9 +259,9 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
-		if(tagCompound.hasKey("fluidConfig") && getTank() != null){
+		if (tagCompound.hasKey("fluidConfig") && getTank() != null) {
 			fluidConfiguration = new FluidConfiguration(tagCompound.getCompound("fluidConfig"));
-		} else if (getTank() != null && fluidConfiguration == null){
+		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();
 		}
 		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
@@ -286,7 +279,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		if (slotConfiguration != null) {
 			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
 		}
-		if(fluidConfiguration != null){
+		if (fluidConfiguration != null) {
 			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
 		}
 		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
@@ -294,7 +287,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	private boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(slotConfiguration == null){
+		if (slotConfiguration == null) {
 			return false;
 		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
@@ -313,10 +306,10 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
 			return true;
 		}
-		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
 				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if(!fluidConfig.getIoConfig().isEnabled()){
+				if (!fluidConfig.getIoConfig().isEnabled()) {
 					return false;
 				}
 			}
@@ -330,10 +323,10 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getExternal(facing));
 		}
-		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
+		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
 				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if(!fluidConfig.getIoConfig().isEnabled()){
+				if (!fluidConfig.getIoConfig().isEnabled()) {
 					return null;
 				}
 			}
@@ -401,37 +394,36 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		}
 	}
 
-	public boolean hasSlotConfig(){
+	public boolean hasSlotConfig() {
 		return true;
 	}
 
 	@Nullable
-	public Tank getTank(){
+	public Tank getTank() {
 		return null;
 	}
 
-	public boolean showTankConfig(){
+	public boolean showTankConfig() {
 		return getTank() != null;
 	}
 
 	//The amount of ticks between a slot tranfer atempt, less is faster
-	public int slotTransferSpeed(){
+	public int slotTransferSpeed() {
 		return 4;
 	}
 
 	//The amount of fluid transfured each tick buy the fluid config
-	public int fluidTransferAmount(){
+	public int fluidTransferAmount() {
 		return 250;
 	}
 
-
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {
-		if(hasData){
-			if(getInventoryForTile().isPresent()){
+		if (hasData) {
+			if (getInventoryForTile().isPresent()) {
 				info.add(TextFormatting.GOLD + "" + getInventoryForTile().get().getContents() + TextFormatting.GRAY + " items");
 			}
-			if(!upgradeInventory.isEmpty()){
+			if (!upgradeInventory.isEmpty()) {
 				info.add(TextFormatting.GOLD + "" + upgradeInventory.getContents() + TextFormatting.GRAY + " upgrades");
 			}
 		}

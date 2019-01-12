@@ -48,7 +48,7 @@ public class RecipeHandler {
 	 * This is map to store recipes per machine \ category
 	 */
 	public static Map<IBaseRecipeType, String> recipeMap = new HashMap<IBaseRecipeType, String>();
-	
+
 	/**
 	 * This is a list of all the registered machine names.
 	 */
@@ -81,11 +81,13 @@ public class RecipeHandler {
 
 	/**
 	 * Add a recipe to the system
-	 * 
+	 *
 	 * @param machineName Name of a machine which will be doing this recipe
 	 * @param recipe The recipe to add to the system.
 	 */
-	public static void addRecipe(String machineName, @Nonnull IBaseRecipeType recipe) {
+	public static void addRecipe(String machineName,
+	                             @Nonnull
+		                             IBaseRecipeType recipe) {
 		if (recipeMap.containsKey(recipe)) {
 			return;
 		}
@@ -103,7 +105,7 @@ public class RecipeHandler {
 
 		//TODO fix above
 		recipeList.add(recipe);
-		
+
 	}
 	/*public static void addRecipe(IBaseRecipeType recipe) {
 		if (recipe == null) {

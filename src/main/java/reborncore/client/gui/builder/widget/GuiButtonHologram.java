@@ -32,8 +32,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.math.BlockPos;
-import reborncore.client.multiblock.Multiblock;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.client.multiblock.Multiblock;
 
 /**
  * Created by Prospector

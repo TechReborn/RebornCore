@@ -112,20 +112,23 @@ public class ModelCompound {
 	}
 
 	public Item getItem() {
-		if (isBlock())
+		if (isBlock()) {
 			return Item.getItemFromBlock(block);
+		}
 		return item;
 	}
 
 	public boolean isBlock() {
-		if (block != null)
+		if (block != null) {
 			return true;
+		}
 		return false;
 	}
 
 	public boolean isItem() {
-		if (item != null)
+		if (item != null) {
 			return true;
+		}
 		return false;
 	}
 

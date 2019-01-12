@@ -56,7 +56,11 @@ public abstract class MultiblockControllerBase {
 
 	// Disassembled -> Assembled; Assembled -> Disassembled OR Paused; Paused ->
 	// Assembled
-	protected enum AssemblyState { Disassembled, Assembled, Paused };
+	protected enum AssemblyState {
+		Disassembled, Assembled, Paused
+	}
+
+	;
 	protected AssemblyState assemblyState;
 
 	public HashSet<IMultiblockPart> connectedParts;
@@ -180,9 +184,9 @@ public abstract class MultiblockControllerBase {
 
 		Boolean updateRequired = false;
 		BlockPos partPos = part.getPos();
-		
+
 		if (minimumCoord != null) {
-			
+
 			if (partPos.getX() < minimumCoord.getX()) {
 				updateRequired = true;
 			}
@@ -192,7 +196,7 @@ public abstract class MultiblockControllerBase {
 			if (partPos.getZ() < minimumCoord.getZ()) {
 				updateRequired = true;
 			}
-			if (updateRequired){
+			if (updateRequired) {
 				this.minimumCoord = new BlockPos(partPos.getX(), partPos.getY(), partPos.getZ());
 			}
 		}
@@ -207,7 +211,7 @@ public abstract class MultiblockControllerBase {
 			if (partPos.getZ() > maximumCoord.getZ()) {
 				updateRequired = true;
 			}
-			if (updateRequired){
+			if (updateRequired) {
 				this.maximumCoord = new BlockPos(partPos.getX(), partPos.getY(), partPos.getZ());
 			}
 		}
@@ -474,7 +478,9 @@ public abstract class MultiblockControllerBase {
 
 		for (IMultiblockPart acquiredPart : partsToAcquire) {
 			// By definition, none of these can be the minimum block.
-			if (acquiredPart.isInvalid()) { continue; }
+			if (acquiredPart.isInvalid()) {
+				continue;
+			}
 
 			connectedParts.add(acquiredPart);
 			acquiredPart.onAssimilated(this);
@@ -690,7 +696,7 @@ public abstract class MultiblockControllerBase {
 		Integer maxX, maxY, maxZ;
 		minX = minY = minZ = Integer.MAX_VALUE;
 		maxX = maxY = maxZ = Integer.MIN_VALUE;
-		
+
 		for (IMultiblockPart part : connectedParts) {
 			BlockPos pos = part.getPos();
 			if (pos.getX() < minX) {
@@ -794,9 +800,11 @@ public abstract class MultiblockControllerBase {
 			otherController.auditParts();
 
 			res = _shouldConsume(otherController);
-			if (res < 0) { return true;	} 
-			else if (res > 0) { return false; } 
-			else {
+			if (res < 0) {
+				return true;
+			} else if (res > 0) {
+				return false;
+			} else {
 				RebornCore.LOGGER.error(String.format("My Controller (%d): size (%d), parts: %s", hashCode(), connectedParts.size(),
 					getPartsListString()));
 				RebornCore.LOGGER.error(String.format("Other Controller (%d): size (%d), coords: %s", otherController.hashCode(),
@@ -934,7 +942,7 @@ public abstract class MultiblockControllerBase {
 			visitedParts++;
 
 			// Chunk-safe on server, but not on client
-			nearbyParts = part.getNeighboringParts(); 
+			nearbyParts = part.getNeighboringParts();
 			for (IMultiblockPart nearbyPart : nearbyParts) {
 				// Ignore different machines
 				if (nearbyPart.getMultiblockController() != this) {
@@ -1059,7 +1067,9 @@ public abstract class MultiblockControllerBase {
 	 * @see MultiblockControllerBase#markReferenceCoordForUpdate()
 	 */
 	protected void markReferenceCoordDirty() {
-		if (worldObj == null || worldObj.isRemote) { return; }
+		if (worldObj == null || worldObj.isRemote) {
+			return;
+		}
 
 		BlockPos referenceCoord = getReferenceCoord();
 		if (referenceCoord == null) {

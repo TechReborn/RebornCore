@@ -82,6 +82,5 @@ public class PacketFluidConfigSync implements INetworkPacket {
 			machineBase.fluidConfiguration.setOutput(fluidConfiguration.autoOutput());
 		});
 
-
 	}
 }

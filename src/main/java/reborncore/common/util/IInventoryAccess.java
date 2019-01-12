@@ -36,7 +36,7 @@ public interface IInventoryAccess<T extends TileMachineBase> {
 
 	public boolean canHandleIO(int slotID, ItemStack stack, EnumFacing face, AccessDirection direction, T tile);
 
-	public enum AccessDirection{
+	public enum AccessDirection {
 		INSERT,
 		EXTRACT
 	}

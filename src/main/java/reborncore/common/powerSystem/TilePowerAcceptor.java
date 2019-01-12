@@ -28,20 +28,16 @@
 
 package reborncore.common.powerSystem;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.*;
 import reborncore.api.power.EnumPowerTier;
+import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.powerSystem.forge.ForgePowerHandler;
-import reborncore.common.powerSystem.forge.ForgePowerManager;
-
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
@@ -75,14 +71,13 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		this();
 	}
 
-	private void setupManagers(){
+	private void setupManagers() {
 		final TilePowerAcceptor tile = this;
 		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
 			.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile))
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 	}
-
 
 	public void checkTier() {
 		if (getBaseTier() == null) {
@@ -93,18 +88,18 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 			}
 		}
 	}
-	
+
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
 	}
-	
+
 	public double getFreeSpace() {
 		return getMaxPower() - getEnergy();
 	}
 
 	/**
 	 * Charge machine from battery placed inside inventory slot
-	 * 
+	 *
 	 * @param slot int Slot ID for battery slot
 	 */
 	public void charge(int slot) {
@@ -113,10 +108,10 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		}
 
 		double chargeEnergy = Math.min(getFreeSpace(), getMaxInput());
-		if (chargeEnergy <= 0.0 ) {
+		if (chargeEnergy <= 0.0) {
 			return;
 		}
-		if(!getInventoryForTile().isPresent()){
+		if (!getInventoryForTile().isPresent()) {
 			return;
 		}
 		ItemStack batteryStack = getInventoryForTile().get().getStackInSlot(slot);
@@ -136,8 +131,9 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
-		if (shouldHanldeEnergyNBT())
+		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
+		}
 	}
 
 	public NBTTagCompound writeToNBTWithoutCoords(NBTTagCompound tag) {
@@ -150,7 +146,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public boolean shouldHanldeEnergyNBT() {
 		return true;
 	}
-	
+
 	public boolean handleTierWithPower() {
 		return true;
 	}
@@ -167,7 +163,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	@Override
 	public void update() {
 		super.update();
-		if(world.isRemote){
+		if (world.isRemote) {
 			return;
 		}
 
@@ -176,13 +172,14 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		powerChange = getEnergy() - powerLastTick;
 		powerLastTick = getEnergy();
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
-		if (shouldHanldeEnergyNBT())
+		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
+		}
 	}
 
 	@Override
@@ -193,7 +190,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		tag.setTag("TilePowerAcceptor", data);
 		return tag;
 	}
-	
+
 	@Override
 	public void resetUpgrades() {
 		super.resetUpgrades();
@@ -201,10 +198,10 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		extraTier = 0;
 		extraPowerInput = 0;
 	}
-	
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
+		if (powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -219,13 +216,13 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 			.findFirst()
 			.orElse(null);
 
-		if(externalCap != null){
+		if (externalCap != null) {
 			return externalCap;
 		}
 
 		return super.getCapability(capability, facing);
 	}
-	
+
 	public abstract double getBaseMaxPower();
 
 	public abstract double getBaseMaxOutput();
@@ -236,7 +233,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public EnumPowerTier getBaseTier() {
 		return null;
 	}
-	
+
 	// TileEntity
 	@Override
 	public void invalidate() {
@@ -251,7 +248,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 		powerManagers.forEach(ExternalPowerHandler::unload);
 	}
-	
+
 	// IEnergyInterfaceTile
 	@Override
 	public double getEnergy() {
@@ -260,7 +257,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	@Override
 	public void setEnergy(double energy) {
-		if(!checkOverfill){
+		if (!checkOverfill) {
 			this.energy = energy;
 			return;
 		}
@@ -307,7 +304,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public boolean canAddEnergy(double energyIn) {
 		return getEnergy() + energyIn <= getMaxPower();
 	}
-	
+
 	@Override
 	public double getMaxPower() {
 		return getBaseMaxPower() + extraPowerStoage;
@@ -318,9 +315,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		double maxOutput = 0;
 		if (this.extraTier > 0) {
 			maxOutput = this.getTier().getMaxOutput();
-		}
-		else {
-			maxOutput = getBaseMaxOutput();	
+		} else {
+			maxOutput = getBaseMaxOutput();
 		}
 		return maxOutput;
 	}
@@ -330,8 +326,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		double maxInput = 0;
 		if (this.extraTier > 0) {
 			maxInput = this.getTier().getMaxInput();
-		}
-		else {
+		} else {
 			maxInput = getBaseMaxInput();
 		}
 		return maxInput + extraPowerInput;
@@ -360,28 +355,28 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		}
 		return baseTier;
 	}
-	
+
 	// IListInfoProvider
 	@Override
 	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {
 		info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
-				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
+			+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower()));
 		if (getMaxInput() != 0) {
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
-					+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput()));
+				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate")
-					+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput()));
+				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput()));
 		}
 		info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
-				+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
-		if(isRealTile){
+			+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString()));
+		if (isRealTile) {
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
 				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t");
 		}
 
-		if(hasData){
+		if (hasData) {
 			info.add(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
 				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy));
 		}

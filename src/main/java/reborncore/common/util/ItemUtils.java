@@ -30,14 +30,11 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.oredict.OreDictionary;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.recipes.IRecipeInput;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,12 +44,15 @@ public class ItemUtils {
 
 	public static boolean isItemEqual(final ItemStack a, final ItemStack b,
 	                                  final boolean matchNBT) {
-		if (a.isEmpty() || b.isEmpty())
+		if (a.isEmpty() || b.isEmpty()) {
 			return false;
-		if (a.getItem() != b.getItem())
+		}
+		if (a.getItem() != b.getItem()) {
 			return false;
-		if (matchNBT && !ItemStack.areItemStackTagsEqual(a, b))
+		}
+		if (matchNBT && !ItemStack.areItemStackTagsEqual(a, b)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -61,8 +61,9 @@ public class ItemUtils {
 		if (isItemEqual(a, b, matchNBT)) {
 			return true;
 		}
-		if (a.isEmpty() || b.isEmpty())
+		if (a.isEmpty() || b.isEmpty()) {
 			return false;
+		}
 		if (useTags) {
 			//TODO tags
 			throw new UnsupportedOperationException("1.13 tags");
@@ -77,7 +78,7 @@ public class ItemUtils {
 			return isItemEqual((ItemStack) input, other, matchNBT, useTags);
 		} else if (input instanceof String) {
 
-		} else if (input instanceof IRecipeInput){
+		} else if (input instanceof IRecipeInput) {
 			List<ItemStack> inputs = ((IRecipeInput) input).getAllStacks();
 			for (ItemStack stack : inputs) {
 				if (isItemEqual(stack, other, matchNBT, false)) {
@@ -88,12 +89,13 @@ public class ItemUtils {
 		return false;
 	}
 
-
 	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
-		if (stack.isEmpty() || stack.getCount() <= 0)
+		if (stack.isEmpty() || stack.getCount() <= 0) {
 			return;
-		if (stack.getCount() > 127)
+		}
+		if (stack.getCount() > 127) {
 			stack.setCount(127);
+		}
 		stack.write(data);
 	}
 
@@ -106,7 +108,7 @@ public class ItemUtils {
 			return 0.0;
 		}
 
-		if (! (stack.getItem() instanceof IEnergyItemInfo) ) {
+		if (!(stack.getItem() instanceof IEnergyItemInfo)) {
 			return 0.0;
 		}
 
@@ -114,7 +116,7 @@ public class ItemUtils {
 
 		double energy = (double) capEnergy.getEnergyStored();
 		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
-		return energy /  maxEnergy;
+		return energy / maxEnergy;
 	}
 
 	public static boolean isActive(ItemStack stack) {

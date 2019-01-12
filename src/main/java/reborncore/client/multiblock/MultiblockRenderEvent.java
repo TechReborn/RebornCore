@@ -93,16 +93,15 @@ public class MultiblockRenderEvent {
 
 				//Render the liquids first, it looks better.
 				for (MultiblockComponent comp : mb.getComponents()) {
-					if(comp.state.getRenderType() == EnumBlockRenderType.LIQUID){
+					if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
 						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
 					}
 				}
 				for (MultiblockComponent comp : mb.getComponents()) {
-					if(comp.state.getRenderType() != EnumBlockRenderType.LIQUID){
+					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
 						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
 					}
 				}
-
 
 			}
 		}
@@ -112,12 +111,12 @@ public class MultiblockRenderEvent {
 		double dx = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
 		double dy = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
 		double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
-		if(camera == null){
+		if (camera == null) {
 			camera = new Frustum();
 		}
 		camera.setPosition(dx, dy, dz);
 		BlockPos pos = anchor.add(comp.getRelativePosition());
-		if(!camera.isBoundingBoxInFrustum(new AxisAlignedBB(pos))){
+		if (!camera.isBoundingBoxInFrustum(new AxisAlignedBB(pos))) {
 			return;
 		}
 		Minecraft minecraft = Minecraft.getInstance();
@@ -139,19 +138,19 @@ public class MultiblockRenderEvent {
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
 		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
-		this.renderModel(world, pos,  comp.state);
+		this.renderModel(world, pos, comp.state);
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
 		ForgeHooksClient.setRenderLayer(originalLayer);
 	}
 
-	private void renderModel(World world, BlockPos pos,IBlockState state) {
+	private void renderModel(World world, BlockPos pos, IBlockState state) {
 		final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		if(state.getRenderType() == EnumBlockRenderType.LIQUID){
+		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
 			fluidRenderer.renderFluid(world, state, pos, buffer);
 		} else {
 			blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());

@@ -85,7 +85,7 @@ public class RebornRegistry {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void registerBlock(Block block, ItemBlock itemBlock, String name) {
 		GameData.register_impl(block);
 		itemBlock.setRegistryName(name);
@@ -103,7 +103,7 @@ public class RebornRegistry {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
 	}
-	
+
 	public static void registerBlockNoItem(Block block) {
 		GameData.register_impl(block);
 	}
@@ -134,7 +134,6 @@ public class RebornRegistry {
 	public static void addLoot(Item item, int minSize, int maxSize, double chance, ResourceLocation list) {
 		lp.addItem(LootManager.createLootEntry(item, minSize, maxSize, chance, list));
 	}
-
 
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemModel(Item i, int meta) {

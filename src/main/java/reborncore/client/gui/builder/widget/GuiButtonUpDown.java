@@ -34,10 +34,9 @@ import reborncore.client.gui.builder.GuiBase;
 
 /**
  * @author drcrazy
- *
  */
 public class GuiButtonUpDown extends GuiButton {
-	
+
 	GuiBase.Layer layer;
 	GuiBase gui;
 
@@ -46,7 +45,7 @@ public class GuiButtonUpDown extends GuiButton {
 		this.layer = layer;
 		this.gui = gui;
 	}
-	
+
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 		if (layer == GuiBase.Layer.FOREGROUND) {
@@ -58,8 +57,7 @@ public class GuiButtonUpDown extends GuiButton {
 		}
 		return false;
 	}
-	
-	
+
 	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		// We already have texture drawn

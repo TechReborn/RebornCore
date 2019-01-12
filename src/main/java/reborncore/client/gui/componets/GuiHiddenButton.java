@@ -53,13 +53,13 @@ public class GuiHiddenButton extends GuiButton {
 			this.hovered = p_146112_2_ >= this.x && p_146112_3_ >= this.y
 				&& p_146112_2_ < this.x + this.width && p_146112_3_ < this.y + this.height;
 			GL11.glEnable(GL11.GL_BLEND);
-			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+			OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			this.mouseDragged(p_146112_1_, p_146112_2_, p_146112_3_);
 			int l = 14737632;
 
-			if (packedFGColour != 0) {
-				l = packedFGColour;
+			if (packedFGColor != 0) {
+				l = packedFGColor;
 			} else if (!this.enabled) {
 				l = 10526880;
 			} else if (this.hovered) {

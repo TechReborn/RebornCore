@@ -29,27 +29,26 @@
 package reborncore.api.power;
 
 public interface IEnergyItemInfo {
-	
+
 	/**
 	 * Maximum amount of energy item can store
-	 * 
+	 *
 	 * @return int Energy capacity
 	 */
 	int getCapacity();
-	
+
 	/**
 	 * Maximum amount of energy per tick that item can accept
-	 * 
-	 * @return int FE per tick 
+	 *
+	 * @return int FE per tick
 	 */
 	int getMaxInput();
-	
+
 	/**
 	 * Maximum amount of energy per tick that item can provide. 0 means item is not able to provide energy.
-	 *  
+	 *
 	 * @return int FE per tick
 	 */
 	int getMaxOutput();
-
 
 }
