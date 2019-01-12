@@ -35,8 +35,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,13 +45,13 @@ import java.util.List;
  * Created by Gigabit101 on 19/02/2017.
  */
 public interface IGuiTile {
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	void drawGuiContainerForegroundLayer(GuiScreen gui, int guiLeft, int guiTop, int mouseX, int mouseY);
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	void drawGuiContainerBackgroundLayer(GuiScreen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	GuiContainer getGui(EntityPlayer player);
 
 	void opengui(EntityPlayer player, Object mod, World world, BlockPos pos);

@@ -28,12 +28,11 @@
 
 package reborncore.api.power;
 
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface ExternalPowerHandler extends ICapabilityProvider {
 
@@ -43,13 +42,11 @@ public interface ExternalPowerHandler extends ICapabilityProvider {
 
 	public void invalidate();
 
+	@Nonnull
 	@Override
-	default boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing){
-		return false;
-	}
-
-	@Nullable @Override
-	default  <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing){
+	default <T> OptionalCapabilityInstance<T> getCapability(
+		@Nonnull
+			Capability<T> cap) {
 		return null;
 	}
 }

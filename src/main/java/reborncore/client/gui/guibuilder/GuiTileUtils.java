@@ -30,8 +30,8 @@ package reborncore.client.gui.guibuilder;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Slot;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ import java.util.List;
  * Created by Gigabit101 on 19/02/2017.
  */
 public class GuiTileUtils {
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static void drawSlotsFromList(List<Slot> slotList, GuiBuilder builder, GuiScreen guiContainer, int guiLeft, int guiTop) {
 		if (slotList != null) {
 			for (Slot s : slotList) {

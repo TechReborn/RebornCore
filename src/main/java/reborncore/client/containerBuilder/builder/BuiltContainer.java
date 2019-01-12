@@ -31,8 +31,8 @@ package reborncore.client.containerBuilder.builder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -110,10 +110,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents) {
 		this.craftEvents = craftEvents;
-	}
-
-	public void addSlot(final Slot slot) {
-		this.addSlotToContainer(slot);
 	}
 
 	@Override
@@ -251,7 +247,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.objectValues.get(var).getMiddle().accept(value);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void updateProgressBar(final int id, final int value) {
 

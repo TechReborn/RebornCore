@@ -28,8 +28,8 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
@@ -56,7 +56,7 @@ public class SpriteSlot extends FilteredSlot {
 
 	@Override
 	@Nullable
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public String getSlotTexture() {
 		return this.spriteName;
 	}
