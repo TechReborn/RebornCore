@@ -30,11 +30,11 @@ package reborncore;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -150,21 +150,16 @@ public class RebornCore {
 
 	@SubscribeEvent
 	public void registerPackets(RegisterPacketEvent event) {
-		event.registerPacket(CustomDescriptionPacket.class, Side.CLIENT);
-		event.registerPacket(PacketSlotSave.class, Side.SERVER);
-		event.registerPacket(PacketFluidConfigSave.class, Side.SERVER);
-		event.registerPacket(PacketConfigSave.class, Side.SERVER);
-		event.registerPacket(PacketSlotSync.class, Side.CLIENT);
-		event.registerPacket(PacketFluidConfigSync.class, Side.CLIENT);
-		event.registerPacket(PacketIOSave.class, Side.SERVER);
-		event.registerPacket(PacketFluidIOSave.class, Side.SERVER);
-		event.registerPacket(PacketSendLong.class, Side.CLIENT);
-		event.registerPacket(PacketSendObject.class, Side.CLIENT);
+		event.registerPacket(CustomDescriptionPacket.class, Distribution.CLIENT);
+		event.registerPacket(PacketSlotSave.class, Distribution.SERVER);
+		event.registerPacket(PacketFluidConfigSave.class, Distribution.SERVER);
+		event.registerPacket(PacketConfigSave.class, Distribution.SERVER);
+		event.registerPacket(PacketSlotSync.class, Distribution.CLIENT);
+		event.registerPacket(PacketFluidConfigSync.class, Distribution.CLIENT);
+		event.registerPacket(PacketIOSave.class, Distribution.SERVER);
+		event.registerPacket(PacketFluidIOSave.class, Distribution.SERVER);
+		event.registerPacket(PacketSendLong.class, Distribution.CLIENT);
+		event.registerPacket(PacketSendObject.class, Distribution.CLIENT);
 	}
 
-	@Mod.EventHandler
-	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandListRecipes());
-		event.registerServerCommand(new CommandListMods());
-	}
 }

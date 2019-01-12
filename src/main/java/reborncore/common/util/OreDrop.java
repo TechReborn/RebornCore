@@ -81,7 +81,7 @@ public class OreDrop {
 		} else {
 			count = 0;
 		}
-		return new ItemStack(drop.getItem(), count, drop.getItemDamage());
+		return new ItemStack(drop.getItem(), count);
 	}
 
 	// Refer to http://minecraft.gamepedia.com/Enchanting#Fortune

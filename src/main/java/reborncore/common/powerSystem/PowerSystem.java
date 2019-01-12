@@ -129,7 +129,7 @@ public class PowerSystem {
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient() && doFormat) {
 			ret += NumberFormat
 					.getNumberInstance(Locale.forLanguageTag(
-							Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode()))
+							Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getLanguageCode()))
 					.format(value);
 		} else {
 			ret += value;

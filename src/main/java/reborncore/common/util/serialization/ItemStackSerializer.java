@@ -29,6 +29,7 @@
 package reborncore.common.util.serialization;
 
 import com.google.gson.*;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -76,14 +77,14 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 			if (jsonObject.has(TAG_COMPOUND) && jsonObject.get(TAG_COMPOUND).isJsonPrimitive()) {
 				try {
 					tagCompound = JsonToNBT.getTagFromJson(jsonObject.getAsJsonPrimitive(TAG_COMPOUND).getAsString());
-				} catch (NBTException e) {
+				} catch (CommandSyntaxException e) {
 
 				}
 			}
 
 			if (name != null && Item.getByNameOrId(name) != null) {
 				ItemStack itemStack = new ItemStack(Item.getByNameOrId(name), stackSize, metaValue);
-				itemStack.setTagCompound(tagCompound);
+				itemStack.setTag(tagCompound);
 				return itemStack;
 			}
 		}
@@ -109,8 +110,8 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
 			jsonObject.addProperty(STACK_SIZE, src.getCount());
 
-			if (src.getTagCompound() != null) {
-				jsonObject.addProperty(TAG_COMPOUND, src.getTagCompound().toString());
+			if (src.getTag() != null) {
+				jsonObject.addProperty(TAG_COMPOUND, src.getTag().toString());
 			}
 
 			return jsonObject;

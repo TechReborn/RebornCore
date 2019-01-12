@@ -68,8 +68,8 @@ public class GuiBuilder {
 	}
 
 	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
@@ -78,7 +78,7 @@ public class GuiBuilder {
 	}
 
 	public void drawEnergyBar(GuiBase gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 
 		gui.drawTexturedModalRect(x, y, 0, 150, 14, height);
 		gui.drawTexturedModalRect(x, y + height - 1, 0, 255, 14, 1);
@@ -94,7 +94,7 @@ public class GuiBuilder {
 	}
 
 	public void drawPlayerSlots(GuiScreen gui, int posX, int posY, boolean center) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 
 		if (center) {
 			posX -= 81;
@@ -112,7 +112,7 @@ public class GuiBuilder {
 	}
 
 	public void drawSlot(GuiScreen gui, int posX, int posY) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(posX, posY, 150, 0, 18, 18);
 	}
 
@@ -148,7 +148,7 @@ public class GuiBuilder {
 
 	public void drawInfo(GuiScreen gui, int x, int y, int height, int width, boolean draw) {
 		if (draw) {
-			Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+			Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 			gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 			gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 			gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
@@ -353,7 +353,7 @@ public class GuiBuilder {
 			}
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
         }
     }
 
@@ -383,13 +383,13 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		GlStateManager.disableLighting();
-		GlStateManager.disableDepth();
+		GlStateManager.enableDepthTest();
 		GlStateManager.colorMask(true, true, true, false);
 		GuiUtils.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
 		GuiUtils.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
 		GuiUtils.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
 		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.enableDepth();
+		GlStateManager.disableDepthTest();
 		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
 	}
 
@@ -417,7 +417,7 @@ public class GuiBuilder {
 	public void drawSlotTab(GuiBase gui, int x, int y, ItemStack stack) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 217, 82, 24, 24);
-		gui.mc.getRenderItem().renderItemAndEffectIntoGUI(stack, x + 5, y + 4);
+		gui.mc.getItemRenderer().renderItemAndEffectIntoGUI(stack, x + 5, y + 4);
 	}
 
 	// This stuff is WIP
@@ -427,7 +427,7 @@ public class GuiBuilder {
 		if (!upgrades) {
 			offset = 80;
 		}
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
 		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
 		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
@@ -438,7 +438,7 @@ public class GuiBuilder {
 //		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
 		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10);
 		explanation.drawScreen(mouseX, mouseY, 1.0f);
-		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.color4f(1, 1, 1, 1);
 	}
 
 	// This stuff is WIP
@@ -557,7 +557,7 @@ public class GuiBuilder {
 			}
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 	}
 	
@@ -584,7 +584,7 @@ public class GuiBuilder {
 		}
 
 		EnergySystem displayPower = PowerSystem.getDisplayPower();
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
 		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (48));
 		if (energyStored > maxEnergyStored) {
@@ -617,7 +617,7 @@ public class GuiBuilder {
 			}
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		gui.addPowerButton(x, y, buttonID, layer);
 	}
@@ -672,7 +672,7 @@ public class GuiBuilder {
 			}
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 	}
 
@@ -746,7 +746,7 @@ public class GuiBuilder {
 			}
 			gui.drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
-			GlStateManager.color(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 		}
 	}
 
@@ -759,7 +759,7 @@ public class GuiBuilder {
 	 * @param count int Number of output slots
 	 */
 	public void drawOutputSlotBar(GuiBase gui, int x, int y, int count) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexturedModalRect(x, y, 150, 122, 3, 26);
 		x += 3;
 		for (int i = 1; i <= count; i++) {

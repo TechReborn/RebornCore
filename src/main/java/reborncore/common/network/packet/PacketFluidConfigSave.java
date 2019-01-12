@@ -77,7 +77,7 @@ public class PacketFluidConfigSave implements INetworkPacket {
 		PacketFluidConfigSync packetFluidConfigSync = new PacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
 		NetworkManager.sendToWorld(packetFluidConfigSync, legacyMachineBase.getWorld());
 
-		context.getServerHandler().player.world.getMinecraftServer().callFromMainThread(() -> {
+		context.getServerHandler().player.world.getInstanceServer().callFromMainThread(() -> {
 			//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
 			World world = legacyMachineBase.getWorld();
 			IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());

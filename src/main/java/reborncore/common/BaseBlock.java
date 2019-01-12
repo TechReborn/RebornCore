@@ -33,8 +33,8 @@ import net.minecraft.block.material.Material;
 
 public abstract class BaseBlock extends Block {
 
-	public BaseBlock(Material materialIn) {
-		super(materialIn);
+	public BaseBlock(Builder builder) {
+		super(builder);
 	}
 
 	public int getRenderType() {

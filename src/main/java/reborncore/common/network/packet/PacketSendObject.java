@@ -83,7 +83,7 @@ public class PacketSendObject implements INetworkPacket {
 
 	@OnlyIn(Dist.CLIENT)
 	public void handle(){
-		GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+		GuiScreen gui = Minecraft.getInstance().currentScreen;
 		if(gui instanceof GuiContainer){
 			Container container = ((GuiContainer) gui).inventorySlots;
 			if(container instanceof IExtendedContainerListener){

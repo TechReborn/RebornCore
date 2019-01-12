@@ -164,9 +164,9 @@ public class SlotConfigPopupElement extends ElementBase {
 				color = new Color(0, 0, 0, 0);
 				break;
 		}
-		GlStateManager.color(255, 255, 255);
+		GlStateManager.color3f(255, 255, 255);
 		GuiUtil.drawGradientRect(sx, sy, 18, 18, color.getRGB(), color.getRGB());
-		GlStateManager.color(255, 255, 255);
+		GlStateManager.color3f(255, 255, 255);
 
 	}
 
@@ -191,16 +191,16 @@ public class SlotConfigPopupElement extends ElementBase {
 	                      float rotZ) {
 
 		GlStateManager.pushMatrix();
-		GlStateManager.enableDepth();
-		GlStateManager.translate(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
-		GlStateManager.scale(16F, 16F, 16F);
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
-		GlStateManager.scale(-1, -1, -1);
+		GlStateManager.enableDepthTest();
+		GlStateManager.translatef(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
+		GlStateManager.scalef(16F, 16F, 16F);
+		GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+		GlStateManager.scalef(-1, -1, -1);
 		if (rotAngle != 0) {
-			GlStateManager.rotate(rotAngle, rotX, rotY, rotZ);
+			GlStateManager.rotatef(rotAngle, rotX, rotY, rotZ);
 		}
 		dispatcher.getBlockModelRenderer().renderModelBrightness(model, actualState, 1F, false);
-		GlStateManager.disableDepth();
+		GlStateManager.disableDepthTest();
 		GlStateManager.popMatrix();
 
 /*		GlStateManager.pushMatrix();

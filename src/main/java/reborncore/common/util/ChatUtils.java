@@ -45,7 +45,7 @@ public class ChatUtils {
 
 	public static void sendNoSpamMessages(int messageID, ITextComponent message) {
 		int deleteID = DELETION_ID + messageID;
-		GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
+		GuiNewChat chat = Minecraft.getInstance().ingameGUI.getChatGUI();
 		chat.printChatMessageWithOptionalDeletion(message, deleteID);
 	}
 }

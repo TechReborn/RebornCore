@@ -92,7 +92,7 @@ public class Tank extends FluidTank {
 			// allow to read empty tanks
 			setFluid(null);
 
-			NBTTagCompound tankData = nbt.getCompoundTag(name);
+			NBTTagCompound tankData = nbt.getCompound(name);
 			super.readFromNBT(tankData);
 		}
 		return this;

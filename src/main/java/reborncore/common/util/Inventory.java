@@ -52,7 +52,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
 		name = invName;
-		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit() : invStackLimit); //Blame asie for this
+		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit(ItemStack.EMPTY) : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
 		this.externalInventory = new ExternalInventory<>(this);
@@ -129,7 +129,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	}
 
 	public void readFromNBT(NBTTagCompound data, String tag) {
-		NBTTagCompound nbttaglist = data.getCompoundTag(tag);
+		NBTTagCompound nbttaglist = data.getCompound(tag);
 		deserializeNBT(nbttaglist);
 		hasChanged = true;
 	}

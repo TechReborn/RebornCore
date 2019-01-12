@@ -55,7 +55,7 @@ public enum  MachineFacing {
 			if(i < 0){
 				i = 3;
 			}
-			return EnumFacing.HORIZONTALS[i];
+			return EnumFacing.BY_HORIZONTAL_INDEX[i];
 		}
 		if(this == LEFT){
 			//North -> East
@@ -66,7 +66,7 @@ public enum  MachineFacing {
 			if(i < 0){
 				i = 3;
 			}
-			return EnumFacing.HORIZONTALS[i];
+			return EnumFacing.BY_HORIZONTAL_INDEX[i];
 		}
 		if(this == UP){
 			return EnumFacing.UP;

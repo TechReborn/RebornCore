@@ -119,8 +119,8 @@ public abstract class RebornContainer extends Container {
 	}
 
 	@Override
-	protected Slot addSlotToContainer(Slot slotIn) {
-		Slot slot = super.addSlotToContainer(slotIn);
+	protected Slot addSlot(Slot slotIn) {
+		Slot slot = super.addSlot(slotIn);
 		if (slot instanceof BaseSlot) {
 			//TODO remove player slots
 			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
@@ -221,7 +221,7 @@ public abstract class RebornContainer extends Container {
 	public void addPlayersHotbar(EntityPlayer player) {
 		int i;
 		for (i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 142));
+			this.addSlot(new Slot(player.inventory, i, 8 + i * 18, 142));
 		}
 	}
 
@@ -229,7 +229,7 @@ public abstract class RebornContainer extends Container {
 		int i;
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				this.addSlot(new Slot(player.inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public abstract class RebornContainer extends Container {
 		int i;
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new Slot(player.inventory, j + i * 9 + 9, x + j * 18, y + i * 18));
+				this.addSlot(new Slot(player.inventory, j + i * 9 + 9, x + j * 18, y + i * 18));
 			}
 		}
 
@@ -269,7 +269,7 @@ public abstract class RebornContainer extends Container {
 	public void drawPlayersHotBar(EntityPlayer player, int x, int y) {
 		int i;
 		for (i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(player.inventory, i, x + i * 18, y));
+			this.addSlot(new Slot(player.inventory, i, x + i * 18, y));
 		}
 	}
 

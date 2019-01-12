@@ -40,7 +40,7 @@ import net.minecraft.item.ItemStack;
 public class ShieldModelLoader {
 
 	public static void load() {
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Items.SHIELD, new ItemMeshDefinition() {
+		Minecraft.getInstance().getRenderItem().getItemModelMesher().register(Items.SHIELD, new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
 				return new ModelResourceLocation("shield", "inventory");

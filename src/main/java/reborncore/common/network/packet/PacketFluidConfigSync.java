@@ -76,7 +76,7 @@ public class PacketFluidConfigSync implements INetworkPacket {
 		if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
 			RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
 		}
-		Minecraft.getMinecraft().addScheduledTask(() -> {
+		Minecraft.getInstance().addScheduledTask(() -> {
 			fluidConfiguration.getAllSides().forEach(fluidConfig -> machineBase.fluidConfiguration.updateFluidConfig(fluidConfig));
 			machineBase.fluidConfiguration.setInput(fluidConfiguration.autoInput());
 			machineBase.fluidConfiguration.setOutput(fluidConfiguration.autoOutput());

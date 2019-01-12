@@ -143,10 +143,10 @@ public class GuiFluidConfiguration {
 
 	@Nullable
 	private static TileMachineBase getMachine() {
-		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiBase)) {
+		if (!(Minecraft.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
-		GuiBase base = (GuiBase) Minecraft.getMinecraft().currentScreen;
+		GuiBase base = (GuiBase) Minecraft.getInstance().currentScreen;
 		if (!(base.tile instanceof TileMachineBase)) {
 			return null;
 		}

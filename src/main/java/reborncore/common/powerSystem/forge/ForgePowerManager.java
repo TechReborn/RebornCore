@@ -55,7 +55,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return false;
 		}
 
-		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
+		return stack.getCapability(CapabilityEnergy.ENERGY, null).isPresent();
 	}
 
 	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side) {
@@ -63,7 +63,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return false;
 		}
 
-		return tileEntity.hasCapability(CapabilityEnergy.ENERGY, side);
+		return tileEntity.getCapability(CapabilityEnergy.ENERGY, side).isPresent();
 	}
 
 	public void dischargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
@@ -71,7 +71,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
 		if(powerItem == null) {
 			return;
 		}
@@ -92,7 +92,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
 		if(powerItem == null) {
 			return;
 		}
@@ -111,7 +111,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 			return;
 		}
 
-		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null);
+		IEnergyStorage powerItem = stack.getCapability(CapabilityEnergy.ENERGY, null).orElseGet(null);
 		if(powerItem == null) {
 			return;
 		}

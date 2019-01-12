@@ -62,8 +62,8 @@ public class WorldUtils {
 		EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
 				itemStack.copy());
 
-		if (itemStack.hasTagCompound()) {
-			entityItem.getItem().setTagCompound(itemStack.getTagCompound().copy());
+		if (itemStack.hasTag()) {
+			entityItem.getItem().setTag(itemStack.getTag().copy());
 		}
 
 		float factor = 0.05F;

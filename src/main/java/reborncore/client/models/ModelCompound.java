@@ -29,8 +29,8 @@
 package reborncore.client.models;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.item.Item;
+import net.minecraft.state.IProperty;
 
 public class ModelCompound {
 	private String inventoryVariant = "inventory";

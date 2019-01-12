@@ -321,10 +321,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public void readFromNBT(NBTTagCompound tag) {
-		NBTTagCompound data = tag.getCompoundTag("Crater");
+		NBTTagCompound data = tag.getCompound("Crater");
 
 		if (data.hasKey("currentTickTime"))
-			currentTickTime = data.getInteger("currentTickTime");
+			currentTickTime = data.getInt("currentTickTime");
 
 		if (parentTile != null && parentTile.getWorld() != null && parentTile.getWorld().isRemote) {
 			parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),

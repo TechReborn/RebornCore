@@ -55,24 +55,24 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 
 	private int getEnergyInStack(){
 		validateNBT();
-		return stack.getTagCompound().getInteger("energy");
+		return stack.getTag().getInt("energy");
 	}
 
 	private void setEnergyInStack(int energy){
 		validateNBT();
-		stack.getTagCompound().setInteger("energy", energy);
+		stack.getTag().setInt("energy", energy);
 	}
 
 	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
 	private void validateNBT(){
-		if(!stack.hasTagCompound()){
-			stack.setTagCompound(new NBTTagCompound());
-			stack.getTagCompound().setInteger("energy", 0);
+		if(!stack.hasTag()){
+			stack.setTag(new NBTTagCompound());
+			stack.getTag().setInt("energy", 0);
 		} else {
-			if(stack.getTagCompound().hasKey("charge")){
+			if(stack.getTag().hasKey("charge")){
 				//Upgrades the item from the old format to the new format
-				stack.getTagCompound().setInteger("energy", stack.getTagCompound().getInteger("charge") * RebornCoreConfig.euPerFU);
-				stack.getTagCompound().removeTag("charge");
+				stack.getTag().setInt("energy", stack.getTag().getInt("charge") * RebornCoreConfig.euPerFU);
+				stack.getTag().removeTag("charge");
 			}
 		}
 	}

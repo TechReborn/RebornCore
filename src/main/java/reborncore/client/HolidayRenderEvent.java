@@ -59,7 +59,7 @@ public class HolidayRenderEvent {
 		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
 			return;
 		}
-		Render<?> render = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
+		Render<?> render = Minecraft.getInstance().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
 		if (render instanceof RenderPlayer) {
 			RenderPlayer renderPlayer = (RenderPlayer) render;
 			if (!renderPlayerList.contains(renderPlayer)) {
@@ -83,7 +83,7 @@ public class HolidayRenderEvent {
 		                          float scale) {
 			float yaw = abstractClientPlayer.prevRotationYaw + (abstractClientPlayer.rotationYaw - abstractClientPlayer.prevRotationYaw) * partialTicks - (abstractClientPlayer.prevRenderYawOffset + (abstractClientPlayer.renderYawOffset - abstractClientPlayer.prevRenderYawOffset) * partialTicks);
 			float pitch = abstractClientPlayer.prevRotationPitch + (abstractClientPlayer.rotationPitch - abstractClientPlayer.prevRotationPitch) * partialTicks;
-			Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
+			Minecraft.getInstance().renderEngine.bindTexture(TEXTURE);
 			GlStateManager.pushMatrix();
 			GlStateManager.rotate(yaw, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);

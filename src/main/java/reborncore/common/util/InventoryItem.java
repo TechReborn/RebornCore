@@ -67,13 +67,13 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 
 	public NBTTagCompound getInvData() {
 		Validate.isTrue(!stack.isEmpty());
-		if (!stack.hasTagCompound()) {
-			stack.setTagCompound(new NBTTagCompound());
+		if (!stack.hasTag()) {
+			stack.setTag(new NBTTagCompound());
 		}
-		if (!stack.getTagCompound().hasKey("inventory")) {
-			stack.getTagCompound().setTag("inventory", new NBTTagCompound());
+		if (!stack.getTag().hasKey("inventory")) {
+			stack.getTag().setTag("inventory", new NBTTagCompound());
 		}
-		return stack.getTagCompound().getCompoundTag("inventory");
+		return stack.getTag().getCompound("inventory");
 	}
 
 	public NBTTagCompound getSlotData(int slot) {
@@ -82,7 +82,7 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		if (!invData.hasKey("slot_" + slot)) {
 			invData.setTag("slot_" + slot, new NBTTagCompound());
 		}
-		return invData.getCompoundTag("slot_" + slot);
+		return invData.getCompound("slot_" + slot);
 	}
 
 	public void setSlotData(int slot, NBTTagCompound tagCompound) {
@@ -106,12 +106,12 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
-		return new ItemStack(getSlotData(slot));
+		return ItemStack.read(getSlotData(slot));
 	}
 
 	@Override
 	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-		setSlotData(slot, stack.writeToNBT(new NBTTagCompound()));
+		setSlotData(slot, stack.write(new NBTTagCompound()));
 	}
 
 	//insertItem and extractItem are the forge methods just adjusted to work with items

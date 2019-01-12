@@ -74,7 +74,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 						if (eFace.canAcceptEnergy(side.getOpposite())) {
 							acceptors.put(side, tile);
 						}
-					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
+					} else if (tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).isPresent()) {
 						acceptors.put(side, tile);
 					}
 				}
@@ -109,8 +109,8 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 							double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
 							remainingEnergy -= powerAcceptor.useEnergy(filled, false);
 						}
-					} else if (tile.hasCapability(CapabilityEnergy.ENERGY, side.getOpposite())) {
-						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite());
+					} else if (tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).isPresent()) {
+						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).orElseGet());
 						if (powerManager != null && energyStorage != null && energyStorage.canReceive()
 								&& powerAcceptor.canProvideEnergy(side)) {
 							int filled = energyStorage.receiveEnergy(

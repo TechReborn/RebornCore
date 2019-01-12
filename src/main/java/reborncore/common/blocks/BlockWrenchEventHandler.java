@@ -33,7 +33,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreConfig;
 

@@ -61,7 +61,7 @@ public class StackInfoHUD {
 	
 	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
-	private static Minecraft mc = Minecraft.getMinecraft();
+	private static Minecraft mc = Minecraft.getInstance();
 	private int x = 2;
 	private int y = 7;
 	
@@ -111,7 +111,7 @@ public class StackInfoHUD {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			RenderHelper.enableGUIStandardItemLighting();
 
-			RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
+			RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
 			itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
 
 			GL11.glDisable(GL11.GL_LIGHTING);

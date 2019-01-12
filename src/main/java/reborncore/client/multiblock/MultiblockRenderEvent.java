@@ -63,7 +63,7 @@ import reborncore.client.multiblock.component.MultiblockComponent;
 public class MultiblockRenderEvent {
 
 	public static BlockPos anchor;
-	//private static BlockRendererDispatcher blockRender = Minecraft.getMinecraft().getBlockRendererDispatcher();
+	//private static BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
 	//public Location parent;
 	public BlockPos parent;
@@ -82,7 +82,7 @@ public class MultiblockRenderEvent {
 
 	@SubscribeEvent
 	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		if (mc.player != null && mc.objectMouseOver != null && !mc.player.isSneaking()) {
 			if (currentMultiblock != null) {
 				BlockPos anchorPos = anchor != null ? anchor : mc.objectMouseOver.getBlockPos();
@@ -118,7 +118,7 @@ public class MultiblockRenderEvent {
 		if(!camera.isBoundingBoxInFrustum(new AxisAlignedBB(pos))){
 			return;
 		}
-		Minecraft minecraft = Minecraft.getMinecraft();
+		Minecraft minecraft = Minecraft.getInstance();
 		World world = player.world;
 
 		minecraft.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -144,7 +144,7 @@ public class MultiblockRenderEvent {
 	}
 
 	private void renderModel(World world, BlockPos pos,IBlockState state) {
-		final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().blockRenderDispatcher;
+		final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getInstance().blockRenderDispatcher;
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.translate(-pos.getX(), -pos.getY(), -pos.getZ());

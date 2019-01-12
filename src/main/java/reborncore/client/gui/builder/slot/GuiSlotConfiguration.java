@@ -124,7 +124,7 @@ public class GuiSlotConfiguration  {
 		}
 		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
 		GuiScreen.setClipboardString(json);
-		Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Slot configuration copyied to clipboard"));
+		Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration copyied to clipboard"));
 	}
 
 	public static void pasteFromClipboard(){
@@ -136,18 +136,18 @@ public class GuiSlotConfiguration  {
 		try {
 			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
 			NetworkManager.sendToServer(new PacketConfigSave(machine.getPos(), machine.slotConfiguration));
-			Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Slot configuration loaded from clipboard"));
+			Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
-			Minecraft.getMinecraft().player.sendMessage(new TextComponentString(e.getMessage()));
+			Minecraft.getInstance().player.sendMessage(new TextComponentString(e.getMessage()));
 		}
 	}
 
 	@Nullable
 	private static TileMachineBase getMachine(){
-		if(!(Minecraft.getMinecraft().currentScreen instanceof GuiBase)){
+		if(!(Minecraft.getInstance().currentScreen instanceof GuiBase)){
 			return null;
 		}
-		GuiBase base = (GuiBase) Minecraft.getMinecraft().currentScreen;
+		GuiBase base = (GuiBase) Minecraft.getInstance().currentScreen;
 		if(!(base.tile instanceof TileMachineBase)){
 			return null;
 		}

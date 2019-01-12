@@ -135,7 +135,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
-		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
+		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT())
 			this.setEnergy(data.getDouble("energy"));
 	}
@@ -180,7 +180,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
-		NBTTagCompound data = tag.getCompoundTag("TilePowerAcceptor");
+		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT())
 			this.setEnergy(data.getDouble("energy"));
 	}

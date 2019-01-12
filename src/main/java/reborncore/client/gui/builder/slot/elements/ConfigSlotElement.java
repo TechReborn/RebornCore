@@ -104,7 +104,7 @@ public class ConfigSlotElement extends ElementBase {
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		RenderHelper.enableGUIStandardItemLighting();
-		RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+		RenderItem renderItem = Minecraft.getInstance().getRenderItem();
 		renderItem.renderItemAndEffectIntoGUI(gui.mc.player, stack, xPos, yPos);
 		renderItem.renderItemOverlayIntoGUI(gui.mc.fontRenderer, stack, xPos, yPos, null);
 		GlStateManager.disableDepth();

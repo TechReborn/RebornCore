@@ -75,7 +75,7 @@ public class GuiButtonItemTexture extends GuiButtonExt {
 			GL11.glEnable(32826);
 			RenderHelper.enableStandardItemLighting();
 			RenderHelper.enableGUIStandardItemLighting();
-			RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
+			RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
 			itemRenderer.renderItemIntoGUI(itemstack, this.x, this.y);
 			this.drawString(mc.fontRenderer, this.NAME, this.x + 20, this.y + 3,
 				Color.white.getRGB());

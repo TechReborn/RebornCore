@@ -328,7 +328,7 @@ public class ElementBase {
 	}
 
 	public void setTextureSheet(ResourceLocation textureLocation) {
-		Minecraft.getMinecraft().getTextureManager().bindTexture(textureLocation);
+		Minecraft.getInstance().getTextureManager().bindTexture(textureLocation);
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
@@ -340,7 +340,7 @@ public class ElementBase {
 	}
 
 	public int getStringWidth(String string) {
-		return Minecraft.getMinecraft().fontRenderer.getStringWidth(string);
+		return Minecraft.getInstance().fontRenderer.getStringWidth(string);
 	}
 
 	public void drawSprite(GuiBase gui, ISprite iSprite, int x, int y) {
@@ -357,7 +357,7 @@ public class ElementBase {
 				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 				RenderHelper.enableGUIStandardItemLighting();
 
-				RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
+				RenderItem itemRenderer = Minecraft.getInstance().getRenderItem();
 				itemRenderer.renderItemAndEffectIntoGUI(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
 
 				GlStateManager.disableLighting();
@@ -378,7 +378,7 @@ public class ElementBase {
 
 	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getMinecraft().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
+		Minecraft.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
 		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);

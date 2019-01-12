@@ -30,21 +30,20 @@ package reborncore.common.blocks;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.BlockStateContainer;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reborncore.api.ToolManager;
@@ -60,8 +59,8 @@ import reborncore.common.util.Tank;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
-	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	public static PropertyBool ACTIVE = PropertyBool.create("active");
+	public static DirectionProperty FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	public static ItemStack basicFrameStack;
 	public static ItemStack advancedFrameStack;
@@ -85,8 +84,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-		ACTIVE = PropertyBool.create("active");
+		FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
+		ACTIVE = BooleanProperty.create("active");
 		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
@@ -177,8 +176,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		int facingInt = getSideFromEnum(state.getValue(FACING));
-		int activeInt = state.getValue(ACTIVE) ? 0 : 4;
+		int facingInt = getSideFromEnum(state.get(FACING));
+		int activeInt = state.get(ACTIVE) ? 0 : 4;
 		return facingInt + activeInt;
 	}
 
@@ -191,30 +190,30 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			facingInt = facingInt - 4;
 		}
 		EnumFacing facing = getSideFromint(facingInt);
-		return this.getDefaultState().withProperty(FACING, facing).withProperty(ACTIVE, active);
+		return this.getDefaultState().with(FACING, facing).with(ACTIVE, active);
 	}
 
 	public boolean isActive(IBlockState state) {
-		return state.getValue(ACTIVE);
+		return state.get(ACTIVE);
 	}
 
 	public EnumFacing getFacing(IBlockState state) {
-		return state.getValue(FACING);
+		return state.get(FACING);
 	}
 
 	public void setFacing(EnumFacing facing, World world, BlockPos pos) {
 		if (hasCustomStaes) {
 			return;
 		}
-		world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, facing));
+		world.setBlockState(pos, world.getBlockState(pos).with(FACING, facing));
 	}
 
 	public void setActive(Boolean active, World world, BlockPos pos) {
 		if (hasCustomStaes) {
 			return;
 		}
-		EnumFacing facing = world.getBlockState(pos).getValue(FACING);
-		IBlockState state = world.getBlockState(pos).withProperty(ACTIVE, active).withProperty(FACING, facing);
+		EnumFacing facing = world.getBlockState(pos).get(FACING);
+		IBlockState state = world.getBlockState(pos).with(ACTIVE, active).with(FACING, facing);
 		world.setBlockState(pos, state, 3);
 	}
 
