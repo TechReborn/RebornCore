@@ -28,8 +28,8 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import reborncore.common.util.ItemNBTHelper;
@@ -55,15 +55,11 @@ public abstract class Shield {
 		return true;
 	}
 
-	public void getSubTypes(Shield shield, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubTypes(Shield shield, ItemGroup tab, List<ItemStack> subItems) {
 		ItemStack newStack = new ItemStack(Items.SHIELD);
 		ItemNBTHelper.setString(newStack, "type", shield.name);
 		ItemNBTHelper.setBoolean(newStack, "vanilla", false);
 		subItems.add(newStack);
-	}
-
-	public double getDurabilityForDisplay(ItemStack stack) {
-		return (double) stack.getItemDamage() / (double) stack.getMaxDamage();
 	}
 
 	public boolean showDurabilityBar(ItemStack stack) {

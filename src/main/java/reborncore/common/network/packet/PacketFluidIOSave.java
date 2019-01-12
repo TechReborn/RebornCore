@@ -29,7 +29,7 @@
 package reborncore.common.network.packet;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.network.NetworkManager;
@@ -70,8 +70,8 @@ public class PacketFluidIOSave implements INetworkPacket {
 	}
 
 	@Override
-	public void processData(MessageContext context) {
-		TileMachineBase legacyMachineBase = (TileMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
+	public void processData(NetworkEvent.Context context) {
+		TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
 		FluidConfiguration config = legacyMachineBase.fluidConfiguration;
 		if (config == null) {
 			return;

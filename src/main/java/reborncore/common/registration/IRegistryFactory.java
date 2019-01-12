@@ -28,8 +28,8 @@
 
 package reborncore.common.registration;
 
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLStateEvent;
 import reborncore.RebornCore;
 
 import java.lang.annotation.*;
@@ -114,7 +114,7 @@ public interface IRegistryFactory {
 		String modID() default RebornCore.MOD_ID;
 	}
 
-	public default Class<? extends FMLStateEvent> getProcessSate() {
+	public default Class<? extends Event> getProcessSate() {
 		return FMLPreInitializationEvent.class;
 	}
 

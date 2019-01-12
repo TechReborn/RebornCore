@@ -190,6 +190,8 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
 	}
 
+
+
 	@Override
 	public boolean hasCapability(
 		@Nonnull

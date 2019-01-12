@@ -38,7 +38,7 @@ public class ItemNBTHelper {
 	 * Checks if an ItemStack has a Tag Compound
 	 **/
 	public static boolean detectNBT(ItemStack stack) {
-		return stack.hasTagCompound();
+		return stack.hasTag();
 	}
 
 	/**

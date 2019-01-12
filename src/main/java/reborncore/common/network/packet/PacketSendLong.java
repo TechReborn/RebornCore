@@ -34,7 +34,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
@@ -77,7 +77,7 @@ public class PacketSendLong implements INetworkPacket {
 	}
 
 	@Override
-	public void processData(MessageContext context) {
+	public void processData(NetworkEvent.Context context) {
 		handle();
 	}
 

@@ -32,14 +32,12 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.registries.GameData;
 import reborncore.common.LootManager;
-import reborncore.common.util.RebornCraftingHelper;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -126,14 +124,6 @@ public class RebornRegistry {
 		GameData.register_impl(item);
 	}
 
-	public static void addShapedOreRecipe(ItemStack output, Object parm) {
-		RebornCraftingHelper.addShapedOreRecipe(output, parm);
-	}
-
-	public static void addShapelessOreRecipe(ItemStack output, Object parm) {
-		RebornCraftingHelper.addShapelessOreRecipe(output, parm);
-	}
-
 	//eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
 	//eg: RebornRegistry.addLoot(Items.DIAMOND, 1.95, LootTableList.ENTITIES_COW);
 
@@ -145,9 +135,6 @@ public class RebornRegistry {
 		lp.addItem(LootManager.createLootEntry(item, minSize, maxSize, chance, list));
 	}
 
-	public static void addLoot(Item item, int ordinal, int minSize, int maxSize, double chance, ResourceLocation list) {
-		lp.addItem(LootManager.createLootEntry(item, ordinal, minSize, maxSize, chance, list));
-	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemModel(Item i, int meta) {

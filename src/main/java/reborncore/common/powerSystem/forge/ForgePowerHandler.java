@@ -28,6 +28,7 @@
 
 package reborncore.common.powerSystem.forge;
 
+import net.minecraft.init.Particles;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -103,7 +104,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble()
 										+ (side.getZOffset() / 2);
-								((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
+								((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
 							double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);

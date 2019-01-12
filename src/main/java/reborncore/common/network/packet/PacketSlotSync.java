@@ -30,7 +30,7 @@ package reborncore.common.network.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
@@ -68,7 +68,7 @@ public class  PacketSlotSync implements INetworkPacket {
 	}
 
 	@Override
-	public void processData(MessageContext context) {
+	public void processData(NetworkEvent.Context context) {
 		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
 			return;
 		}

@@ -86,11 +86,6 @@ public class ShieldJsonLoader {
 		new Thread(() ->
 		{
 			try {
-				File file = new File(event.getModConfigurationDirectory(), "reborncore/shields.json");
-				if (file.exists()) {
-					file.delete();
-				}
-
 				URLConnection con = new URL(RebornCore.WEB_URL + "reborncore/shields2.json").openConnection();
 				InputStream in = con.getInputStream();
 				String encoding = con.getContentEncoding();

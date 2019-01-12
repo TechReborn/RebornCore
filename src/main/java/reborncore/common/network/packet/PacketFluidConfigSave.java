@@ -31,7 +31,7 @@ package reborncore.common.network.packet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.network.NetworkManager;
@@ -69,15 +69,15 @@ public class PacketFluidConfigSave implements INetworkPacket {
 	}
 
 	@Override
-	public void processData(MessageContext context) {
-		TileMachineBase legacyMachineBase = (TileMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
+	public void processData(NetworkEvent.Context context) {
+		TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
 		legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
 		legacyMachineBase.markDirty();
 
 		PacketFluidConfigSync packetFluidConfigSync = new PacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
 		NetworkManager.sendToWorld(packetFluidConfigSync, legacyMachineBase.getWorld());
 
-		context.getServerHandler().player.world.getInstanceServer().callFromMainThread(() -> {
+		context.getSender().world.getServer().callFromMainThread(() -> {
 			//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
 			World world = legacyMachineBase.getWorld();
 			IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());

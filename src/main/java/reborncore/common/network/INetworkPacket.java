@@ -28,7 +28,7 @@
 
 package reborncore.common.network;
 
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.io.IOException;
 
@@ -38,6 +38,6 @@ public interface INetworkPacket {
 
 	void readData(ExtendedPacketBuffer buffer) throws IOException;
 
-	void processData(MessageContext context);
+	void processData(NetworkEvent.Context context);
 
 }

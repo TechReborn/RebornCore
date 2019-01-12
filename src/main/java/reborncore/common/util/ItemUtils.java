@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class ItemUtils {
 
-	public static boolean isItemEqual(final ItemStack a, final ItemStack b, final boolean matchDamage,
+	public static boolean isItemEqual(final ItemStack a, final ItemStack b,
 	                                  final boolean matchNBT) {
 		if (a.isEmpty() || b.isEmpty())
 			return false;
@@ -53,49 +53,34 @@ public class ItemUtils {
 			return false;
 		if (matchNBT && !ItemStack.areItemStackTagsEqual(a, b))
 			return false;
-		if (matchDamage && a.getHasSubtypes()) {
-			if (isWildcard(a) || isWildcard(b))
-				return true;
-			if (a.getItemDamage() != b.getItemDamage())
-				return false;
-		}
 		return true;
 	}
 
-	public static boolean isItemEqual(ItemStack a, ItemStack b, boolean matchDamage, boolean matchNBT,
-	                                  boolean useOreDic) {
-		if (isItemEqual(a, b, matchDamage, matchNBT)) {
+	public static boolean isItemEqual(ItemStack a, ItemStack b, boolean matchNBT,
+	                                  boolean useTags) {
+		if (isItemEqual(a, b, matchNBT)) {
 			return true;
 		}
 		if (a.isEmpty() || b.isEmpty())
 			return false;
-		if (useOreDic) {
-			for (int inta : OreDictionary.getOreIDs(a)) {
-				for (int intb : OreDictionary.getOreIDs(b)) {
-					if (inta == intb) {
-						return true;
-					}
-				}
-			}
+		if (useTags) {
+			//TODO tags
+			throw new UnsupportedOperationException("1.13 tags");
 		}
 		return false;
 	}
 
-	public static boolean isInputEqual(Object input, ItemStack other, boolean matchDamage, boolean matchNBT,
-	                                   boolean useOreDic) {
+	//TODO tags
+	public static boolean isInputEqual(Object input, ItemStack other, boolean matchNBT,
+	                                   boolean useTags) {
 		if (input instanceof ItemStack) {
-			return isItemEqual((ItemStack) input, other, matchDamage, matchNBT, useOreDic);
+			return isItemEqual((ItemStack) input, other, matchNBT, useTags);
 		} else if (input instanceof String) {
-			NonNullList<ItemStack> ores = OreDictionary.getOres((String) input);
-			for (ItemStack stack : ores) {
-				if (isItemEqual(stack, other, matchDamage, matchNBT, false)) {
-					return true;
-				}
-			}
+
 		} else if (input instanceof IRecipeInput){
 			List<ItemStack> inputs = ((IRecipeInput) input).getAllStacks();
 			for (ItemStack stack : inputs) {
-				if (isItemEqual(stack, other, matchDamage, matchNBT, false)) {
+				if (isItemEqual(stack, other, matchNBT, false)) {
 					return true;
 				}
 			}
@@ -103,44 +88,19 @@ public class ItemUtils {
 		return false;
 	}
 
-	public static boolean isWildcard(ItemStack stack) {
-		return isWildcard(stack.getItemDamage());
-	}
-
-	public static boolean isWildcard(int damage) {
-		return damage == -1 || damage == OreDictionary.WILDCARD_VALUE;
-	}
 
 	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
 		if (stack.isEmpty() || stack.getCount() <= 0)
 			return;
 		if (stack.getCount() > 127)
 			stack.setCount(127);
-		stack.writeToNBT(data);
+		stack.write(data);
 	}
 
 	public static ItemStack readItemFromNBT(NBTTagCompound data) {
-		return new ItemStack(data);
+		return ItemStack.read(data);
 	}
 
-	public static List<ItemStack> getStackWithAllOre(ItemStack stack) {
-		if (stack.isEmpty()) {
-			return new ArrayList<ItemStack>();
-		}
-		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-		for (int oreID : OreDictionary.getOreIDs(stack)) {
-			for (ItemStack ore : OreDictionary.getOres(OreDictionary.getOreName(oreID))) {
-				ItemStack newOre = ore.copy();
-				newOre.setCount(stack.getCount());
-				list.add(newOre);
-			}
-		}
-		if (list.isEmpty()) {
-			list.add(stack);
-		}
-		return list;
-	}
-	
 	public static double getPowerForDurabilityBar(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return 0.0;
@@ -158,7 +118,7 @@ public class ItemUtils {
 	}
 
 	public static boolean isActive(ItemStack stack) {
-		if (!stack.isEmpty() && stack.getTagCompound() != null && stack.getTagCompound().getBoolean("isActive")) {
+		if (!stack.isEmpty() && stack.getTag() != null && stack.getTag().getBoolean("isActive")) {
 			return true;
 		}
 		return false;

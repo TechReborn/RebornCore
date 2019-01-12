@@ -40,6 +40,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO 1.13 tags
 public class OreUtil {
 
 	public static ArrayList<String> oreNames = new ArrayList<String>();

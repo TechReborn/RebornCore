@@ -28,6 +28,7 @@
 
 package reborncore.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -66,18 +67,18 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
 
-	public BlockMachineBase() {
-		this(false);
+	public BlockMachineBase(Block.Builder builder) {
+		this(builder,false);
 	}
 
-	public BlockMachineBase(boolean hasCustomStates) {
-		super(Material.IRON);
+	public BlockMachineBase(Block.Builder builder, boolean hasCustomStates) {
+		super(builder);
 		setHardness(2f);
 		setSoundType(SoundType.METAL);
 		this.hasCustomStaes = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
-				this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
+				this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(ACTIVE, false));
 		}
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
