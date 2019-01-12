@@ -71,7 +71,12 @@ public class RebornCore {
 	public static CommonProxy proxy;
 	public static File configDir;
 
-	@Mod.EventHandler
+	public RebornCore() {
+		LOGGER.info("Hello minecraft!");
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SubscribeEvent
 	public void preInit(FMLPreInitializationEvent event) {
 		CrashReportExtender.registerCrashCallable(new CrashHandler());
 		//TODO this may explode, find a better way to get config dir :D
@@ -106,7 +111,7 @@ public class RebornCore {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
 	}
 
-	@Mod.EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 		// packets
 		NetworkManager.load();
@@ -122,13 +127,13 @@ public class RebornCore {
 		RegistrationManager.load(event);
 	}
 
-	@Mod.EventHandler
+	@SubscribeEvent
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
 		RegistrationManager.load(event);
 	}
 
-	@Mod.EventHandler
+	@SubscribeEvent
 	public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
 		LOGGER.error("Invalid fingerprint detected for Reborn Core!");
 		RebornCore.proxy.invalidFingerprints.add("Invalid fingerprint detected for Reborn Core!");

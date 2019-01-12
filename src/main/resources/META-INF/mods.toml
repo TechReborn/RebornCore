@@ -1,0 +1,8 @@
+modLoader="javafml"
+loaderVersion="[13,)"
+
+[[mods]]
+	modId="reborncore"
+	version="${version}"
+	displayName="Reborn Core"
+	description="Reborn Core"

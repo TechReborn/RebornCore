@@ -169,7 +169,7 @@ uploadArchives {
 	}
 }
 
-apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
+//apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
 
 import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils

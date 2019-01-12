@@ -42,20 +42,7 @@ import javax.annotation.Nullable;
 public class FluidUtils {
 
 	public static boolean fluidEquals(Fluid f1, Fluid f2) {
-		if (f1.equals(f2)) {
-			return true;
-		}
-		// This is a work around TR's fucked fluid names that we dont want to break
-		// worlds in 1.12 to fix. //TODO remove in 1.13
-		String s1 = f1.getName();
-		String s2 = f2.getName();
-		if (s1.startsWith("fluid")) {
-			s1 = s1.replaceFirst("fluid", "");
-		}
-		if (s2.startsWith("fluid")) {
-			s2 = s2.replaceFirst("fluid", "");
-		}
-		return s1.equals(s2);
+		return f1.equals(f2);
 	}
 
 	public static boolean drainContainers(IFluidHandler fluidHandler, IItemHandlerModifiable inv, int inputSlot, int outputSlot) {
