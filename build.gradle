@@ -14,11 +14,11 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
 		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
 	}
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: net.minecrell.gradle.licenser.Licenser
@@ -33,19 +33,8 @@ repositories {
 	}
 }
 
-repositories {
-	maven {
-		name = "Modmuss50"
-		url = "http://maven.modmuss50.me/"
-	}
-}
-
-configurations {
-	shade
-	compile.extendsFrom shade
-}
-
 version = "3.13.1"
+group = 'RebornCore'
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -53,32 +42,39 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.12.2-14.23.5.2768"
-	mappings = "snapshot_20180720"
-	replace "@MODVERSION@", project.version
-	runDir = "run"
-	makeObfSourceJar = false
+	mappings channel: 'snapshot', version: '20180921-1.13'
+
+	runs {
+        client = {
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
+        server = {
+            workingDirectory project.file('run').canonicalPath
+        }
+    }
 }
 
-group = 'RebornCore'
 
-processResources
-	{
-		// this will ensure that this task is redone when the versions change.
-		inputs.property "version", project.version
-		inputs.property "mcversion", project.minecraft.version
-		
-		from(sourceSets.main.resources.srcDirs) {
-			include 'mcmod.info'
-			expand 'version': project.version, 'mcversion': project.minecraft.version
-		}
+dependencies {
+	minecraft 'net.minecraftforge.test:forge:1.13-24.0.76-1.13-pre'
+}
 
-		from(sourceSets.main.resources.srcDirs) {
-			exclude 'mcmod.info'
-		}
+processResources{
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', '1.13'
 
-		rename '(.+_at.cfg)', 'META-INF/$1'
-	}
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META_INF/mods.toml'     
+        expand 'version':project.version, 'mcversion': '1.13'
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META_INF/mods.toml'
+    }
+
+	rename '(.+_at.cfg)', 'META-INF/$1'
+}
 
 license {
 	header file('LICENSE.md')
@@ -86,37 +82,27 @@ license {
 	ignoreFailures = true //Stops the build from failing if a file does not have a license header
 }
 
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	exclude "**/*.psd"
-	classifier = 'dev'
-	manifest {
-		attributes 'FMLAT': 'reborncore_at.cfg'
-	}
-}
+// jar {
+// 	exclude "**/*.psd"
+// 	classifier = 'universal'
+// 	manifest {
+// 		attributes 'FMLAT': 'reborncore_at.cfg'
+// 	}
+// }
 
-jar {
-	exclude "**/*.psd"
-	classifier = 'universal'
-	manifest {
-		attributes 'FMLAT': 'reborncore_at.cfg'
-	}
-}
+// task apiJar(type: Jar) {
+// 	from sourceSets.main.allSource
+// 	from sourceSets.main.output
+// 	include 'reborncore/api/**/*'
 
-task apiJar(type: Jar) {
-	from sourceSets.main.allSource
-	from sourceSets.main.output
-	include 'reborncore/api/**/*'
+// 	classifier = "api"
+// }
 
-	classifier = "api"
-}
+// apiJar.mustRunAfter jar
 
-apiJar.mustRunAfter deobfJar
-
-artifacts {
-	archives deobfJar
-	archives apiJar
-}
+// artifacts {
+// 	archives apiJar
+// }
 
 uploadArchives {
 	repositories {
@@ -183,66 +169,6 @@ uploadArchives {
 	}
 }
 
-task wrapper(type: Wrapper) {
-	//To update the wrapper change the version bellow then run: gradle wrapper
-	gradleVersion = '2.8'
-}
-
-//Thanks Matthew from #ForgeGradle https://gist.github.com/matthewprenger/108265e3efc83181bd2cc2d2fc31a853
-task updateMappings(dependsOn: sourceJar) {
-
-	def remapped = file('src_remapped/main/java')
-	def methods = file('methods.csv')
-	def fields = file('fields.csv')
-
-	doLast {
-		Map<String, String> map = new HashMap<>()
-		methods.eachLine {line ->
-			String[] pts = line.split(",")
-			map.put(pts[0], pts[1])
-		}
-		fields.eachLine {line ->
-			String[] pts = line.split(",")
-			map.put(pts[0], pts[1])
-		}
-
-		copy {
-			from zipTree(sourceJar.archivePath)
-			into remapped
-			include '**/*.java'
-
-			filter {javaLine ->
-				map.entrySet().each {entry ->
-					javaLine = javaLine.replace(entry.getKey(), entry.getValue())
-				}
-				return javaLine
-			}
-
-			includeEmptyDirs = false
-			eachFile {println "Processing: $it.name"}
-		}
-	}
-}
-
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-	onlyIf {
-		project.hasProperty('keyStore')
-	}
-
-	if (project.hasProperty('keyStore')) {
-		keyStore = project.keyStore
-		alias = project.keyStoreAlias
-		storePass = project.keyStorePass
-		keyPass = project.keyStoreKeyPass
-		inputFile = jar.archivePath
-		outputFile = jar.archivePath
-	}
-
-}
-
-build.dependsOn signJar
-
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
 
 import groovy.util.XmlSlurper
@@ -271,8 +197,6 @@ task curseTools {
 	logger.lifecycle(":launching CurseTools")
 	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
 		arg(value: jar.archivePath.getAbsolutePath())
-		arg(value: deobfJar.archivePath.getAbsolutePath())
-		arg(value: apiJar.archivePath.getAbsolutePath())
 	}
 	}
 }
