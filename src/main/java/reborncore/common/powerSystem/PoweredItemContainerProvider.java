@@ -32,6 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.NonNullSupplier;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
@@ -63,29 +65,23 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 		this.stack = stack;
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(
+	public <T> OptionalCapabilityInstance<T> getCapability(
 		@Nonnull
-			Capability<?> capability,
+			Capability<T> cap,
 		@Nullable
-			EnumFacing facing) {
-		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
-			return true;
+			EnumFacing side) {
+		if (isEnergyItem && cap == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
+			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+				@Nonnull
+				@Override
+				public T get() {
+					return (T) capEnergy;
+				}
+			});
 		}
-		return false;
-	}
-
-	@Nullable
-	@Override
-	public <T> T getCapability(
-		@Nonnull
-			Capability<T> capability,
-		@Nullable
-			EnumFacing facing) {
-		if (isEnergyItem && capability == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
-			return CapabilityEnergy.ENERGY.cast(capEnergy);
-		}
-		return null;
+		return OptionalCapabilityInstance.empty();
 	}
 
 	public ForgePowerItemManager getCapEnergy() {

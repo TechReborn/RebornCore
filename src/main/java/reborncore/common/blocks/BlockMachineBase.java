@@ -33,15 +33,20 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.BlockStateContainer;
 import net.minecraftforge.fluids.FluidUtil;
@@ -56,6 +61,8 @@ import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
+
+import javax.annotation.Nullable;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -72,8 +79,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	public BlockMachineBase(Block.Builder builder, boolean hasCustomStates) {
 		super(builder);
-		setHardness(2f);
-		setSoundType(SoundType.METAL);
 		this.hasCustomStaes = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
@@ -83,14 +88,16 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState() {
+	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder) {
 		FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
 		ACTIVE = BooleanProperty.create("active");
-		return new BlockStateContainer(this, FACING, ACTIVE);
+		builder.add(FACING, ACTIVE);
 	}
 
+
+
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	public TileEntity createNewTileEntity(IBlockReader worldIn) {
 		return null;
 	}
 
@@ -101,24 +108,30 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
+	public boolean canCreatureSpawn(IBlockState state, IWorldReaderBase world, BlockPos pos, EntitySpawnPlacementRegistry.SpawnPlacementType type,
+	                                @Nullable
+		                                EntityType<? extends EntityLiving> entityType) {
 		return false;
 	}
 
 	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		ItemHandlerUtils.dropContainedItems(worldIn, pos);
-		super.breakBlock(worldIn, pos, state);
+	public void onReplaced(IBlockState state, World worldIn, BlockPos pos, IBlockState newState, boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			ItemHandlerUtils.dropContainedItems(worldIn, pos);
+			super.onReplaced(state, worldIn, pos, newState, isMoving);
+		}
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune) {
 		if (RebornCoreConfig.wrenchRequired) {
 			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
 		} else {
-			super.getDrops(drops, world, pos, state, fortune);
+			super.getDrops(state, drops, world, pos, fortune);
 		}
 	}
+
+
 
 	public boolean isAdvanced() {
 		return false;
@@ -129,8 +142,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-	                                EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 
 		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -170,26 +182,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			return true;
 		}
 
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
-	}
-
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		int facingInt = getSideFromEnum(state.get(FACING));
-		int activeInt = state.get(ACTIVE) ? 0 : 4;
-		return facingInt + activeInt;
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		boolean active = false;
-		int facingInt = meta;
-		if (facingInt > 4) {
-			active = true;
-			facingInt = facingInt - 4;
-		}
-		EnumFacing facing = getSideFromint(facingInt);
-		return this.getDefaultState().with(FACING, facing).with(ACTIVE, active);
+		return super.onBlockActivated(state, worldIn, pos, playerIn, hand, side, hitX, hitY, hitZ);
 	}
 
 	public boolean isActive(IBlockState state) {

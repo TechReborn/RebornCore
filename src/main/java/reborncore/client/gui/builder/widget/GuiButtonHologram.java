@@ -50,7 +50,7 @@ public class GuiButtonHologram extends GuiButton {
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 
 		if (layer == GuiBase.Layer.FOREGROUND) {
 			mouseX -= gui.getGuiLeft();
@@ -73,7 +73,7 @@ public class GuiButtonHologram extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft p_191745_1_, int p_191745_2_, int p_191745_3_, float p_191745_4_) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 
 	}
 }

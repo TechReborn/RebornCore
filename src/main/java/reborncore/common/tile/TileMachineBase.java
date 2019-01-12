@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
@@ -87,6 +88,10 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	 */
 	double powerMultiplier = 1;
 
+	public TileMachineBase(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
+
 	public void syncWithAll() {
 		if (!world.isRemote) {
 			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
@@ -113,20 +118,20 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	@Nullable
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
-		writeToNBT(compound);
+		NBTTagCompound compound = super.write(new NBTTagCompound());
+		write(compound);
 		return compound;
 	}
 
 	@Override
 	public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
 		super.onDataPacket(net, pkt);
-		readFromNBT(pkt.getNbtCompound());
+		read(pkt.getNbtCompound());
 	}
 
 	@Override

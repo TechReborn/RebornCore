@@ -35,6 +35,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.NonNullSupplier;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.ExternalPowerHandler;
@@ -58,7 +60,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	}
 
 	public void tick() {
-		Map<EnumFacing, TileEntity> acceptors = new HashMap<EnumFacing, TileEntity>();
+		Map<EnumFacing, TileEntity> acceptors = new HashMap<>();
 		if (powerAcceptor.getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (EnumFacing side : EnumFacing.values()) {
 				if (powerAcceptor.canProvideEnergy(side)) {
@@ -103,14 +105,14 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble()
 									+ (side.getZOffset() / 2);
-								((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
+								((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
 							double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
 							remainingEnergy -= powerAcceptor.useEnergy(filled, false);
 						}
 					} else if (tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).isPresent()) {
-						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).orElseGet());
+						IEnergyStorage energyStorage = tile.getCapability(CapabilityEnergy.ENERGY, side.getOpposite()).orElseGet(null);
 						if (powerManager != null && energyStorage != null && energyStorage.canReceive()
 							&& powerAcceptor.canProvideEnergy(side)) {
 							int filled = energyStorage.receiveEnergy(
@@ -131,31 +133,24 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 
 	}
 
+	@Nonnull
 	@Override
-	public boolean hasCapability(
+	public <T> OptionalCapabilityInstance<T> getCapability(
 		@Nonnull
-			Capability<?> capability,
-		@Nullable
-			EnumFacing facing) {
-		return capability == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing));
-	}
-
-	@Nullable
-	@Override
-	public <T> T getCapability(
-		@Nonnull
-			Capability<T> capability,
-		@Nullable
-			EnumFacing facing) {
-		if (capability == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))) {
+			Capability<T> cap, EnumFacing facing) {
+		if(cap == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))){
 			if (powerManager == null) {
 				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
 			}
-			powerManager.setFacing(facing);
-			return CapabilityEnergy.ENERGY.cast(powerManager);
+			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+				@Nonnull
+				@Override
+				public T get() {
+					return (T) powerManager;
+				}
+			});
 		}
-
-		return null;
+		return OptionalCapabilityInstance.empty();
 	}
 
 	/**

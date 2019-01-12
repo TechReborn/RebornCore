@@ -43,6 +43,7 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.client.gui.builder.widget.GuiButtonSimple;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
@@ -137,7 +138,7 @@ public class GuiBuilder {
 	}
 
 	public void drawInfoButton(int buttonID, int x, int y, List<GuiButton> buttonList) {
-		buttonList.add(new GuiButton(0, x, y, 20, 20, "i"));
+		buttonList.add(new GuiButtonSimple(0, x, y, 20, 20, "i"));
 	}
 
 	public void handleInfoButtonClick(int buttonID, List<GuiButton> buttonList) {

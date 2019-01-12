@@ -91,17 +91,18 @@ public class MultiblockRenderEvent {
 
 				Multiblock mb = currentMultiblock.getForIndex(0);
 
+				//TODO 1.13 fluid rendering
 				//Render the liquids first, it looks better.
 				for (MultiblockComponent comp : mb.getComponents()) {
-					if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
+				//	if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
 						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-					}
+				//	}
 				}
-				for (MultiblockComponent comp : mb.getComponents()) {
-					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
-						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-					}
-				}
+//				for (MultiblockComponent comp : mb.getComponents()) {
+//					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
+//						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+//					}
+//				}
 
 			}
 		}
@@ -150,11 +151,12 @@ public class MultiblockRenderEvent {
 		final BufferBuilder buffer = tessellator.getBuffer();
 		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
-			fluidRenderer.renderFluid(world, state, pos, buffer);
-		} else {
+		//TODO 1.13 fluids
+//		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
+//			fluidRenderer.renderFluid(world, state, pos, buffer);
+//		} else {
 			blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());
-		}
+	//	}
 		tessellator.draw();
 	}
 

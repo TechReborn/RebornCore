@@ -28,8 +28,6 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import net.minecraftforge.fml.relauncher.Side;
 
 public enum ExecutionSide {
 	COMMON,

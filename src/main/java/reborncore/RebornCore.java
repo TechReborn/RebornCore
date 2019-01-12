@@ -66,23 +66,22 @@ public class RebornCore {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	@SidedProxy(clientSide = "reborncore.ClientProxy", serverSide = "reborncore.CommonProxy")
 	public static CommonProxy proxy;
 	public static File configDir;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		CrashReportExtender.registerCrashCallable(new CrashHandler());
-		configDir = new File(event.getModConfigurationDirectory(), "teamreborn");
+		//TODO this may explode, find a better way to get config dir :D
+		configDir = new File(new File("config"), "teamreborn");
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
-		MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
-		ConfigRegistryFactory.setConfigDir(configDir);
+		//MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
+		//ConfigRegistryFactory.setConfigDir(configDir);
 		RegistrationManager.init(event);
 		RegistrationManager.load(new RegistryConstructionEvent());
-		ConfigRegistryFactory.saveAll();
-		MinecraftForge.EVENT_BUS.register(OreRegistationEvent.class);
+		//ConfigRegistryFactory.saveAll();
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this

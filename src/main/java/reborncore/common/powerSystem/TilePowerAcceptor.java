@@ -30,6 +30,7 @@ package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
@@ -60,7 +61,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	private List<ExternalPowerHandler> powerManagers;
 
-	public TilePowerAcceptor() {
+	public TilePowerAcceptor(TileEntityType<?> tileEntityType) {
+		super(tileEntityType);
 		checkTier();
 		setupManagers();
 	}
@@ -174,8 +176,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		super.readFromNBT(tag);
+	public void read(NBTTagCompound tag) {
+		super.read(tag);
 		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
@@ -183,8 +185,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
+	public NBTTagCompound write(NBTTagCompound tag) {
+		super.write(tag);
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", getEnergy());
 		tag.setTag("TilePowerAcceptor", data);
@@ -201,7 +203,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.hasCapability(capability, facing))) {
+		if (powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing).isPresent())) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);

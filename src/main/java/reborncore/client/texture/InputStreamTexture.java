@@ -55,46 +55,47 @@ public class InputStreamTexture extends AbstractTexture {
 	@Override
 	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
-		if (image == null) {
-			IResource iresource = null;
-			try {
-				iresource = new IResource() {
-
-					@Override
-					public ResourceLocation getResourceLocation() {
-						return new ResourceLocation("reborncore:loaded/" + name);
-					}
-
-					@Override
-					public InputStream getInputStream() {
-						return textureLocation;
-					}
-
-					@Override
-					public boolean hasMetadata() {
-						return false;
-					}
-
-					@Override
-					public <T extends IMetadataSection> T getMetadata(String sectionName) {
-						return null;
-					}
-
-					@Override
-					public String getResourcePackName() {
-						return "reborncore";
-					}
-
-					@Override
-					public void close() {
-
-					}
-				};
-				image = TextureUtil.readBufferedImage(iresource.getInputStream());
-			} finally {
-				IOUtils.closeQuietly(iresource);
-			}
-		}
-		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
+		//TODO 1.13
+//		if (image == null) {
+//			IResource iresource = null;
+//			try {
+//				iresource = new IResource() {
+//
+//					@Override
+//					public ResourceLocation getResourceLocation() {
+//						return new ResourceLocation("reborncore:loaded/" + name);
+//					}
+//
+//					@Override
+//					public InputStream getInputStream() {
+//						return textureLocation;
+//					}
+//
+//					@Override
+//					public boolean hasMetadata() {
+//						return false;
+//					}
+//
+//					@Override
+//					public <T extends IMetadataSection> T getMetadata(String sectionName) {
+//						return null;
+//					}
+//
+//					@Override
+//					public String getResourcePackName() {
+//						return "reborncore";
+//					}
+//
+//					@Override
+//					public void close() {
+//
+//					}
+//				};
+//				image = TextureUtil.readBufferedImage(iresource.getInputStream());
+//			} finally {
+//				IOUtils.closeQuietly(iresource);
+//			}
+//		}
+//		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
 	}
 }

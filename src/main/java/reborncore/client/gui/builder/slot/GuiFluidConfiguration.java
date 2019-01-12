@@ -57,8 +57,8 @@ public class GuiFluidConfiguration {
 	}
 
 	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent event) {
-		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
+		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && event.getKeyCode() == Keyboard.KEY_ESCAPE) {
 			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
 			event.setCanceled(true);
 		}

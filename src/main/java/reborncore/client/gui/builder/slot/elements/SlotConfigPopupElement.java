@@ -29,6 +29,7 @@
 package reborncore.client.gui.builder.slot.elements;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -36,7 +37,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -70,10 +70,10 @@ public class SlotConfigPopupElement extends ElementBase {
 		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		IBlockState state = world.getBlockState(pos);
-		IBlockState actualState = state.getBlock().getDefaultState().getActualState(world, pos);
-		BlockRendererDispatcher dispatcher = FMLClientHandler.instance().getClient().getBlockRendererDispatcher();
-		IBakedModel model = dispatcher.getBlockModelShapes().getModelForState(state.getBlock().getDefaultState());
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		IBlockState actualState = state.getBlock().getDefaultState();
+		BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+		IBakedModel model = dispatcher.getBlockModelShapes().getModel(state.getBlock().getDefaultState());
+		Minecraft.getInstance().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre

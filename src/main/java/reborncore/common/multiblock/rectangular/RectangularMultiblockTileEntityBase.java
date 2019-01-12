@@ -28,6 +28,7 @@
 
 package reborncore.common.multiblock.rectangular;
 
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.multiblock.MultiblockControllerBase;
@@ -39,8 +40,8 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	PartPosition position;
 	EnumFacing outwards;
 
-	public RectangularMultiblockTileEntityBase() {
-		super();
+	public RectangularMultiblockTileEntityBase(TileEntityType<?> tileEntityType) {
+		super(tileEntityType);
 
 		position = PartPosition.Unknown;
 		outwards = null;

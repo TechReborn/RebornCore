@@ -34,13 +34,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.LanguageMap;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.ArrayList;
 
 public abstract class GuiWidget<T extends Container> extends GuiContainer {
 
-	public static final LanguageMap translate = ObfuscationReflectionHelper.getPrivateValue(LanguageMap.class, null, 2);
+	public static final LanguageMap translate = LanguageMap.getInstance();
 
 	private final ArrayList<Widget> widgets = new ArrayList<>();
 	private final ResourceLocation background;
