@@ -57,10 +57,10 @@ public class IconSupplier {
 	@SubscribeEvent
 	public void preTextureStitch(TextureStitchEvent.Pre event) {
 		TextureMap map = event.getMap();
-		armour_head = map.registerSprite(new ResourceLocation(armour_head_name));
-		armour_chest = map.registerSprite(new ResourceLocation(armour_chest_name));
-		armour_legs = map.registerSprite(new ResourceLocation(armour_legs_name));
-		armour_feet = map.registerSprite(new ResourceLocation(armour_feet_name));
+		armour_head = map.getSprite(new ResourceLocation(armour_head_name));
+		armour_chest = map.getSprite(new ResourceLocation(armour_chest_name));
+		armour_legs = map.getSprite(new ResourceLocation(armour_legs_name));
+		armour_feet = map.getSprite(new ResourceLocation(armour_feet_name));
 	}
 
 }

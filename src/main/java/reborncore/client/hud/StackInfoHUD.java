@@ -29,6 +29,7 @@
 package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -77,12 +78,12 @@ public class StackInfoHUD {
 
 		if (mc.isGameFocused() || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
 			if (RebornCoreConfig.ShowStackInfoHUD) {
-				drawStackInfoHud(event.getResolution());
+				drawStackInfoHud(Minecraft.getInstance().mainWindow);
 			}
 		}
 	}
 
-	public void drawStackInfoHud(ScaledResolution res) {
+	public void drawStackInfoHud(MainWindow res) {
 		EntityPlayer player = mc.player;
 		List<ItemStack> stacks = new ArrayList<>();
 		for (ItemStack stack : player.getArmorInventoryList()) {
@@ -127,7 +128,7 @@ public class StackInfoHUD {
 		renderItemStack(stack, x, y - 5);
 	}
 
-	private void addInfo(ItemStack stack, ScaledResolution res) {
+	private void addInfo(ItemStack stack, MainWindow res) {
 		if (stack == ItemStack.EMPTY) {
 			return;
 		}

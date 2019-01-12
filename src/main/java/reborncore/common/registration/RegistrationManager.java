@@ -28,6 +28,7 @@
 
 package reborncore.common.registration;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModContainer;
@@ -112,7 +113,7 @@ public class RegistrationManager {
 		for (String modid : modOnly.split(",")) {
 			if (modid.startsWith("@")) {
 				if (modid.equals("@client")) {
-					if (FMLCommonHandler.instance().getSide() != Side.CLIENT) {
+					if (RebornCore.getSide() != Dist.CLIENT) {
 						return false;
 					}
 				}
@@ -131,7 +132,7 @@ public class RegistrationManager {
 
 	//This ensures that the class that might be loaded doesnt have any of the common side only markers on it. Its slow but will save us from some common issues
 	private static boolean isValidOnSide(ModFileScanData.AnnotationData annotationData) {
-		String side = FMLLaunchHandler.side().toString().toUpperCase();
+		String side = RebornCore.getSide().toString().toUpperCase();
 		if (annotationData.getAnnotationData().containsKey("side")) {
 			ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) annotationData.getAnnotationData().get("side");
 			String classSide = sideEnum.getValue();
@@ -158,7 +159,7 @@ public class RegistrationManager {
 		annotations = ScanDataUtils.getAnnotations(Mod.class);
 		for (ModFileScanData.AnnotationData sideData : annotations) {
 			if (sideData.getClassType().getClassName().equals(annotationData.getClassType().getClassName())) {
-				if (FMLLaunchHandler.side() == Side.CLIENT) {
+				if (RebornCore.getSide() == Dist.CLIENT) {
 					if (sideData.getAnnotationData().containsKey("serverSideOnly")) {
 						boolean value = (boolean) sideData.getAnnotationData().get("serverSideOnly");
 						if (value) {
@@ -181,7 +182,7 @@ public class RegistrationManager {
 
 	public static void load(Event event) {
 		long start = System.currentTimeMillis();
-		final ModContainer activeMod = Loader.instance().activeModContainer();
+		final ModContainer activeMod = null;// Loader.instance().activeModContainer();
 
 		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
 		if (!factoryList.isEmpty()) {
@@ -274,16 +275,16 @@ public class RegistrationManager {
 	}
 
 	private static void setActiveMod(String modID) {
-		for (ModContainer modContainer : Loader.instance().getActiveModList()) {
-			if (modContainer.getModId().equals(modID)) {
-				setActiveModContainer(modContainer);
-				break;
-			}
-		}
+//		for (ModContainer modContainer : Loader.instance().getActiveModList()) {
+//			if (modContainer.getModId().equals(modID)) {
+//				setActiveModContainer(modContainer);
+//				break;
+//			}
+//		}
 	}
 
 	private static void setActiveModContainer(ModContainer container) {
-		Loader.instance().setActiveModContainer(container);
+//		Loader.instance().setActiveModContainer(container);
 	}
 
 }

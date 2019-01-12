@@ -220,28 +220,28 @@ public class ElementBase {
 		return this;
 	}
 
-	public boolean onHover(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onHover(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : hoverActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !hoverActions.isEmpty();
 	}
 
-	public boolean onDrag(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onDrag(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : dragActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !dragActions.isEmpty();
 	}
 
-	public boolean onStartPress(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onStartPress(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : startPressActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !startPressActions.isEmpty();
 	}
 
-	public boolean onRelease(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onRelease(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : releaseActions) {
 			if (action.execute(this, gui, provider, mouseX, mouseY)) {
 				return true;
@@ -256,7 +256,7 @@ public class ElementBase {
 	}
 
 	public interface Action {
-		boolean execute(ElementBase element, GuiBase gui, TileMachineBase provider, int mouseX, int mouseY);
+		boolean execute(ElementBase element, GuiBase gui, TileMachineBase provider, double mouseX, double mouseY);
 	}
 
 	public interface UpdateAction {
@@ -313,7 +313,7 @@ public class ElementBase {
 		return gui.getGuiTop() + y;
 	}
 
-	public boolean isInRect(GuiBase gui, int x, int y, int xSize, int ySize, int mouseX, int mouseY) {
+	public boolean isInRect(GuiBase gui, int x, int y, int xSize, int ySize, double mouseX, double mouseY) {
 		return gui.isPointInRect(x + gui.getGuiLeft(), y + gui.getGuiTop(), xSize, ySize, mouseX, mouseY);
 	}
 

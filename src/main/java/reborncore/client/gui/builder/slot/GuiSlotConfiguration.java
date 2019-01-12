@@ -37,6 +37,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.lwjgl.glfw.GLFW;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -75,7 +76,7 @@ public class GuiSlotConfiguration {
 			if (guiBase.tile != slot.inventory) {
 				continue;
 			}
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), slot.getSlotIndex(), SlotType.NORMAL, slot.xPos - guiBase.getGuiLeft() + 50, slot.yPos - guiBase.getGuiTop() - 25, guiBase);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null), slot.getSlotIndex(), SlotType.NORMAL, slot.xPos - guiBase.getGuiLeft() + 50, slot.yPos - guiBase.getGuiTop() - 25, guiBase);
 			slotElementMap.put(slot.getSlotIndex(), slotElement);
 		}
 
@@ -109,8 +110,8 @@ public class GuiSlotConfiguration {
 
 	//Allows closing of the widget with the escape key
 	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardInputEvent event) {
-		if (!getVisibleElements().isEmpty() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
+	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
+		if (!getVisibleElements().isEmpty() && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
 			selectedSlot = -1;
 			event.setCanceled(true);
 		}
@@ -122,7 +123,7 @@ public class GuiSlotConfiguration {
 			return;
 		}
 		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
-		GuiScreen.setClipboardString(json);
+		Minecraft.getInstance().keyboardListener.setClipboardString(json);
 		Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration copyied to clipboard"));
 	}
 
@@ -131,7 +132,7 @@ public class GuiSlotConfiguration {
 		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
-		String json = GuiScreen.getClipboardString();
+		String json = Minecraft.getInstance().keyboardListener.getClipboardString();
 		try {
 			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
 			NetworkManager.sendToServer(new PacketConfigSave(machine.getPos(), machine.slotConfiguration));
@@ -154,7 +155,7 @@ public class GuiSlotConfiguration {
 		return machineBase;
 	}
 
-	public static boolean mouseClicked(int mouseX, int mouseY, int mouseButton, GuiBase guiBase) throws IOException {
+	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
 				for (ElementBase element : configSlotElement.elements) {
@@ -191,7 +192,7 @@ public class GuiSlotConfiguration {
 		return !getVisibleElements().isEmpty();
 	}
 
-	public static void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
+	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
 				for (ElementBase element : configSlotElement.elements) {
@@ -214,7 +215,7 @@ public class GuiSlotConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(int mouseX, int mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {

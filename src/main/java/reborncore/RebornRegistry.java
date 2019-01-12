@@ -47,17 +47,17 @@ import java.lang.reflect.InvocationTargetException;
 public class RebornRegistry {
 	public static LootManager.InnerPool lp = new LootManager.InnerPool();
 
-	public static void registerBlock(Block block, String name) {
+	public static void registerBlock(Block block, Item.Builder builder, String name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
-		ItemBlock itemBlock = new ItemBlock(block);
+		ItemBlock itemBlock = new ItemBlock(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 	}
 
-	public static void registerBlock(Block block, ResourceLocation name) {
+	public static void registerBlock(Block block, Item.Builder builder, ResourceLocation name) {
 		block.setRegistryName(name);
-		ItemBlock itemBlock = new ItemBlock(block);
+		ItemBlock itemBlock = new ItemBlock(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 		GameData.register_impl(block);
@@ -108,9 +108,9 @@ public class RebornRegistry {
 		GameData.register_impl(block);
 	}
 
-	public static void registerBlock(Block block) {
+	public static void registerBlock(Block block, Item.Builder builder) {
 		GameData.register_impl(block);
-		ItemBlock itemBlock = new ItemBlock(block);
+		ItemBlock itemBlock = new ItemBlock(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 	}
@@ -138,7 +138,8 @@ public class RebornRegistry {
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemModel(Item i, int meta) {
 		ResourceLocation loc = i.getRegistryName();
-		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "inventory"));
+		//TODO waiting on 1.13 forge
+		//ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "inventory"));
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -149,6 +150,7 @@ public class RebornRegistry {
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemModel(Item i, int meta, String variant) {
 		ResourceLocation loc = i.getRegistryName();
-		ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "type=" + variant));
+		//TODO waiting on 1.13 forge
+		//ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "type=" + variant));
 	}
 }

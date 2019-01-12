@@ -56,8 +56,9 @@ public class GuiButtonItemTexture extends GuiButtonExt {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float ticks) {
+	public void render(int mouseX, int mouseY, float ticks) {
 		if (this.visible) {
+			Minecraft mc = Minecraft.getInstance();
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
 			mc.getTextureManager().bindTexture(BUTTON_TEXTURES);

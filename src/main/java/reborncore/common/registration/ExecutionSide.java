@@ -28,6 +28,8 @@
 
 package reborncore.common.registration;
 
+import net.minecraftforge.api.distmarker.Dist;
+import reborncore.RebornCore;
 
 public enum ExecutionSide {
 	COMMON,
@@ -38,10 +40,10 @@ public enum ExecutionSide {
 		if (this == COMMON) {
 			return true;
 		}
-		if (FMLLaunchHandler.side() == Side.CLIENT && this == CLIENT) {
+		if (RebornCore.getSide() == Dist.CLIENT && this == CLIENT) {
 			return true;
 		}
-		if (FMLLaunchHandler.side() == Side.SERVER && this == SERVER) {
+		if (RebornCore.getSide() == Dist.DEDICATED_SERVER && this == SERVER) {
 			return true;
 		}
 		return false;

@@ -38,6 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import org.lwjgl.glfw.GLFW;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
@@ -146,7 +147,7 @@ public class GuiBase extends GuiContainer {
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
 		if (getMachine().showTankConfig()) {
-			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(FluidRegistry.LAVA));
+			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(null));//TODO 1.13 fluids FluidRegistry.LAVA));
 		}
 	}
 
@@ -250,33 +251,33 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)   {
 		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			if (GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
-				return;
+				return true;
 			}
 		}
 		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			if (GuiFluidConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
-				return;
+				return true;
 			}
 		}
-		super.mouseClicked(mouseX, mouseY, mouseButton);
+		return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
-	@Override
-	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
-			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
-		}
-		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
-			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
-		}
-		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-	}
+//	@Override
+//	protected void mouseClickMove(double mouseX, double mouseY, int clickedMouseButton, long timeSinceLastClick) {
+//		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+//			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
+//		}
+//		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+//			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
+//		}
+//		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+//	}
 
 	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int state) {
+	public boolean mouseReleased(double mouseX, double mouseY, int state) {
 		int offset = 0;
 		if (!upgrades) {
 			offset = 80;
@@ -300,29 +301,29 @@ public class GuiBase extends GuiContainer {
 		}
 		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			if (GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
-				return;
+				return true;
 			}
 		}
 		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			if (GuiFluidConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
-				return;
+				return true;
 			}
 		}
-		super.mouseReleased(mouseX, mouseY, state);
+		return super.mouseReleased(mouseX, mouseY, state);
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 		if (slotConfigType == SlotConfigType.ITEMS) {
-			if (isCtrlKeyDown() && keyCode == Keyboard.KEY_C) {
+			if (isCtrlKeyDown() && keyCode == GLFW.GLFW_KEY_C) {
 				GuiSlotConfiguration.copyToClipboard();
-				return;
-			} else if (isCtrlKeyDown() && keyCode == Keyboard.KEY_V) {
+				return true;
+			} else if (isCtrlKeyDown() && keyCode == GLFW.GLFW_KEY_V) {
 				GuiSlotConfiguration.pasteFromClipboard();
-				return;
+				return true;
 			}
 		}
-		super.keyTyped(typedChar, keyCode);
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 
 	@Override
@@ -341,7 +342,7 @@ public class GuiBase extends GuiContainer {
 	 * @return boolean Returns true if mouse pointer is in region specified
 	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
 	 */
-	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY) {
+	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
 		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
 

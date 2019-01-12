@@ -50,7 +50,7 @@ public class BlockWrenchEventHandler {
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
 			if (wrenableBlocks.contains(state.getBlock())) {
 				Block block = state.getBlock();
-				block.onBlockActivated(event.getWorld(), event.getPos(), state, event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
+				block.onBlockActivated(state, event.getWorld(), event.getPos(), event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
 				event.setCanceled(true);
 			}
 		}

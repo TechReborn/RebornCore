@@ -29,6 +29,7 @@
 package reborncore;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.CrashReportExtender;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
@@ -144,6 +146,10 @@ public class RebornCore {
 		event.registerPacket(PacketFluidIOSave.class, Distribution.SERVER);
 		event.registerPacket(PacketSendLong.class, Distribution.CLIENT);
 		event.registerPacket(PacketSendObject.class, Distribution.CLIENT);
+	}
+
+	public static Dist getSide(){
+		return FMLEnvironment.dist;
 	}
 
 }

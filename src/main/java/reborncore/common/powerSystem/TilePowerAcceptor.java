@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.ExternalPowerHandler;
@@ -42,6 +43,7 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -69,8 +71,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	// don't manually set tiers
 	@Deprecated
-	public TilePowerAcceptor(EnumPowerTier tier) {
-		this();
+	public TilePowerAcceptor(TileEntityType<?> tileEntityType, EnumPowerTier tier) {
+		this(tileEntityType);
 	}
 
 	private void setupManagers() {
@@ -163,8 +165,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	// TileMachineBase
 	@Override
-	public void update() {
-		super.update();
+	public void tick() {
+		super.tick();
 		if (world.isRemote) {
 			return;
 		}
@@ -202,16 +204,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (powerManagers.stream().filter(Objects::nonNull).anyMatch(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing).isPresent())) {
-			return true;
-		}
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		T externalCap = powerManagers.stream()
+	public <T> OptionalCapabilityInstance<T> getCapability(Capability<T> capability, EnumFacing facing) {
+		OptionalCapabilityInstance<T> externalCap = powerManagers.stream()
 			.filter(Objects::nonNull)
 			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
 			.filter(Objects::nonNull)
@@ -225,6 +219,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		return super.getCapability(capability, facing);
 	}
 
+
 	public abstract double getBaseMaxPower();
 
 	public abstract double getBaseMaxOutput();
@@ -237,16 +232,18 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	// TileEntity
-	@Override
+	//@Override
+	//TODO 1.13 tile patches are gone?
 	public void invalidate() {
-		super.invalidate();
+		//super.invalidate();
 
 		powerManagers.forEach(ExternalPowerHandler::invalidate);
 	}
 
-	@Override
+	//@Override
+	//TODO 1.13 tile patches are gone?
 	public void onChunkUnload() {
-		super.onChunkUnload();
+		//super.onChunkUnload();
 
 		powerManagers.forEach(ExternalPowerHandler::unload);
 	}

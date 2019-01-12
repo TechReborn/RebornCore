@@ -90,7 +90,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onRelease(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onRelease(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.UP.getFacing(provider), gui);
 		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
@@ -168,7 +168,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	}
 
-	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY, GuiBase guiBase) {
+	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY, GuiBase guiBase) {
 		rectX += getX();
 		rectY += getY();
 		return isInRect(guiBase, rectX, rectY, rectWidth, rectHeight, pointX, pointY);

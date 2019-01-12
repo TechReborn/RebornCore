@@ -52,7 +52,7 @@ public class SlotFilteredVoid extends BaseSlot {
 	@Override
 	public boolean isItemValid(ItemStack stack) {
 		for (ItemStack itemStack : filter) {
-			if (itemStack.getItem().equals(stack.getItem()) && itemStack.getItemDamage() == stack.getItemDamage()) {
+			if (itemStack.getItem().equals(stack.getItem())) {
 				return false;
 			}
 		}

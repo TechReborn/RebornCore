@@ -42,8 +42,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.NonNullSupplier;
+import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.IListInfoProvider;
@@ -54,13 +55,12 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.api.tile.ItemHandlerProvider;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
-import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.Tank;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
@@ -94,7 +94,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
-			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
+			//TODO 1.13 networking
+			//NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.write(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
 		}
 	}
 
@@ -202,13 +203,14 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	// This stops the tile from getting cleared when the state is
 	// updated(rotation and on/off)
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		if (oldState.getBlock() != newSate.getBlock()) {
-			return true;
-		}
-		return false;
-	}
+	//TODO 1.13 tile patches seem missing?
+//	@Override
+//	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+//		if (oldState.getBlock() != newSate.getBlock()) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 	public Optional<Inventory> getInventoryForTile() {
 		if (this instanceof ItemHandlerProvider) {
@@ -307,26 +309,15 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	//Inventory end
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public <T> OptionalCapabilityInstance<T> getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return true;
-		}
-		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
-				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if (!fluidConfig.getIoConfig().isEnabled()) {
-					return false;
+			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+				@Nonnull
+				@Override
+				public T get() {
+					return (T) getInventoryForTile().get().getExternal(facing);
 				}
-			}
-			return true;
-		}
-		return super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getInventoryForTile().get().getExternal(facing));
+			});
 		}
 		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
@@ -336,7 +327,13 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				}
 			}
 			getTank().setSide(facing);
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getTank());
+			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+				@Nonnull
+				@Override
+				public T get() {
+					return (T) getTank();
+				}
+			});
 		}
 		return super.getCapability(capability, facing);
 	}

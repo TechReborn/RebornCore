@@ -33,6 +33,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
@@ -58,7 +59,7 @@ public class GuiFluidConfiguration {
 
 	@SubscribeEvent
 	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
-		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && event.getKeyCode() == Keyboard.KEY_ESCAPE) {
+		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
 			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
 			event.setCanceled(true);
 		}
@@ -68,7 +69,7 @@ public class GuiFluidConfiguration {
 		return Collections.singletonList(fluidConfigElement);
 	}
 
-	public static boolean mouseClicked(int mouseX, int mouseY, int mouseButton, GuiBase guiBase) throws IOException {
+	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
 				for (ElementBase element : configFluidElement.elements) {
@@ -92,7 +93,7 @@ public class GuiFluidConfiguration {
 		return !getVisibleElements().isEmpty();
 	}
 
-	public static void mouseClickMove(int mouseX, int mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
+	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
 				for (ElementBase element : configFluidElement.elements) {
@@ -115,7 +116,7 @@ public class GuiFluidConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(int mouseX, int mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {

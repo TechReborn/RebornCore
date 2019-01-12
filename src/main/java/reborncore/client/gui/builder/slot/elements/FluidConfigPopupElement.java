@@ -53,7 +53,7 @@ public class FluidConfigPopupElement extends ElementBase {
 	public boolean filter = false;
 
 	ConfigFluidElement fluidElement;
-	int lastMousex, lastMousey;
+	double lastMousex, lastMousey;
 
 	public FluidConfigPopupElement(int x, int y, ConfigFluidElement fluidElement) {
 		super(x, y, Sprite.SLOT_CONFIG_POPUP);
@@ -89,7 +89,7 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onRelease(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onRelease(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleConfig(MachineFacing.UP.getFacing(provider), gui);
 		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
@@ -134,7 +134,7 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onHover(TileMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onHover(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
 		lastMousex = mouseX;
 		lastMousey = mouseY;
 		return super.onHover(provider, gui, mouseX, mouseY);
@@ -173,7 +173,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		GlStateManager.color3f(255, 255, 255);
 	}
 
-	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, int pointX, int pointY, GuiBase guiBase) {
+	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY, GuiBase guiBase) {
 		rectX += getX();
 		rectY += getY();
 		return isInRect(guiBase, rectX, rectY, rectWidth, rectHeight, pointX, pointY);
