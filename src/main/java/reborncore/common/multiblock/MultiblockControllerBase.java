@@ -683,9 +683,9 @@ public abstract class MultiblockControllerBase {
 		return connectedParts.size();
 	}
 
-	public abstract void writeToNBT(NBTTagCompound data);
+	public abstract void write(NBTTagCompound data);
 
-	public abstract void readFromNBT(NBTTagCompound data);
+	public abstract void read(NBTTagCompound data);
 
 	/**
 	 * Force this multiblock to recalculate its minimum and maximum coordinates

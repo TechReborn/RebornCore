@@ -72,10 +72,8 @@ public class Tank extends FluidTank {
 		return getFluid() != null ? getFluid().getFluid() : null;
 	}
 
-	@Override
-	public final NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public final NBTTagCompound write(NBTTagCompound nbt) {
 		NBTTagCompound tankData = new NBTTagCompound();
-		super.writeToNBT(tankData);
 		nbt.setTag(name, tankData);
 		return nbt;
 	}
@@ -86,16 +84,24 @@ public class Tank extends FluidTank {
 		}
 	}
 
-	@Override
-	public final FluidTank readFromNBT(NBTTagCompound nbt) {
+	public final FluidTank read(NBTTagCompound nbt) {
 		if (nbt.hasKey(name)) {
 			// allow to read empty tanks
 			setFluid(null);
 
 			NBTTagCompound tankData = nbt.getCompound(name);
-			super.readFromNBT(tankData);
 		}
 		return this;
+	}
+
+	@Override
+	public FluidTank readFromNBT(NBTTagCompound nbt) {
+		return read(nbt);
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		return write(nbt);
 	}
 
 	@Nullable

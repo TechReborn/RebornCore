@@ -128,21 +128,21 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		return this;
 	}
 
-	public void readFromNBT(NBTTagCompound data) {
-		readFromNBT(data, "Items");
+	public void read(NBTTagCompound data) {
+		read(data, "Items");
 	}
 
-	public void readFromNBT(NBTTagCompound data, String tag) {
+	public void read(NBTTagCompound data, String tag) {
 		NBTTagCompound nbttaglist = data.getCompound(tag);
 		deserializeNBT(nbttaglist);
 		hasChanged = true;
 	}
 
-	public void writeToNBT(NBTTagCompound data) {
-		writeToNBT(data, "Items");
+	public void write(NBTTagCompound data) {
+		write(data, "Items");
 	}
 
-	public void writeToNBT(NBTTagCompound data, String tag) {
+	public void write(NBTTagCompound data, String tag) {
 		data.setTag(tag, serializeNBT());
 	}
 

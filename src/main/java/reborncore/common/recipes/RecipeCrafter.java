@@ -322,7 +322,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 	}
 
-	public void readFromNBT(NBTTagCompound tag) {
+	public void read(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompound("Crater");
 
 		if (data.hasKey("currentTickTime")) {
@@ -339,7 +339,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 	}
 
-	public void writeToNBT(NBTTagCompound tag) {
+	public void write(NBTTagCompound tag) {
 
 		NBTTagCompound data = new NBTTagCompound();
 

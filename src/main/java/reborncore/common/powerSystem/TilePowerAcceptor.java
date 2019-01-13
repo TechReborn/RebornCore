@@ -133,14 +133,14 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		return (int) ((getEnergy() * scale / getMaxPower()));
 	}
 
-	public void readFromNBTWithoutCoords(NBTTagCompound tag) {
+	public void readWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
 		}
 	}
 
-	public NBTTagCompound writeToNBTWithoutCoords(NBTTagCompound tag) {
+	public NBTTagCompound writeWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = new NBTTagCompound();
 		data.setDouble("energy", energy);
 		tag.setTag("TilePowerAcceptor", data);

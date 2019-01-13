@@ -252,10 +252,10 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	public void read(NBTTagCompound tagCompound) {
 		super.read(tagCompound);
 		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().readFromNBT(tagCompound);
+			getInventoryForTile().get().read(tagCompound);
 		}
 		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().readFromNBT(tagCompound);
+			getCrafterForTile().get().read(tagCompound);
 		}
 		if (tagCompound.hasKey("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
@@ -271,17 +271,17 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();
 		}
-		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
+		upgradeInventory.read(tagCompound, "Upgrades");
 	}
 
 	@Override
 	public NBTTagCompound write(NBTTagCompound tagCompound) {
 		super.write(tagCompound);
 		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().writeToNBT(tagCompound);
+			getInventoryForTile().get().write(tagCompound);
 		}
 		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().writeToNBT(tagCompound);
+			getCrafterForTile().get().write(tagCompound);
 		}
 		if (slotConfiguration != null) {
 			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
@@ -289,7 +289,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		if (fluidConfiguration != null) {
 			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
 		}
-		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
+		upgradeInventory.write(tagCompound, "Upgrades");
 		return tagCompound;
 	}
 
