@@ -492,13 +492,13 @@ public class GuiBuilder {
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
 				+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.mc.fontRenderer.getStringWidth(text);
-		gui.drawString(text, x - width, y + 5, 0, layer);
+		gui.drawString(text, x - width - 2, y + 5, 0, layer);
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 91, 16, 17);
+		gui.drawTexturedModalRect(x, y, 150, 91, 16, 16);
 	}
 
 	/**
