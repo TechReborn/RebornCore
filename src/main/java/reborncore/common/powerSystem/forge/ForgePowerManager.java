@@ -42,6 +42,7 @@ import reborncore.common.registration.RebornRegistry;
 
 @RebornRegistry
 public class ForgePowerManager implements ExternalPowerManager {
+	@Override
 	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
 		if(!RebornCoreConfig.enableFE) {
 			return null;
@@ -50,6 +51,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 		return new ForgePowerHandler(acceptor);
 	}
 
+	@Override
 	public boolean isPoweredItem(ItemStack stack) {
 		if(!RebornCoreConfig.enableFE) {
 			return false;
@@ -58,6 +60,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
 	}
 
+	@Override
 	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side) {
 		if(!RebornCoreConfig.enableFE) {
 			return false;
@@ -66,6 +69,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 		return tileEntity.hasCapability(CapabilityEnergy.ENERGY, side);
 	}
 
+	@Override
 	public void dischargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
 		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
@@ -87,6 +91,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 		}
 	}
 
+	@Override
 	public void chargeItem(TilePowerAcceptor powerAcceptor, ItemStack stack) {
 		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;
@@ -106,6 +111,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 		}
 	}
 
+	@Override
 	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack) {
 		if(!RebornCoreConfig.enableFE || isOtherPoweredItem(stack)) {
 			return;

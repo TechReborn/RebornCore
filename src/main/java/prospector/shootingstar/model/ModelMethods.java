@@ -88,15 +88,15 @@ public class ModelMethods {
 		ModelLoader.setCustomStateMapper(block, mapper);
 	}
 
-	public static void setBlockStateMapper(Block block, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, IProperty<?>[] ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty<?>[] ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), blockstatePath, ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty<?>[] ignoredProperties) {
 		final String slash = !path.isEmpty() ? "/" : "";
 		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
 			@Override
