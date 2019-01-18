@@ -147,10 +147,10 @@ public class GuiBase extends GuiContainer {
 			}
 		}
 		int offset = upgrades ? 86 : 6;
-		if(getMachine().hasSlotConfig()){
+		if(isConfigEnabled() && getMachine().hasSlotConfig()){
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
-		if(getMachine().showTankConfig()){
+		if(isConfigEnabled() && getMachine().showTankConfig()){
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(FluidRegistry.LAVA));
 		}
 	}
