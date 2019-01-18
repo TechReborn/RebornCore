@@ -421,8 +421,7 @@ public class GuiBuilder {
 	}
 
 	// This stuff is WIP
-	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades,
-			ItemStack stack) {
+	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
 		int offset = -1;
 		if (!upgrades) {
 			offset = 80;
@@ -431,12 +430,13 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
 		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
 		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
+		
 //		renderItemStack(stack, posX - 19, posY + 92 - offset);
-//		String explanation = "Click on slot to configure.\r\n";
-//		explanation += "Orange side means output, blue side means input.\r\n";
-//		explanation += "Ctrl+C to copy slot config, Ctrl+V to paste slot config.";
-//		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
-		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10);
+		List<String> tips = new ArrayList<String>();
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side"));
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy"));
+		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10, tips);
 		explanation.drawScreen(mouseX, mouseY, 1.0f);
 		GlStateManager.color(1, 1, 1, 1);
 	}
@@ -446,15 +446,17 @@ public class GuiBuilder {
 
 		@SuppressWarnings("unused")
 		private GuiScreen gui;
+		private List<String> tips = null;
 
-		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight) {
+		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
 			super(gui.mc, width, height, top, bottom, left, entryHeight, gui.width, gui.height);
 			this.gui = gui;
+			this.tips = tips;
 		}
 
 		@Override
 		protected int getSize() {
-			return 1;
+			return tips.size();
 		}
 
 		@Override
