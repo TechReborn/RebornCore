@@ -183,7 +183,11 @@ public class GuiBase extends GuiContainer {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
-	
+
+	public void basicDrawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+	}
+
 	@Override 
 	protected void renderHoveredToolTip(int mouseX, int mouseY) {
 		if (isPointInRegion(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
