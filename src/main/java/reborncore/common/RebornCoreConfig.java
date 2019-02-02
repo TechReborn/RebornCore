@@ -73,4 +73,10 @@ public class RebornCoreConfig {
 	@ConfigRegistry(config = "misc", key = "Wrench Required", comment = "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
 	public static boolean wrenchRequired = true;
 
+	@ConfigRegistry(config = "upgrades", key = "Use Exponential Machine Speed Scaling", comment =
+			"Whether to use an alternative, exponential scaling algorithm like IC2.\n" +
+			"With the exponential scaling algorithm (true), processing time will be determined by (1 - OverclockerSpeed)^NumberOfOverclockers.\n" +
+			"Without the algorithm (false), processing time is determined by (1 - OverclockerSpeed*NumberOfOverclockers), with a minimum of 1% processing time."
+	)
+	public static boolean exponentialMachineSpeedScaling = false;
 }

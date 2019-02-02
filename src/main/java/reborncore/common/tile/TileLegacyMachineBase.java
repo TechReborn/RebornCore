@@ -55,6 +55,7 @@ import reborncore.api.tile.IInventoryProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.network.NetworkManager;
@@ -583,10 +584,27 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 
 	@Override
 	public void addSpeedMulti(double amount) {
-		if (speedMultiplier + amount <= 0.99) {
-			speedMultiplier += amount;
+		if(RebornCoreConfig.exponentialMachineSpeedScaling) {
+			// Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed)^NumberOfOverclockers
+
+			// Convert speed reductions into percentages of original speed.
+			// Example: A 30% speed reduction means 70% of original speed, since 100% - 30% = 70%.
+			double percentSpeedToApply = 1.0 - amount;
+			double percentSpeedCurrent = 1.0 - speedMultiplier;
+
+			// Apply the speed scaling amount to the current percent speed.
+			double newPercentSpeed = percentSpeedToApply*percentSpeedCurrent;
+
+			// Convert back from percentage of original speed to speed reduction amount
+			speedMultiplier = 1.0 - newPercentSpeed;
 		} else {
-			speedMultiplier = 0.99;
+			// Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed*NumberOfOverclockers)
+
+			if (speedMultiplier + amount <= 0.99) {
+				speedMultiplier += amount;
+			} else {
+				speedMultiplier = 0.99;
+			}
 		}
 	}
 
