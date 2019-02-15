@@ -143,7 +143,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	}
 
 	public void write(NBTTagCompound data, String tag) {
-		data.setTag(tag, serializeNBT());
+		data.put(tag, serializeNBT());
 	}
 
 	public int getContents() {

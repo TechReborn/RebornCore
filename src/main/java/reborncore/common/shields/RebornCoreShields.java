@@ -45,11 +45,11 @@ public class RebornCoreShields {
 
 	@SubscribeEvent
 	public void craft(PlayerEvent.ItemCraftedEvent event) {
-		if (event.crafting.getItem() == Items.SHIELD) {
+		if (event.getCrafting().getItem() == Items.SHIELD) {
 			for (Shield shield : ShieldRegistry.shieldList) {
-				if (shield.name.equalsIgnoreCase(event.player.getName().toString())) {
-					ItemNBTHelper.setString(event.crafting, "type", shield.name);
-					ItemNBTHelper.setBoolean(event.crafting, "vanilla", false);
+				if (shield.name.equalsIgnoreCase(event.getPlayer().getName().toString())) {
+					ItemNBTHelper.setString(event.getCrafting(), "type", shield.name);
+					ItemNBTHelper.setBoolean(event.getCrafting(), "vanilla", false);
 				}
 			}
 		}

@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 import java.lang.reflect.Type;
 
@@ -73,8 +74,8 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 				}
 			}
 
-			if (name != null && Item.REGISTRY.get(new ResourceLocation(name)) != null) {
-				ItemStack itemStack = new ItemStack(Item.REGISTRY.get(new ResourceLocation(name)), stackSize);
+			if (name != null && IRegistry.ITEM.get(new ResourceLocation(name)) != null) {
+				ItemStack itemStack = new ItemStack(IRegistry.ITEM.get(new ResourceLocation(name)), stackSize);
 				itemStack.setTag(tagCompound);
 				return itemStack;
 			}
@@ -89,8 +90,8 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 		if (src != null && src.getItem() != null) {
 			JsonObject jsonObject = new JsonObject();
 
-			if (Item.REGISTRY.getKey(src.getItem()) != null) {
-				jsonObject.addProperty(NAME, Item.REGISTRY.getKey(src.getItem()).toString());
+			if (IRegistry.ITEM.getKey(src.getItem()) != null) {
+				jsonObject.addProperty(NAME, IRegistry.ITEM.getKey(src.getItem()).toString());
 			} else {
 				return JsonNull.INSTANCE;
 			}

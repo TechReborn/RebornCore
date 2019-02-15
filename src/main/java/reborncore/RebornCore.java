@@ -34,10 +34,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,7 +75,7 @@ public class RebornCore {
 	}
 
 	@SubscribeEvent
-	public void preInit(FMLPreInitializationEvent event) {
+	public void load(FMLCommonSetupEvent event) {
 		CrashReportExtender.registerCrashCallable(new CrashHandler());
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");
@@ -92,8 +90,8 @@ public class RebornCore {
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
-		proxy.preInit(event);
-		ShieldJsonLoader.load(event);
+		proxy.setup(event);
+		ShieldJsonLoader.load();
 		MinecraftForge.EVENT_BUS.register(this);
 
 		RegistrationManager.load(event);
@@ -109,34 +107,21 @@ public class RebornCore {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("correlated:weldthrower"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
-	}
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
 		// packets
 		NetworkManager.load();
-
 		RebornCoreShields.init();
 
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
-
-		proxy.init(event);
-		RegistrationManager.load(event);
 	}
 
 	@SubscribeEvent
-	public void postInit(FMLPostInitializationEvent event) {
-		proxy.postInit(event);
+	public void loadComplete(FMLLoadCompleteEvent event) {
+		proxy.loadComplete(event);
 		RegistrationManager.load(event);
-	}
-
-	@SubscribeEvent
-	public void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		LOGGER.error("Invalid fingerprint detected for Reborn Core!");
-		RebornCore.proxy.invalidFingerprints.add("Invalid fingerprint detected for Reborn Core!");
 	}
 
 	@SubscribeEvent

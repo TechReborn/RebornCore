@@ -37,7 +37,7 @@ import reborncore.common.BaseTileBlock;
  */
 public abstract class BlockMultiblockBase extends BaseTileBlock {
 
-	protected BlockMultiblockBase(Block.Builder builder) {
+	protected BlockMultiblockBase(Block.Properties builder) {
 		super(builder);
 	}
 }

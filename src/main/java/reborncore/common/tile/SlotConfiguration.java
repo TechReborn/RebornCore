@@ -133,9 +133,9 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound tagCompound = new NBTTagCompound();
-		tagCompound.setInt("size", slotDetails.size());
+		tagCompound.putInt("size", slotDetails.size());
 		for (int i = 0; i < slotDetails.size(); i++) {
-			tagCompound.setTag("slot_" + i, slotDetails.get(i).serializeNBT());
+			tagCompound.put("slot_" + i, slotDetails.get(i).serializeNBT());
 		}
 		return tagCompound;
 	}
@@ -223,11 +223,11 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setInt("slotID", slotID);
-			Arrays.stream(EnumFacing.values()).forEach(facing -> compound.setTag("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
-			compound.setBoolean("input", input);
-			compound.setBoolean("output", output);
-			compound.setBoolean("filter", filter);
+			compound.putInt("slotID", slotID);
+			Arrays.stream(EnumFacing.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
+			compound.putBoolean("input", input);
+			compound.putBoolean("output", output);
+			compound.putBoolean("filter", filter);
 			return compound;
 		}
 
@@ -242,7 +242,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 			});
 			input = nbt.getBoolean("input");
 			output = nbt.getBoolean("output");
-			if (nbt.hasKey("filter")) { //Was added later, this allows old saves to be upgraded
+			if (nbt.contains("filter")) { //Was added later, this allows old saves to be upgraded
 				filter = nbt.getBoolean("filter");
 			}
 		}
@@ -336,9 +336,9 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound tagCompound = new NBTTagCompound();
-			tagCompound.setInt("side", side.ordinal());
-			tagCompound.setTag("config", slotIO.serializeNBT());
-			tagCompound.setInt("slot", slotID);
+			tagCompound.putInt("side", side.ordinal());
+			tagCompound.put("config", slotIO.serializeNBT());
+			tagCompound.putInt("slot", slotID);
 			return tagCompound;
 		}
 
@@ -368,7 +368,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setInt("config", ioConfig.ordinal());
+			compound.putInt("config", ioConfig.ordinal());
 			return compound;
 		}
 
@@ -410,8 +410,8 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 
 	public String toJson(String machineIdent) {
 		NBTTagCompound tagCompound = new NBTTagCompound();
-		tagCompound.setTag("data", serializeNBT());
-		tagCompound.setString("machine", machineIdent);
+		tagCompound.put("data", serializeNBT());
+		tagCompound.putString("machine", machineIdent);
 		return tagCompound.toString();
 	}
 
@@ -422,7 +422,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 		} catch (CommandSyntaxException e) {
 			throw new UnsupportedOperationException("Clipboard conetents isnt a valid slot configuation");
 		}
-		if (!compound.hasKey("machine") || !compound.getString("machine").equals(machineIdent)) {
+		if (!compound.contains("machine") || !compound.getString("machine").equals(machineIdent)) {
 			throw new UnsupportedOperationException("Machine config is not for this machine.");
 		}
 		deserializeNBT(compound.getCompound("data"));

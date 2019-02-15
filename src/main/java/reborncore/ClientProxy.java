@@ -34,9 +34,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import reborncore.client.HolidayRenderEvent;
 import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
@@ -52,23 +51,18 @@ public class ClientProxy extends CommonProxy {
 	public static MultiblockRenderEvent multiblockRenderEvent;
 
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {
-		super.preInit(event);
+	public void setup(FMLCommonSetupEvent event) {
+		super.setup(event);
 		MinecraftForge.EVENT_BUS.register(HolidayRenderEvent.class);
 		MinecraftForge.EVENT_BUS.register(new IconSupplier());
 	}
 
 	@Override
-	public void init(FMLInitializationEvent event) {
-		super.init(event);
+	public void loadComplete(FMLLoadCompleteEvent event) {
+		super.loadComplete(event);
 		MinecraftForge.EVENT_BUS.register(new StackInfoHUD());
 		multiblockRenderEvent = new MultiblockRenderEvent();
 		MinecraftForge.EVENT_BUS.register(multiblockRenderEvent);
-	}
-
-	@Override
-	public void postInit(FMLPostInitializationEvent event) {
-		super.postInit(event);
 		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
 		MinecraftForge.EVENT_BUS.register(new MultiblockClientTickHandler());
 	}

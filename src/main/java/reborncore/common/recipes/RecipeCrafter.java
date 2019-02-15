@@ -325,7 +325,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public void read(NBTTagCompound tag) {
 		NBTTagCompound data = tag.getCompound("Crater");
 
-		if (data.hasKey("currentTickTime")) {
+		if (data.contains("currentTickTime")) {
 			currentTickTime = data.getInt("currentTickTime");
 		}
 
@@ -343,9 +343,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 		NBTTagCompound data = new NBTTagCompound();
 
-		data.setDouble("currentTickTime", currentTickTime);
+		data.putDouble("currentTickTime", currentTickTime);
 
-		tag.setTag("Crater", data);
+		tag.put("Crater", data);
 	}
 
 	private boolean isActive() {

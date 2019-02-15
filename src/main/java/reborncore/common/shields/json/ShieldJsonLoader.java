@@ -31,7 +31,6 @@ package reborncore.common.shields.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.commons.io.IOUtils;
 import reborncore.RebornCore;
 import reborncore.common.shields.FaceShield;
@@ -82,7 +81,7 @@ public class ShieldJsonLoader {
 		}
 	}
 
-	public static void load(FMLPreInitializationEvent event) {
+	public static void load() {
 		new Thread(() ->
 		{
 			try {

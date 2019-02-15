@@ -34,7 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.ExternalPowerHandler;
@@ -142,8 +142,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	public NBTTagCompound writeWithoutCoords(NBTTagCompound tag) {
 		NBTTagCompound data = new NBTTagCompound();
-		data.setDouble("energy", energy);
-		tag.setTag("TilePowerAcceptor", data);
+		data.putDouble("energy", energy);
+		tag.put("TilePowerAcceptor", data);
 		return tag;
 	}
 
@@ -190,8 +190,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public NBTTagCompound write(NBTTagCompound tag) {
 		super.write(tag);
 		NBTTagCompound data = new NBTTagCompound();
-		data.setDouble("energy", getEnergy());
-		tag.setTag("TilePowerAcceptor", data);
+		data.putDouble("energy", getEnergy());
+		tag.put("TilePowerAcceptor", data);
 		return tag;
 	}
 
@@ -204,8 +204,8 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(Capability<T> capability, EnumFacing facing) {
-		OptionalCapabilityInstance<T> externalCap = powerManagers.stream()
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
+		LazyOptional<T> externalCap = powerManagers.stream()
 			.filter(Objects::nonNull)
 			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
 			.filter(Objects::nonNull)

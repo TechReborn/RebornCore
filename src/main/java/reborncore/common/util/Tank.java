@@ -74,7 +74,7 @@ public class Tank extends FluidTank {
 
 	public final NBTTagCompound write(NBTTagCompound nbt) {
 		NBTTagCompound tankData = new NBTTagCompound();
-		nbt.setTag(name, tankData);
+		nbt.put(name, tankData);
 		return nbt;
 	}
 
@@ -85,7 +85,7 @@ public class Tank extends FluidTank {
 	}
 
 	public final FluidTank read(NBTTagCompound nbt) {
-		if (nbt.hasKey(name)) {
+		if (nbt.contains(name)) {
 			// allow to read empty tanks
 			setFluid(null);
 

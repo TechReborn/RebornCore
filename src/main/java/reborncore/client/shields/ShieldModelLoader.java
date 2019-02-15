@@ -29,7 +29,7 @@
 package reborncore.client.shields;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.init.Items;
 
 /**

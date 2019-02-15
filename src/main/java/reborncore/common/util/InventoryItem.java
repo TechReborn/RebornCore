@@ -33,8 +33,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.NonNullSupplier;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -75,8 +75,8 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		if (!stack.hasTag()) {
 			stack.setTag(new NBTTagCompound());
 		}
-		if (!stack.getTag().hasKey("inventory")) {
-			stack.getTag().setTag("inventory", new NBTTagCompound());
+		if (!stack.getTag().contains("inventory")) {
+			stack.getTag().put("inventory", new NBTTagCompound());
 		}
 		return stack.getTag().getCompound("inventory");
 	}
@@ -84,8 +84,8 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 	public NBTTagCompound getSlotData(int slot) {
 		validateSlotIndex(slot);
 		NBTTagCompound invData = getInvData();
-		if (!invData.hasKey("slot_" + slot)) {
-			invData.setTag("slot_" + slot, new NBTTagCompound());
+		if (!invData.contains("slot_" + slot)) {
+			invData.put("slot_" + slot, new NBTTagCompound());
 		}
 		return invData.getCompound("slot_" + slot);
 	}
@@ -94,7 +94,7 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		validateSlotIndex(slot);
 		Validate.notNull(tagCompound);
 		NBTTagCompound invData = getInvData();
-		invData.setTag("slot_" + slot, tagCompound);
+		invData.put("slot_" + slot, tagCompound);
 	}
 
 	public List<ItemStack> getAllStacks() {
@@ -199,13 +199,13 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(
+	public <T> LazyOptional<T> getCapability(
 		@Nonnull
 			Capability<T> cap,
 		@Nullable
 			EnumFacing side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull
 				@Override
 				public T get() {
@@ -213,7 +213,7 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 				}
 			});
 		}
-		return OptionalCapabilityInstance.empty();
+		return LazyOptional.empty();
 	}
 
 }

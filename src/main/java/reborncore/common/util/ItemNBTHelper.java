@@ -72,53 +72,53 @@ public class ItemNBTHelper {
 	// ///////////////////////////////////////////////////////////////////
 
 	public static void setBoolean(ItemStack stack, String tag, boolean b) {
-		getNBT(stack).setBoolean(tag, b);
+		getNBT(stack).putBoolean(tag, b);
 	}
 
 	public static void setByte(ItemStack stack, String tag, byte b) {
-		getNBT(stack).setByte(tag, b);
+		getNBT(stack).putByte(tag, b);
 	}
 
 	public static void setShort(ItemStack stack, String tag, short s) {
-		getNBT(stack).setShort(tag, s);
+		getNBT(stack).putShort(tag, s);
 	}
 
 	public static void setInt(ItemStack stack, String tag, int i) {
-		getNBT(stack).setInt(tag, i);
+		getNBT(stack).putInt(tag, i);
 	}
 
 	public static void setLong(ItemStack stack, String tag, long l) {
-		getNBT(stack).setLong(tag, l);
+		getNBT(stack).putLong(tag, l);
 	}
 
 	public static void setFloat(ItemStack stack, String tag, float f) {
-		getNBT(stack).setFloat(tag, f);
+		getNBT(stack).putFloat(tag, f);
 	}
 
 	public static void setDouble(ItemStack stack, String tag, double d) {
-		getNBT(stack).setDouble(tag, d);
+		getNBT(stack).putDouble(tag, d);
 	}
 
 	public static void setCompound(ItemStack stack, String tag, NBTTagCompound cmp) {
 		if (!tag.equalsIgnoreCase("ench")) // not override the enchantments
 		{
-			getNBT(stack).setTag(tag, cmp);
+			getNBT(stack).put(tag, cmp);
 		}
 	}
 
 	public static void setString(ItemStack stack, String tag, String s) {
-		getNBT(stack).setString(tag, s);
+		getNBT(stack).putString(tag, s);
 	}
 
 	public static void setList(ItemStack stack, String tag, NBTTagList list) {
-		getNBT(stack).setTag(tag, list);
+		getNBT(stack).put(tag, list);
 	}
 
 	// GETTERS
 	// ///////////////////////////////////////////////////////////////////
 
 	public static boolean verifyExistance(ItemStack stack, String tag) {
-		return !stack.isEmpty() && getNBT(stack).hasKey(tag);
+		return !stack.isEmpty() && getNBT(stack).contains(tag);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected) {

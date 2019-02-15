@@ -29,7 +29,7 @@
 package reborncore.common.registration;
 
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import reborncore.RebornCore;
 
 import java.lang.annotation.*;
@@ -115,7 +115,7 @@ public interface IRegistryFactory {
 	}
 
 	public default Class<? extends Event> getProcessSate() {
-		return FMLPreInitializationEvent.class;
+		return FMLCommonSetupEvent.class;
 	}
 
 }

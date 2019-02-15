@@ -73,11 +73,11 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
 
-	public BlockMachineBase(Block.Builder builder) {
+	public BlockMachineBase(Block.Properties builder) {
 		this(builder, false);
 	}
 
-	public BlockMachineBase(Block.Builder builder, boolean hasCustomStates) {
+	public BlockMachineBase(Block.Properties builder, boolean hasCustomStates) {
 		super(builder);
 		this.hasCustomStaes = hasCustomStates;
 		if (!hasCustomStates) {

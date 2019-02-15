@@ -123,7 +123,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		// the data here until
 		// we receive a validate() call, which creates the controller and hands
 		// off the cached data.
-		if (data.hasKey("multiblockData")) {
+		if (data.contains("multiblockData")) {
 			this.cachedMultiblockData = data.getCompound("multiblockData");
 		}
 	}
@@ -135,7 +135,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		if (isMultiblockSaveDelegate() && isConnected()) {
 			NBTTagCompound multiblockData = new NBTTagCompound();
 			this.controller.write(multiblockData);
-			data.setTag("multiblockData", multiblockData);
+			data.put("multiblockData", multiblockData);
 		}
 		return data;
 	}
@@ -211,7 +211,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		if (this.isMultiblockSaveDelegate() && isConnected()) {
 			NBTTagCompound tag = new NBTTagCompound();
 			getMultiblockController().formatDescriptionPacket(tag);
-			packetData.setTag("multiblockData", tag);
+			packetData.put("multiblockData", tag);
 		}
 	}
 
@@ -223,7 +223,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * @see MultiblockTileEntityBase#encodeDescriptionPacket(NBTTagCompound)
 	 */
 	protected void decodeDescriptionPacket(NBTTagCompound packetData) {
-		if (packetData.hasKey("multiblockData")) {
+		if (packetData.contains("multiblockData")) {
 			NBTTagCompound tag = packetData.getCompound("multiblockData");
 			if (isConnected()) {
 				getMultiblockController().decodeDescriptionPacket(tag);

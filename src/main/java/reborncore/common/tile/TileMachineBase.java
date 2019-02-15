@@ -42,8 +42,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.NonNullSupplier;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -257,7 +257,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().read(tagCompound);
 		}
-		if (tagCompound.hasKey("slotConfig")) {
+		if (tagCompound.contains("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
 		} else {
 			if (getInventoryForTile().isPresent()) {
@@ -266,7 +266,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
-		if (tagCompound.hasKey("fluidConfig") && getTank() != null) {
+		if (tagCompound.contains("fluidConfig") && getTank() != null) {
 			fluidConfiguration = new FluidConfiguration(tagCompound.getCompound("fluidConfig"));
 		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();
@@ -284,10 +284,10 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 			getCrafterForTile().get().write(tagCompound);
 		}
 		if (slotConfiguration != null) {
-			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+			tagCompound.put("slotConfig", slotConfiguration.serializeNBT());
 		}
 		if (fluidConfiguration != null) {
-			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
+			tagCompound.put("fluidConfig", fluidConfiguration.serializeNBT());
 		}
 		upgradeInventory.write(tagCompound, "Upgrades");
 		return tagCompound;
@@ -309,9 +309,9 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	//Inventory end
 
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull
 				@Override
 				public T get() {
@@ -327,7 +327,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				}
 			}
 			getTank().setSide(facing);
-			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull
 				@Override
 				public T get() {

@@ -32,8 +32,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.NonNullSupplier;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
@@ -67,13 +67,13 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(
+	public <T> LazyOptional<T> getCapability(
 		@Nonnull
 			Capability<T> cap,
 		@Nullable
 			EnumFacing side) {
 		if (isEnergyItem && cap == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
-			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull
 				@Override
 				public T get() {
@@ -81,7 +81,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 				}
 			});
 		}
-		return OptionalCapabilityInstance.empty();
+		return LazyOptional.empty();
 	}
 
 	public ForgePowerItemManager getCapEnergy() {

@@ -34,9 +34,9 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.language.ModFileScanData;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 import reborncore.Distribution;
 import reborncore.RebornCore;
 import reborncore.common.util.ScanDataUtils;
@@ -58,7 +58,7 @@ public class RegistrationManager {
 	static List<Class> registryClasses = new ArrayList<>();
 
 
-	public static void init(FMLPreInitializationEvent event) {
+	public static void init(FMLCommonSetupEvent event) {
 		long start = System.currentTimeMillis();
 
 		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(RebornRegister.class);

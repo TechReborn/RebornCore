@@ -32,7 +32,7 @@ import net.minecraft.block.Block;
 
 public abstract class BaseBlock extends Block {
 
-	public BaseBlock(Builder builder) {
+	public BaseBlock(Properties builder) {
 		super(builder);
 	}
 

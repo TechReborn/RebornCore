@@ -126,9 +126,9 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound compound = new NBTTagCompound();
-		Arrays.stream(EnumFacing.values()).forEach(facing -> compound.setTag("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
-		compound.setBoolean("input", input);
-		compound.setBoolean("output", output);
+		Arrays.stream(EnumFacing.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
+		compound.putBoolean("input", input);
+		compound.putBoolean("output", output);
 		return compound;
 	}
 
@@ -173,8 +173,8 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		@Override
 		public NBTTagCompound serializeNBT() {
 			NBTTagCompound tagCompound = new NBTTagCompound();
-			tagCompound.setInt("side", side.ordinal());
-			tagCompound.setInt("config", ioConfig.ordinal());
+			tagCompound.putInt("side", side.ordinal());
+			tagCompound.putInt("config", ioConfig.ordinal());
 			return tagCompound;
 		}
 

@@ -30,7 +30,7 @@ package reborncore.api.power;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
@@ -44,9 +44,9 @@ public interface ExternalPowerHandler extends ICapabilityProvider {
 
 	@Nonnull
 	@Override
-	default <T> OptionalCapabilityInstance<T> getCapability(
+	default <T> LazyOptional<T> getCapability(
 		@Nonnull
 			Capability<T> cap) {
-		return null;
+		return LazyOptional.empty();
 	}
 }

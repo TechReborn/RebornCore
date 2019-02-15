@@ -29,7 +29,6 @@
 package reborncore;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 public class RebornRegistry {
 	public static LootManager.InnerPool lp = new LootManager.InnerPool();
 
-	public static void registerBlock(Block block, Item.Builder builder, String name) {
+	public static void registerBlock(Block block, Item.Properties builder, String name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
 		ItemBlock itemBlock = new ItemBlock(block, builder);
@@ -55,7 +54,7 @@ public class RebornRegistry {
 		GameData.register_impl(itemBlock);
 	}
 
-	public static void registerBlock(Block block, Item.Builder builder, ResourceLocation name) {
+	public static void registerBlock(Block block, Item.Properties builder, ResourceLocation name) {
 		block.setRegistryName(name);
 		ItemBlock itemBlock = new ItemBlock(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
@@ -108,7 +107,7 @@ public class RebornRegistry {
 		GameData.register_impl(block);
 	}
 
-	public static void registerBlock(Block block, Item.Builder builder) {
+	public static void registerBlock(Block block, Item.Properties builder) {
 		GameData.register_impl(block);
 		ItemBlock itemBlock = new ItemBlock(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());

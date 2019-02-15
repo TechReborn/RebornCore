@@ -152,7 +152,7 @@ public class StackInfoHUD {
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
 				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
 				+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
-			if (stack.getTag() != null && stack.getTag().hasKey("isActive")) {
+			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
 					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
 						+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;

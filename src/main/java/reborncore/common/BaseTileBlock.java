@@ -41,7 +41,7 @@ import net.minecraft.world.World;
 import java.util.Optional;
 
 public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
-	protected BaseTileBlock(Builder builder) {
+	protected BaseTileBlock(Properties builder) {
 		super(builder);
 	}
 
@@ -64,13 +64,13 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 		if (!newStack.hasTag()) {
 			newStack.setTag(new NBTTagCompound());
 		}
-		newStack.getTag().setTag("tile_data", tileData);
+		newStack.getTag().put("tile_data", tileData);
 		return Optional.of(newStack);
 	}
 
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		if (stack.hasTag() && stack.getTag().hasKey("tile_data")) {
+		if (stack.hasTag() && stack.getTag().contains("tile_data")) {
 			TileEntity tileEntity = worldIn.getTileEntity(pos);
 			NBTTagCompound nbt = stack.getTag().getCompound("tile_data");
 			injectLocationData(nbt, pos);
@@ -80,14 +80,14 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 	}
 
 	private void stripLocationData(NBTTagCompound compound) {
-		compound.removeTag("x");
-		compound.removeTag("y");
-		compound.removeTag("z");
+		compound.remove("x");
+		compound.remove("y");
+		compound.remove("z");
 	}
 
 	private void injectLocationData(NBTTagCompound compound, BlockPos pos) {
-		compound.setInt("x", pos.getX());
-		compound.setInt("y", pos.getY());
-		compound.setInt("z", pos.getZ());
+		compound.putInt("x", pos.getX());
+		compound.putInt("y", pos.getY());
+		compound.putInt("z", pos.getZ());
 	}
 }

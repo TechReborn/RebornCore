@@ -22,6 +22,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: net.minecrell.gradle.licenser.Licenser
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -42,31 +44,37 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	mappings channel: 'snapshot', version: '20180921-1.13'
+	mappings channel: 'snapshot', version: '20190215-1.13.1'
 
 	runs {
         client = {
+        
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
             source sourceSets.main
         }
         server = {
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
         }
     }
 }
 
 
 dependencies {
-	minecraft 'net.minecraftforge.test:forge:1.13-24.0.76-1.13-pre'
+	minecraft 'net.minecraftforge:forge:1.13.2-25.0.10'
 }
 
 processResources{
     inputs.property 'version', project.version
-    inputs.property 'mcversion', '1.13'
+    inputs.property 'mcversion', '1.13.2'
 
     from(sourceSets.main.resources.srcDirs) {
         include 'META_INF/mods.toml'     
-        expand 'version':project.version, 'mcversion': '1.13'
+        expand 'version':project.version, 'mcversion': '1.13.2'
     }
 
     from(sourceSets.main.resources.srcDirs) {

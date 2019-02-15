@@ -35,8 +35,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.NonNullSupplier;
-import net.minecraftforge.common.capabilities.OptionalCapabilityInstance;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.ExternalPowerHandler;
@@ -135,14 +135,14 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 
 	@Nonnull
 	@Override
-	public <T> OptionalCapabilityInstance<T> getCapability(
+	public <T> LazyOptional<T> getCapability(
 		@Nonnull
 			Capability<T> cap, EnumFacing facing) {
 		if(cap == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))){
 			if (powerManager == null) {
 				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
 			}
-			return OptionalCapabilityInstance.of(new NonNullSupplier<T>() {
+			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull
 				@Override
 				public T get() {
@@ -150,7 +150,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 				}
 			});
 		}
-		return OptionalCapabilityInstance.empty();
+		return LazyOptional.empty();
 	}
 
 	/**

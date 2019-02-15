@@ -31,9 +31,8 @@ package reborncore;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +41,12 @@ public class CommonProxy {
 
 	public List<String> invalidFingerprints = new ArrayList<>();
 
-	public void preInit(FMLPreInitializationEvent event) {
+	public void setup(FMLCommonSetupEvent event) {
 
 	}
 
-	public void init(FMLInitializationEvent event) {
-	}
 
-	public void postInit(FMLPostInitializationEvent event) {
+	public void loadComplete(FMLLoadCompleteEvent event) {
 
 	}
 
