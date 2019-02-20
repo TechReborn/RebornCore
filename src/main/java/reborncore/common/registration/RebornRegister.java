@@ -31,6 +31,7 @@ package reborncore.common.registration;
 import reborncore.Distribution;
 import reborncore.RebornCore;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -48,7 +49,8 @@ public @interface RebornRegister {
 	 *
 	 * @return mod id
 	 */
-	public String modID() default RebornCore.MOD_ID;
+	@Nonnull
+	public String value();
 
 	public int priority() default 0;
 

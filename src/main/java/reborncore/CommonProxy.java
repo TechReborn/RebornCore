@@ -31,8 +31,6 @@ package reborncore;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +39,10 @@ public class CommonProxy {
 
 	public List<String> invalidFingerprints = new ArrayList<>();
 
-	public void setup(FMLCommonSetupEvent event) {
+	public void setup() {
 
 	}
 
-
-	public void loadComplete(FMLLoadCompleteEvent event) {
-
-	}
 
 	public void loadShieldTextures() {
 

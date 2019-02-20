@@ -54,7 +54,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
-	private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
 	private final ArrayList<MutableTriple<Supplier, Consumer, Object>> objectValues;
 	private List<Consumer<InventoryCrafting>> craftEvents;
 	private Integer[] integerParts;
@@ -73,7 +72,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
-		this.longValues = new ArrayList<>();
 		this.objectValues = new ArrayList<>();
 
 		this.tile = tile;
@@ -87,13 +85,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.shortValues.trimToSize();
 	}
 
-	public void addLongSync(final List<Pair<LongSupplier, LongConsumer>> syncables) {
-
-		for (final Pair<LongSupplier, LongConsumer> syncable : syncables) {
-			this.longValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), (long) 0));
-		}
-		this.longValues.trimToSize();
-	}
 
 	public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
 
@@ -173,18 +164,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				}
 			}
 
-			if (!this.longValues.isEmpty()) {
-				int longs = 0;
-				for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
-					final long supplied = value.getLeft().getAsLong();
-					if (supplied != value.getRight()) {
-						sendLong(listener, this, longs, supplied);
-						value.setRight(supplied);
-					}
-					longs++;
-				}
-			}
-
 			if (!this.objectValues.isEmpty()) {
 				int objects = 0;
 				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
@@ -225,15 +204,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			}
 		}
 
-		if (!this.longValues.isEmpty()) {
-			int longs = 0;
-			for (final MutableTriple<LongSupplier, LongConsumer, Long> value : this.longValues) {
-				final long supplied = value.getLeft().getAsLong();
-				sendLong(listener, this, longs, supplied);
-				value.setRight(supplied);
-				longs++;
-			}
-		}
 
 		if (!this.objectValues.isEmpty()) {
 			int objects = 0;
@@ -244,11 +214,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				objects++;
 			}
 		}
-	}
-
-	@Override
-	public void handleLong(int var, long value) {
-		this.longValues.get(var).getMiddle().accept(value);
 	}
 
 	@Override

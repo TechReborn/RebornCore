@@ -78,7 +78,7 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
 				}
 				for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
 					if (user.username.equalsIgnoreCase(str)) {
-						location = new ResourceLocation("LOOKUP:" + str);
+						location = new ResourceLocation("lookup_" + str);
 					}
 				}
 				if (location == null) {

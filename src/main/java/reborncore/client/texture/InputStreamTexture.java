@@ -29,12 +29,16 @@
 package reborncore.client.texture;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.data.IMetadataSectionSerializer;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
+import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +48,7 @@ import java.io.InputStream;
  */
 public class InputStreamTexture extends AbstractTexture {
 	protected final InputStream textureLocation;
-	BufferedImage image;
+	NativeImage image;
 	String name;
 
 	public InputStreamTexture(InputStream textureResourceLocation, String name) {
@@ -56,46 +60,49 @@ public class InputStreamTexture extends AbstractTexture {
 	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
 		//TODO 1.13
-//		if (image == null) {
-//			IResource iresource = null;
-//			try {
-//				iresource = new IResource() {
-//
-//					@Override
-//					public ResourceLocation getResourceLocation() {
-//						return new ResourceLocation("reborncore:loaded/" + name);
-//					}
-//
-//					@Override
-//					public InputStream getInputStream() {
-//						return textureLocation;
-//					}
-//
-//					@Override
-//					public boolean hasMetadata() {
-//						return false;
-//					}
-//
-//					@Override
-//					public <T extends IMetadataSection> T getMetadata(String sectionName) {
-//						return null;
-//					}
-//
-//					@Override
-//					public String getResourcePackName() {
-//						return "reborncore";
-//					}
-//
-//					@Override
-//					public void close() {
-//
-//					}
-//				};
-//				image = TextureUtil.readBufferedImage(iresource.getInputStream());
-//			} finally {
-//				IOUtils.closeQuietly(iresource);
-//			}
-//		}
-//		TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), image, false, false);
+		if (image == null) {
+			IResource iresource = null;
+			try {
+				iresource = new IResource() {
+
+					@Override
+					public ResourceLocation getLocation() {
+						return new ResourceLocation("reborncore:loaded/" + name);
+					}
+
+					@Override
+					public InputStream getInputStream() {
+						return textureLocation;
+					}
+
+					@Override
+					public boolean hasMetadata() {
+						return false;
+					}
+
+					@Nullable
+					@Override
+					public <T> T getMetadata(IMetadataSectionSerializer<T> iMetadataSectionSerializer) {
+						return null;
+					}
+
+					@Override
+					public String getPackName() {
+						return "reborncore";
+					}
+
+					@Override
+					public void close() {
+
+					}
+				};
+				image = NativeImage.read(iresource.getInputStream());
+			} finally {
+				IOUtils.closeQuietly(iresource);
+			}
+		}
+		this.bindTexture();
+		TextureUtil.allocateTextureImpl(this.getGlTextureId(), 0, image.getWidth(), image.getHeight());
+		image.uploadTextureSub(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false);
 	}
 }

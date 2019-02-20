@@ -30,7 +30,6 @@ package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.text.TextComponentString;
@@ -45,12 +44,11 @@ import reborncore.client.gui.builder.slot.elements.ConfigSlotElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.PacketConfigSave;
+import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -135,7 +133,7 @@ public class GuiSlotConfiguration {
 		String json = Minecraft.getInstance().keyboardListener.getClipboardString();
 		try {
 			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
-			NetworkManager.sendToServer(new PacketConfigSave(machine.getPos(), machine.slotConfiguration));
+			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.slotConfiguration));
 			Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
 			Minecraft.getInstance().player.sendMessage(new TextComponentString(e.getMessage()));

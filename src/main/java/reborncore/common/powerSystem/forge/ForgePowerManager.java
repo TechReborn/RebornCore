@@ -40,7 +40,7 @@ import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.registration.RebornRegister;
 
-@RebornRegister
+@RebornRegister("reborncore")
 public class ForgePowerManager implements ExternalPowerManager {
 	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
 		if (!RebornCoreConfig.enableFE) {

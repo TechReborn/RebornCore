@@ -36,11 +36,11 @@ public class ExtendedPacketBuffer extends PacketBuffer {
 		super(wrapped);
 	}
 
-	public void writeObject(Object object) {
+	protected void writeObject(Object object) {
 		ObjectBufferUtils.writeObject(object, this);
 	}
 
-	public Object readObject() {
+	protected Object readObject() {
 		return ObjectBufferUtils.readObject(this);
 	}
 }

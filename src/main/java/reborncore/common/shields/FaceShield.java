@@ -40,7 +40,7 @@ public class FaceShield extends Shield {
 
 	@Override
 	public ResourceLocation getShieldTexture() {
-		return new ResourceLocation("reborncore:textures/shields/people/" + name + ".png");
+		return new ResourceLocation("reborncore:textures/shields/people/" + name.toLowerCase() + ".png");
 	}
 
 	@Override

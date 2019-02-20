@@ -33,9 +33,9 @@ package reborncore.common.network;
  */
 public class PacketWrapper {
 
-	INetworkPacket packet;
+	NetworkPacket packet;
 
-	public PacketWrapper(INetworkPacket packet) {
+	public PacketWrapper(NetworkPacket packet) {
 		this.packet = packet;
 	}
 
@@ -47,7 +47,7 @@ public class PacketWrapper {
 	//		try {
 	//			ExtendedPacketBuffer packetBuffer = new ExtendedPacketBuffer(buf);
 	//			String name = packetBuffer.readString(packetBuffer.readInt());
-	//			packet = (INetworkPacket) Class.forName(name).newInstance();
+	//			packet = (NetworkPacket) Class.forName(name).newInstance();
 	//		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 	//			e.printStackTrace();
 	//		}

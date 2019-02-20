@@ -144,17 +144,6 @@ public class ContainerTileInventoryBuilder {
 	}
 
 	/**
-	 * @param supplier The supplier it can supply a variable holding in an Long it
-	 * will be synced with a custom packet
-	 * @param setter The setter to call when the variable has been updated.
-	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
-	 */
-	public ContainerTileInventoryBuilder syncLongValue(final LongSupplier supplier, final LongConsumer setter) {
-		this.parent.longValues.add(Pair.of(supplier, setter));
-		return this;
-	}
-
-	/**
 	 * @param supplier The supplier it can supply a variable holding in an Object it
 	 * will be synced with a custom packet
 	 * @param setter The setter to call when the variable has been updated.

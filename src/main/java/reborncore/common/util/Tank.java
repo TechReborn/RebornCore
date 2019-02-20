@@ -33,8 +33,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.CustomDescriptionPacket;
+import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.TileMachineBase;
 
@@ -152,18 +153,18 @@ public class Tank extends FluidTank {
 		if (current != null) {
 			if (lastBeforeUpdate != null) {
 				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
-					NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
 					lastBeforeUpdate = current.copy();
 				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
-					NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
 					lastBeforeUpdate = current.copy();
 				}
 			} else {
-				NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
 				lastBeforeUpdate = current.copy();
 			}
 		} else if (lastBeforeUpdate != null) {
-			NetworkManager.sendToWorld(new CustomDescriptionPacket(tile), tile.getWorld());
+			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
 			lastBeforeUpdate = null;
 		}
 	}

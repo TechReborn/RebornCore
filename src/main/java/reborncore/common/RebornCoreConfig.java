@@ -31,7 +31,7 @@ package reborncore.common;
 import reborncore.common.registration.RebornRegister;
 import reborncore.common.registration.impl.ConfigRegistry;
 
-@RebornRegister
+@RebornRegister("reborncore")
 public class RebornCoreConfig {
 
 	@ConfigRegistry(config = "power", key = "EU - FU ratio", comment = "The Amount of FU to output from EU")

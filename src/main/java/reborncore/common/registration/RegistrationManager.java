@@ -31,12 +31,11 @@ package reborncore.common.registration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.apache.commons.lang3.Validate;
 import reborncore.Distribution;
 import reborncore.RebornCore;
 import reborncore.common.util.ScanDataUtils;
@@ -54,14 +53,21 @@ import java.util.stream.Collectors;
  */
 public class RegistrationManager {
 
-	static List<IRegistryFactory> factoryList = new ArrayList<>();
-	static List<Class> registryClasses = new ArrayList<>();
+	String modid;
+
+	public RegistrationManager(String modid) {
+		this.modid = modid;
+		init();
+		load(LoadStage.CONSTRUCTION);
+	}
 
 
-	public static void init(FMLCommonSetupEvent event) {
+	List<Class> registryClasses = new ArrayList<>();
+
+	private void init() {
 		long start = System.currentTimeMillis();
-
 		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(RebornRegister.class);
+		annotations.removeIf(annotationData -> !annotationData.getAnnotationData().get("value").equals(modid));
 		annotations.sort(Comparator.comparingInt(RegistrationManager::getPriority));
 		for (ModFileScanData.AnnotationData data : annotations) {
 			try {
@@ -72,10 +78,6 @@ public class RegistrationManager {
 					continue;
 				}
 				Class clazz = Class.forName(data.getClassType().getClassName());
-				if (isEarlyReg(data)) {
-					handleClass(clazz, null, factoryList);
-					continue;
-				}
 				registryClasses.add(clazz);
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException("Failed to load class", e);
@@ -95,14 +97,7 @@ public class RegistrationManager {
 		return 0;
 	}
 
-	private static boolean isEarlyReg(ModFileScanData.AnnotationData annotationData) {
-		if (annotationData.getAnnotationData().containsKey("earlyReg")) {
-			return (boolean) annotationData.getAnnotationData().get("earlyReg");
-		}
-		return false;
-	}
-
-	private static boolean isModPresent(ModFileScanData.AnnotationData annotationData) {
+	private boolean isModPresent(ModFileScanData.AnnotationData annotationData) {
 		if (!annotationData.getAnnotationData().containsKey("modOnly")) { //Doesnt have any details about if its only to be loaded along with a specfic mod, so we assume true
 			return true;
 		}
@@ -131,7 +126,7 @@ public class RegistrationManager {
 	}
 
 	//This ensures that the class that might be loaded doesnt have any of the common side only markers on it. Its slow but will save us from some common issues
-	private static boolean isValidOnSide(ModFileScanData.AnnotationData annotationData) {
+	private boolean isValidOnSide(ModFileScanData.AnnotationData annotationData) {
 		String side = RebornCore.getSide().toString().toUpperCase();
 		if (annotationData.getAnnotationData().containsKey("side")) {
 			ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) annotationData.getAnnotationData().get("side");
@@ -180,36 +175,30 @@ public class RegistrationManager {
 		return true;
 	}
 
-	public static void load(Event event) {
+	public void load(LoadStage event) {
 		long start = System.currentTimeMillis();
-		final ModContainer activeMod = null;// Loader.instance().activeModContainer();
 
-		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
+		List<IRegistryFactory> factoryList = getFactorysForSate(event);
 		if (!factoryList.isEmpty()) {
 			for (Class clazz : registryClasses) {
-				handleClass(clazz, activeMod, factoryList);
+				handleClass(clazz,factoryList);
 			}
 			factoryList.forEach(IRegistryFactory::factoryComplete);
-			setActiveModContainer(activeMod);
 		}
 
 		RebornCore.LOGGER.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static void handleClass(Class clazz, ModContainer activeMod, List<IRegistryFactory> factories) {
+	private void handleClass(Class clazz, List<IRegistryFactory> factories) {
 		RebornRegister annotation = (RebornRegister) getAnnoation(clazz.getAnnotations(), RebornRegister.class);
-		if (annotation != null) {
-			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
-				setActiveMod(annotation.modID());
-			}
-		}
+		Validate.isTrue(annotation.value().equals(modid));
 		for (IRegistryFactory regFactory : factories) {
 			for (Field field : clazz.getDeclaredFields()) {
 				if (!regFactory.getTargets().contains(RegistryTarget.FIELD)) {
 					continue;
 				}
 				if (field.isAnnotationPresent(regFactory.getAnnotation())) {
-					regFactory.handleField(field);
+					regFactory.handleField(modid, field);
 				}
 			}
 			for (Method method : clazz.getDeclaredMethods()) {
@@ -217,23 +206,23 @@ public class RegistrationManager {
 					continue;
 				}
 				if (method.isAnnotationPresent(regFactory.getAnnotation())) {
-					regFactory.handleMethod(method);
+					regFactory.handleMethod(modid, method);
 				}
 
 			}
 			if (regFactory.getTargets().contains(RegistryTarget.CLASS)) {
 				if (clazz.isAnnotationPresent(regFactory.getAnnotation())) {
-					regFactory.handleClass(clazz);
+					regFactory.handleClass(modid, clazz);
 				}
 			}
 		}
 	}
 
-	private static List<IRegistryFactory> getFactorysForSate(Class<? extends Event> event) {
-		return factoryList.stream().filter(iRegistryFactory -> iRegistryFactory.getProcessSate() == event).collect(Collectors.toList());
+	private List<IRegistryFactory> getFactorysForSate(LoadStage stage) {
+		return factoryList.stream().filter(factory -> factory.getProcessSate() == stage).collect(Collectors.toList());
 	}
 
-	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
+	public Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
 		for (Annotation annotation : annotations) {
 			if (annotation.annotationType() == factory.getAnnotation()) {
 				return annotation;
@@ -249,6 +238,12 @@ public class RegistrationManager {
 			}
 		}
 		return null;
+	}
+
+	//Factory are static, they are passed the modid
+	static List<IRegistryFactory> factoryList = new ArrayList<>();
+	static {
+		loadFactorys();
 	}
 
 	private static void loadFactorys() {
@@ -274,17 +269,5 @@ public class RegistrationManager {
 		}
 	}
 
-	private static void setActiveMod(String modID) {
-//		for (ModContainer modContainer : Loader.instance().getActiveModList()) {
-//			if (modContainer.getModId().equals(modID)) {
-//				setActiveModContainer(modContainer);
-//				break;
-//			}
-//		}
-	}
-
-	private static void setActiveModContainer(ModContainer container) {
-//		Loader.instance().setActiveModContainer(container);
-	}
 
 }

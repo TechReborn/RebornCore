@@ -29,72 +29,62 @@
 package reborncore.common.network;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import reborncore.Distribution;
+import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.ArrayList;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
+//TODO write this
 public class NetworkManager {
 
-	private static final SimpleChannel INTERNAL_HANDLER = NetworkRegistry.ChannelBuilder
-		.named(new ResourceLocation("reborncore", "networking"))
-		.simpleChannel();
+	public static NetworkPacket createPacket(ResourceLocation resourceLocation, Consumer<ExtendedPacketBuffer> packetBufferConsumer){
+		throw new UnsupportedOperationException("Needs coding :0");
+	}
 
-	public static void load() {
-		MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent());
 
-		INTERNAL_HANDLER.registerMessage(0, PacketWrapper.class, new BiConsumer<PacketWrapper, PacketBuffer>() {
-			@Override
-			public void accept(PacketWrapper packetWrapper, PacketBuffer buffer) {
-
-			}
-		}, new Function<PacketBuffer, PacketWrapper>() {
-			@Override
-			public PacketWrapper apply(PacketBuffer buffer) {
-				return null;
-			}
-		}, new BiConsumer<PacketWrapper, Supplier<NetworkEvent.Context>>() {
-			@Override
-			public void accept(PacketWrapper packetWrapper, Supplier<NetworkEvent.Context> contextSupplier) {
-
-			}
-		});
+	public static void registerClientboundHandler(ResourceLocation resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer){
 
 	}
 
-	public static ArrayList<INetworkPacket> packetList = new ArrayList<>();
+	public static void registerServerboundHandler(ResourceLocation resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer){
 
-	public static void sendToServer(INetworkPacket packet) {
-		INTERNAL_HANDLER.sendToServer(new PacketWrapper(packet));
 	}
 
-	//	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
-	//	//	INTERNAL_HANDLER.sendToAllAround(new PacketWrapper(packet), point);
-	//	}
-
-	public static void sendToAll(INetworkPacket packet) {
-		//INTERNAL_HANDLER.sendToAll(new PacketWrapper(packet));
+	public static void sendToServer(NetworkPacket packet) {
 	}
 
-	public static void sendToPlayer(INetworkPacket packet, EntityPlayerMP playerMP) {
-		//INTERNAL_HANDLER.sendTo(new PacketWrapper(packet), playerMP);
+	public static void sendToAllAround(NetworkPacket packet, PacketDistributor.TargetPoint point) {
+
 	}
 
-	public static void sendToWorld(INetworkPacket packet, World world) {
-		//INTERNAL_HANDLER.sendToDimension(new PacketWrapper(packet), world.provider.getDimension());
+	public static void sendToAll(NetworkPacket packet) {
+
 	}
 
-	public static void registerPacket(Class<? extends INetworkPacket> packetClass, Distribution side) {
-		throw new UnsupportedOperationException("Not working just yet");
+	public static void sendToPlayer(NetworkPacket packet, EntityPlayerMP playerMP) {
+
+	}
+
+	public static void sendToWorld(NetworkPacket packet, World world) {
+
+	}
+
+	public static void sendToTracking(NetworkPacket packet, Chunk chunk){
+
+	}
+
+	public static void sendToTracking(NetworkPacket packet, World world, BlockPos pos){
+		sendToTracking(packet, world.getChunk(pos));
+	}
+
+	public static void sendToTracking(NetworkPacket packet, TileEntity tileEntity){
+		sendToTracking(packet, tileEntity.getWorld(), tileEntity.getPos());
 	}
 
 }

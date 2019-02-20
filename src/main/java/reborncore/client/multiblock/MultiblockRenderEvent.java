@@ -73,7 +73,7 @@ public class MultiblockRenderEvent {
 	private ICamera camera;
 
 	public MultiblockRenderEvent() {
-		this.fluidRenderer = new RebornFluidRenderer();
+		//this.fluidRenderer = new RebornFluidRenderer();
 	}
 
 	public void setMultiblock(MultiblockSet set) {

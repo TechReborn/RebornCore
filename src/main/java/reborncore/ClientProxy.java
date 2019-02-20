@@ -34,8 +34,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import reborncore.client.HolidayRenderEvent;
 import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
@@ -51,15 +49,10 @@ public class ClientProxy extends CommonProxy {
 	public static MultiblockRenderEvent multiblockRenderEvent;
 
 	@Override
-	public void setup(FMLCommonSetupEvent event) {
-		super.setup(event);
+	public void setup() {
+		super.setup();
 		MinecraftForge.EVENT_BUS.register(HolidayRenderEvent.class);
 		MinecraftForge.EVENT_BUS.register(new IconSupplier());
-	}
-
-	@Override
-	public void loadComplete(FMLLoadCompleteEvent event) {
-		super.loadComplete(event);
 		MinecraftForge.EVENT_BUS.register(new StackInfoHUD());
 		multiblockRenderEvent = new MultiblockRenderEvent();
 		MinecraftForge.EVENT_BUS.register(multiblockRenderEvent);

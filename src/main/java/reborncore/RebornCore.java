@@ -31,11 +31,8 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,12 +40,10 @@ import reborncore.api.ToolManager;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
-import reborncore.common.network.NetworkManager;
-import reborncore.common.network.RegisterPacketEvent;
-import reborncore.common.network.packet.*;
+import reborncore.common.network.ClientBoundPackets;
+import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
-import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
@@ -66,16 +61,12 @@ public class RebornCore {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static CommonProxy proxy;
+	public static CommonProxy proxy = new ClientProxy();
 	public static File configDir;
 
 	public RebornCore() {
 		LOGGER.info("Hello minecraft!");
-		MinecraftForge.EVENT_BUS.register(this);
-	}
 
-	@SubscribeEvent
-	public void load(FMLCommonSetupEvent event) {
 		CrashReportExtender.registerCrashCallable(new CrashHandler());
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");
@@ -84,17 +75,14 @@ public class RebornCore {
 		}
 		//MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
 		//ConfigRegistryFactory.setConfigDir(configDir);
-		RegistrationManager.init(event);
-		RegistrationManager.load(new RegistryConstructionEvent());
+		RegistrationManager registrationManager = new RegistrationManager("reborncore");
 		//ConfigRegistryFactory.saveAll();
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
-		proxy.setup(event);
+		proxy.setup();
 		ShieldJsonLoader.load();
 		MinecraftForge.EVENT_BUS.register(this);
-
-		RegistrationManager.load(event);
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("ic2:wrench"), true));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("forestry:wrench"), false));
@@ -108,34 +96,16 @@ public class RebornCore {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
 
-		// packets
-		NetworkManager.load();
 		RebornCoreShields.init();
 
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
 		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
 		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
-	}
 
-	@SubscribeEvent
-	public void loadComplete(FMLLoadCompleteEvent event) {
-		proxy.loadComplete(event);
-		RegistrationManager.load(event);
-	}
-
-	@SubscribeEvent
-	public void registerPackets(RegisterPacketEvent event) {
-		event.registerPacket(CustomDescriptionPacket.class, Distribution.CLIENT);
-		event.registerPacket(PacketSlotSave.class, Distribution.SERVER);
-		event.registerPacket(PacketFluidConfigSave.class, Distribution.SERVER);
-		event.registerPacket(PacketConfigSave.class, Distribution.SERVER);
-		event.registerPacket(PacketSlotSync.class, Distribution.CLIENT);
-		event.registerPacket(PacketFluidConfigSync.class, Distribution.CLIENT);
-		event.registerPacket(PacketIOSave.class, Distribution.SERVER);
-		event.registerPacket(PacketFluidIOSave.class, Distribution.SERVER);
-		event.registerPacket(PacketSendLong.class, Distribution.CLIENT);
-		event.registerPacket(PacketSendObject.class, Distribution.CLIENT);
+		// packets
+		ServerBoundPackets.init();
+		ClientBoundPackets.init();
 	}
 
 	public static Dist getSide(){

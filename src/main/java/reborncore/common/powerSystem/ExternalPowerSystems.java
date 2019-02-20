@@ -80,7 +80,7 @@ public class ExternalPowerSystems implements IRegistryFactory {
 	}
 
 	@Override
-	public void handleClass(Class clazz) {
+	public void handleClass(String modId, Class clazz) {
 		if (isPowerManager(clazz)) {
 			try {
 				ExternalPowerManager powerManager = (ExternalPowerManager) clazz.newInstance();

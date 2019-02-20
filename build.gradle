@@ -47,25 +47,33 @@ minecraft {
 	mappings channel: 'snapshot', version: '20190215-1.13.1'
 
 	runs {
-        client = {
-        
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
-        }
-        server = {
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
-        }
-    }
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+			mods {
+				reborncore {
+					source sourceSets.main
+				}
+			}
+		}
+
+		server {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+			mods {
+				reborncore {
+					source sourceSets.main
+				}
+			}
+		}
+	}
 }
 
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.10'
+	minecraft 'net.minecraftforge:forge:1.13.2-25.0.44'
 }
 
 processResources{

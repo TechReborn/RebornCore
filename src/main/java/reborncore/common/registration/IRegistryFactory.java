@@ -55,7 +55,7 @@ public interface IRegistryFactory {
 	 *
 	 * @param field the method
 	 */
-	public default void handleField(Field field) {
+	public default void handleField(String modID, Field field) {
 	}
 
 	/**
@@ -63,7 +63,7 @@ public interface IRegistryFactory {
 	 *
 	 * @param method the method
 	 */
-	public default void handleMethod(Method method) {
+	public default void handleMethod(String modID, Method method) {
 	}
 
 	/**
@@ -71,7 +71,7 @@ public interface IRegistryFactory {
 	 *
 	 * @param clazz the class
 	 */
-	public default void handleClass(Class clazz) {
+	public default void handleClass(String modID, Class clazz) {
 	}
 
 	/**
@@ -114,8 +114,8 @@ public interface IRegistryFactory {
 		String modID() default RebornCore.MOD_ID;
 	}
 
-	public default Class<? extends Event> getProcessSate() {
-		return FMLCommonSetupEvent.class;
+	default LoadStage getProcessSate() {
+		return LoadStage.CONSTRUCTION;
 	}
 
 }

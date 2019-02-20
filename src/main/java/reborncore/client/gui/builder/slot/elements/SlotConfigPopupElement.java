@@ -41,8 +41,8 @@ import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.packet.PacketIOSave;
-import reborncore.common.network.packet.PacketSlotSave;
+import reborncore.common.network.NetworkPacket;
+import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.MachineFacing;
@@ -114,7 +114,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(currentSlot.getSlotIO().getIoConfig().getNext());
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		PacketSlotSave packetSlotSave = new PacketSlotSave(guiBase.tile.getPos(), newConfig);
+		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.tile.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -133,7 +133,7 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		PacketIOSave packetSlotSave = new PacketIOSave(guiBase.tile.getPos(), id, input, output, filter);
+		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.tile.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 

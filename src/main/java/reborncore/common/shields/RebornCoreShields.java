@@ -30,9 +30,12 @@ package reborncore.common.shields;
 
 import net.minecraft.init.Items;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import reborncore.common.util.ItemNBTHelper;
+
+import java.util.function.Consumer;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -40,19 +43,16 @@ import reborncore.common.util.ItemNBTHelper;
 public class RebornCoreShields {
 
 	public static void init() {
-		MinecraftForge.EVENT_BUS.register(new RebornCoreShields());
-	}
-
-	@SubscribeEvent
-	public void craft(PlayerEvent.ItemCraftedEvent event) {
-		if (event.getCrafting().getItem() == Items.SHIELD) {
-			for (Shield shield : ShieldRegistry.shieldList) {
-				if (shield.name.equalsIgnoreCase(event.getPlayer().getName().toString())) {
-					ItemNBTHelper.setString(event.getCrafting(), "type", shield.name);
-					ItemNBTHelper.setBoolean(event.getCrafting(), "vanilla", false);
+		MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.ItemCraftedEvent>) event -> {
+			if (event.getCrafting().getItem() == Items.SHIELD) {
+				for (Shield shield : ShieldRegistry.shieldList) {
+					if (shield.name.equalsIgnoreCase(event.getPlayer().getName().toString())) {
+						ItemNBTHelper.setString(event.getCrafting(), "type", shield.name);
+						ItemNBTHelper.setBoolean(event.getCrafting(), "vanilla", false);
+					}
 				}
 			}
-		}
+		});
 	}
 
 }
