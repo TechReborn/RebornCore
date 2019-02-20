@@ -30,6 +30,7 @@ package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -72,6 +73,10 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public static ItemStack basicFrameStack;
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
+
+	public BlockMachineBase(){
+		this(Block.Properties.create(Material.IRON));
+	}
 
 	public BlockMachineBase(Block.Properties builder) {
 		this(builder, false);
