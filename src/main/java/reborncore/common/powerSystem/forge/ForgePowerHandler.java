@@ -59,6 +59,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 		this.powerManager = new ForgeEnergyStorage(powerAcceptor, null);
 	}
 
+	@Override
 	public void tick() {
 		Map<EnumFacing, TileEntity> acceptors = new HashMap<>();
 		if (powerAcceptor.getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
@@ -125,10 +126,12 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 		}
 	}
 
+	@Override
 	public void unload() {
 
 	}
 
+	@Override
 	public void invalidate() {
 
 	}

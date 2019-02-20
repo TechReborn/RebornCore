@@ -59,7 +59,10 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public int extraTier;
 	public double powerChange;
 	public double powerLastTick;
-	public boolean checkOverfill = true; //Set to flase to disable the overfill check.
+	public boolean checkOverfill = true; //Set to false to disable the overfill check.
+	// Some external power systems (EU) support multiple energy packets per tick, this allows machines to possibly emit
+	// multiple packets in a tick. Other power systems such as FE will ignore this option.
+	public int maxPacketsPerTick = 1;
 
 	private List<ExternalPowerHandler> powerManagers;
 
@@ -95,6 +98,11 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
+	}
+
+
+	public void setMaxPacketsPerTick(int maxPacketsPerTick) {
+		this.maxPacketsPerTick = maxPacketsPerTick;
 	}
 
 	public double getFreeSpace() {

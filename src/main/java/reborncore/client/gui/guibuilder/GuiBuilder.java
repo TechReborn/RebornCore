@@ -30,8 +30,10 @@ package reborncore.client.gui.guibuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
@@ -420,8 +422,7 @@ public class GuiBuilder {
 	}
 
 	// This stuff is WIP
-	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades,
-	                                ItemStack stack) {
+	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
 		int offset = -1;
 		if (!upgrades) {
 			offset = 80;
@@ -430,14 +431,40 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
 		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
 		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
-		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
-		//		String explanation = "Click on slot to configure.\r\n";
-		//		explanation += "Orange side means output, blue side means input.\r\n";
-		//		explanation += "Ctrl+C to copy slot config, Ctrl+V to paste slot config.";
-		//		gui.mc.fontRenderer.drawSplitString(explanation, posX - 75, posY + 108 - offset, 72, 4210752);
-		//	TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10);
-		//	explanation.drawScreen(mouseX, mouseY, 1.0f);
 		GlStateManager.color4f(1, 1, 1, 1);
+
+//		renderItemStack(stack, posX - 19, posY + 92 - offset);
+		List<String> tips = new ArrayList<String>();
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side"));
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy"));
+		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10, tips);
+		explanation.drawScreen(mouseX, mouseY, 1.0f);
+		GlStateManager.color4f(1, 1, 1, 1);
+	}
+
+	// This stuff is WIP
+	private class TipsList extends GuiListExtended {
+
+		@SuppressWarnings("unused")
+		private GuiScreen gui;
+		private List<String> tips = null;
+
+		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
+			super(gui.mc, width, height, top, bottom, left);
+			this.gui = gui;
+			this.tips = tips;
+		}
+
+		@Override
+		protected boolean isSelected(int index) {
+			return false;
+		}
+
+		@Override
+		protected void drawBackground() {
+		}
+
 	}
 
 	/**
@@ -456,13 +483,13 @@ public class GuiBuilder {
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
 			+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.mc.fontRenderer.getStringWidth(text);
-		gui.drawString(text, x - width, y + 5, 0, layer);
+		gui.drawString(text, x - width - 2, y + 5, 0, layer);
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 91, 16, 17);
+		gui.drawTexturedModalRect(x, y, 150, 91, 16, 16);
 	}
 
 	/**

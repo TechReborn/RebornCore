@@ -37,7 +37,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
@@ -50,6 +49,7 @@ import reborncore.common.container.RebornContainer;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +63,7 @@ public class GuiBase extends GuiContainer {
 	public int ySize = 176;
 	public GuiBuilder builder = new GuiBuilder();
 	public TileEntity tile;
+	@Nullable
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
@@ -122,8 +123,10 @@ public class GuiBase extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		GuiSlotConfiguration.init(this);
-		if (getMachine().getTank() != null && getMachine().showTankConfig()) {
+		if(isConfigEnabled()){
+			GuiSlotConfiguration.init(this);
+		}
+		if (isConfigEnabled() && getMachine().getTank() != null && getMachine().showTankConfig()) {
 			GuiFluidConfiguration.init(this);
 		}
 	}
@@ -143,10 +146,10 @@ public class GuiBase extends GuiContainer {
 			}
 		}
 		int offset = upgrades ? 86 : 6;
-		if (getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
 		}
-		if (getMachine().showTankConfig()) {
+		if (isConfigEnabled() && getMachine().showTankConfig()) {
 			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(null));//TODO 1.13 fluids FluidRegistry.LAVA));
 		}
 	}
@@ -164,11 +167,11 @@ public class GuiBase extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		this.buttons.clear();
 		drawTitle();
-		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			GuiSlotConfiguration.draw(this, mouseX, mouseY);
 		}
 
-		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			GuiFluidConfiguration.draw(this, mouseX, mouseY);
 		}
 	}
@@ -190,14 +193,14 @@ public class GuiBase extends GuiContainer {
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 81 : 0;
-		if (isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
 			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
-		if (isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
+		if (isConfigEnabled() && isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
 			drawHoveringText(list, mouseX, mouseY);
@@ -252,12 +255,12 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)   {
-		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			if (GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
 				return true;
 			}
 		}
-		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			if (GuiFluidConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
 				return true;
 			}
@@ -267,10 +270,10 @@ public class GuiBase extends GuiContainer {
 
 //	@Override
 //	protected void mouseClickMove(double mouseX, double mouseY, int clickedMouseButton, long timeSinceLastClick) {
-//		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+//		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 //			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
 //		}
-//		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+//		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 //			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
 //		}
 //		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -282,7 +285,7 @@ public class GuiBase extends GuiContainer {
 		if (!upgrades) {
 			offset = 80;
 		}
-		if (isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			if (slotConfigType != SlotConfigType.ITEMS) {
 				slotConfigType = SlotConfigType.ITEMS;
 			} else {
@@ -292,19 +295,19 @@ public class GuiBase extends GuiContainer {
 				GuiSlotConfiguration.reset();
 			}
 		}
-		if (isPointInRegion(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointInRegion(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			if (slotConfigType != SlotConfigType.FLUIDS) {
 				slotConfigType = SlotConfigType.FLUIDS;
 			} else {
 				slotConfigType = SlotConfigType.NONE;
 			}
 		}
-		if (slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			if (GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
 				return true;
 			}
 		}
-		if (slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
 			if (GuiFluidConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
 				return true;
 			}
@@ -314,7 +317,7 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-		if (slotConfigType == SlotConfigType.ITEMS) {
+		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS) {
 			if (isCtrlKeyDown() && keyCode == GLFW.GLFW_KEY_C) {
 				GuiSlotConfiguration.copyToClipboard();
 				return true;
@@ -332,6 +335,11 @@ public class GuiBase extends GuiContainer {
 		super.onGuiClosed();
 	}
 
+	@Nullable
+	public TileMachineBase getMachine(){
+		return (TileMachineBase) tile;
+	}
+
 	/**
 	 * @param rectX int Top left corner of region
 	 * @param rectY int Top left corner of region
@@ -346,10 +354,6 @@ public class GuiBase extends GuiContainer {
 		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
 
-	public TileMachineBase getMachine() {
-		return (TileMachineBase) tile;
-	}
-
 	public enum Layer {
 		BACKGROUND, FOREGROUND
 	}
@@ -362,5 +366,9 @@ public class GuiBase extends GuiContainer {
 
 	public interface FluidCellProvider {
 		public ItemStack provide(Fluid fluid);
+	}
+
+	public boolean isConfigEnabled(){
+		return tile instanceof TileMachineBase && container != null;
 	}
 }

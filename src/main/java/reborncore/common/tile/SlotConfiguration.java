@@ -288,10 +288,10 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 				return;
 			}
 			TileEntity tileEntity = machineBase.getWorld().getTileEntity(machineBase.getPos().offset(side));
-			if (tileEntity == null || !tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent()) {
+			if (tileEntity == null || !tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).isPresent()) {
 				return;
 			}
-			IItemHandler sourceHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).orElse(null);
+			IItemHandler sourceHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
 			for (int i = 0; i < sourceHandler.getSlots(); i++) {
 				ItemStack sourceStack = sourceHandler.getStackInSlot(i);
 				if (sourceStack.isEmpty()) {
