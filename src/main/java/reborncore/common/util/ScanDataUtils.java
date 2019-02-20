@@ -18,7 +18,7 @@ public class ScanDataUtils {
 		Type annotationType = Type.getType(annotation);
 		for(ModFileScanData scanData : getScanData()){
 			for(ModFileScanData.AnnotationData data : scanData.getAnnotations()){
-				if(data.getAnnotationType() == annotationType){
+				if(data.getAnnotationType().equals(annotationType)){
 					dataList.add(data);
 				}
 			}

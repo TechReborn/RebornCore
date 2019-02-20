@@ -57,11 +57,12 @@ public class RegistrationManager {
 
 	public RegistrationManager(String modid) {
 		this.modid = modid;
+		loadFactorys();
 		init();
 		load(LoadStage.CONSTRUCTION);
 	}
 
-
+	List<IRegistryFactory> factoryList = new ArrayList<>();
 	List<Class> registryClasses = new ArrayList<>();
 
 	private void init() {
@@ -222,7 +223,7 @@ public class RegistrationManager {
 		return factoryList.stream().filter(factory -> factory.getProcessSate() == stage).collect(Collectors.toList());
 	}
 
-	public Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
+	public static Annotation getAnnoationFromArray(Annotation[] annotations, IRegistryFactory factory) {
 		for (Annotation annotation : annotations) {
 			if (annotation.annotationType() == factory.getAnnotation()) {
 				return annotation;
@@ -240,13 +241,7 @@ public class RegistrationManager {
 		return null;
 	}
 
-	//Factory are static, they are passed the modid
-	static List<IRegistryFactory> factoryList = new ArrayList<>();
-	static {
-		loadFactorys();
-	}
-
-	private static void loadFactorys() {
+	private void loadFactorys() {
 		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(IRegistryFactory.RegistryFactory.class);
 		for (ModFileScanData.AnnotationData data : annotations) {
 			try {
@@ -261,12 +256,14 @@ public class RegistrationManager {
 				Object object = clazz.newInstance();
 				if (object instanceof IRegistryFactory) {
 					IRegistryFactory factory = (IRegistryFactory) object;
+					factory.onInit(modid);
 					factoryList.add(factory);
 				}
 			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
+		RebornCore.LOGGER.info("Loaded " + factoryList.size() + " factories for " + modid);
 	}
 
 

@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.registration.impl;
+package reborncore.common.registration.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -63,6 +63,6 @@ public @interface ConfigRegistry {
 	 *
 	 * @return
 	 */
-	String config() default "";
+	String config() default "config";
 
 }

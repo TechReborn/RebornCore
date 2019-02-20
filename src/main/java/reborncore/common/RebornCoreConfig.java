@@ -29,7 +29,7 @@
 package reborncore.common;
 
 import reborncore.common.registration.RebornRegister;
-import reborncore.common.registration.impl.ConfigRegistry;
+import reborncore.common.registration.config.ConfigRegistry;
 
 @RebornRegister("reborncore")
 public class RebornCoreConfig {

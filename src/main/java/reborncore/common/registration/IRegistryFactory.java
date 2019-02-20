@@ -82,6 +82,14 @@ public interface IRegistryFactory {
 	}
 
 	/**
+	 * Called when the factory is created
+	 * @param modId the mod id this factory will work on
+	 */
+	public default void onInit(String modId){
+
+	}
+
+	/**
 	 * This is used to determine what type of targetes the factory should target. Try and only list the targets that are of use to keep load times down.
 	 *
 	 * The deafult is for all
