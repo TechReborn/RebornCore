@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 public class ServerBoundPackets {
 
 	public static void init() {
-		NetworkManager.registerServerboundHandler(new ResourceLocation("reborncore", "fluid_config_save"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "fluid_config_save"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			FluidConfiguration.FluidConfig fluidConfiguration = new FluidConfiguration.FluidConfig(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {
@@ -33,7 +33,7 @@ public class ServerBoundPackets {
 			});
 		});
 
-		NetworkManager.registerServerboundHandler(new ResourceLocation("reborncore", "config_save"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "config_save"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			NBTTagCompound tagCompound = packetBuffer.readCompoundTag();
 			context.enqueueWork(() -> {
@@ -46,7 +46,7 @@ public class ServerBoundPackets {
 			});
 		});
 
-		NetworkManager.registerServerboundHandler(new ResourceLocation("reborncore", "fluid_io_save"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "fluid_io_save"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			boolean input = packetBuffer.readBoolean();
 			boolean output = packetBuffer.readBoolean();
@@ -65,7 +65,7 @@ public class ServerBoundPackets {
 			});
 		});
 
-		NetworkManager.registerServerboundHandler(new ResourceLocation("reborncore", "io_save"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "io_save"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			int slotID = packetBuffer.readInt();
 			boolean input = packetBuffer.readBoolean();
@@ -89,7 +89,7 @@ public class ServerBoundPackets {
 			});
 		});
 
-		NetworkManager.registerServerboundHandler(new ResourceLocation("reborncore", "slot_save"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "slot_save"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			SlotConfiguration.SlotConfig slotConfig = new SlotConfiguration.SlotConfig(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {

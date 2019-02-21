@@ -36,7 +36,7 @@ import java.io.IOException;
 
 public class NetworkPacket {
 
-	private NetworkPacket() {
+	protected NetworkPacket() {
 	}
 
 //	ResourceLocation getName();

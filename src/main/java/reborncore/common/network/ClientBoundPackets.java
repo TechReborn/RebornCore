@@ -9,20 +9,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.RebornCore;
 import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ClientBoundPackets {
 
 	public static void init() {
-		NetworkManager.registerClientboundHandler(new ResourceLocation("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
 			BlockPos pos = extendedPacketBuffer.readBlockPos();
 			NBTTagCompound tagCompound = extendedPacketBuffer.readCompoundTag();
 			context.enqueueWork(() -> {
@@ -37,7 +34,7 @@ public class ClientBoundPackets {
 		});
 
 
-		NetworkManager.registerClientboundHandler(new ResourceLocation("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			FluidConfiguration fluidConfiguration = new FluidConfiguration(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {
@@ -55,7 +52,7 @@ public class ClientBoundPackets {
 			});
 		});
 
-		NetworkManager.registerClientboundHandler(new ResourceLocation("reborncore", "slot_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "slot_sync"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			SlotConfiguration slotConfig = new SlotConfiguration(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {
@@ -70,7 +67,7 @@ public class ClientBoundPackets {
 			});
 		});
 
-		NetworkManager.registerClientboundHandler(new ResourceLocation("reborncore", "send_object"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "send_object"), (packetBuffer, context) -> {
 			int id = packetBuffer.readInt();
 			Object value = packetBuffer.readObject();
 			String container = packetBuffer.readString(packetBuffer.readInt());
