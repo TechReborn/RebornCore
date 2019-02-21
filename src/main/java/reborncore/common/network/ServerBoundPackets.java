@@ -5,12 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
-
-import java.util.function.BiConsumer;
 
 public class ServerBoundPackets {
 
@@ -111,14 +108,14 @@ public class ServerBoundPackets {
 		});
 	}
 
-	public static NetworkPacket createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig){
+	public static NetworkPacket createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
 		});
 	}
 
-	public static NetworkPacket createPacketFluidIOSave(BlockPos pos, boolean input, boolean output){
+	public static NetworkPacket createPacketFluidIOSave(BlockPos pos, boolean input, boolean output) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "fluid_io_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeBoolean(input);
@@ -126,7 +123,7 @@ public class ServerBoundPackets {
 		});
 	}
 
-	public static NetworkPacket createPacketIOSave(BlockPos pos, int slotID, boolean input, boolean output, boolean filter){
+	public static NetworkPacket createPacketIOSave(BlockPos pos, int slotID, boolean input, boolean output, boolean filter) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "io_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeInt(slotID);
@@ -136,8 +133,7 @@ public class ServerBoundPackets {
 		});
 	}
 
-
-	public static NetworkPacket createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig){
+	public static NetworkPacket createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "slot_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());

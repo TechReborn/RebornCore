@@ -15,7 +15,6 @@ import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 
-
 public class ClientBoundPackets {
 
 	public static void init() {
@@ -32,7 +31,6 @@ public class ClientBoundPackets {
 				}
 			});
 		});
-
 
 		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
@@ -101,14 +99,14 @@ public class ClientBoundPackets {
 		});
 	}
 
-	public static NetworkPacket createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig){
+	public static NetworkPacket createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "slot_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
 		});
 	}
 
-	public static NetworkPacket createPacketSendObject(int id, Object value, Container container){
+	public static NetworkPacket createPacketSendObject(int id, Object value, Container container) {
 		return NetworkManager.createPacket(new ResourceLocation("reborncore", "send_object"), packetBuffer -> {
 			packetBuffer.writeInt(id);
 			packetBuffer.writeObject(value);

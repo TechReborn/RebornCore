@@ -30,7 +30,6 @@ package reborncore.common.registration;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
@@ -182,7 +181,7 @@ public class RegistrationManager {
 		List<IRegistryFactory> factoryList = getFactorysForSate(event);
 		if (!factoryList.isEmpty()) {
 			for (Class clazz : registryClasses) {
-				handleClass(clazz,factoryList);
+				handleClass(clazz, factoryList);
 			}
 			factoryList.forEach(IRegistryFactory::factoryComplete);
 		}
@@ -265,6 +264,5 @@ public class RegistrationManager {
 		}
 		RebornCore.LOGGER.info("Loaded " + factoryList.size() + " factories for " + modid);
 	}
-
 
 }

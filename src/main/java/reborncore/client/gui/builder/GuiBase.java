@@ -50,7 +50,6 @@ import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +122,7 @@ public class GuiBase extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		if(isConfigEnabled()){
+		if (isConfigEnabled()) {
 			GuiSlotConfiguration.init(this);
 		}
 		if (isConfigEnabled() && getMachine().getTank() != null && getMachine().showTankConfig()) {
@@ -254,7 +253,7 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)   {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			if (GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
 				return true;
@@ -268,16 +267,16 @@ public class GuiBase extends GuiContainer {
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
-//	@Override
-//	protected void mouseClickMove(double mouseX, double mouseY, int clickedMouseButton, long timeSinceLastClick) {
-//		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
-//			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
-//		}
-//		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
-//			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
-//		}
-//		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-//	}
+	//	@Override
+	//	protected void mouseClickMove(double mouseX, double mouseY, int clickedMouseButton, long timeSinceLastClick) {
+	//		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
+	//			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
+	//		}
+	//		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
+	//			GuiFluidConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
+	//		}
+	//		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+	//	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int state) {
@@ -336,7 +335,7 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Nullable
-	public TileMachineBase getMachine(){
+	public TileMachineBase getMachine() {
 		return (TileMachineBase) tile;
 	}
 
@@ -368,7 +367,7 @@ public class GuiBase extends GuiContainer {
 		public ItemStack provide(Fluid fluid);
 	}
 
-	public boolean isConfigEnabled(){
+	public boolean isConfigEnabled() {
 		return tile instanceof TileMachineBase && container != null;
 	}
 }

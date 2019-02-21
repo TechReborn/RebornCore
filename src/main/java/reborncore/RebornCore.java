@@ -31,15 +31,12 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.multiblock.MultiblockEventHandler;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
@@ -47,7 +44,6 @@ import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
-import reborncore.common.registration.config.RebornConfig;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
@@ -55,7 +51,6 @@ import reborncore.common.util.CrashHandler;
 import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
-import java.util.function.Consumer;
 
 @Mod(RebornCore.MOD_ID)
 public class RebornCore {
@@ -112,7 +107,7 @@ public class RebornCore {
 		ClientBoundPackets.init();
 	}
 
-	public static Dist getSide(){
+	public static Dist getSide() {
 		return FMLEnvironment.dist;
 	}
 

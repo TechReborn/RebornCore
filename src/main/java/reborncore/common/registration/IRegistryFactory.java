@@ -28,8 +28,6 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import reborncore.RebornCore;
 
 import java.lang.annotation.*;
@@ -83,9 +81,10 @@ public interface IRegistryFactory {
 
 	/**
 	 * Called when the factory is created
+	 *
 	 * @param modId the mod id this factory will work on
 	 */
-	public default void onInit(String modId){
+	public default void onInit(String modId) {
 
 	}
 

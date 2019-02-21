@@ -43,7 +43,6 @@ import reborncore.common.RebornCoreConfig;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -99,7 +98,6 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	public void setExtraPowerStoage(double extraPowerStoage) {
 		this.extraPowerStoage = extraPowerStoage;
 	}
-
 
 	public void setMaxPacketsPerTick(int maxPacketsPerTick) {
 		this.maxPacketsPerTick = maxPacketsPerTick;
@@ -226,7 +224,6 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 		return super.getCapability(capability, facing);
 	}
-
 
 	public abstract double getBaseMaxPower();
 

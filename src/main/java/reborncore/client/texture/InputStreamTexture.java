@@ -29,7 +29,6 @@
 package reborncore.client.texture;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
@@ -39,7 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 

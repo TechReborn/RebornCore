@@ -29,7 +29,6 @@
 package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,7 +40,6 @@ import reborncore.client.gui.builder.slot.elements.SlotType;
 import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 

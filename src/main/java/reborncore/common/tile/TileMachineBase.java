@@ -29,7 +29,6 @@
 package reborncore.common.tile;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -38,14 +37,11 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.IListInfoProvider;
@@ -206,13 +202,13 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	// This stops the tile from getting cleared when the state is
 	// updated(rotation and on/off)
 	//TODO 1.13 tile patches seem missing?
-//	@Override
-//	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-//		if (oldState.getBlock() != newSate.getBlock()) {
-//			return true;
-//		}
-//		return false;
-//	}
+	//	@Override
+	//	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+	//		if (oldState.getBlock() != newSate.getBlock()) {
+	//			return true;
+	//		}
+	//		return false;
+	//	}
 
 	public Optional<Inventory> getInventoryForTile() {
 		if (this instanceof ItemHandlerProvider) {

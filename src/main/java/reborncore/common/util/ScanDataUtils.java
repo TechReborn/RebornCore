@@ -9,22 +9,21 @@ import java.util.List;
 
 public class ScanDataUtils {
 
-	public static List<ModFileScanData> getScanData(){
+	public static List<ModFileScanData> getScanData() {
 		return ModList.get().getAllScanData();
 	}
 
-	public static List<ModFileScanData.AnnotationData> getAnnotations(Class annotation){
+	public static List<ModFileScanData.AnnotationData> getAnnotations(Class annotation) {
 		List<ModFileScanData.AnnotationData> dataList = new ArrayList<>();
 		Type annotationType = Type.getType(annotation);
-		for(ModFileScanData scanData : getScanData()){
-			for(ModFileScanData.AnnotationData data : scanData.getAnnotations()){
-				if(data.getAnnotationType().equals(annotationType)){
+		for (ModFileScanData scanData : getScanData()) {
+			for (ModFileScanData.AnnotationData data : scanData.getAnnotations()) {
+				if (data.getAnnotationType().equals(annotationType)) {
 					dataList.add(data);
 				}
 			}
 		}
 		return dataList;
 	}
-
 
 }

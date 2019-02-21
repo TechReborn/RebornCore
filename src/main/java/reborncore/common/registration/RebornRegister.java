@@ -29,7 +29,6 @@
 package reborncore.common.registration;
 
 import reborncore.Distribution;
-import reborncore.RebornCore;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;

@@ -46,7 +46,6 @@ import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -141,7 +140,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	public <T> LazyOptional<T> getCapability(
 		@Nonnull
 			Capability<T> cap, EnumFacing facing) {
-		if(cap == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))){
+		if (cap == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))) {
 			if (powerManager == null) {
 				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
 			}

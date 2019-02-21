@@ -33,7 +33,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
@@ -433,7 +432,7 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
 		GlStateManager.color4f(1, 1, 1, 1);
 
-//		renderItemStack(stack, posX - 19, posY + 92 - offset);
+		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
 		List<String> tips = new ArrayList<String>();
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side"));

@@ -29,7 +29,6 @@
 package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -49,7 +48,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.BlockStateContainer;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 import reborncore.api.ToolManager;
@@ -74,7 +72,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
 
-	public BlockMachineBase(){
+	public BlockMachineBase() {
 		this(Block.Properties.create(Material.IRON));
 	}
 
@@ -98,8 +96,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		ACTIVE = BooleanProperty.create("active");
 		builder.add(FACING, ACTIVE);
 	}
-
-
 
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
@@ -135,8 +131,6 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			super.getDrops(state, drops, world, pos, fortune);
 		}
 	}
-
-
 
 	public boolean isAdvanced() {
 		return false;

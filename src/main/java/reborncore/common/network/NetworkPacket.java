@@ -28,25 +28,19 @@
 
 package reborncore.common.network;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
-import reborncore.Distribution;
-
-import java.io.IOException;
-
 public class NetworkPacket {
 
 	protected NetworkPacket() {
 	}
 
-//	ResourceLocation getName();
-//
-//	Distribution getProcessingSide();
-//
-//	void writeData(ExtendedPacketBuffer buffer) throws IOException;
-//
-//	void readData(ExtendedPacketBuffer buffer) throws IOException;
-//
-//	void processData(NetworkEvent.Context context);
+	//	ResourceLocation getName();
+	//
+	//	Distribution getProcessingSide();
+	//
+	//	void writeData(ExtendedPacketBuffer buffer) throws IOException;
+	//
+	//	void readData(ExtendedPacketBuffer buffer) throws IOException;
+	//
+	//	void processData(NetworkEvent.Context context);
 
 }

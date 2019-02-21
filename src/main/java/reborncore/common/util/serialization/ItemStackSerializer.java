@@ -30,7 +30,6 @@ package reborncore.common.util.serialization;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -60,7 +59,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 			if (jsonObject.has(NAME) && jsonObject.get(NAME).isJsonPrimitive()) {
 				name = jsonObject.getAsJsonPrimitive(NAME).getAsString();
 			}
-
 
 			if (jsonObject.has(STACK_SIZE) && jsonObject.get(STACK_SIZE).isJsonPrimitive()) {
 				stackSize = jsonObject.getAsJsonPrimitive(STACK_SIZE).getAsInt();

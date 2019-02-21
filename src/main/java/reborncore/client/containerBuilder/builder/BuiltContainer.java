@@ -85,7 +85,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.shortValues.trimToSize();
 	}
 
-
 	public void addIntegerSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
 
 		for (final Pair<IntSupplier, IntConsumer> syncable : syncables) {
@@ -203,7 +202,6 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				i += 2;
 			}
 		}
-
 
 		if (!this.objectValues.isEmpty()) {
 			int objects = 0;

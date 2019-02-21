@@ -268,5 +268,5 @@ public abstract class IMultiblockPart extends TileEntity {
 
 	public void invalidate() {}
 
-	public void onChunkUnload(){}
+	public void onChunkUnload() {}
 }

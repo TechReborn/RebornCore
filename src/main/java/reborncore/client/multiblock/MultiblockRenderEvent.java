@@ -46,7 +46,6 @@ import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -94,15 +93,15 @@ public class MultiblockRenderEvent {
 				//TODO 1.13 fluid rendering
 				//Render the liquids first, it looks better.
 				for (MultiblockComponent comp : mb.getComponents()) {
-				//	if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
-						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-				//	}
+					//	if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
+					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+					//	}
 				}
-//				for (MultiblockComponent comp : mb.getComponents()) {
-//					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
-//						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-//					}
-//				}
+				//				for (MultiblockComponent comp : mb.getComponents()) {
+				//					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
+				//						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+				//					}
+				//				}
 
 			}
 		}
@@ -152,11 +151,11 @@ public class MultiblockRenderEvent {
 		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		//TODO 1.13 fluids
-//		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
-//			fluidRenderer.renderFluid(world, state, pos, buffer);
-//		} else {
-			blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());
-	//	}
+		//		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
+		//			fluidRenderer.renderFluid(world, state, pos, buffer);
+		//		} else {
+		blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());
+		//	}
 		tessellator.draw();
 	}
 

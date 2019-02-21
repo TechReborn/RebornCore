@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class RebornConfig {
 
@@ -28,12 +27,12 @@ public class RebornConfig {
 
 	public Map<String, List<ConfigEntry>> entryies = new HashMap<>();
 
-	public String getName(){
+	public String getName() {
 		Validate.notNull(modid);
 		return "teamreborn/" + modid + "/" + configName;
 	}
 
-	public List<ConfigEntry> getAll(){
+	public List<ConfigEntry> getAll() {
 		List<ConfigEntry> list = new ArrayList<>();
 		entryies.forEach((s, configEntries) -> list.addAll(configEntries));
 		return list;
@@ -47,14 +46,13 @@ public class RebornConfig {
 		@Nullable
 		public ForgeConfigSpec.ConfigValue value;
 
-
 		public ConfigEntry(String key, String comment, Field field) {
 			this.key = key;
 			this.comment = comment;
 			this.field = field;
 		}
 
-		public Object getDefault(){
+		public Object getDefault() {
 			try {
 				return field.get(null);
 			} catch (IllegalAccessException e) {
