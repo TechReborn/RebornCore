@@ -30,8 +30,10 @@ package reborncore.api;
 
 import java.util.List;
 
+import net.minecraft.util.text.ITextComponent;
+
 public interface IListInfoProvider {
 
-	void addInfo(List<String> info, boolean isRealTile, boolean hasData);
+	void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData);
 
 }
