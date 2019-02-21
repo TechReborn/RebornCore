@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class RebornConfig {
 
@@ -30,6 +31,12 @@ public class RebornConfig {
 	public String getName(){
 		Validate.notNull(modid);
 		return "teamreborn/" + modid + "/" + configName;
+	}
+
+	public List<ConfigEntry> getAll(){
+		List<ConfigEntry> list = new ArrayList<>();
+		entryies.forEach((s, configEntries) -> list.addAll(configEntries));
+		return list;
 	}
 
 	public static class ConfigEntry {

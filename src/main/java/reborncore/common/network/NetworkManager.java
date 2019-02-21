@@ -152,6 +152,7 @@ public class NetworkManager {
 			}
 			BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> packetConsumer = packetHandlers.get(msg.resourceLocation);
 			packetConsumer.accept(msg.decodeBuffer, ctx.get());
+			msg.decodeBuffer.release();
 		}
 	}
 

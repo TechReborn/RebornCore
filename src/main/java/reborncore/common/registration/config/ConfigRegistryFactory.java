@@ -29,8 +29,10 @@
 package reborncore.common.registration.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
@@ -44,6 +46,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 @IRegistryFactory.RegistryFactory
 public class ConfigRegistryFactory implements IRegistryFactory {
@@ -103,12 +106,30 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 				if (!configEntry.comment.isEmpty()) {
 					builder.comment(configEntry.comment);
 				}
-				ForgeConfigSpec.ConfigValue value = builder.define(configEntry.key, configEntry.getDefault());
-				configEntry.value = value;
+				configEntry.value = builder.define(configEntry.key, configEntry.getDefault());
 			});
 			builder.pop();
 		});
 		return this;
+	}
+
+	public RebornConfig fromModConfig(ModConfig modConfig) {
+		return configs.stream()
+			.filter(config -> modConfig.getFileName().endsWith(config.getName() + ".toml"))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("Failed to find config: " + modConfig.getFileName()));
+	}
+
+	public void populateConfigs(RebornConfig config) {
+		System.out.println("populating configs");
+		config.getAll().forEach(configEntry -> {
+			try {
+				System.out.println("Updating config entry " + configEntry.key + " new value: " + configEntry.value.get());
+				configEntry.field.set(null, configEntry.value.get());
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException("Failed to set config value", e);
+			}
+		});
 	}
 
 	@Override
@@ -124,5 +145,16 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	@Override
 	public void onInit(String modId) {
 		this.modId = modId;
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		eventBus.addListener((Consumer<ModConfig.ModConfigEvent>) event -> {
+			if (event.getConfig().getModId().equals(modId)) {
+				populateConfigs(fromModConfig(event.getConfig()));
+			}
+		});
+		//		eventBus.addListener((Consumer<ConfigChangedEvent.OnConfigChangedEvent>) event -> {
+		//			if(event.getModID().equals(modId)){
+		//				populateAllConfigs();
+		//			}
+		//		});
 	}
 }
