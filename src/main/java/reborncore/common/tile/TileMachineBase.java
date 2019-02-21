@@ -45,6 +45,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.IListInfoProvider;
@@ -55,6 +56,8 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.api.tile.ItemHandlerProvider;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
+import reborncore.common.network.ClientBoundPackets;
+import reborncore.common.network.NetworkManager;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
@@ -94,8 +97,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
-			//TODO 1.13 networking
-			//NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.write(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
+			NetworkManager.sendToAllAround(ClientBoundPackets.createCustomDescriptionPacket(this), new PacketDistributor.TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64, this.world.getDimension().getType()));
 		}
 	}
 

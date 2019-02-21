@@ -39,7 +39,6 @@ import net.minecraft.world.WorldServer;
 /**
  * Created by Gigabit101 on 21/01/2017.
  */
-//TODO move to RebornCore
 public final class VanillaPacketDispatcher {
 	public static void dispatchTEToNearbyPlayers(TileEntity tile) {
 		if (tile.getWorld() instanceof WorldServer) {

@@ -59,7 +59,6 @@ public class InputStreamTexture extends AbstractTexture {
 	@Override
 	public void loadTexture(IResourceManager resourceManager) throws IOException {
 		this.deleteGlTexture();
-		//TODO 1.13
 		if (image == null) {
 			IResource iresource = null;
 			try {
