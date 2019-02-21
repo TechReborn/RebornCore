@@ -97,7 +97,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	public void syncWithAll() {
 		if (!world.isRemote) {
-			NetworkManager.sendToAllAround(ClientBoundPackets.createCustomDescriptionPacket(this), new PacketDistributor.TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64, this.world.getDimension().getType()));
+			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
 		}
 	}
 
