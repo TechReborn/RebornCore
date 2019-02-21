@@ -37,6 +37,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
@@ -51,6 +53,8 @@ import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Created by Gigabit101 on 08/08/2016.
@@ -564,7 +568,8 @@ public class GuiBuilder {
 	 * @param buttonID int Button ID used to switch energy systems
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawMultiEnergyBar(GuiBase gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX, int mouseY, int buttonID, GuiBase.Layer layer) {
+	public void drawMultiEnergyBar(GuiBase gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
+			int mouseY, int buttonID, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -583,29 +588,34 @@ public class GuiBuilder {
 		gui.drawTexturedModalRect(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			TextFormatting powerColour = TextFormatting.GOLD;
-			list.add(powerColour + PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
-				+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
-				+ displayPower.abbreviation);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " "
-				+ StringUtils.t("reborncore.gui.tooltip.power_charged"));
+			List<ITextComponent> list = Lists.newArrayList();
+			list.add(new TextComponentString(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
+					+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
+					+ displayPower.abbreviation).applyTextStyle(TextFormatting.GOLD));
+			list.add(new TextComponentString(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
+					+ TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
 			if (gui.tile instanceof IListInfoProvider) {
 				if (GuiScreen.isShiftKeyDown()) {
 					((IListInfoProvider) gui.tile).addInfo(list, true, true);
-					list.add("");
-					list.add(TextFormatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click"));
+					list.add(new TextComponentString(""));
+					list.add(new TextComponentString(
+							TextFormatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
 				} else {
-					list.add("");
-					list.add(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " "
-						+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"));
+					list.add(new TextComponentString(""));
+					list.add((new TextComponentString(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " "
+							+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"))));
 				}
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			List<String> list1 = Lists.newArrayList();
+
+			for (ITextComponent itextcomponent : list) {
+				list1.add(itextcomponent.getFormattedText());
+			}
+			gui.drawHoveringText(list1, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}

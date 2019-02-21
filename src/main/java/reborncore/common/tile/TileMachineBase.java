@@ -37,6 +37,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -418,13 +420,13 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public void addInfo(List<String> info, boolean isRealTile, boolean hasData) {
+	public void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData) {
 		if (hasData) {
 			if (getInventoryForTile().isPresent()) {
-				info.add(TextFormatting.GOLD + "" + getInventoryForTile().get().getContents() + TextFormatting.GRAY + " items");
+				info.add(new TextComponentString(TextFormatting.GOLD + "" + getInventoryForTile().get().getContents() + TextFormatting.GRAY + " items"));
 			}
 			if (!upgradeInventory.isEmpty()) {
-				info.add(TextFormatting.GOLD + "" + upgradeInventory.getContents() + TextFormatting.GRAY + " upgrades");
+				info.add(new TextComponentString(TextFormatting.GOLD + "" + upgradeInventory.getContents() + TextFormatting.GRAY + " upgrades"));
 			}
 		}
 	}
