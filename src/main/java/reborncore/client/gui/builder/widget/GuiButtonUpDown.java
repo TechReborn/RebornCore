@@ -28,13 +28,12 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.GuiButton;
 import reborncore.client.gui.builder.GuiBase;
 
 /**
  * @author drcrazy
  */
-public class GuiButtonUpDown extends GuiButton {
+public class GuiButtonUpDown extends GuiButtonExtended {
 
 	GuiBase.Layer layer;
 	GuiBase gui;

@@ -37,7 +37,7 @@ import reborncore.client.multiblock.Multiblock;
 /**
  * Created by Prospector
  */
-public class GuiButtonHologram extends GuiButton {
+public class GuiButtonHologram extends GuiButtonExtended {
 
 	GuiBase.Layer layer;
 	GuiBase gui;

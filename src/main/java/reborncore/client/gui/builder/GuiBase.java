@@ -242,14 +242,16 @@ public class GuiBase extends GuiContainer {
 		buttons.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
 	}
 
-	public void addHologramButton(int x, int y, int id, Layer layer) {
+	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
 			factorX = guiLeft;
 			factorY = guiTop;
 		}
-		buttons.add(new GuiButtonHologram(id, x + factorX, y + factorY, this, layer));
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(id, x + factorX, y + factorY, this, layer);
+		buttons.add(buttonHologram);
+		return buttonHologram;
 	}
 
 	@Override
@@ -347,7 +349,7 @@ public class GuiBase extends GuiContainer {
 	 * @param pointX int Mouse pointer
 	 * @param pointY int Mouse pointer
 	 * @return boolean Returns true if mouse pointer is in region specified
-	 * @see net.minecraft.client.gui.inventory.GuiContainer#isPointInRegion()
+	 * @see net.minecraft.client.gui.inventory.GuiContainer()
 	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
 		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
