@@ -430,4 +430,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 			}
 		}
 	}
+
+	public Block getBlockType(){
+		return world.getBlockState(pos).getBlock();
+	}
 }
