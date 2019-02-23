@@ -90,6 +90,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
 
+
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder) {
 		FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);

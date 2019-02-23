@@ -31,8 +31,11 @@ package reborncore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +53,7 @@ import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.CrashHandler;
 import reborncore.common.util.GenericWrenchHelper;
 
+import javax.swing.table.TableRowSorter;
 import java.io.File;
 
 @Mod(RebornCore.MOD_ID)
@@ -64,7 +68,14 @@ public class RebornCore {
 	public static CommonProxy proxy = new ClientProxy();
 	public static File configDir;
 
+	public static boolean LOADED = false;
+
 	public RebornCore() {
+		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		eventBus.addListener(this::setup);
+	}
+
+	private void setup(FMLCommonSetupEvent event) {
 		LOGGER.info("Hello minecraft!");
 
 		CrashReportExtender.registerCrashCallable(new CrashHandler());
@@ -105,6 +116,8 @@ public class RebornCore {
 		// packets
 		ServerBoundPackets.init();
 		ClientBoundPackets.init();
+		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
+		LOADED = true;
 	}
 
 	public static Dist getSide() {
