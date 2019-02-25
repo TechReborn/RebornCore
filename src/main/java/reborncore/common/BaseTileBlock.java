@@ -48,7 +48,7 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 	@Override
 	public void onReplaced(IBlockState state, World worldIn, BlockPos pos, IBlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			super.onReplaced(state, worldIn, pos, newState, isMoving);
+			state.onReplaced(worldIn, pos, newState, isMoving);
 			worldIn.removeTileEntity(pos);
 		}
 	}

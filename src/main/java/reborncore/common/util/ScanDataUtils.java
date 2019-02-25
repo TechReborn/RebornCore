@@ -25,6 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package reborncore.common.util;
 
 import net.minecraftforge.fml.ModList;
@@ -40,7 +41,7 @@ public class ScanDataUtils {
 		return ModList.get().getAllScanData();
 	}
 
-	public static List<ModFileScanData.AnnotationData> getAnnotations(Class annotation) {
+	public static List<ModFileScanData.AnnotationData> getAnnotations(Class<?> annotation) {
 		List<ModFileScanData.AnnotationData> dataList = new ArrayList<>();
 		Type annotationType = Type.getType(annotation);
 		for (ModFileScanData scanData : getScanData()) {

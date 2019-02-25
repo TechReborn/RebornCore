@@ -49,8 +49,7 @@ public class BlockWrenchEventHandler {
 		if (ToolManager.INSTANCE.canHandleTool(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND))) {
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
 			if (wrenableBlocks.contains(state.getBlock())) {
-				Block block = state.getBlock();
-				block.onBlockActivated(state, event.getWorld(), event.getPos(), event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
+				state.onBlockActivated(event.getWorld(), event.getPos(), event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
 				event.setCanceled(true);
 			}
 		}

@@ -25,6 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package reborncore.common.registration.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
