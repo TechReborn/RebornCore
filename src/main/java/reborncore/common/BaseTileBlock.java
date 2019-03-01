@@ -45,14 +45,6 @@ public abstract class BaseTileBlock extends Block implements ITileEntityProvider
 		super(builder);
 	}
 
-	@Override
-	public void onReplaced(IBlockState state, World worldIn, BlockPos pos, IBlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			state.onReplaced(worldIn, pos, newState, isMoving);
-			worldIn.removeTileEntity(pos);
-		}
-	}
-
 	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack) {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (tileEntity == null) {
