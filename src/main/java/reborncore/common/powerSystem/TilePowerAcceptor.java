@@ -216,7 +216,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		LazyOptional<T> externalCap = powerManagers.stream()
 			.filter(Objects::nonNull)
 			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
-			.filter(Objects::nonNull)
+			.filter(LazyOptional::isPresent)
 			.findFirst()
 			.orElse(null);
 

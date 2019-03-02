@@ -311,29 +311,17 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return LazyOptional.of(new NonNullSupplier<T>() {
-				@Nonnull
-				@Override
-				public T get() {
-					return (T) getInventoryForTile().get().getExternal(facing);
-				}
-			});
+			return LazyOptional.of(() -> (T) getInventoryForTile().get().getExternal(facing));
 		}
 		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
 				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
 				if (!fluidConfig.getIoConfig().isEnabled()) {
-					return null;
+					return LazyOptional.empty();
 				}
 			}
 			getTank().setSide(facing);
-			return LazyOptional.of(new NonNullSupplier<T>() {
-				@Nonnull
-				@Override
-				public T get() {
-					return (T) getTank();
-				}
-			});
+			return LazyOptional.of(() -> (T) getTank());
 		}
 		return super.getCapability(capability, facing);
 	}

@@ -54,11 +54,13 @@ import java.util.function.*;
 public class ContainerTileInventoryBuilder {
 
 	private final IItemHandler itemHandler;
+	private final TileEntity tile;
 	private final ContainerBuilder parent;
 	private final int rangeStart;
 
 	ContainerTileInventoryBuilder(final ContainerBuilder parent, final TileEntity tile) {
-		this.itemHandler = (IItemHandler) tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		this.itemHandler =  tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(() -> new UnsupportedOperationException("tile must be an inventory: " + tile.getClass().getName()));
+		this.tile = tile;
 		this.parent = parent;
 		this.rangeStart = parent.slots.size();
 		if (itemHandler instanceof IUpgradeable) {
@@ -155,26 +157,26 @@ public class ContainerTileInventoryBuilder {
 	}
 
 	public ContainerTileInventoryBuilder syncEnergyValue() {
-		if (this.itemHandler instanceof TilePowerAcceptor) {
-			return this.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).getEnergy(),
-				((TilePowerAcceptor) this.itemHandler)::setEnergy)
-				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).extraPowerStoage,
-					((TilePowerAcceptor) this.itemHandler)::setExtraPowerStoage)
-				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.itemHandler).getPowerChange(),
-					((TilePowerAcceptor) this.itemHandler)::setPowerChange);
+		if (this.tile instanceof TilePowerAcceptor) {
+			return this.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getEnergy(),
+				((TilePowerAcceptor) this.tile)::setEnergy)
+				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).extraPowerStoage,
+					((TilePowerAcceptor) this.tile)::setExtraPowerStoage)
+				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getPowerChange(),
+					((TilePowerAcceptor) this.tile)::setPowerChange);
 		}
 		RebornCore.LOGGER.error(this.itemHandler + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder syncCrafterValue() {
-		if (this.itemHandler instanceof IRecipeCrafterProvider) {
+		if (this.tile instanceof IRecipeCrafterProvider) {
 			return this
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.itemHandler).getRecipeCrafter().currentTickTime,
-					(currentTickTime) -> ((IRecipeCrafterProvider) this.itemHandler)
+				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.tile).getRecipeCrafter().currentTickTime,
+					(currentTickTime) -> ((IRecipeCrafterProvider) this.tile)
 						.getRecipeCrafter().currentTickTime = currentTickTime)
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.itemHandler).getRecipeCrafter().currentNeededTicks,
-					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.itemHandler)
+				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.tile).getRecipeCrafter().currentNeededTicks,
+					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.tile)
 						.getRecipeCrafter().currentNeededTicks = currentNeededTicks);
 		}
 		RebornCore.LOGGER
