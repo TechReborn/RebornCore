@@ -35,10 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.*;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.HashMap;
@@ -53,7 +50,7 @@ public class NetworkManager {
 		.named(new ResourceLocation("reborncore", "network"))
 		.clientAcceptedVersions(a -> true)
 		.serverAcceptedVersions(a -> true)
-		.networkProtocolVersion(() -> NetworkHooks.NETVERSION)
+		.networkProtocolVersion(() -> FMLNetworkConstants.NETVERSION)
 		.simpleChannel();
 
 	private static Map<ResourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
