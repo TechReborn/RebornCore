@@ -50,7 +50,7 @@ public class NetworkManager {
 		.named(new ResourceLocation("reborncore", "network"))
 		.clientAcceptedVersions(a -> true)
 		.serverAcceptedVersions(a -> true)
-		.networkProtocolVersion(() -> FMLNetworkConstants.NETVERSION)
+		.networkProtocolVersion(() -> "1.0.0")
 		.simpleChannel();
 
 	private static Map<ResourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
