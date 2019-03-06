@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public class PowerSystem {
 	public static File selectedFile;
@@ -145,6 +146,9 @@ public class PowerSystem {
 	}
 
 	public static EnergySystem getDisplayPower() {
+		if(!selectedSystem.enabled.get()){
+			bumpPowerConfig();
+		}
 		return selectedSystem;
 	}
 
@@ -190,6 +194,7 @@ public class PowerSystem {
 		public String abbreviation;
 		public int xBar;
 		public int yBar;
+		public Supplier<Boolean> enabled = () -> true;
 
 		EnergySystem(int colour, String abbreviation, int xBar, int yBar, int altColour) {
 			this.colour = colour;

@@ -41,6 +41,7 @@ import reborncore.api.ToolManager;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
 import reborncore.common.LootManager;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.commands.CommandListMods;
@@ -117,6 +118,8 @@ public class RebornCore implements IModInfo {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("correlated:weldthrower"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
+
+		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
 	}
 
 	@Mod.EventHandler
