@@ -185,7 +185,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public IBlockState getStateFromMeta(int meta) {
 		boolean active = false;
 		int facingInt = meta;
-		if (facingInt > 4) {
+		if (facingInt >= 4) {
 			active = true;
 			facingInt = facingInt - 4;
 		}
