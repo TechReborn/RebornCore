@@ -244,9 +244,9 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		if(dataFile.exists()){
 			try {
 				configVersionTag = CompressedStreamTools.read(dataFile);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-				RebornCore.logHelper.error("Failed to read config data");
+				RebornCore.logHelper.error("Failed to read config data, resetting.");
 				RebornCore.logHelper.error(e);
 				//Just reset it, I cannot be dealing with crashes for things being off.
 				dataFile.delete();
