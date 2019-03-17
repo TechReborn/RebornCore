@@ -360,6 +360,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	private boolean shiftToTile(final ItemStack stackToShift) {
+		if(!tile.getInventoryForTile().isPresent()){
+			return false;
+		}
 		for (final Range<Integer> range : this.tileSlotRanges)
 			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1))
 				return true;
