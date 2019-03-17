@@ -190,9 +190,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				int objects = 0;
 				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 					final Object supplied = value.getLeft();
-					if(supplied != value.getRight()){
-						sendObject(listener,this, objects, supplied);
-						value.setRight(supplied);
+					if(((Supplier) supplied).get() != value.getRight()){
+						sendObject(listener,this, objects, ((Supplier) supplied).get());
+						value.setRight(((Supplier) supplied).get());
 					}
 					objects++;
 				}
@@ -238,7 +238,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			int objects = 0;
 			for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 				final Object supplied = value.getLeft();
-				sendObject(listener,this, objects, supplied);
+				sendObject(listener,this, objects, ((Supplier) supplied).get());
 				value.setRight(supplied);
 				objects++;
 			}

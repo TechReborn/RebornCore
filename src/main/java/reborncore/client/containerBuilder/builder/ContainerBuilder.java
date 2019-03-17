@@ -131,6 +131,8 @@ public class ContainerBuilder {
 			built.addIntegerSync(this.integerValues);
 		if (!this.longValues.isEmpty())
 			built.addLongSync(longValues);
+		if (!this.objectValues.isEmpty())
+			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty())
 			built.addCraftEvents(this.craftEvents);
 
