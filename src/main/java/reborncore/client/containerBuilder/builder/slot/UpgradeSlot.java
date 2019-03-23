@@ -47,7 +47,17 @@ public class UpgradeSlot extends Slot implements IRightClickHandler {
 
 	@Override
 	public boolean isItemValid(final ItemStack stack) {
-		return stack.getItem() instanceof IUpgrade;
+		if(!(stack.getItem() instanceof IUpgrade)){
+			return false;
+		}
+		IUpgrade upgrade = (IUpgrade) stack.getItem();
+		IUpgradeable upgradeable = null;
+		Inventory inv = (Inventory) inventory;
+		TileEntity tileEntity = inv.getTileBase();
+		if (tileEntity instanceof IUpgradeable) {
+			upgradeable = (IUpgradeable) tileEntity;
+		}
+		return upgrade.isValidForInventory(upgradeable, stack) && (upgradeable == null || upgradeable.isUpgradeValid(upgrade, stack));
 	}
 
 	@Override

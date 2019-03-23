@@ -29,6 +29,7 @@
 package reborncore.api.tile;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 public interface IUpgradeable {
 
@@ -39,5 +40,9 @@ public interface IUpgradeable {
 	public IInventory getUpgradeInvetory();
 
 	public int getUpgradeSlotCount();
+
+	public default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack){
+		return true;
+	}
 
 }

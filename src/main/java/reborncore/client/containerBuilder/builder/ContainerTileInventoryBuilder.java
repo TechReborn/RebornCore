@@ -118,7 +118,7 @@ public class ContainerTileInventoryBuilder {
 	private ContainerTileInventoryBuilder upgradeSlots(IUpgradeable upgradeable) {
 		if (upgradeable.canBeUpgraded()) {
 			for (int i = 0; i < upgradeable.getUpgradeSlotCount(); i++) {
-				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -19, i * 18 + 12));
+				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -18, i * 18 + 12));
 			}
 		}
 		return this;

@@ -29,6 +29,7 @@
 package reborncore.api.tile;
 
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,5 +55,9 @@ public interface IUpgrade {
 
 	@SideOnly(Side.CLIENT)
 	public void handleRightClick(TileEntity tile, ItemStack stack, Container container, int slotID);
+
+	public default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack){
+		return true;
+	}
 
 }
