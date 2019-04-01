@@ -70,11 +70,6 @@ public class LootManager {
 		return new LootFunction[] { new SetCount(new LootCondition[0], new RandomValueRange(min, max)) };
 	}
 
-	private static LootFunction[] countAndMeta(float minCount, float maxCount, int minMeta, int maxMeta) {
-		return new LootFunction[] {
-			new SetCount(new LootCondition[0], new RandomValueRange(minCount, maxCount)) };
-	}
-
 	public static LootItem createLootEntry(Item item, double chance, ResourceLocation loottablelist) {
 		return new LootItem(new ItemStack(item), chance, 1, 1, loottablelist);
 	}

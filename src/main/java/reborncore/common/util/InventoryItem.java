@@ -216,4 +216,9 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		return LazyOptional.empty();
 	}
 
+	@Override
+	public boolean isItemValid(int slot, ItemStack stack) {
+		return true;
+	}
+
 }

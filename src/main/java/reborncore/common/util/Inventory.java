@@ -47,7 +47,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	private T tile;
 	private boolean hasChanged = false;
 	private IInventoryAccess<T> inventoryAccess;
-	private ExternalInventory externalInventory;
+	private ExternalInventory<?> externalInventory;
 
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
@@ -61,6 +61,10 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity) {
 		this(size, invName, invStackLimit, tileEntity, (slotID, stack, facing, direction, tile) -> true);
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -240,9 +244,14 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 			return baseInv.getStackLimit();
 		}
 
-		public ExternalInventory withFacing(EnumFacing facing) {
+		public ExternalInventory<T> withFacing(EnumFacing facing) {
 			this.facing = facing;
 			return this;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, ItemStack stack) {
+			return true;
 		}
 	}
 

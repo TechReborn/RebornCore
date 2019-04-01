@@ -53,7 +53,6 @@ import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.CrashHandler;
 import reborncore.common.util.GenericWrenchHelper;
 
-import javax.swing.table.TableRowSorter;
 import java.io.File;
 
 @Mod(RebornCore.MOD_ID)
