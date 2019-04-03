@@ -55,11 +55,14 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	ConfigSlotElement slotElement;
 
+	boolean allowInput = true;
 
-	public SlotConfigPopupElement(int slotId, int x, int y, ConfigSlotElement slotElement) {
+
+	public SlotConfigPopupElement(int slotId, int x, int y, ConfigSlotElement slotElement, boolean allowInput) {
 		super(x, y, Sprite.SLOT_CONFIG_POPUP);
 		this.id = slotId;
 		this.slotElement = slotElement;
+		this.allowInput = allowInput;
 	}
 
 	@Override
@@ -114,7 +117,13 @@ public class SlotConfigPopupElement extends ElementBase {
 	public void cyleSlotConfig(EnumFacing side, GuiBase guiBase){
 		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().slotConfiguration.getSlotDetails(id).getSideDetail(side);
 
-		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(currentSlot.getSlotIO().getIoConfig().getNext());
+		//Bit of a mess, in the future have a way to remove config options from this list
+		SlotConfiguration.ExtractConfig nextConfig = currentSlot.getSlotIO().getIoConfig().getNext();
+		if(!allowInput && nextConfig == SlotConfiguration.ExtractConfig.INPUT){
+			nextConfig = SlotConfiguration.ExtractConfig.OUTPUT;
+		}
+
+		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
 		PacketSlotSave packetSlotSave = new PacketSlotSave(guiBase.tile.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);

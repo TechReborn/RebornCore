@@ -61,13 +61,6 @@ public class ConfigSlotElement extends ElementBase {
 
 		SlotConfigPopupElement popupElement;
 
-		elements.add(popupElement = new SlotConfigPopupElement(this.id, x - 22, y - 22, this));
-		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
-			GuiSlotConfiguration.selectedSlot = -1;
-			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
-			return true;
-		}));
-
 		boolean inputEnabled = gui.container.inventorySlots.stream()
 			.filter(Objects::nonNull)
 			.filter(slot -> slot.inventory == inventory)
@@ -75,6 +68,14 @@ public class ConfigSlotElement extends ElementBase {
 			.map(slot -> (BaseSlot) slot)
 			.filter(baseSlot -> baseSlot.getSlotIndex() == slotId)
 			.allMatch(BaseSlot::canWorldBlockInsert);
+
+
+		elements.add(popupElement = new SlotConfigPopupElement(this.id, x - 22, y - 22, this, inputEnabled));
+		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
+			GuiSlotConfiguration.selectedSlot = -1;
+			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
+			return true;
+		}));
 
 
 		if(inputEnabled){
