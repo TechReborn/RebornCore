@@ -241,6 +241,15 @@ public class GuiSlotConfiguration  {
 	}
 
 	public static List<Rectangle> getExtraSpace(GuiBase guiBase){
+		List<Rectangle> list = new ArrayList<>();
+		if(guiBase.upgrades){
+			list.add(new Rectangle(guiBase.getGuiLeft() - 25, guiBase.getGuiTop(), 20, 120));
+		}
+		list.addAll(getExtraSpaceForConfig(guiBase));
+		return list;
+	}
+
+	public static List<Rectangle> getExtraSpaceForConfig(GuiBase guiBase){
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1){
 			return Collections.emptyList();
 		}
@@ -253,6 +262,9 @@ public class GuiSlotConfiguration  {
 
 		//I have no idea why this works, but it does. pls fix if you know how.
 		list.add(new Rectangle(slotElement.adjustX(guiBase, slotElement.getX()) + guiBase.getGuiLeft() - 25, slotElement.adjustY(guiBase, 0) -10, slotElement.getWidth() - 5, slotElement.getHeight() + 15));
+
+
+
 		return list;
 	}
 
