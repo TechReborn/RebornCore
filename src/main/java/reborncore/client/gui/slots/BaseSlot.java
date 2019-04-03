@@ -58,4 +58,8 @@ public class BaseSlot extends Slot {
 	public boolean isItemValid(ItemStack stack) {
 		return filter.test(stack);
 	}
+
+	public boolean canWorldBlockInsert(){
+		return true;
+	}
 }

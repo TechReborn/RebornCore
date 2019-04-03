@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
@@ -42,6 +43,7 @@ import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ConfigSlotElement extends ElementBase {
 	SlotType type;
@@ -66,12 +68,24 @@ public class ConfigSlotElement extends ElementBase {
 			return true;
 		}));
 
-		elements.add(new CheckBoxElement("Auto Input", 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-			checkBoxElement -> checkBoxElement.machineBase.slotConfiguration.getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
-			popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
-			return true;
-		}));
-		elements.add(new CheckBoxElement("Auto Output", 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+		boolean inputEnabled = gui.container.inventorySlots.stream()
+			.filter(Objects::nonNull)
+			.filter(slot -> slot.inventory == inventory)
+			.filter(slot -> slot instanceof BaseSlot)
+			.map(slot -> (BaseSlot) slot)
+			.filter(baseSlot -> baseSlot.getSlotIndex() == slotId)
+			.allMatch(BaseSlot::canWorldBlockInsert);
+
+
+		if(inputEnabled){
+			elements.add(new CheckBoxElement("Auto Input", 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+				checkBoxElement -> checkBoxElement.machineBase.slotConfiguration.getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
+				popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
+				return true;
+			}));
+		}
+
+		elements.add(new CheckBoxElement("Auto Output", 0xFFFFFFFF, x - 26, y + (inputEnabled ? 57 : 42), "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 			checkBoxElement -> checkBoxElement.machineBase.slotConfiguration.getSlotDetails(checkBoxElement.slotID).autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
 			return true;
