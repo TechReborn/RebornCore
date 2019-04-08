@@ -119,8 +119,7 @@ public class MultiblockRegistry {
 		if (registries.containsKey(world)) {
 			registries.get(world).addDirtyController(controller);
 		} else {
-			throw new IllegalArgumentException(
-				"Adding a dirty controller to a world that has no registered controllers!");
+			RebornCore.logHelper.error("Adding a dirty controller to a world that has no registered controllers!");
 		}
 	}
 
