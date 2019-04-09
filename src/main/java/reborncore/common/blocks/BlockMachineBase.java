@@ -182,7 +182,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			return true;
 		}
 
-		return state.onBlockActivated(worldIn, pos, playerIn, hand, side, hitX, hitY, hitZ);
+		return super.onBlockActivated(state, worldIn, pos, playerIn, hand, side, hitX, hitY, hitZ);
 	}
 
 	public boolean isActive(IBlockState state) {
