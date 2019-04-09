@@ -43,18 +43,31 @@ public enum ObjectBufferUtils {
 	}, buffer -> {
 		return buffer.readString(buffer.readInt());
 	}),
+
 	INT(Integer.class, (value, buffer) -> {
 		buffer.writeInt(value);
 	}, PacketBuffer::readInt),
+
 	LONG(Long.class, (pos, buffer) -> {
 		buffer.writeLong(pos);
 	}, ExtendedPacketBuffer::readLong),
+
+	DOUBLE(Double.class, (pos, buffer) -> {
+		buffer.writeDouble(pos);
+	}, ExtendedPacketBuffer::readDouble),
+
+	FLOAT(Float.class, (pos, buffer) -> {
+		buffer.writeFloat(pos);
+	}, ExtendedPacketBuffer::readFloat),
+
 	BLOCK_POS(BlockPos.class, (pos, buffer) -> {
 		buffer.writeBlockPos(pos);
 	}, PacketBuffer::readBlockPos),
+
 	BIG_INT(BigInteger.class, (pos, buffer) -> {
 		buffer.writeBigInt(pos);
 	}, ExtendedPacketBuffer::readBigInt);
+
 	Class clazz;
 	ObjectWriter writer;
 	ObjectReader reader;
