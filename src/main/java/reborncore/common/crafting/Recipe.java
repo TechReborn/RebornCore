@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.util.NonNullListCollector;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Recipe implements IRecipe {
@@ -76,13 +78,14 @@ public class Recipe implements IRecipe {
 		return type;
 	}
 
+	//TODO unmodifiable
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return ingredients;
 	}
 
 	public List<ItemStack> getOutputs() {
-		return outputs;
+		return Collections.unmodifiableList(outputs);
 	}
 
 	public int getPower() {
@@ -91,6 +94,22 @@ public class Recipe implements IRecipe {
 
 	public int getTime() {
 		return time;
+	}
+
+	/**
+	 * @param tile the tile that is doing the crafting
+	 * @return if true the recipe will craft, if false it will not
+	 */
+	public boolean canCraft(TileEntity tile){
+		return true;
+	}
+
+	/**
+	 * @param tile the tile that is doing the crafting
+	 * @return return true if fluid was taken and should craft
+	 */
+	public boolean onCraft(TileEntity tile){
+		return true; //TODO look into this being a boolean, seems a little odd, not sure what usees it for now
 	}
 
 	//Done as our recipes do not support these functions, hopefully nothing blidly calls them

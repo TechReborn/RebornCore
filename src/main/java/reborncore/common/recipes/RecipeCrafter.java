@@ -29,14 +29,15 @@
 package reborncore.common.recipes;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
-import reborncore.api.recipe.IBaseRecipeType;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.recipe.RecipeHandler;
 import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.crafting.Recipe;
+import reborncore.common.crafting.RecipeType;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
 
@@ -52,12 +53,12 @@ public class RecipeCrafter implements IUpgradeHandler {
 	/**
 	 * This is the recipe type to use
 	 */
-	public String recipeName;
+	public RecipeType<?> recipeType;
 
 	/**
 	 * This is the parent tile
 	 */
-	public TileEntity parentTile;
+	public TileEntity tile;
 
 	/**
 	 * This is the place to use the power from
@@ -92,7 +93,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	 * the output item stacks.
 	 */
 	public int[] outputSlots;
-	public IBaseRecipeType currentRecipe;
+	public Recipe currentRecipe;
 	public int currentTickTime = 0;
 	public int currentNeededTicks = 1;// Set to 1 to stop rare crashes
 	double lastEnergy;
@@ -102,23 +103,23 @@ public class RecipeCrafter implements IUpgradeHandler {
 	@Nullable
 	public static ICrafterSoundHanlder soundHanlder = null;
 
-	public RecipeCrafter(String recipeName, TileEntity parentTile, int inputs, int outputs, Inventory inventory,
+	public RecipeCrafter(RecipeType<?> recipeType, TileEntity tile, int inputs, int outputs, Inventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
-		this.recipeName = recipeName;
-		this.parentTile = parentTile;
-		if (parentTile instanceof IEnergyInterfaceTile) {
-			energy = (IEnergyInterfaceTile) parentTile;
+		this.recipeType = recipeType;
+		this.tile = tile;
+		if (tile instanceof IEnergyInterfaceTile) {
+			energy = (IEnergyInterfaceTile) tile;
 		}
-		if (parentTile instanceof IUpgradeHandler) {
-			parentUpgradeHandler = Optional.of((IUpgradeHandler) parentTile);
+		if (tile instanceof IUpgradeHandler) {
+			parentUpgradeHandler = Optional.of((IUpgradeHandler) tile);
 		}
 		this.inputs = inputs;
 		this.outputs = outputs;
 		this.inventory = inventory;
 		this.inputSlots = inputSlots;
 		this.outputSlots = outputSlots;
-		if (!(parentTile instanceof IRecipeCrafterProvider)) {
-			RebornCore.LOGGER.error(parentTile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
+		if (!(tile instanceof IRecipeCrafterProvider)) {
+			RebornCore.LOGGER.error(tile.getClass().getName() + " does not use IRecipeCrafterProvider report this to the issue tracker!");
 		}
 	}
 
@@ -126,7 +127,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	 * Call this on the tile tick
 	 */
 	public void updateEntity() {
-		if (parentTile.getWorld().isRemote) {
+		if (tile.getWorld().isRemote) {
 			return;
 		}
 		ticksSinceLastChange++;
@@ -150,19 +151,19 @@ public class RecipeCrafter implements IUpgradeHandler {
 			if (currentRecipe != null && currentTickTime >= currentNeededTicks && hasAllInputs()) {
 				boolean canGiveInvAll = true;
 				// Checks to see if it can fit the output
-				for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
-					if (!canFitStack(currentRecipe.getOutput(i), outputSlots[i], currentRecipe.useOreDic())) {
+				for (int i = 0; i < currentRecipe.getOutputs().size(); i++) {
+					if (!canFitOutput(currentRecipe.getOutputs().get(i), outputSlots[i])) {
 						canGiveInvAll = false;
 					}
 				}
 				// The slots that have been filled
 				ArrayList<Integer> filledSlots = new ArrayList<>();
-				if (canGiveInvAll && currentRecipe.onCraft(parentTile)) {
-					for (int i = 0; i < currentRecipe.getOutputsSize(); i++) {
+				if (canGiveInvAll && currentRecipe.onCraft(tile)) {
+					for (int i = 0; i < currentRecipe.getOutputs().size(); i++) {
 						// Checks it has not been filled
 						if (!filledSlots.contains(outputSlots[i])) {
 							// Fills the slot with the output stack
-							fitStack(currentRecipe.getOutput(i).copy(), outputSlots[i]);
+							fitStack(currentRecipe.getOutputs().get(i).copy(), outputSlots[i]);
 							filledSlots.add(outputSlots[i]);
 						}
 					}
@@ -179,12 +180,12 @@ public class RecipeCrafter implements IUpgradeHandler {
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
 				// This uses the power
-				if (energy.canUseEnergy(getEuPerTick(currentRecipe.euPerTick()))) {
-					energy.useEnergy(getEuPerTick(currentRecipe.euPerTick()));
+				if (energy.canUseEnergy(getEuPerTick(currentRecipe.getPower()))) {
+					energy.useEnergy(getEuPerTick(currentRecipe.getPower()));
 					// Increase the ticktime
 					currentTickTime++;
 					if (currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null) {
-						soundHanlder.playSound(false, parentTile);
+						soundHanlder.playSound(false, tile);
 					}
 				}
 			}
@@ -194,12 +195,12 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 	public void updateCurrentRecipe() {
 		currentTickTime = 0;
-		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
+		for (Recipe recipe : recipeType.getRecipes(tile.getWorld())) {
 			// This checks to see if it has all of the inputs
-			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {
+			if (recipe.canCraft(tile) && hasAllInputs(recipe)) {
 				// This checks to see if it can fit all of the outputs
-				for (int i = 0; i < recipe.getOutputsSize(); i++) {
-					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
+				for (int i = 0; i < recipe.getOutputs().size(); i++) {
+					if (!canFitOutput(recipe.getOutputs().get(i), outputSlots[i])) {
 						currentRecipe = null;
 						this.currentTickTime = 0;
 						setIsActive();
@@ -208,7 +209,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				}
 				// Sets the current recipe then syncs
 				setCurrentRecipe(recipe);
-				this.currentNeededTicks = Math.max((int) (currentRecipe.tickTime() * (1.0 - getSpeedMultiplier())), 1);
+				this.currentNeededTicks = Math.max((int) (currentRecipe.getTime() * (1.0 - getSpeedMultiplier())), 1);
 				this.currentTickTime = 0;
 				setIsActive();
 				return;
@@ -217,45 +218,18 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public boolean hasAllInputs() {
-		if (currentRecipe == null) {
-			return false;
-		}
-		for (Object input : currentRecipe.getInputs()) {
-			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || currentRecipe.useOreDic();
-			boolean checkSize = input instanceof ItemStack;
-			for (int inputslot : inputSlots) {
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true,
-					useOreDict)) {
-					ItemStack stack = RecipeTranslator.getStackFromObject(input);
-					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
-						hasItem = true;
-					}
-				}
-			}
-			if (!hasItem) {
-				return false;
-			}
-		}
-		return true;
+		return hasAllInputs(currentRecipe);
 	}
 
-	public boolean hasAllInputs(IBaseRecipeType recipeType) {
+	public boolean hasAllInputs(Recipe recipeType) {
 		if (recipeType == null) {
 			return false;
 		}
-		for (Object input : recipeType.getInputs()) {
+		for (Ingredient ingredient : recipeType.getIngredients()) {
 			boolean hasItem = false;
-			boolean useOreDict = input instanceof String || recipeType.useOreDic();
-			boolean checkSize = input instanceof ItemStack;
-			for (int inputslot : inputSlots) {
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputslot), true,
-					useOreDict)) {
-					ItemStack stack = RecipeTranslator.getStackFromObject(input);
-					if (!checkSize || inventory.getStackInSlot(inputslot).getCount() >= stack.getCount()) {
-						hasItem = true;
-					}
-
+			for (int slot : inputSlots) {
+				if (ingredient.test(inventory.getStackInSlot(slot))) {
+					hasItem = true;
 				}
 			}
 			if (!hasItem) {
@@ -269,31 +243,25 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (currentRecipe == null) {
 			return;
 		}
-		for (Object input : currentRecipe.getInputs()) {
+		for (Ingredient ingredient : currentRecipe.getIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
-				if (ItemUtils.isInputEqual(input, inventory.getStackInSlot(inputSlot), true,
-					currentRecipe.useOreDic())) {
-					int count = 1;
-					if (input instanceof ItemStack) {
-						count = RecipeTranslator.getStackFromObject(input).getCount();
-					}
-					if (inventory.getStackInSlot(inputSlot).getCount() >= count) {
-						inventory.shrinkSlot(inputSlot, count);
-						break;
-					}
+				if (ingredient.test(inventory.getStackInSlot(inputSlot))) {
+					//TODO might need to have an extension onto the Ingredient to allow for stack size
+					inventory.shrinkSlot(inputSlot, 1);
+					break;
 				}
 			}
 		}
 	}
 
-	public boolean canFitStack(ItemStack stack, int slot, boolean oreDic) {// Checks to see if it can fit the stack
+	public boolean canFitOutput(ItemStack stack, int slot) {// Checks to see if it can fit the stack
 		if (stack.isEmpty()) {
 			return true;
 		}
 		if (inventory.getStackInSlot(slot).isEmpty()) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, oreDic)) {
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true)) {
 			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {
 				return true;
 			}
@@ -309,7 +277,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			inventory.setStackInSlot(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, currentRecipe.useOreDic())) {// If the slot has stuff in
+		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true)) {// If the slot has stuff in
 			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
 				newStack.setCount(inventory.getStackInSlot(slot).getCount() + stack.getCount());// Sets
@@ -329,13 +297,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 			currentTickTime = data.getInt("currentTickTime");
 		}
 
-		if (parentTile != null && parentTile.getWorld() != null && parentTile.getWorld().isRemote) {
-			parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),
-				parentTile.getWorld().getBlockState(parentTile.getPos()),
-				parentTile.getWorld().getBlockState(parentTile.getPos()), 3);
-			parentTile.getWorld().markBlockRangeForRenderUpdate(parentTile.getPos().getX(), parentTile.getPos().getY(),
-				parentTile.getPos().getZ(), parentTile.getPos().getX(), parentTile.getPos().getY(),
-				parentTile.getPos().getZ());
+		if (tile != null && tile.getWorld() != null && tile.getWorld().isRemote) {
+			tile.getWorld().notifyBlockUpdate(tile.getPos(),
+			                                  tile.getWorld().getBlockState(tile.getPos()),
+			                                  tile.getWorld().getBlockState(tile.getPos()), 3);
+			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos().getX(), tile.getPos().getY(),
+			                                              tile.getPos().getZ(), tile.getPos().getX(), tile.getPos().getY(),
+			                                              tile.getPos().getZ());
 		}
 	}
 
@@ -349,20 +317,20 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	private boolean isActive() {
-		return currentRecipe != null && energy.getEnergy() >= currentRecipe.euPerTick();
+		return currentRecipe != null && energy.getEnergy() >= currentRecipe.getPower();
 	}
 
 	public boolean canCraftAgain() {
-		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
-			if (recipe.canCraft(parentTile) && hasAllInputs(recipe)) {
+		for (Recipe recipe : recipeType.getRecipes(tile.getWorld())) {
+			if (recipe.canCraft(tile) && hasAllInputs(recipe)) {
 				boolean canGiveInvAll = true;
-				for (int i = 0; i < recipe.getOutputsSize(); i++) {
-					if (!canFitStack(recipe.getOutput(i), outputSlots[i], recipe.useOreDic())) {
+				for (int i = 0; i < recipe.getOutputs().size(); i++) {
+					if (!canFitOutput(recipe.getOutputs().get(i), outputSlots[i])) {
 						canGiveInvAll = false;
 						return false;
 					}
 				}
-				if (energy.getEnergy() < recipe.euPerTick()) {
+				if (energy.getEnergy() < recipe.getPower()) {
 					return false;
 				}
 				return canGiveInvAll;
@@ -372,23 +340,19 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public void setIsActive() {
-		if (parentTile.getWorld().getBlockState(parentTile.getPos()).getBlock() instanceof BlockMachineBase) {
-			BlockMachineBase blockMachineBase = (BlockMachineBase) parentTile.getWorld()
-				.getBlockState(parentTile.getPos()).getBlock();
+		if (tile.getWorld().getBlockState(tile.getPos()).getBlock() instanceof BlockMachineBase) {
+			BlockMachineBase blockMachineBase = (BlockMachineBase) tile.getWorld()
+				.getBlockState(tile.getPos()).getBlock();
 			boolean isActive = isActive() || canCraftAgain();
-			blockMachineBase.setActive(isActive, parentTile.getWorld(), parentTile.getPos());
+			blockMachineBase.setActive(isActive, tile.getWorld(), tile.getPos());
 		}
-		parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),
-			parentTile.getWorld().getBlockState(parentTile.getPos()),
-			parentTile.getWorld().getBlockState(parentTile.getPos()), 3);
+		tile.getWorld().notifyBlockUpdate(tile.getPos(),
+		                                  tile.getWorld().getBlockState(tile.getPos()),
+		                                  tile.getWorld().getBlockState(tile.getPos()), 3);
 	}
 
-	public void setCurrentRecipe(IBaseRecipeType recipe) {
-		try {
-			this.currentRecipe = (IBaseRecipeType) recipe.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
+	public void setCurrentRecipe(Recipe recipe) {
+		this.currentRecipe = recipe;
 	}
 
 	public boolean isInvDirty() {
@@ -403,11 +367,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return false;
 		}
-		for (IBaseRecipeType recipe : RecipeHandler.getRecipeClassFromName(recipeName)) {
-			for (Object input : recipe.getInputs()) {
-				boolean useOreDict = input instanceof String || recipe.useOreDic();
-				if (ItemUtils.isInputEqual(input, stack, true,
-					useOreDict)) {
+		for (Recipe recipe : recipeType.getRecipes(tile.getWorld())) {
+			for (Ingredient ingredient : recipe.getIngredients()) {
+				if (ingredient.test(stack)) {
 					return true;
 				}
 			}
