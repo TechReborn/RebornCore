@@ -1,11 +1,10 @@
 package reborncore.common.crafting;
 
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecipeManager {
 
@@ -28,20 +27,6 @@ public class RecipeManager {
 			throw new RuntimeException("Recipe type " + name + " not found");
 		}
 		return recipeTypes.get(name);
-	}
-
-	public static <R extends Recipe> List<R> getRecipes(World world, RecipeType<R> type){
-		List<R> recipes = new ArrayList<>();
-		for(IRecipe recipe : world.getRecipeManager().getRecipes()){
-			if(recipe instanceof Recipe && ((Recipe) recipe).getRecipeType().equals(type)){
-				if(type.getRecipeClass() != recipe.getClass()){
-					throw new RuntimeException("Invalid recipe in " + type.getName());
-				}
-				//noinspection unchecked
-				recipes.add((R) recipe);
-			}
-		}
-		return Collections.unmodifiableList(recipes);
 	}
 
 }

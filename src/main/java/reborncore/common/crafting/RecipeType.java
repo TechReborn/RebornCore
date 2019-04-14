@@ -76,7 +76,7 @@ public class RecipeType<R extends Recipe> implements IRecipeSerializer<R> {
 	}
 
 	public List<R> getRecipes(World world){
-		return RecipeManager.getRecipes(world, this);
+		return RecipeUtils.getRecipes(world, this);
 	}
 
 	public Class<R> getRecipeClass() {
