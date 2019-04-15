@@ -1,5 +1,7 @@
 package reborncore.common.crafting;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,9 +15,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.util.NonNullListCollector;
+import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Recipe implements IRecipe {
 
@@ -49,10 +55,11 @@ public class Recipe implements IRecipe {
 		power = JsonUtils.getInt(jsonObject, "power");
 		time = JsonUtils.getInt(jsonObject, "time");
 
-		JsonObject ingredientsJson = JsonUtils.getJsonObject(jsonObject, "ingredients");
-		ingredients = ingredientsJson.entrySet().stream().map(entry -> RebornIngredient.deserialize(entry.getValue())).collect(NonNullListCollector.toList());
+		ingredients = SerializationUtil.stream(JsonUtils.getJsonArray(jsonObject, "ingredients"))
+			.map(RebornIngredient::deserialize)
+			.collect(NonNullListCollector.toList());
 
-		JsonObject resultsJson = JsonUtils.getJsonObject(jsonObject, "results");
+		JsonArray resultsJson = JsonUtils.getJsonArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
 	}
 

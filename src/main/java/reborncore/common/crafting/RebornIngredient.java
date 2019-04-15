@@ -48,9 +48,11 @@ public class RebornIngredient implements Predicate<ItemStack> {
 		Ingredient base = Ingredient.deserialize(json);
 		int size = NO_SIZE;
 		if(json.isJsonObject()){
-			size = JsonUtils.getInt(json, "size");
+			if(json.getAsJsonObject().has("size")){
+				size = JsonUtils.getInt(json.getAsJsonObject(), "size");
+			}
 		} else if (json.isJsonArray()){
-			//TODO not really supported?
+			//TODO not really supported? might be best to ensure all sizes are the same? or find a nice way to allow mutli sizes, could be possible if required
 		}
 		return new RebornIngredient(base, size);
 	}

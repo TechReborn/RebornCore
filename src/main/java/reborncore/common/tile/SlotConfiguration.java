@@ -47,11 +47,11 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
@@ -165,10 +165,18 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 		public SlotConfigHolder(NBTTagCompound tagCompound) {
 			sideMap = new HashMap<>();
 			deserializeNBT(tagCompound);
+			Validate.isTrue(Arrays.stream(EnumFacing.values())
+				                .map(enumFacing -> sideMap.get(enumFacing))
+				                .noneMatch(Objects::isNull),
+			                "sideMap failed to load from nbt"
+			);
 		}
 
 		public SlotConfig getSideDetail(EnumFacing side) {
-			return sideMap.get(side);
+			Validate.notNull(side, "A none null side must be used");
+			SlotConfig slotConfig = sideMap.get(side);
+			Validate.notNull(slotConfig, "slotConfig was null for side " + side);
+			return slotConfig;
 		}
 
 		public List<SlotConfig> getAllSides() {
@@ -249,17 +257,19 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 	}
 
 	public static class SlotConfig implements INBTSerializable<NBTTagCompound> {
-		EnumFacing side;
-		SlotIO slotIO;
-		int slotID;
+		@Nonnull
+		private EnumFacing side;
+		@Nonnull
+		private SlotIO slotIO;
+		private int slotID;
 
-		public SlotConfig(EnumFacing side, int slotID) {
+		public SlotConfig(@Nonnull EnumFacing side, int slotID) {
 			this.side = side;
 			this.slotID = slotID;
 			this.slotIO = new SlotIO(ExtractConfig.NONE);
 		}
 
-		public SlotConfig(EnumFacing side, SlotIO slotIO, int slotID) {
+		public SlotConfig(@Nonnull EnumFacing side, @Nonnull SlotIO slotIO, int slotID) {
 			this.side = side;
 			this.slotIO = slotIO;
 			this.slotID = slotID;
@@ -267,13 +277,19 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 
 		public SlotConfig(NBTTagCompound tagCompound) {
 			deserializeNBT(tagCompound);
+			Validate.notNull(side, "error when loading slot config");
+			Validate.notNull(slotIO, "error when loading slot config");
 		}
 
+		@Nonnull
 		public EnumFacing getSide() {
+			Validate.notNull(side);
 			return side;
 		}
 
+		@Nonnull
 		public SlotIO getSlotIO() {
+			Validate.notNull(slotIO);
 			return slotIO;
 		}
 
@@ -432,7 +448,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 	public static boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction, TileMachineBase tile) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isInsert()) {
+		if (slotConfig.getSlotIO().getIoConfig().isInsert()) {
 			if (slotConfigHolder.filter() && tile.getCrafterForTile().isPresent()) {
 				RecipeCrafter crafter = tile.getCrafterForTile().get();
 				if (!crafter.isStackValidInput(itemStackIn)) {
@@ -456,7 +472,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound> {
 	public static boolean canExtractItem(int index, ItemStack stack, EnumFacing direction, TileMachineBase tile) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isExtact()) {
+		if (slotConfig.getSlotIO().getIoConfig().isExtact()) {
 			if (tile.getContainerForTile().isPresent()) {
 				RebornContainer container = tile.getContainerForTile().get();
 				if (container.slotMap.containsKey(index)) {

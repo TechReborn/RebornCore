@@ -1,5 +1,6 @@
 package reborncore.common.crafting;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import reborncore.common.util.NonNullListCollector;
+import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +33,11 @@ public class RecipeUtils {
 		return Collections.unmodifiableList(recipes);
 	}
 
-	public static NonNullList<ItemStack> deserializeItems(JsonObject jsonObject){
+	public static NonNullList<ItemStack> deserializeItems(JsonElement jsonObject){
 		if(jsonObject.isJsonArray()){
-			return jsonObject.entrySet().stream().map(entry -> deserializeItem(entry.getValue().getAsJsonObject())).collect(NonNullListCollector.toList());
+			return SerializationUtil.stream(jsonObject.getAsJsonArray()).map(entry -> deserializeItem(entry.getAsJsonObject())).collect(NonNullListCollector.toList());
 		} else {
-			return NonNullList.from(deserializeItem(jsonObject));
+			return NonNullList.from(deserializeItem(jsonObject.getAsJsonObject()));
 		}
 	}
 

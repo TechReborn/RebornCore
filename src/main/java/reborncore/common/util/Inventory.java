@@ -121,6 +121,9 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	public Inventory<T> withConfiguredAccess() {
 		configuredAccess = true;
 		this.inventoryAccess = (slotID, stack, facing, direction, tile) -> {
+			if(facing == null){
+				return true;
+			}
 			switch (direction) {
 				case INSERT:
 					return SlotConfiguration.canInsertItem(slotID, stack, facing, tile);

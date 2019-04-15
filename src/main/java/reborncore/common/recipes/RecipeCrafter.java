@@ -102,7 +102,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	int ticksSinceLastChange;
 
 	@Nullable
-	public static ICrafterSoundHanlder soundHanlder = null;
+	public static ICrafterSoundHanlder soundHanlder = (firstRun, tileEntity) -> {};
 
 	public RecipeCrafter(RecipeType<?> recipeType, TileEntity tile, int inputs, int outputs, Inventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
