@@ -36,6 +36,7 @@ import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.crafting.RebornIngredient;
 import reborncore.common.crafting.Recipe;
 import reborncore.common.crafting.RecipeType;
 import reborncore.common.util.Inventory;
@@ -225,7 +226,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (recipeType == null) {
 			return false;
 		}
-		for (Ingredient ingredient : recipeType.getIngredients()) {
+		for (RebornIngredient ingredient : recipeType.getRebornIngredients()) {
 			boolean hasItem = false;
 			for (int slot : inputSlots) {
 				if (ingredient.test(inventory.getStackInSlot(slot))) {
@@ -243,11 +244,10 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (currentRecipe == null) {
 			return;
 		}
-		for (Ingredient ingredient : currentRecipe.getIngredients()) {
+		for (RebornIngredient ingredient : currentRecipe.getRebornIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
 				if (ingredient.test(inventory.getStackInSlot(inputSlot))) {
-					//TODO might need to have an extension onto the Ingredient to allow for stack size
-					inventory.shrinkSlot(inputSlot, 1);
+					inventory.shrinkSlot(inputSlot, ingredient.getSize());
 					break;
 				}
 			}
@@ -368,7 +368,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return false;
 		}
 		for (Recipe recipe : recipeType.getRecipes(tile.getWorld())) {
-			for (Ingredient ingredient : recipe.getIngredients()) {
+			for (RebornIngredient ingredient : recipe.getRebornIngredients()) {
 				if (ingredient.test(stack)) {
 					return true;
 				}

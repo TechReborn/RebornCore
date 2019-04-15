@@ -22,7 +22,7 @@ public class Recipe implements IRecipe {
 	private final RecipeType type;
 	private final ResourceLocation name;
 
-	private NonNullList<Ingredient> ingredients;
+	private NonNullList<RebornIngredient> ingredients;
 	private NonNullList<ItemStack> outputs;
 	private int power;
 	private int time;
@@ -33,7 +33,7 @@ public class Recipe implements IRecipe {
 	}
 
 	//Only really used for code recipes, try to use json
-	public Recipe(RecipeType type, ResourceLocation name, NonNullList<Ingredient> ingredients, NonNullList<ItemStack> outputs, int power, int time) {
+	public Recipe(RecipeType type, ResourceLocation name, NonNullList<RebornIngredient> ingredients, NonNullList<ItemStack> outputs, int power, int time) {
 		this.type = type;
 		this.name = name;
 		this.ingredients = ingredients;
@@ -50,7 +50,7 @@ public class Recipe implements IRecipe {
 		time = JsonUtils.getInt(jsonObject, "time");
 
 		JsonObject ingredientsJson = JsonUtils.getJsonObject(jsonObject, "ingredients");
-		ingredients = ingredientsJson.entrySet().stream().map(entry -> Ingredient.deserialize(entry.getValue())).collect(NonNullListCollector.toList());
+		ingredients = ingredientsJson.entrySet().stream().map(entry -> RebornIngredient.deserialize(entry.getValue())).collect(NonNullListCollector.toList());
 
 		JsonObject resultsJson = JsonUtils.getJsonObject(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
@@ -78,9 +78,14 @@ public class Recipe implements IRecipe {
 		return type;
 	}
 
-	//TODO unmodifiable
+	// use the RebornIngredient version to ensure stack sizes are checked
+	@Deprecated
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
+		return ingredients.stream().map(RebornIngredient::getBase).collect(NonNullListCollector.toList());
+	}
+
+	public NonNullList<RebornIngredient> getRebornIngredients() {
 		return ingredients;
 	}
 
