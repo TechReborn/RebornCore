@@ -1,6 +1,7 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
@@ -41,6 +42,14 @@ public class RebornIngredient implements Predicate<ItemStack> {
 			return 1;
 		}
 		return size;
+	}
+
+	public JsonElement serialize(){
+		JsonElement json = base.serialize();
+		if(json.isJsonObject()){
+			json.getAsJsonObject().addProperty("size", size);
+		}
+		return json;
 	}
 
 	public static RebornIngredient deserialize(@Nullable JsonElement json) {

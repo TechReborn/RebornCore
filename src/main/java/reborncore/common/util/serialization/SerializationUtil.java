@@ -34,6 +34,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -56,5 +58,11 @@ public class SerializationUtil {
 	public static Stream<JsonElement> stream(JsonArray array){
 		return IntStream.range(0, array.size())
 			.mapToObj(array::get);
+	}
+
+	public static JsonArray asArray(List<JsonElement> elements){
+		JsonArray array = new JsonArray();
+		elements.forEach(array::add);
+		return array;
 	}
 }

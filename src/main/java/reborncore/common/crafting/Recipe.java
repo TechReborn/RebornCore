@@ -19,9 +19,7 @@ import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class Recipe implements IRecipe {
 
@@ -67,7 +65,8 @@ public class Recipe implements IRecipe {
 		jsonObject.addProperty("power", power);
 		jsonObject.addProperty("time", time);
 
-		//TODO find a way to go backwards on Ingredient's, it seems to write to a packet buffer, so that may help
+		List<JsonElement> elements = ingredients.stream().map(RebornIngredient::serialize).collect(Collectors.toList());
+		jsonObject.add("ingredients", SerializationUtil.asArray(elements));
 	}
 
 
@@ -150,4 +149,14 @@ public class Recipe implements IRecipe {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public NonNullList<ItemStack> getRemainingItems(IInventory p_179532_1_) {
+		throw new UnsupportedOperationException();
+	}
+
+	//Done to try and stop the table from loading it
+	@Override
+	public boolean isDynamic() {
+		return true;
+	}
 }
