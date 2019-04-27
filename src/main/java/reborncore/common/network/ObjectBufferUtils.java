@@ -31,6 +31,7 @@ package reborncore.common.network;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -42,12 +43,29 @@ public enum ObjectBufferUtils {
 	}, buffer -> {
 		return buffer.readString(buffer.readInt());
 	}),
+
 	INT(Integer.class, (value, buffer) -> {
 		buffer.writeInt(value);
 	}, PacketBuffer::readInt),
+
+	LONG(Long.class, (pos, buffer) -> {
+		buffer.writeLong(pos);
+	}, ExtendedPacketBuffer::readLong),
+
+	DOUBLE(Double.class, (pos, buffer) -> {
+		buffer.writeDouble(pos);
+	}, ExtendedPacketBuffer::readDouble),
+
+	FLOAT(Float.class, (pos, buffer) -> {
+		buffer.writeFloat(pos);
+	}, ExtendedPacketBuffer::readFloat),
+
 	BLOCK_POS(BlockPos.class, (pos, buffer) -> {
 		buffer.writeBlockPos(pos);
-	}, PacketBuffer::readBlockPos);
+	}, PacketBuffer::readBlockPos),
+	BIG_INT(BigInteger.class, (pos, buffer) -> {
+		buffer.writeBigInt(pos);
+	}, ExtendedPacketBuffer::readBigInt);
 
 	Class clazz;
 	ObjectWriter writer;
@@ -59,25 +77,25 @@ public enum ObjectBufferUtils {
 		this.reader = reader;
 	}
 
-	public static void writeObject(Object object, PacketBuffer buffer) {
+	public static void writeObject(Object object, ExtendedPacketBuffer buffer){
 		ObjectBufferUtils utils = Arrays.stream(values()).filter(objectBufferUtils -> objectBufferUtils.clazz == object.getClass()).findFirst().orElse(null);
 		Objects.requireNonNull(utils, "No support found for " + object.getClass());
 		buffer.writeInt(utils.ordinal());
 		utils.writer.write(object, buffer);
 	}
 
-	public static Object readObject(PacketBuffer buffer) {
+	public static Object readObject(ExtendedPacketBuffer buffer) {
 		ObjectBufferUtils utils = values()[buffer.readInt()];
 		Objects.requireNonNull(utils, "Could not find reader");
 		return utils.reader.read(buffer);
 	}
 
 	private interface ObjectWriter<T> {
-		void write(T object, PacketBuffer buffer);
+		void write(T object, ExtendedPacketBuffer buffer);
 	}
 
 	private interface ObjectReader<T> {
-		T read(PacketBuffer buffer);
+		T read(ExtendedPacketBuffer buffer);
 	}
 
 }

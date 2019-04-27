@@ -31,6 +31,12 @@ package reborncore.common.network;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketBuffer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.math.BigInteger;
+
 public class ExtendedPacketBuffer extends PacketBuffer {
 	public ExtendedPacketBuffer(ByteBuf wrapped) {
 		super(wrapped);
@@ -42,5 +48,25 @@ public class ExtendedPacketBuffer extends PacketBuffer {
 
 	protected Object readObject() {
 		return ObjectBufferUtils.readObject(this);
+	}
+
+	public void writeBigInt(BigInteger bigInteger){
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream outputStream = new ObjectOutputStream(baos);
+			outputStream.writeObject(bigInteger);
+			writeByteArray(baos.toByteArray());
+		} catch (Exception e){
+			throw new RuntimeException("Failed to write big int");
+		}
+	}
+
+	public BigInteger readBigInt(){
+		try {
+			ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(readByteArray()));
+			return (BigInteger) inputStream.readObject();
+		} catch (Exception e){
+			throw new RuntimeException("Failed to read big int");
+		}
 	}
 }

@@ -144,7 +144,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	@Override
 	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 
-		ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
+		ItemStack stack = playerIn.getHeldItem(hand);
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 
 		// We extended BlockTileBase. Thus we should always have tile entity. I hope.

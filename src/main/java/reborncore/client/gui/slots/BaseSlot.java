@@ -28,19 +28,38 @@
 
 package reborncore.client.gui.slots;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import java.util.function.Predicate;
 
 /**
  * Created by modmuss50 on 11/04/2016.
  */
 public class BaseSlot extends SlotItemHandler {
+
+	private Predicate<ItemStack> filter = (stack) -> true;
+
 	public BaseSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
+	}
+
+	public BaseSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition, Predicate<ItemStack> filter) {
+		super(inventoryIn, index, xPosition, yPosition);
+		this.filter = filter;
 	}
 
 	public boolean canWorldBlockRemove() {
 		return true;
 	}
 
+	@Override
+	public boolean isItemValid(ItemStack stack) {
+		return filter.test(stack);
+	}
+
+	public boolean canWorldBlockInsert(){
+		return true;
+	}
 }

@@ -166,9 +166,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			if (!this.objectValues.isEmpty()) {
 				int objects = 0;
 				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
-					final Object supplied = value.getLeft();
-					if (supplied != value.getRight()) {
-						sendObject(listener, this, objects, supplied);
+					final Object supplied = value.getLeft().get();
+					if(supplied != value.getRight()){
+						sendObject(listener,this, objects, supplied);
 						value.setRight(supplied);
 					}
 					objects++;
@@ -207,7 +207,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			int objects = 0;
 			for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 				final Object supplied = value.getLeft();
-				sendObject(listener, this, objects, supplied);
+				sendObject(listener, this, objects, ((Supplier) supplied).get());
 				value.setRight(supplied);
 				objects++;
 			}
@@ -330,6 +330,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	private boolean shiftToTile(final ItemStack stackToShift) {
+		if(!tile.getInventoryForTile().isPresent()){
+			return false;
+		}
 		for (final Range<Integer> range : this.tileSlotRanges) {
 			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1)) {
 				return true;

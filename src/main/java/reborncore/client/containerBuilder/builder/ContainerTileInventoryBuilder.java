@@ -73,6 +73,11 @@ public class ContainerTileInventoryBuilder {
 		return this;
 	}
 
+	public ContainerTileInventoryBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
+		this.parent.slots.add(new BaseSlot(this.itemHandler, index, x, y, filter));
+		return this;
+	}
+
 	public ContainerTileInventoryBuilder outputSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotOutput(this.itemHandler, index, x, y));
 		return this;
@@ -117,7 +122,7 @@ public class ContainerTileInventoryBuilder {
 	private ContainerTileInventoryBuilder upgradeSlots(IUpgradeable upgradeable) {
 		if (upgradeable.canBeUpgraded()) {
 			for (int i = 0; i < upgradeable.getUpgradeSlotCount(); i++) {
-				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -19, i * 18 + 12));
+				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -18, i * 18 + 12));
 			}
 		}
 		return this;

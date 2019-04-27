@@ -30,6 +30,7 @@ package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -46,11 +47,18 @@ public class BlockWrenchEventHandler {
 
 	@SubscribeEvent
 	public static void rightClickBlockEvent(PlayerInteractEvent.RightClickBlock event) {
+		EnumHand hand = event.getHand();
+		if (hand == EnumHand.OFF_HAND) {
+			// Wrench should be in main hand
+			return;
+		}
 		if (ToolManager.INSTANCE.canHandleTool(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND))) {
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
-			if (wrenableBlocks.contains(state.getBlock())) {
-				state.onBlockActivated(event.getWorld(), event.getPos(), event.getEntityPlayer(), EnumHand.MAIN_HAND, event.getFace(), 0F, 0F, 0F);
+			if(wrenableBlocks.contains(state.getBlock())){
+				Block block = state.getBlock();
+				block.onBlockActivated(state, event.getWorld(), event.getPos(), event.getEntityPlayer(), hand, event.getFace(), 0F, 0F, 0F);
 				event.setCanceled(true);
+				event.setCancellationResult(EnumActionResult.SUCCESS);
 			}
 		}
 	}

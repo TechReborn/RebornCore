@@ -51,4 +51,9 @@ public class SlotOutput extends BaseSlot {
 	public boolean canWorldBlockRemove() {
 		return true;
 	}
+
+	@Override
+	public boolean canWorldBlockInsert() {
+		return false;
+	}
 }

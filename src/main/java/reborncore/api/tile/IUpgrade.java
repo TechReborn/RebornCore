@@ -47,4 +47,8 @@ public interface IUpgrade {
 			IUpgradeHandler handler,
 		@Nonnull
 			ItemStack stack);
+
+	public default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack){
+		return true;
+	}
 }
