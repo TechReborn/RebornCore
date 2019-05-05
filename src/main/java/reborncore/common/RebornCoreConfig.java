@@ -67,7 +67,7 @@ public class RebornCoreConfig {
 	@ConfigRegistry(config = "misc", key = "Config Updater", comment = "AutoUpdates none user chnaged config values, when the mod default changes.")
 	public static boolean configUpdating = true;
 
-	@ConfigRegistry(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower teir will smoke")
+	@ConfigRegistry(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower tier will smoke")
 	public static boolean smokeHighTeir = false;
 
 	@ConfigRegistry(config = "misc", key = "Wrench Required", comment = "Wrench required to pick machine. If not wrenched than machine frame will drop instead.")
