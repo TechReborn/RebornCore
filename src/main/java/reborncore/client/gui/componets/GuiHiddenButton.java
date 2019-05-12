@@ -36,21 +36,21 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiHiddenButton extends ButtonWidget {
 
-	public GuiHiddenButton(int id, int xPosition, int yPosition, String displayString) {
-		super(id, xPosition, yPosition, displayString);
+	public GuiHiddenButton(int xPosition, int yPosition, String displayString) {
+		super(xPosition, yPosition, 0, 0, displayString, var1 -> {});
 	}
 
 	public GuiHiddenButton(int id, int xPosition, int yPosition, int width, int height, String displayString) {
-		super(id, xPosition, yPosition, width, height, displayString);
+		super(xPosition, yPosition, width, height, displayString, var1 -> {});
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (this.visible) {
 			TextRenderer fontrenderer = MinecraftClient.getInstance().textRenderer;
-			MinecraftClient.getInstance().getTextureManager().bindTexture(BUTTON_TEXTURES);
+			MinecraftClient.getInstance().getTextureManager().bindTexture(WIDGETS_LOCATION);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			this.hovered = mouseX >= this.x && mouseY >= this.y
+			this.isHovered = mouseX >= this.x && mouseY >= this.y
 				&& mouseX < this.x + this.width && mouseY < this.y + this.height;
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
@@ -65,7 +65,7 @@ public class GuiHiddenButton extends ButtonWidget {
 				l = 16777120;
 			}
 
-			this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2,
+			this.drawCenteredString(fontrenderer, this.getMessage(), this.x + this.width / 2,
 				this.y + (this.height - 8) / 2, l);
 		}
 	}

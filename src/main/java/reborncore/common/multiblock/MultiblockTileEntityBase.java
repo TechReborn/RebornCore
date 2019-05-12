@@ -34,7 +34,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
@@ -49,7 +49,7 @@ import java.util.Set;
  * machines should derive from this and implement their game logic in certain
  * abstract methods.
  */
-public abstract class MultiblockTileEntityBase extends IMultiblockPart implements ITickable {
+public abstract class MultiblockTileEntityBase extends IMultiblockPart implements Tickable {
 	private MultiblockControllerBase controller;
 	private boolean visited;
 
@@ -144,7 +144,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * Called when a block is removed by game actions, such as a player breaking
 	 * the block or the block being changed into another block.
 	 *
-	 * @see net.minecraft.tileentity.TileEntity#invalidate()
 	 */
 	@Override
 	public void invalidate() {
@@ -157,7 +156,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * been ticked, as the chunk in which this tile entity is contained is
 	 * unloading. Happens before the Forge TickEnd event.
 	 *
-	 * @see net.minecraft.tileentity.TileEntity#onChunkUnload()
 	 */
 	@Override
 	public void onChunkUnload() {
@@ -175,7 +173,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * <p>
 	 * TL;DR: Here there be dragons.
 	 *
-	 * @see net.minecraft.tileentity.TileEntity#validate()
 	 */
 	@Override
 	public void validate() {
@@ -191,11 +188,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		return new BlockEntityUpdateS2CPacket(getPos(), 0, packetData);
 	}
 
-	@Override
-	public void onDataPacket(ClientConnection network, BlockEntityUpdateS2CPacket packet) {
-		decodeDescriptionPacket(packet.getCompoundTag());
-	}
-
 	// /// Things to override in most implementations (IMultiblockPart)
 
 	/**
@@ -205,7 +197,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 *
 	 * @param packetData An NBT compound tag into which you should write your custom
 	 * description data.
-	 * @see MultiblockTileEntityBase#decodeDescriptionPacket(NBTTagCompound)
 	 */
 	protected void encodeDescriptionPacket(CompoundTag packetData) {
 		if (this.isMultiblockSaveDelegate() && isConnected()) {
@@ -220,7 +211,6 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * packet. Encoded in encodeDescriptionPacket.
 	 *
 	 * @param packetData The NBT data from the tile entity's description packet.
-	 * @see MultiblockTileEntityBase#encodeDescriptionPacket(NBTTagCompound)
 	 */
 	protected void decodeDescriptionPacket(CompoundTag packetData) {
 		if (packetData.containsKey("multiblockData")) {

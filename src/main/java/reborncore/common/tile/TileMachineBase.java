@@ -38,7 +38,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
@@ -122,12 +121,6 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		CompoundTag compound = super.toTag(new CompoundTag());
 		toTag(compound);
 		return compound;
-	}
-
-	@Override
-	public void onDataPacket(net.minecraft.network.ClientConnection net, BlockEntityUpdateS2CPacket pkt) {
-		super.onDataPacket(net, pkt);
-		fromTag(pkt.getCompoundTag());
 	}
 
 	@Override
@@ -279,10 +272,10 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 			getCrafterForTile().get().write(tagCompound);
 		}
 		if (slotConfiguration != null) {
-			tagCompound.put("slotConfig", slotConfiguration.serializeNBT());
+			tagCompound.put("slotConfig", slotConfiguration.toTag());
 		}
 		if (fluidConfiguration != null) {
-			tagCompound.put("fluidConfig", fluidConfiguration.serializeNBT());
+			tagCompound.put("fluidConfig", fluidConfiguration.toTag());
 		}
 		upgradeInventory.write(tagCompound, "Upgrades");
 		return tagCompound;

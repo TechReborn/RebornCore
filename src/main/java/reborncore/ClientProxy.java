@@ -38,9 +38,6 @@ import reborncore.client.hud.StackInfoHUD;
 import reborncore.client.multiblock.MultiblockRenderEvent;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.client.shields.ShieldTextureStore;
-import reborncore.common.multiblock.MultiblockClientTickHandler;
-
-import java.util.List;
 
 public class ClientProxy extends CommonProxy {
 

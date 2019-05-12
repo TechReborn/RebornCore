@@ -33,12 +33,8 @@ import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import reborncore.RebornCore;
-import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileMachineBase;
 
 public class ClientBoundPackets {
 
@@ -120,14 +116,14 @@ public class ClientBoundPackets {
 	public static NetworkPacket createPacketFluidConfigSync(BlockPos pos, FluidConfiguration fluidConfiguration) {
 		return NetworkManager.createPacket(new Identifier("reborncore", "fluid_config_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(fluidConfiguration.serializeNBT());
+			packetBuffer.writeCompoundTag(fluidConfiguration.toTag());
 		});
 	}
 
 	public static NetworkPacket createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createPacket(new Identifier("reborncore", "slot_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
+			packetBuffer.writeCompoundTag(slotConfig.toTag());
 		});
 	}
 

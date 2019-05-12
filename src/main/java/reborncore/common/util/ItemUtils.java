@@ -31,7 +31,6 @@ package reborncore.common.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import reborncore.api.power.IEnergyItemInfo;
-import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.recipes.IRecipeInput;
 
 import java.util.List;
@@ -111,11 +110,7 @@ public class ItemUtils {
 			return 0.0;
 		}
 
-		IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
-
-		double energy = (double) capEnergy.getEnergyStored();
-		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
-		return energy / maxEnergy;
+		throw new UnsupportedOperationException("Fix this");
 	}
 
 	public static boolean isActive(ItemStack stack) {

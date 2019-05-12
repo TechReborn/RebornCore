@@ -28,7 +28,7 @@
 
 package reborncore.client.texture;
 
-import net.minecraft.client.renderer.texture.TextureUtil;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
@@ -99,7 +99,7 @@ public class InputStreamTexture extends AbstractTexture {
 			}
 		}
 		this.bindTexture();
-		TextureUtil.allocateTextureImpl(this.getGlId(), 0, image.getWidth(), image.getHeight());
+		TextureUtil.prepareImage(this.getGlId(), 0, image.getWidth(), image.getHeight());
 		image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false);
 	}
 }

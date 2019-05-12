@@ -87,7 +87,7 @@ public class WrenchUtils {
 						SoundCategory.BLOCKS, 0.6F, 1F);
 				}
 			} else {
-				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), worldIn, pos, BlockRotation.CLOCKWISE_90);
+				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), BlockRotation.CLOCKWISE_90);
 			}
 			return true;
 		}

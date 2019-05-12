@@ -65,10 +65,7 @@ public class GuiButtonHologram extends GuiButtonExtended {
 		multiblock.addComponent(new BlockPos(x, y, z), blockState);
 	}
 
-	@Override
-	public void drawButtonForegroundLayer(int mouseX, int mouseY) {
 
-	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {

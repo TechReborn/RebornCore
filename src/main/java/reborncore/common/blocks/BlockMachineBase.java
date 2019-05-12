@@ -43,12 +43,15 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ViewableWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.loot.context.LootContext;
 import reborncore.api.ToolManager;
+import reborncore.api.items.InventoryUtils;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
@@ -60,6 +63,8 @@ import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
@@ -108,9 +113,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public boolean canCreatureSpawn(BlockState state, ViewableWorld world, BlockPos pos, SpawnRestriction.Location type,
-	                                @Nullable
-		                                EntityType<? extends MobEntity> entityType) {
+	public boolean allowsSpawning(BlockState state, BlockView world, BlockPos pos, EntityType<?> entityType_1) {
 		return false;
 	}
 
@@ -123,12 +126,15 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	}
 
 	@Override
-	public void getDrops(BlockState state, DefaultedList<ItemStack> drops, World world, BlockPos pos, int fortune) {
+	public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder lootcontext) {
+		List<ItemStack> drops = new ArrayList<>();
 		if (RebornCoreConfig.wrenchRequired) {
 			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
-		} else {
-			super.getDrops(state, drops, world, pos, fortune);
 		}
+		if(drops.isEmpty()){
+			return super.getDroppedStacks(state, lootcontext);
+		}
+		return drops;
 	}
 
 	public boolean isAdvanced() {
@@ -140,7 +146,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
-	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
+	public boolean activate(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockHitResult hitResult) {
 
 		ItemStack stack = playerIn.getStackInHand(hand);
 		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
@@ -159,15 +165,15 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 		if (!stack.isEmpty()) {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
-				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, side)) {
+				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, hitResult.getSide())) {
 					return true;
 				}
 			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
-					if (ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
-						true).getCount() > 0) {
-						stack = ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
+					if (InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
+					                                     true).getAmount() > 0) {
+						stack = InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setStackInHand(Hand.MAIN_HAND, stack);
 						return true;
 					}
@@ -180,7 +186,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 			return true;
 		}
 
-		return super.onBlockActivated(state, worldIn, pos, playerIn, hand, side, hitX, hitY, hitZ);
+		return super.activate(state, worldIn, pos, playerIn, hand, hitResult);
 	}
 
 	public boolean isActive(BlockState state) {

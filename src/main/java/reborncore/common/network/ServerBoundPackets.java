@@ -28,13 +28,10 @@
 
 package reborncore.common.network;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileMachineBase;
 
 public class ServerBoundPackets {
 
@@ -62,7 +59,7 @@ public class ServerBoundPackets {
 //			CompoundTag tagCompound = packetBuffer.readCompoundTag();
 //			context.enqueueWork(() -> {
 //				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-//				legacyMachineBase.slotConfiguration.deserializeNBT(tagCompound);
+//				legacyMachineBase.slotConfiguration.fromTag(tagCompound);
 //				legacyMachineBase.markDirty();
 //
 //				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
@@ -131,14 +128,14 @@ public class ServerBoundPackets {
 	public static NetworkPacket createPacketFluidConfigSave(BlockPos pos, FluidConfiguration.FluidConfig fluidConfiguration) {
 		return NetworkManager.createPacket(new Identifier("reborncore", "fluid_config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(fluidConfiguration.serializeNBT());
+			packetBuffer.writeCompoundTag(fluidConfiguration.toTag());
 		});
 	}
 
 	public static NetworkPacket createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createPacket(new Identifier("reborncore", "config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
+			packetBuffer.writeCompoundTag(slotConfig.toTag());
 		});
 	}
 
@@ -163,7 +160,7 @@ public class ServerBoundPackets {
 	public static NetworkPacket createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig) {
 		return NetworkManager.createPacket(new Identifier("reborncore", "slot_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
+			packetBuffer.writeCompoundTag(slotConfig.toTag());
 		});
 	}
 }

@@ -57,7 +57,7 @@ public class SpriteSlot extends FilteredSlot {
 	@Override
 	@Nullable
 	@Environment(EnvType.CLIENT)
-	public String getSlotTexture() {
+	public String getBackgroundSprite() {
 		return this.spriteName;
 	}
 }

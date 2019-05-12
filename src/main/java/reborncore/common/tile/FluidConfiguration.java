@@ -28,17 +28,16 @@
 
 package reborncore.common.tile;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import reborncore.common.util.NBTSerializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class FluidConfiguration implements INBTSerializable<CompoundTag> {
+public class FluidConfiguration implements NBTSerializable {
 
 	HashMap<Direction, FluidConfig> sideMap;
 	boolean input, output;
@@ -50,7 +49,7 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 
 	public FluidConfiguration(CompoundTag tagCompound) {
 		sideMap = new HashMap<>();
-		deserializeNBT(tagCompound);
+		fromTag(tagCompound);
 	}
 
 	public FluidConfig getSideDetail(Direction side) {
@@ -81,27 +80,28 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 			if (fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()) {
 				continue;
 			}
-			IFluidHandler fluidHandler = getFluidHandler(machineBase, facing);
-			if (fluidHandler == null) {
-				continue;
-			}
-			if (autoInput() && fluidConfig.getIoConfig().isInsert()) {
-				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, machineBase.fluidTransferAmount(), true);
-			}
-			if (autoOutput() && fluidConfig.getIoConfig().isExtact()) {
-				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), machineBase.fluidTransferAmount(), true);
-			}
+			//TODO fluids
+//			IFluidHandler fluidHandler = getFluidHandler(machineBase, facing);
+//			if (fluidHandler == null) {
+//				continue;
+//			}
+//			if (autoInput() && fluidConfig.getIoConfig().isInsert()) {
+//				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, machineBase.fluidTransferAmount(), true);
+//			}
+//			if (autoOutput() && fluidConfig.getIoConfig().isExtact()) {
+//				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), machineBase.fluidTransferAmount(), true);
+//			}
 		}
 	}
 
-	private IFluidHandler getFluidHandler(TileMachineBase machine, Direction facing) {
-		BlockPos pos = machine.getPos().offset(facing);
-		BlockEntity tileEntity = machine.getWorld().getBlockEntity(pos);
-		if (tileEntity == null) {
-			return null;
-		}
-		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
-	}
+//	private IFluidHandler getFluidHandler(TileMachineBase machine, Direction facing) {
+//		BlockPos pos = machine.getPos().offset(facing);
+//		BlockEntity tileEntity = machine.getWorld().getBlockEntity(pos);
+//		if (tileEntity == null) {
+//			return null;
+//		}
+//		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
+//	}
 
 	public boolean autoInput() {
 		return input;
@@ -120,16 +120,16 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag toTag() {
 		CompoundTag compound = new CompoundTag();
-		Arrays.stream(Direction.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
+		Arrays.stream(Direction.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).toTag()));
 		compound.putBoolean("input", input);
 		compound.putBoolean("output", output);
 		return compound;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag nbt) {
+	public void fromTag(CompoundTag nbt) {
 		sideMap.clear();
 		Arrays.stream(Direction.values()).forEach(facing -> {
 			CompoundTag compound = nbt.getCompound("side_" + facing.ordinal());
@@ -140,7 +140,7 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 		output = nbt.getBoolean("output");
 	}
 
-	public static class FluidConfig implements INBTSerializable<CompoundTag> {
+	public static class FluidConfig implements NBTSerializable {
 		Direction side;
 		FluidConfiguration.ExtractConfig ioConfig;
 
@@ -155,7 +155,7 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 		}
 
 		public FluidConfig(CompoundTag tagCompound) {
-			deserializeNBT(tagCompound);
+			fromTag(tagCompound);
 		}
 
 		public Direction getSide() {
@@ -167,7 +167,7 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 		}
 
 		@Override
-		public CompoundTag serializeNBT() {
+		public CompoundTag toTag() {
 			CompoundTag tagCompound = new CompoundTag();
 			tagCompound.putInt("side", side.ordinal());
 			tagCompound.putInt("config", ioConfig.ordinal());
@@ -175,7 +175,7 @@ public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 		}
 
 		@Override
-		public void deserializeNBT(CompoundTag nbt) {
+		public void fromTag(CompoundTag nbt) {
 			side = Direction.values()[nbt.getInt("side")];
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInt("config")];
 		}
