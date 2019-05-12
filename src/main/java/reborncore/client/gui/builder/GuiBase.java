@@ -30,6 +30,7 @@ package reborncore.client.gui.builder;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -370,5 +371,17 @@ public class GuiBase extends ContainerScreen {
 
 	public boolean isConfigEnabled() {
 		return tile instanceof TileMachineBase && container != null;
+	}
+
+	public int getGuiLeft(){
+		return left;
+	}
+
+	public int getGuiTop(){
+		return top;
+	}
+
+	public MinecraftClient getMinecraft(){
+		return minecraft;
 	}
 }

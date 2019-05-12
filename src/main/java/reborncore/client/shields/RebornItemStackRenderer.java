@@ -94,7 +94,7 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 							AbstractTexture texture = shieldTexture.getTexture();
 							customTextureMap.put(location.getPath(), texture);
 							final Identifier resourceLocation = location;
-							THREAD_POOL.submit((Runnable) () -> MinecraftClient.getInstance().addScheduledTask((Runnable) () -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
+							THREAD_POOL.submit(() -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
 							MinecraftClient.getInstance().getTextureManager().bindTexture(TextureCache.DEFAULT_SHIELD);
 						}
 					} else {

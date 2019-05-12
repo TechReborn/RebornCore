@@ -291,7 +291,7 @@ public class ElementBase {
 		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
 		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
 		float f7 = (float) (endColor & 255) / 255.0F;
-		GlStateManager.disableTexture2D();
+		GlStateManager.disableTexture();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlphaTest();
 		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -307,7 +307,7 @@ public class ElementBase {
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 	}
 
 	public int adjustX(GuiBase gui, int x) {
@@ -325,7 +325,7 @@ public class ElementBase {
 	public void drawString(GuiBase gui, String string, int x, int y, int color) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
-		gui.mc.fontRenderer.drawString(string, x, y, color);
+		gui.getMinecraft().fontRenderer.drawString(string, x, y, color);
 	}
 
 	public void drawString(GuiBase gui, String string, int x, int y) {
@@ -337,11 +337,11 @@ public class ElementBase {
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.getXSize() / 2 - gui.mc.fontRenderer.getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (gui.getXSize() / 2 - gui.getMinecraft().fontRenderer.getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int x, int y, int colour) {
-		drawString(gui, string, (x - gui.mc.fontRenderer.getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (x - gui.getMinecraft().fontRenderer.getStringWidth(string) / 2), y, colour);
 	}
 
 	public int getStringWidth(String string) {
