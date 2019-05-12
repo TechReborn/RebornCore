@@ -39,92 +39,92 @@ import reborncore.common.tile.TileMachineBase;
 public class ServerBoundPackets {
 
 	public static void init() {
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_config_save"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			FluidConfiguration.FluidConfig fluidConfiguration = new FluidConfiguration.FluidConfig(packetBuffer.readCompoundTag());
-			context.enqueueWork(() -> {
-				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-				legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
-				legacyMachineBase.markDirty();
-
-				NetworkPacket packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
-				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
-
-				//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
-				World world = legacyMachineBase.getWorld();
-				IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());
-				world.markAndNotifyBlock(legacyMachineBase.getPos(), world.getChunk(legacyMachineBase.getPos()), blockState, blockState, 3);
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "config_save"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			CompoundTag tagCompound = packetBuffer.readCompoundTag();
-			context.enqueueWork(() -> {
-				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-				legacyMachineBase.slotConfiguration.deserializeNBT(tagCompound);
-				legacyMachineBase.markDirty();
-
-				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
-				NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_io_save"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			boolean input = packetBuffer.readBoolean();
-			boolean output = packetBuffer.readBoolean();
-			context.enqueueWork(() -> {
-				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-				FluidConfiguration config = legacyMachineBase.fluidConfiguration;
-				if (config == null) {
-					return;
-				}
-				config.setInput(input);
-				config.setOutput(output);
-
-				//Syncs back to the client
-				NetworkPacket packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
-				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "io_save"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			int slotID = packetBuffer.readInt();
-			boolean input = packetBuffer.readBoolean();
-			boolean output = packetBuffer.readBoolean();
-			boolean filter = packetBuffer.readBoolean();
-
-			TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-			SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
-			if (holder == null) {
-				return;
-			}
-
-			context.enqueueWork(() -> {
-				holder.setInput(input);
-				holder.setOutput(output);
-				holder.setfilter(filter);
-
-				//Syncs back to the client
-				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
-				NetworkManager.sendToAll(packetSlotSync);
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "slot_save"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			SlotConfiguration.SlotConfig slotConfig = new SlotConfiguration.SlotConfig(packetBuffer.readCompoundTag());
-			context.enqueueWork(() -> {
-				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
-				legacyMachineBase.slotConfiguration.getSlotDetails(slotConfig.getSlotID()).updateSlotConfig(slotConfig);
-				legacyMachineBase.markDirty();
-
-				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
-				NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
-			});
-		});
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_config_save"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			FluidConfiguration.FluidConfig fluidConfiguration = new FluidConfiguration.FluidConfig(packetBuffer.readCompoundTag());
+//			context.enqueueWork(() -> {
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
+//				legacyMachineBase.markDirty();
+//
+//				NetworkPacket packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
+//				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
+//
+//				//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
+//				World world = legacyMachineBase.getWorld();
+//				IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());
+//				world.markAndNotifyBlock(legacyMachineBase.getPos(), world.getChunk(legacyMachineBase.getPos()), blockState, blockState, 3);
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "config_save"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			CompoundTag tagCompound = packetBuffer.readCompoundTag();
+//			context.enqueueWork(() -> {
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				legacyMachineBase.slotConfiguration.deserializeNBT(tagCompound);
+//				legacyMachineBase.markDirty();
+//
+//				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
+//				NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_io_save"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			boolean input = packetBuffer.readBoolean();
+//			boolean output = packetBuffer.readBoolean();
+//			context.enqueueWork(() -> {
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				FluidConfiguration config = legacyMachineBase.fluidConfiguration;
+//				if (config == null) {
+//					return;
+//				}
+//				config.setInput(input);
+//				config.setOutput(output);
+//
+//				//Syncs back to the client
+//				NetworkPacket packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
+//				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "io_save"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			int slotID = packetBuffer.readInt();
+//			boolean input = packetBuffer.readBoolean();
+//			boolean output = packetBuffer.readBoolean();
+//			boolean filter = packetBuffer.readBoolean();
+//
+//			TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//			SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
+//			if (holder == null) {
+//				return;
+//			}
+//
+//			context.enqueueWork(() -> {
+//				holder.setInput(input);
+//				holder.setOutput(output);
+//				holder.setfilter(filter);
+//
+//				//Syncs back to the client
+//				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
+//				NetworkManager.sendToAll(packetSlotSync);
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "slot_save"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			SlotConfiguration.SlotConfig slotConfig = new SlotConfiguration.SlotConfig(packetBuffer.readCompoundTag());
+//			context.enqueueWork(() -> {
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				legacyMachineBase.slotConfiguration.getSlotDetails(slotConfig.getSlotID()).updateSlotConfig(slotConfig);
+//				legacyMachineBase.markDirty();
+//
+//				NetworkPacket packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.slotConfiguration);
+//				NetworkManager.sendToWorld(packetSlotSync, legacyMachineBase.getWorld());
+//			});
+//		});
 
 	}
 

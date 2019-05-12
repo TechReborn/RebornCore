@@ -62,114 +62,11 @@ public class RegistrationManager {
 
 	private void init() {
 		long start = System.currentTimeMillis();
-		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(RebornRegister.class);
-		annotations.removeIf(annotationData -> !annotationData.getAnnotationData().get("value").equals(modid));
-		annotations.sort(Comparator.comparingInt(RegistrationManager::getPriority));
-		for (ModFileScanData.AnnotationData data : annotations) {
-			try {
-				if (!isModPresent(data)) {
-					continue;
-				}
-				if (!isValidOnSide(data)) {
-					continue;
-				}
-				Class clazz = Class.forName(data.getClassType().getClassName());
-				registryClasses.add(clazz);
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException("Failed to load class", e);
-			}
-		}
 
-		//Sorts all the classes to (try) and ensure they are loaded in the same oder on the client/server.
-		//Hopefully this fixes the issue with packets being misaligned
-		registryClasses.sort(Comparator.comparing(Class::getCanonicalName));
 		RebornCore.LOGGER.info("Pre loaded registries in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static int getPriority(ModFileScanData.AnnotationData annotationData) {
-		if (annotationData.getAnnotationData().containsKey("priority")) {
-			return -(int) annotationData.getAnnotationData().get("priority");
-		}
-		return 0;
-	}
 
-	private boolean isModPresent(ModFileScanData.AnnotationData annotationData) {
-		if (!annotationData.getAnnotationData().containsKey("modOnly")) { //Doesnt have any details about if its only to be loaded along with a specfic mod, so we assume true
-			return true;
-		}
-		String modOnly = (String) annotationData.getAnnotationData().get("modOnly");
-		if (modOnly == null || modOnly.isEmpty()) {
-			return true;
-		}
-		for (String modid : modOnly.split(",")) {
-			if (modid.startsWith("@")) {
-				if (modid.equals("@client")) {
-					if (RebornCore.getSide() != EnvType.CLIENT) {
-						return false;
-					}
-				}
-			} else if (modid.startsWith("!")) {
-				if (ModList.get().isLoaded(modid.replaceAll("!", ""))) {
-					return false;
-				}
-			} else {
-				if (!ModList.get().isLoaded(modid)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	//This ensures that the class that might be loaded doesnt have any of the common side only markers on it. Its slow but will save us from some common issues
-	private boolean isValidOnSide(ModFileScanData.AnnotationData annotationData) {
-		String side = RebornCore.getSide().toString().toUpperCase();
-		if (annotationData.getAnnotationData().containsKey("side")) {
-			ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) annotationData.getAnnotationData().get("side");
-			String classSide = sideEnum.getValue();
-			if (classSide.equals(Distribution.UNIVERSAL.toString())) {
-				//do nothing with univseral classes
-			} else if (!side.equals(classSide)) {
-				return false;
-			}
-		}
-		//Checks the side only annotations
-		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(Environment.class);
-		for (ModFileScanData.AnnotationData sideData : annotations) {
-			if (sideData.getClassType().getClassName().equals(annotationData.getClassType().getClassName())) {
-				if (sideData.getAnnotationData().containsKey("value")) {
-					ModAnnotation.EnumHolder sideEnum = (ModAnnotation.EnumHolder) sideData.getAnnotationData().get("value");
-					String classSide = sideEnum.getValue();
-					if (!side.equals(classSide)) {
-						return false;
-					}
-				}
-			}
-		}
-		//Checks for the mod annotation on a class
-		annotations = ScanDataUtils.getAnnotations(Mod.class);
-		for (ModFileScanData.AnnotationData sideData : annotations) {
-			if (sideData.getClassType().getClassName().equals(annotationData.getClassType().getClassName())) {
-				if (RebornCore.getSide() == EnvType.CLIENT) {
-					if (sideData.getAnnotationData().containsKey("serverSideOnly")) {
-						boolean value = (boolean) sideData.getAnnotationData().get("serverSideOnly");
-						if (value) {
-							return false;
-						}
-					}
-				} else {
-					if (sideData.getAnnotationData().containsKey("clientSideOnly")) {
-						boolean value = (boolean) sideData.getAnnotationData().get("clientSideOnly");
-						if (value) {
-							return false;
-						}
-					}
-				}
-
-			}
-		}
-		return true;
-	}
 
 	public void load(LoadStage event) {
 		long start = System.currentTimeMillis();
@@ -237,27 +134,6 @@ public class RegistrationManager {
 	}
 
 	private void loadFactorys() {
-		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(IRegistryFactory.RegistryFactory.class);
-		for (ModFileScanData.AnnotationData data : annotations) {
-			try {
-				Class clazz = Class.forName(data.getClassType().getClassName());
-				IRegistryFactory.RegistryFactory registryFactory = (IRegistryFactory.RegistryFactory) getAnnoation(clazz.getAnnotations(), IRegistryFactory.RegistryFactory.class);
-				if (!registryFactory.side().canExcetue()) {
-					continue;
-				}
-				if (!ModList.get().isLoaded(registryFactory.modID())) {
-					continue;
-				}
-				Object object = clazz.newInstance();
-				if (object instanceof IRegistryFactory) {
-					IRegistryFactory factory = (IRegistryFactory) object;
-					factory.onInit(modid);
-					factoryList.add(factory);
-				}
-			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-				throw new RuntimeException(e);
-			}
-		}
 		RebornCore.LOGGER.info("Loaded " + factoryList.size() + " factories for " + modid);
 	}
 

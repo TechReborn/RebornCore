@@ -46,10 +46,8 @@ import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.CrashHandler;
 import reborncore.common.util.GenericWrenchHelper;
-import Dist;
 import java.io.File;
 
-@Mod(RebornCore.MOD_ID)
 public class RebornCore {
 
 	public static final String MOD_NAME = "Reborn Core";
@@ -115,7 +113,7 @@ public class RebornCore {
 		LOADED = true;
 	}
 
-	public static Dist getSide() {
+	public static EnvType getSide() {
 		return FMLEnvironment.dist;
 	}
 

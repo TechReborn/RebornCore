@@ -29,6 +29,7 @@
 package reborncore.client.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class GuiButtonItemTexture extends GuiButtonExt {
+public class GuiButtonItemTexture extends ButtonWidget {
 
 	public int textureU;
 	public int textureV;

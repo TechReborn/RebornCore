@@ -43,67 +43,67 @@ import reborncore.common.tile.TileMachineBase;
 public class ClientBoundPackets {
 
 	public static void init() {
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
-			BlockPos pos = extendedPacketBuffer.readBlockPos();
-			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
-			context.enqueueWork(() -> {
-				World world = RebornCore.proxy.getClientWorld();
-				if (world.isBlockLoaded(pos)) {
-					TileEntity tileentity = world.getTileEntity(pos);
-					if (tileentity != null && tagCompound != null) {
-						tileentity.read(tagCompound);
-					}
-				}
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			FluidConfiguration fluidConfiguration = new FluidConfiguration(packetBuffer.readCompoundTag());
-			context.enqueueWork(() -> {
-				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
-					return;
-				}
-				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-				if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
-					RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
-				}
-				fluidConfiguration.getAllSides().forEach(fluidConfig -> machineBase.fluidConfiguration.updateFluidConfig(fluidConfig));
-				machineBase.fluidConfiguration.setInput(fluidConfiguration.autoInput());
-				machineBase.fluidConfiguration.setOutput(fluidConfiguration.autoOutput());
-
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "slot_sync"), (packetBuffer, context) -> {
-			BlockPos pos = packetBuffer.readBlockPos();
-			SlotConfiguration slotConfig = new SlotConfiguration(packetBuffer.readCompoundTag());
-			context.enqueueWork(() -> {
-				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
-					return;
-				}
-				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
-				if (machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
-					RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
-				}
-				Minecraft.getInstance().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));
-			});
-		});
-
-		NetworkManager.registerPacketHandler(new Identifier("reborncore", "send_object"), (packetBuffer, context) -> {
-			int id = packetBuffer.readInt();
-			Object value = packetBuffer.readObject();
-			String container = packetBuffer.readString(packetBuffer.readInt());
-			context.enqueueWork(() -> {
-				GuiScreen gui = Minecraft.getInstance().currentScreen;
-				if (gui instanceof GuiContainer) {
-					Container container1 = ((GuiContainer) gui).inventorySlots;
-					if (container1 instanceof IExtendedContainerListener) {
-						((IExtendedContainerListener) container1).handleObject(id, value);
-					}
-				}
-			});
-		});
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
+//			BlockPos pos = extendedPacketBuffer.readBlockPos();
+//			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
+//			context.enqueueWork(() -> {
+//				World world = RebornCore.proxy.getClientWorld();
+//				if (world.isBlockLoaded(pos)) {
+//					TileEntity tileentity = world.getTileEntity(pos);
+//					if (tileentity != null && tagCompound != null) {
+//						tileentity.read(tagCompound);
+//					}
+//				}
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			FluidConfiguration fluidConfiguration = new FluidConfiguration(packetBuffer.readCompoundTag());
+//			context.enqueueWork(() -> {
+//				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
+//					return;
+//				}
+//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+//				if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
+//					RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
+//				}
+//				fluidConfiguration.getAllSides().forEach(fluidConfig -> machineBase.fluidConfiguration.updateFluidConfig(fluidConfig));
+//				machineBase.fluidConfiguration.setInput(fluidConfiguration.autoInput());
+//				machineBase.fluidConfiguration.setOutput(fluidConfiguration.autoOutput());
+//
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "slot_sync"), (packetBuffer, context) -> {
+//			BlockPos pos = packetBuffer.readBlockPos();
+//			SlotConfiguration slotConfig = new SlotConfiguration(packetBuffer.readCompoundTag());
+//			context.enqueueWork(() -> {
+//				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
+//					return;
+//				}
+//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+//				if (machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
+//					RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
+//				}
+//				Minecraft.getInstance().addScheduledTask(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.slotConfiguration.updateSlotDetails(slotConfigHolder)));
+//			});
+//		});
+//
+//		NetworkManager.registerPacketHandler(new Identifier("reborncore", "send_object"), (packetBuffer, context) -> {
+//			int id = packetBuffer.readInt();
+//			Object value = packetBuffer.readObject();
+//			String container = packetBuffer.readString(packetBuffer.readInt());
+//			context.enqueueWork(() -> {
+//				GuiScreen gui = Minecraft.getInstance().currentScreen;
+//				if (gui instanceof GuiContainer) {
+//					Container container1 = ((GuiContainer) gui).inventorySlots;
+//					if (container1 instanceof IExtendedContainerListener) {
+//						((IExtendedContainerListener) container1).handleObject(id, value);
+//					}
+//				}
+//			});
+//		});
 	}
 
 	public static NetworkPacket createCustomDescriptionPacket(BlockEntity tileEntity) {

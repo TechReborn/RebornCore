@@ -73,7 +73,7 @@ public class CheckBoxElement extends ElementBase {
 			sprite = checkBoxSprite.getTicked();
 		}
 		drawSprite(gui, sprite, x, y);
-		drawString(gui, label, x + checkBoxSprite.getNormal().width + 5, ((y + getHeight(gui.getMachine()) / 2) - (gui.getMinecraft().getFontManager().FONT_HEIGHT / 2)), labelColor);
+		drawString(gui, label, x + checkBoxSprite.getNormal().width + 5, ((y + getHeight(gui.getMachine()) / 2) - (gui.getTextRenderer().fontHeight / 2)), labelColor);
 	}
 
 }

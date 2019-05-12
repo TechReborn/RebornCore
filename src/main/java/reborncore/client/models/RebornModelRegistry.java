@@ -43,65 +43,65 @@ public class RebornModelRegistry {
 	}
 
 	public static void registerModels(String modid) {
-		for (ModelCompound compound : modelList) {
-			if (compound.getModid().equals(modid)) {
-				if (compound.isBlock()) {
-					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
-						registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
-					} else {
-						registerItemModel(compound.getItem(), compound.getMeta(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant());
-					}
-				}
-				if (compound.isBlock()) {
-					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
-						setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
-					} else {
-						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant(), compound.getIgnoreProperties());
-					}
-				}
-			}
-		}
+//		for (ModelCompound compound : modelList) {
+//			if (compound.getModid().equals(modid)) {
+//				if (compound.isBlock()) {
+//					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
+//						registerItemModel(compound.getItem(), compound.getMeta(), compound.getBlockStatePath(), compound.getInventoryVariant());
+//					} else {
+//						registerItemModel(compound.getItem(), compound.getMeta(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant());
+//					}
+//				}
+//				if (compound.isBlock()) {
+//					if (compound.getFileName().equals("modelregistration.undefinedfilename")) {
+//						setBlockStateMapper(compound.getBlock(), compound.getBlockStatePath(), compound.getIgnoreProperties());
+//					} else {
+//						setBlockStateMapper(compound.getBlock(), compound.getFileName(), compound.getBlockStatePath(), compound.getInventoryVariant(), compound.getIgnoreProperties());
+//					}
+//				}
+//			}
+//		}
 	}
 
-	public static void registerItemModel(Item item) {
-		setMRL(item, 0, item.getRegistryName(), "inventory");
-	}
-
-	public static void registerItemModel(Item item, int meta) {
-		setMRL(item, meta, item.getRegistryName(), "inventory");
-	}
-
-	public static void registerItemModel(Item item, String fileName) {
-		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), fileName);
-		setMRL(item, 0, loc, "inventory");
-	}
-
-	public static void registerItemModel(Item item, int meta, String path, String invVariant) {
-		String slash = "";
-		if (!path.isEmpty()) {
-			slash = "/";
-		}
-		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
-		setMRL(item, meta, loc, invVariant);
-	}
-
-	public static void registerItemModel(Item item, int meta, String fileName, String path, String invVariant) {
-		String slash = "";
-		if (!path.isEmpty()) {
-			slash = "/";
-		}
-		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + fileName);
-		setMRL(item, meta, loc, invVariant);
-	}
-
-	public static void registerBlockState(Item item, int meta, String path, String property, String variant) {
-		registerBlockState(item, meta, path, property + "=" + variant);
-	}
-
-	public static void registerBlockState(Item item, int meta, String path, String variant) {
-		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
-		setMRL(item, meta, loc, variant);
-	}
+//	public static void registerItemModel(Item item) {
+//		setMRL(item, 0, item.getRegistryName(), "inventory");
+//	}
+//
+//	public static void registerItemModel(Item item, int meta) {
+//		setMRL(item, meta, item.getRegistryName(), "inventory");
+//	}
+//
+//	public static void registerItemModel(Item item, String fileName) {
+//		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), fileName);
+//		setMRL(item, 0, loc, "inventory");
+//	}
+//
+//	public static void registerItemModel(Item item, int meta, String path, String invVariant) {
+//		String slash = "";
+//		if (!path.isEmpty()) {
+//			slash = "/";
+//		}
+//		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
+//		setMRL(item, meta, loc, invVariant);
+//	}
+//
+//	public static void registerItemModel(Item item, int meta, String fileName, String path, String invVariant) {
+//		String slash = "";
+//		if (!path.isEmpty()) {
+//			slash = "/";
+//		}
+//		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + fileName);
+//		setMRL(item, meta, loc, invVariant);
+//	}
+//
+//	public static void registerBlockState(Item item, int meta, String path, String property, String variant) {
+//		registerBlockState(item, meta, path, property + "=" + variant);
+//	}
+//
+//	public static void registerBlockState(Item item, int meta, String path, String variant) {
+//		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
+//		setMRL(item, meta, loc, variant);
+//	}
 
 	//TODO 1.13 ModelLoader stuff
 
@@ -114,11 +114,11 @@ public class RebornModelRegistry {
 	//	}
 
 	public static void setBlockStateMapper(Block block, Property<?>... ignoredProperties) {
-		setBlockStateMapper(block, block.getRegistryName().getPath(), ignoredProperties);
+	//	setBlockStateMapper(block, block.getRegistryName().getPath(), ignoredProperties);
 	}
 
 	public static void setBlockStateMapper(Block block, String blockstatePath, Property<?>... ignoredProperties) {
-		setBlockStateMapper(block, block.getRegistryName().getPath(), blockstatePath, ignoredProperties);
+	//	setBlockStateMapper(block, block.getRegistryName().getPath(), blockstatePath, ignoredProperties);
 	}
 
 	public static void setBlockStateMapper(Block block, String fileName, String path, Property<?>... ignoredProperties) {

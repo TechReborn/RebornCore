@@ -32,6 +32,6 @@ package reborncore.common.registration;
 /**
  * Created by modmuss50 on 08/06/2017.
  */
-public class RegistryConstructionEvent extends Event {
+public class RegistryConstructionEvent {
 
 }

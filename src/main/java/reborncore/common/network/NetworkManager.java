@@ -44,61 +44,61 @@ import java.util.function.Supplier;
 
 public class NetworkManager {
 
-	private static final SimpleChannel channel = NetworkRegistry.ChannelBuilder
-		.named(new Identifier("reborncore", "network"))
-		.clientAcceptedVersions(a -> true)
-		.serverAcceptedVersions(a -> true)
-		.networkProtocolVersion(() -> "1.0.0")
-		.simpleChannel();
+//	private static final SimpleChannel channel = NetworkRegistry.ChannelBuilder
+//		.named(new Identifier("reborncore", "network"))
+//		.clientAcceptedVersions(a -> true)
+//		.serverAcceptedVersions(a -> true)
+//		.networkProtocolVersion(() -> "1.0.0")
+//		.simpleChannel();
 
-	private static Map<Identifier, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
+//	private static Map<Identifier, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
 
 	static {
-		channel.registerMessage(0, ForgeMessage.class, ForgeMessage::encode, ForgeMessage::decode, ForgeMessage::handle);
+		//channel.registerMessage(0, ForgeMessage.class, ForgeMessage::encode, ForgeMessage::decode, ForgeMessage::handle);
 	}
 
 	public static NetworkPacket createPacket(Identifier resourceLocation, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
 		return new ForgeMessage(resourceLocation, packetBufferConsumer);
 	}
 
-	public static void registerPacketHandler(Identifier resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer) {
-		if (packetHandlers.containsKey(resourceLocation)) {
-			throw new RuntimeException("Packet handler already registered for " + resourceLocation);
-		}
-		packetHandlers.put(resourceLocation, consumer);
-	}
+	//public static void registerPacketHandler(Identifier resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer) {
+//		if (packetHandlers.containsKey(resourceLocation)) {
+//			throw new RuntimeException("Packet handler already registered for " + resourceLocation);
+//		}
+//		packetHandlers.put(resourceLocation, consumer);
+//	}
 
-	public static void send(PacketDistributor.PacketTarget packetTarget, NetworkPacket packet) {
-		channel.send(packetTarget, packet);
-	}
+	//public static void send(PacketDistributor.PacketTarget packetTarget, NetworkPacket packet) {
+		//channel.send(packetTarget, packet);
+	//}
 
 	public static void sendToServer(NetworkPacket packet) {
-		send(PacketDistributor.SERVER.noArg(), packet);
+	//	send(PacketDistributor.SERVER.noArg(), packet);
 	}
 
-	public static void sendToAllAround(NetworkPacket packet, PacketDistributor.TargetPoint point) {
-		send(PacketDistributor.NEAR.with(() -> point), packet);
-	}
+	//public static void sendToAllAround(NetworkPacket packet, PacketDistributor.TargetPoint point) {
+		//send(PacketDistributor.NEAR.with(() -> point), packet);
+	//}
 
 	public static void sendToAll(NetworkPacket packet) {
-		send(PacketDistributor.ALL.noArg(), packet);
+		//send(PacketDistributor.ALL.noArg(), packet);
 
 	}
 
 	public static void sendToPlayer(NetworkPacket packet, ServerPlayerEntity playerMP) {
-		send(PacketDistributor.PLAYER.with(() -> playerMP), packet);
+		//send(PacketDistributor.PLAYER.with(() -> playerMP), packet);
 	}
 
 	public static void sendToWorld(NetworkPacket packet, World world) {
-		send(PacketDistributor.DIMENSION.with(() -> world.getDimension().getType()), packet);
+		//send(PacketDistributor.DIMENSION.with(() -> world.getDimension().getType()), packet);
 	}
 
 	public static void sendToTracking(NetworkPacket packet, WorldChunk chunk) {
-		send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
+		//send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
 	}
 
 	public static void sendToTracking(NetworkPacket packet, World world, BlockPos pos) {
-		sendToTracking(packet, world.getWorldChunk(pos));
+	//	sendToTracking(packet, world.getWorldChunk(pos));
 	}
 
 	public static void sendToTracking(NetworkPacket packet, BlockEntity tileEntity) {
@@ -123,9 +123,9 @@ public class NetworkManager {
 
 		private ForgeMessage(Identifier resourceLocation) {
 			this.resourceLocation = resourceLocation;
-			if (!packetHandlers.containsKey(resourceLocation)) {
-				throw new RuntimeException("No packet handler found for " + resourceLocation);
-			}
+//			if (!packetHandlers.containsKey(resourceLocation)) {
+//				throw new RuntimeException("No packet handler found for " + resourceLocation);
+//			}
 		}
 
 		private static void encode(ForgeMessage msg, PacketByteBuf buf) {
@@ -141,14 +141,14 @@ public class NetworkManager {
 			return new ForgeMessage(resourceLocation, new ExtendedPacketBuffer(clonedBuf));
 		}
 
-		private static void handle(ForgeMessage msg, Supplier<NetworkEvent.Context> ctx) {
-			if (!packetHandlers.containsKey(msg.resourceLocation)) {
-				throw new RuntimeException("No packet handler found for " + msg.resourceLocation);
-			}
-			BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> packetConsumer = packetHandlers.get(msg.resourceLocation);
-			packetConsumer.accept(msg.decodeBuffer, ctx.get());
-			msg.decodeBuffer.release();
-		}
+		//private static void handle(ForgeMessage msg, Supplier<NetworkEvent.Context> ctx) {
+//			if (!packetHandlers.containsKey(msg.resourceLocation)) {
+//				throw new RuntimeException("No packet handler found for " + msg.resourceLocation);
+//			}
+//			BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> packetConsumer = packetHandlers.get(msg.resourceLocation);
+//			packetConsumer.accept(msg.decodeBuffer, ctx.get());
+//			msg.decodeBuffer.release();
+	//	}
 	}
 
 }

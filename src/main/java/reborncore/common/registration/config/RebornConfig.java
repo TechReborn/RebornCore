@@ -70,8 +70,8 @@ public class RebornConfig {
 		String comment;
 
 		Field field;
-		@Nullable
-		public ForgeConfigSpec.ConfigValue value;
+//		@Nullable
+//		public ForgeConfigSpec.ConfigValue value;
 
 		public ConfigEntry(String key, String comment, Field field) {
 			this.key = key;

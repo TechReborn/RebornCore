@@ -34,14 +34,18 @@ import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.TileMachineBase;
+import reborncore.fluid.Fluid;
+import reborncore.fluid.FluidStack;
 
 import javax.annotation.Nullable;
 
-public class Tank extends FluidTank {
+public class Tank  {
 
 	private final String name;
 
 	private FluidStack lastBeforeUpdate = null;
+
+	Fluid fluid;
 
 	Fluid lastFluid;
 	int lastAmmount;
@@ -51,10 +55,18 @@ public class Tank extends FluidTank {
 	TileMachineBase machine;
 
 	public Tank(String name, int capacity, TileMachineBase tile) {
-		super(capacity);
+		super();
 		this.name = name;
-		this.tile = tile;
+		//this.tile = tile;
 		this.machine = tile;
+	}
+
+	public Fluid getFluid(){
+		return new Fluid();
+	}
+
+	public int getCapacity(){
+		return 1;
 	}
 
 	public boolean isEmpty() {
@@ -81,7 +93,7 @@ public class Tank extends FluidTank {
 		}
 	}
 
-	public final FluidTank read(CompoundTag nbt) {
+	public final Tank read(CompoundTag nbt) {
 		if (nbt.containsKey(name)) {
 			// allow to read empty tanks
 			setFluid(null);
@@ -91,12 +103,16 @@ public class Tank extends FluidTank {
 		return this;
 	}
 
-	@Override
-	public FluidTank readFromNBT(CompoundTag nbt) {
+	private void setFluid(Fluid o) {
+
+	}
+
+	//@Override
+	public Tank readFromNBT(CompoundTag nbt) {
 		return read(nbt);
 	}
 
-	@Override
+	//@Override
 	public CompoundTag writeToNBT(CompoundTag nbt) {
 		return write(nbt);
 	}
@@ -112,57 +128,57 @@ public class Tank extends FluidTank {
 		this.side = side;
 	}
 
-	@Override
+	//@Override
 	public boolean canFill() {
 		if (side != null) {
 			if (machine.fluidConfiguration != null) {
 				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
 				if (fluidConfig == null) {
-					return super.canFill();
+					return true;
 				}
 				return fluidConfig.getIoConfig().isInsert();
 			}
 		}
-		return super.canFill();
+		return true;
 	}
 
-	@Override
+	//@Override
 	public boolean canDrain() {
 		if (side != null) {
 			if (machine.fluidConfiguration != null) {
 				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
 				if (fluidConfig == null) {
-					return super.canDrain();
+					return true;
 				}
 				return fluidConfig.getIoConfig().isExtact();
 			}
 		}
-		return super.canDrain();
+		return true;
 	}
 
 	//TODO optimise
 	public void compareAndUpdate() {
-		if (tile == null || tile.getWorld().isRemote) {
-			return;
-		}
-		FluidStack current = this.getFluid();
-		if (current != null) {
-			if (lastBeforeUpdate != null) {
-				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
-					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
-					lastBeforeUpdate = current.copy();
-				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
-					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
-					lastBeforeUpdate = current.copy();
-				}
-			} else {
-				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
-				lastBeforeUpdate = current.copy();
-			}
-		} else if (lastBeforeUpdate != null) {
-			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
-			lastBeforeUpdate = null;
-		}
+//		if (tile == null || tile.getWorld().isRemote) {
+//			return;
+//		}
+//		FluidStack current = this.getFluid();
+//		if (current != null) {
+//			if (lastBeforeUpdate != null) {
+//				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
+//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//					lastBeforeUpdate = current.copy();
+//				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
+//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//					lastBeforeUpdate = current.copy();
+//				}
+//			} else {
+//				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//				lastBeforeUpdate = current.copy();
+//			}
+//		} else if (lastBeforeUpdate != null) {
+//			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//			lastBeforeUpdate = null;
+//		}
 	}
 
 }

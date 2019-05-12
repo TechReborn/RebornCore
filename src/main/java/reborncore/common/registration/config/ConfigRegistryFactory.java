@@ -89,43 +89,43 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	public void factoryComplete() {
 		RebornCore.LOGGER.info("Loading " + configs.size() + " configs for " + modId);
 		configs.forEach(rebornConfig -> {
-			Pair<ConfigRegistryFactory, ForgeConfigSpec> configSpec = new ForgeConfigSpec.Builder().configure(builder -> buildConfigs(builder, rebornConfig));
-			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configSpec.getRight(), rebornConfig.getName() + ".toml");
+//			Pair<ConfigRegistryFactory, ForgeConfigSpec> configSpec = new ForgeConfigSpec.Builder().configure(builder -> buildConfigs(builder, rebornConfig));
+//			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configSpec.getRight(), rebornConfig.getName() + ".toml");
 		});
 	}
 
-	private ConfigRegistryFactory buildConfigs(ForgeConfigSpec.Builder builder, RebornConfig config) {
-		config.entryies.forEach((key, value1) -> {
-			builder.push(key);
-			value1.forEach(configEntry -> {
-				if (!configEntry.comment.isEmpty()) {
-					builder.comment(configEntry.comment);
-				}
-				configEntry.value = builder.define(configEntry.key, configEntry.getDefault());
-			});
-			builder.pop();
-		});
-		return this;
-	}
+//	private ConfigRegistryFactory buildConfigs(ForgeConfigSpec.Builder builder, RebornConfig config) {
+//		config.entryies.forEach((key, value1) -> {
+//			builder.push(key);
+//			value1.forEach(configEntry -> {
+//				if (!configEntry.comment.isEmpty()) {
+//					builder.comment(configEntry.comment);
+//				}
+//				configEntry.value = builder.define(configEntry.key, configEntry.getDefault());
+//			});
+//			builder.pop();
+//		});
+//		return this;
+//	}
 
-	public RebornConfig fromModConfig(ModConfig modConfig) {
-		return configs.stream()
-			.filter(config -> modConfig.getFileName().endsWith(config.getName() + ".toml"))
-			.findFirst()
-			.orElseThrow(() -> new RuntimeException("Failed to find config: " + modConfig.getFileName()));
-	}
+//	public RebornConfig fromModConfig(ModConfig modConfig) {
+//		return configs.stream()
+//			.filter(config -> modConfig.getFileName().endsWith(config.getName() + ".toml"))
+//			.findFirst()
+//			.orElseThrow(() -> new RuntimeException("Failed to find config: " + modConfig.getFileName()));
+//	}
 
-	public void populateConfigs(RebornConfig config) {
-		System.out.println("populating configs");
-		config.getAll().forEach(configEntry -> {
-			try {
-				System.out.println("Updating config entry " + configEntry.key + " new value: " + configEntry.value.get());
-				configEntry.field.set(null, configEntry.value.get());
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Failed to set config value", e);
-			}
-		});
-	}
+//	public void populateConfigs(RebornConfig config) {
+//		System.out.println("populating configs");
+//		config.getAll().forEach(configEntry -> {
+//			try {
+//				System.out.println("Updating config entry " + configEntry.key + " new value: " + configEntry.value.get());
+//				configEntry.field.set(null, configEntry.value.get());
+//			} catch (IllegalAccessException e) {
+//				throw new RuntimeException("Failed to set config value", e);
+//			}
+//		});
+//	}
 
 	@Override
 	public List<RegistryTarget> getTargets() {
@@ -140,12 +140,12 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 	@Override
 	public void onInit(String modId) {
 		this.modId = modId;
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		eventBus.addListener((Consumer<ModConfig.ModConfigEvent>) event -> {
-			if (event.getConfig().getModId().equals(modId)) {
-				populateConfigs(fromModConfig(event.getConfig()));
-			}
-		});
+//		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+//		eventBus.addListener((Consumer<ModConfig.ModConfigEvent>) event -> {
+//			if (event.getConfig().getModId().equals(modId)) {
+//				populateConfigs(fromModConfig(event.getConfig()));
+//			}
+//		});
 		//		eventBus.addListener((Consumer<ConfigChangedEvent.OnConfigChangedEvent>) event -> {
 		//			if(event.getModID().equals(modId)){
 		//				populateAllConfigs();

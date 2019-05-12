@@ -29,6 +29,7 @@
 package reborncore.client.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
@@ -36,7 +37,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class GuiButtonCustomTexture extends GuiButtonExt {
+public class GuiButtonCustomTexture extends ButtonWidget {
 	public int textureU;
 	public int textureV;
 	public String texturename;
@@ -92,7 +93,7 @@ public class GuiButtonCustomTexture extends GuiButtonExt {
 	}
 
 	public void renderImage(int offsetX, int offsetY) {
-		TextureManager render = MinecraftClient.getInstance().textureManager;
+		TextureManager render = MinecraftClient.getInstance().getTextureManager();
 		render.bindTexture(new Identifier(imageprefix + this.texturename + ".png"));
 
 		GL11.glEnable(GL11.GL_BLEND);

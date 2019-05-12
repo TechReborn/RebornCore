@@ -70,21 +70,10 @@ public class RebornRegistry {
 	public static void registerBlockNoItem(Block block, Identifier name) {
 		Registry.register(Registry.BLOCK, name, block);
 	}
-	
-	public static void registerBlock(Block block, Item.Settings builder) {
-		GameData.register_impl(block);
-		BlockItem itemBlock = new BlockItem(block, builder);
-		itemBlock.setRegistryName(block.getRegistryName());
-		GameData.register_impl(itemBlock);
-	}
 
-	public static void registerItem(Item item) {
-		GameData.register_impl(item);
-	}
 
 	public static void registerItem(Item item, Identifier name) {
-		item.setRegistryName(name);
-		GameData.register_impl(item);
+		Registry.register(Registry.ITEM, name, item);
 	}
 
 	//eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
