@@ -1,27 +1,19 @@
 buildscript {
 	repositories {
 		jcenter()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = "Modmuss50"
-			url = "http://maven.modmuss50.me/"
-		}
-		maven {
-			url "https://plugins.gradle.org/m2/"
+        maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
 		}
 	}
 	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
+		classpath "net.fabricmc:fabric-loom:0.2.2-SNAPSHOT"
 	}
 }
-apply plugin: 'net.minecraftforge.gradle'
+
+apply plugin: net.fabricmc.loom.LoomGradlePlugin
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: net.minecrell.gradle.licenser.Licenser
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
@@ -29,9 +21,14 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+	mavenLocal()
+	mavenCentral()
 	maven {
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
+	}
+	flatDir {
+		dirs 'maven'
 	}
 }
 
@@ -43,39 +40,18 @@ if (ENV.BUILD_NUMBER) {
 	version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
-minecraft {
-	mappings channel: 'snapshot', version: '20190401-1.13.2'
-	
-	
-
-	runs {
-		client {
-			workingDirectory project.file('run')
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
-			mods {
-				reborncore {
-					source sourceSets.main
-				}
-			}
-		}
-
-		server {
-			workingDirectory project.file('run')
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
-			mods {
-				reborncore {
-					source sourceSets.main
-				}
-			}
-		}
-	}
-}
-
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:1.13.2-25.0.191'
+	minecraft "com.mojang:minecraft:1.14.1 Pre-Release 2"
+	mappings "net.fabricmc:yarn:1.14.1 Pre-Release 2+build.6"
+	modCompile "net.fabricmc:fabric-loader:0.4.7+build.147"
+
+	//Fabric api
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0-pre+build.155"
+
+	compileOnly "com.google.code.findbugs:jsr305:+"
+
+
 }
 
 processResources{
@@ -94,26 +70,26 @@ processResources{
 	rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-license {
-	header file('LICENSE.md')
-	include '**/*.java'
-	ignoreFailures = true //Stops the build from failing if a file does not have a license header
-}
+//license {
+//	header file('LICENSE.md')
+//	include '**/*.java'
+//	ignoreFailures = true //Stops the build from failing if a file does not have a license header
+//}
 
  jar {
  	classifier = 'universal'
  }
 
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	classifier = 'dev'
-}
+//task deobfJar(type: Jar) {
+//	from sourceSets.main.output
+//	classifier = 'dev'
+//}
+//
+//build.dependsOn deobfJar
 
-build.dependsOn deobfJar
-
-artifacts {
-	archives deobfJar
-}
+//artifacts {
+//	archives deobfJar
+//}
 
 // task apiJar(type: Jar) {
 // 	from sourceSets.main.allSource

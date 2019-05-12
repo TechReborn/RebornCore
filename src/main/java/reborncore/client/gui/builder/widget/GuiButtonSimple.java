@@ -28,9 +28,9 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.ButtonWidget;
 
-public class GuiButtonSimple extends GuiButton {
+public class GuiButtonSimple extends ButtonWidget {
 	public GuiButtonSimple(int buttonId, int x, int y, String buttonText) {
 		super(buttonId, x, y, buttonText);
 	}

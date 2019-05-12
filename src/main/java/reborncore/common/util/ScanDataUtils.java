@@ -28,8 +28,6 @@
 
 package reborncore.common.util;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;

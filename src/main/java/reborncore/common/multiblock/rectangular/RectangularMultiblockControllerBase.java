@@ -28,7 +28,7 @@
 
 package reborncore.common.multiblock.rectangular;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.common.multiblock.MultiblockControllerBase;
@@ -92,7 +92,7 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 
 		// Now we run a simple check on each block within that volume.
 		// Any block deviating = NO DEAL SIR
-		TileEntity te;
+		BlockEntity te;
 		RectangularMultiblockTileEntityBase part;
 		Class<? extends RectangularMultiblockControllerBase> myClass = this.getClass();
 
@@ -101,7 +101,7 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 				for (int z = minimumCoord.getZ(); z <= maximumCoord.getZ(); z++) {
 					// Okay, figure out what sort of block this should be.
 
-					te = this.worldObj.getTileEntity(new BlockPos(x, y, z));
+					te = this.worldObj.getBlockEntity(new BlockPos(x, y, z));
 					if (te instanceof RectangularMultiblockTileEntityBase) {
 						part = (RectangularMultiblockTileEntityBase) te;
 

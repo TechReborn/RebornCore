@@ -28,7 +28,7 @@
 
 package reborncore.common.network;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import java.math.BigInteger;
@@ -46,7 +46,7 @@ public enum ObjectBufferUtils {
 
 	INT(Integer.class, (value, buffer) -> {
 		buffer.writeInt(value);
-	}, PacketBuffer::readInt),
+	}, PacketByteBuf::readInt),
 
 	LONG(Long.class, (pos, buffer) -> {
 		buffer.writeLong(pos);
@@ -62,7 +62,7 @@ public enum ObjectBufferUtils {
 
 	BLOCK_POS(BlockPos.class, (pos, buffer) -> {
 		buffer.writeBlockPos(pos);
-	}, PacketBuffer::readBlockPos),
+	}, PacketByteBuf::readBlockPos),
 	BIG_INT(BigInteger.class, (pos, buffer) -> {
 		buffer.writeBigInt(pos);
 	}, ExtendedPacketBuffer::readBigInt);

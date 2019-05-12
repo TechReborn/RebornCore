@@ -29,13 +29,10 @@
 package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Slot;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.container.Slot;
+import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;
@@ -70,11 +67,11 @@ public class GuiSlotConfiguration {
 		slotElementMap.clear();
 
 		BuiltContainer container = guiBase.container;
-		for (Slot slot : container.inventorySlots) {
+		for (Slot slot : container.slotList) {
 			if (guiBase.tile != slot.inventory) {
 				continue;
 			}
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null), slot.getSlotIndex(), SlotType.NORMAL, slot.xPos - guiBase.getGuiLeft() + 50, slot.yPos - guiBase.getGuiTop() - 25, guiBase);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null), slot.getSlotIndex(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
 			slotElementMap.put(slot.getSlotIndex(), slotElement);
 		}
 
@@ -82,13 +79,13 @@ public class GuiSlotConfiguration {
 
 	public static void draw(GuiBase guiBase, int mouseX, int mouseY) {
 		BuiltContainer container = guiBase.container;
-		for (Slot slot : container.inventorySlots) {
+		for (Slot slot : container.slotList) {
 			if (guiBase.tile != slot.inventory) {
 				continue;
 			}
 			GlStateManager.color3f(255, 0, 0);
 			Color color = new Color(255, 0, 0, 128);
-			GuiUtil.drawGradientRect(slot.xPos - 1, slot.yPos - 1, 18, 18, color.getRGB(), color.getRGB());
+			GuiUtil.drawGradientRect(slot.xPosition - 1, slot.yPosition - 1, 18, 18, color.getRGB(), color.getRGB());
 			GlStateManager.color3f(255, 255, 255);
 		}
 
@@ -121,8 +118,8 @@ public class GuiSlotConfiguration {
 			return;
 		}
 		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
-		Minecraft.getInstance().keyboardListener.setClipboardString(json);
-		Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration copyied to clipboard"));
+		MinecraftClient.getInstance().keyboard.setClipboard(json);
+		MinecraftClient.getInstance().player.sendMessage(new TextComponent("Slot configuration copyied to clipboard"));
 	}
 
 	public static void pasteFromClipboard() {
@@ -130,22 +127,22 @@ public class GuiSlotConfiguration {
 		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
-		String json = Minecraft.getInstance().keyboardListener.getClipboardString();
+		String json = MinecraftClient.getInstance().keyboard.getClipboard();
 		try {
 			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
 			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.slotConfiguration));
-			Minecraft.getInstance().player.sendMessage(new TextComponentString("Slot configuration loaded from clipboard"));
+			MinecraftClient.getInstance().player.sendMessage(new TextComponent("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
-			Minecraft.getInstance().player.sendMessage(new TextComponentString(e.getMessage()));
+			MinecraftClient.getInstance().player.sendMessage(new TextComponent(e.getMessage()));
 		}
 	}
 
 	@Nullable
 	private static TileMachineBase getMachine() {
-		if (!(Minecraft.getInstance().currentScreen instanceof GuiBase)) {
+		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
-		GuiBase base = (GuiBase) Minecraft.getInstance().currentScreen;
+		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
 		if (!(base.tile instanceof TileMachineBase)) {
 			return null;
 		}
@@ -177,11 +174,11 @@ public class GuiSlotConfiguration {
 		BuiltContainer container = guiBase.container;
 
 		if (getVisibleElements().isEmpty()) {
-			for (Slot slot : container.inventorySlots) {
+			for (Slot slot : container.slotList) {
 				if (guiBase.tile != slot.inventory) {
 					continue;
 				}
-				if (guiBase.isPointInRect(slot.xPos, slot.yPos, 18, 18, mouseX, mouseY)) {
+				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
 					selectedSlot = slot.getSlotIndex();
 					return true;
 				}

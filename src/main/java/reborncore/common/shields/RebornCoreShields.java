@@ -28,9 +28,7 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.init.Items;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraft.item.Items;
 import reborncore.common.util.ItemNBTHelper;
 
 import java.util.function.Consumer;

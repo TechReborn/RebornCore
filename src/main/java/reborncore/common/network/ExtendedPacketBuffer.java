@@ -29,15 +29,14 @@
 package reborncore.common.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.PacketBuffer;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import net.minecraft.util.PacketByteBuf;
 
-public class ExtendedPacketBuffer extends PacketBuffer {
+public class ExtendedPacketBuffer extends PacketByteBuf {
 	public ExtendedPacketBuffer(ByteBuf wrapped) {
 		super(wrapped);
 	}

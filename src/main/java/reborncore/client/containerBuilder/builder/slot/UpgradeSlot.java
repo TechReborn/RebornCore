@@ -28,10 +28,9 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.IRightClickHandler;
@@ -53,7 +52,7 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 		IUpgrade upgrade = (IUpgrade) stack.getItem();
 		IUpgradeable upgradeable = null;
 		Inventory inv = (Inventory) inventory;
-		TileEntity tileEntity = inv.getTile();
+		BlockEntity tileEntity = inv.getTile();
 		if (tileEntity instanceof IUpgradeable) {
 			upgradeable = (IUpgradeable) tileEntity;
 		}
@@ -66,16 +65,16 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 	}
 
 	@Override
-	public boolean handleRightClick(int slotID, EntityPlayer player, BuiltContainer container) {
+	public boolean handleRightClick(int slotID, PlayerEntity player, BuiltContainer container) {
 		if (inventory instanceof Inventory) {
 			Inventory inv = (Inventory) inventory;
-			TileEntity tileEntity = inv.getTile();
+			BlockEntity tileEntity = inv.getTile();
 			if (tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeable = (IUpgradeable) tileEntity;
 				if (upgradeable.canBeUpgraded()) {
 					ItemStack stack = upgradeable.getUpgradeInvetory().getStackInSlot(slotID);
 					if (!stack.isEmpty() && stack.getItem() instanceof IRightClickHandler) {
-						if (player.world.isRemote) {
+						if (player.world.isClient) {
 							((IRightClickHandler) stack.getItem()).handleRightClick(slotID, player, container);
 						}
 					}

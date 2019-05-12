@@ -29,27 +29,25 @@
 package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.state.StateFactory;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReaderBase;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.ViewableWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.items.ItemHandlerHelper;
 import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
@@ -65,7 +63,7 @@ import javax.annotation.Nullable;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
-	public static DirectionProperty FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static DirectionProperty FACING = DirectionProperty.create("facing", Direction.Type.HORIZONTAL);
 	public static BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	public static ItemStack basicFrameStack;
@@ -73,59 +71,59 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	boolean hasCustomStaes;
 
 	public BlockMachineBase() {
-		this(Block.Properties.create(Material.IRON));
+		this(Block.Settings.of(Material.METAL));
 	}
 
-	public BlockMachineBase(Block.Properties builder) {
+	public BlockMachineBase(Block.Settings builder) {
 		this(builder, false);
 	}
 
-	public BlockMachineBase(Block.Properties builder, boolean hasCustomStates) {
+	public BlockMachineBase(Block.Settings builder, boolean hasCustomStates) {
 		super(builder);
 		this.hasCustomStaes = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
-				this.stateContainer.getBaseState().with(FACING, EnumFacing.NORTH).with(ACTIVE, false));
+				this.stateFactory.getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
 		}
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
 
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, IBlockState> builder) {
-		FACING = DirectionProperty.create("facing", EnumFacing.Plane.HORIZONTAL);
+	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+		FACING = DirectionProperty.create("facing", Direction.Type.HORIZONTAL);
 		ACTIVE = BooleanProperty.create("active");
 		builder.add(FACING, ACTIVE);
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(IBlockReader worldIn) {
+	public BlockEntity createBlockEntity(BlockView worldIn) {
 		return null;
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		super.onPlaced(worldIn, pos, state, placer, stack);
 		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
 	}
 
 	@Override
-	public boolean canCreatureSpawn(IBlockState state, IWorldReaderBase world, BlockPos pos, EntitySpawnPlacementRegistry.SpawnPlacementType type,
+	public boolean canCreatureSpawn(BlockState state, ViewableWorld world, BlockPos pos, SpawnRestriction.Location type,
 	                                @Nullable
-		                                EntityType<? extends EntityLiving> entityType) {
+		                                EntityType<? extends MobEntity> entityType) {
 		return false;
 	}
 
 	@Override
-	public void onReplaced(IBlockState state, World worldIn, BlockPos pos, IBlockState newState, boolean isMoving) {
+	public void onBlockRemoved(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			ItemHandlerUtils.dropContainedItems(worldIn, pos);
-			super.onReplaced(state, worldIn, pos, newState, isMoving);
+			super.onBlockRemoved(state, worldIn, pos, newState, isMoving);
 		}
 	}
 
 	@Override
-	public void getDrops(IBlockState state, NonNullList<ItemStack> drops, World world, BlockPos pos, int fortune) {
+	public void getDrops(BlockState state, DefaultedList<ItemStack> drops, World world, BlockPos pos, int fortune) {
 		if (RebornCoreConfig.wrenchRequired) {
 			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
 		} else {
@@ -142,10 +140,10 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
-	public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Direction side, float hitX, float hitY, float hitZ) {
 
-		ItemStack stack = playerIn.getHeldItem(hand);
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		ItemStack stack = playerIn.getStackInHand(hand);
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 
 		// We extended BlockTileBase. Thus we should always have tile entity. I hope.
 		if (tileEntity == null) {
@@ -170,7 +168,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 					if (ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
 						true).getCount() > 0) {
 						stack = ItemHandlerHelper.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
-						playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
+						playerIn.setStackInHand(Hand.MAIN_HAND, stack);
 						return true;
 					}
 				}
@@ -185,15 +183,15 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		return super.onBlockActivated(state, worldIn, pos, playerIn, hand, side, hitX, hitY, hitZ);
 	}
 
-	public boolean isActive(IBlockState state) {
+	public boolean isActive(BlockState state) {
 		return state.get(ACTIVE);
 	}
 
-	public EnumFacing getFacing(IBlockState state) {
+	public Direction getFacing(BlockState state) {
 		return state.get(FACING);
 	}
 
-	public void setFacing(EnumFacing facing, World world, BlockPos pos) {
+	public void setFacing(Direction facing, World world, BlockPos pos) {
 		if (hasCustomStaes) {
 			return;
 		}
@@ -204,32 +202,32 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 		if (hasCustomStaes) {
 			return;
 		}
-		EnumFacing facing = world.getBlockState(pos).get(FACING);
-		IBlockState state = world.getBlockState(pos).with(ACTIVE, active).with(FACING, facing);
+		Direction facing = world.getBlockState(pos).get(FACING);
+		BlockState state = world.getBlockState(pos).with(ACTIVE, active).with(FACING, facing);
 		world.setBlockState(pos, state, 3);
 	}
 
-	public EnumFacing getSideFromint(int i) {
+	public Direction getSideFromint(int i) {
 		if (i == 0) {
-			return EnumFacing.NORTH;
+			return Direction.NORTH;
 		} else if (i == 1) {
-			return EnumFacing.SOUTH;
+			return Direction.SOUTH;
 		} else if (i == 2) {
-			return EnumFacing.EAST;
+			return Direction.EAST;
 		} else if (i == 3) {
-			return EnumFacing.WEST;
+			return Direction.WEST;
 		}
-		return EnumFacing.NORTH;
+		return Direction.NORTH;
 	}
 
-	public int getSideFromEnum(EnumFacing facing) {
-		if (facing == EnumFacing.NORTH) {
+	public int getSideFromEnum(Direction facing) {
+		if (facing == Direction.NORTH) {
 			return 0;
-		} else if (facing == EnumFacing.SOUTH) {
+		} else if (facing == Direction.SOUTH) {
 			return 1;
-		} else if (facing == EnumFacing.EAST) {
+		} else if (facing == Direction.EAST) {
 			return 2;
-		} else if (facing == EnumFacing.WEST) {
+		} else if (facing == Direction.WEST) {
 			return 3;
 		}
 		return 0;

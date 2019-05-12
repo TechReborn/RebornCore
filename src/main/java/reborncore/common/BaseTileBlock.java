@@ -29,55 +29,55 @@
 package reborncore.common;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public abstract class BaseTileBlock extends Block implements ITileEntityProvider {
-	protected BaseTileBlock(Properties builder) {
+public abstract class BaseTileBlock extends Block implements BlockEntityProvider {
+	protected BaseTileBlock(Settings builder) {
 		super(builder);
 	}
 
 	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+		BlockEntity tileEntity = world.getBlockEntity(pos);
 		if (tileEntity == null) {
 			return Optional.empty();
 		}
 		ItemStack newStack = stack.copy();
-		NBTTagCompound tileData = tileEntity.write(new NBTTagCompound());
+		CompoundTag tileData = tileEntity.toTag(new CompoundTag());
 		stripLocationData(tileData);
 		if (!newStack.hasTag()) {
-			newStack.setTag(new NBTTagCompound());
+			newStack.setTag(new CompoundTag());
 		}
 		newStack.getTag().put("tile_data", tileData);
 		return Optional.of(newStack);
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		if (stack.hasTag() && stack.getTag().contains("tile_data")) {
-			TileEntity tileEntity = worldIn.getTileEntity(pos);
-			NBTTagCompound nbt = stack.getTag().getCompound("tile_data");
+	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		if (stack.hasTag() && stack.getTag().containsKey("tile_data")) {
+			BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+			CompoundTag nbt = stack.getTag().getCompound("tile_data");
 			injectLocationData(nbt, pos);
-			tileEntity.read(nbt);
+			tileEntity.fromTag(nbt);
 			tileEntity.markDirty();
 		}
 	}
 
-	private void stripLocationData(NBTTagCompound compound) {
+	private void stripLocationData(CompoundTag compound) {
 		compound.remove("x");
 		compound.remove("y");
 		compound.remove("z");
 	}
 
-	private void injectLocationData(NBTTagCompound compound, BlockPos pos) {
+	private void injectLocationData(CompoundTag compound, BlockPos pos) {
 		compound.putInt("x", pos.getX());
 		compound.putInt("y", pos.getY());
 		compound.putInt("z", pos.getZ());

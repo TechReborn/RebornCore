@@ -28,11 +28,16 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Screen;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.tile.TileMachineBase;
@@ -64,7 +69,7 @@ public class ElementBase {
 	private int width;
 	private int height;
 
-	public static final ResourceLocation MECH_ELEMENTS = new ResourceLocation("reborncore", "textures/gui/elements.png");
+	public static final Identifier MECH_ELEMENTS = new Identifier("reborncore", "textures/gui/elements.png");
 
 	public ElementBase(int x, int y, SpriteContainer container) {
 		this.container = container;
@@ -292,12 +297,12 @@ public class ElementBase {
 		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vertexbuffer.pos((double) right, (double) top, (double) 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) left, (double) top, (double) 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).endVertex();
-		vertexbuffer.pos((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).endVertex();
+		BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
+		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
+		vertexbuffer.vertex((double) right, (double) top, (double) 0).color(f1, f2, f3, f).next();
+		vertexbuffer.vertex((double) left, (double) top, (double) 0).color(f1, f2, f3, f).next();
+		vertexbuffer.vertex((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
+		vertexbuffer.vertex((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
 		tessellator.draw();
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
@@ -327,8 +332,8 @@ public class ElementBase {
 		drawString(gui, string, x, y, 16777215);
 	}
 
-	public void setTextureSheet(ResourceLocation textureLocation) {
-		Minecraft.getInstance().getTextureManager().bindTexture(textureLocation);
+	public void setTextureSheet(Identifier textureLocation) {
+		MinecraftClient.getInstance().getTextureManager().bindTexture(textureLocation);
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
@@ -340,7 +345,7 @@ public class ElementBase {
 	}
 
 	public int getStringWidth(String string) {
-		return Minecraft.getInstance().fontRenderer.getStringWidth(string);
+		return MinecraftClient.getInstance().textRenderer.getStringWidth(string);
 	}
 
 	public void drawSprite(GuiBase gui, ISprite iSprite, int x, int y) {
@@ -349,16 +354,16 @@ public class ElementBase {
 			if (sprite.hasTextureInfo()) {
 				GlStateManager.color3f(1F, 1F, 1F);
 				setTextureSheet(sprite.textureLocation);
-				gui.drawTexturedModalRect(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
+				gui.blit(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
 			}
 			if (sprite.hasStack()) {
 				GlStateManager.pushMatrix();
 				GlStateManager.enableBlend();
 				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-				RenderHelper.enableGUIStandardItemLighting();
+				GuiLighting.enableForItems();
 
-				ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-				itemRenderer.renderItemAndEffectIntoGUI(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
+				ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+				itemRenderer.renderGuiItem(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
 
 				GlStateManager.disableLighting();
 				GlStateManager.popMatrix();
@@ -377,12 +382,12 @@ public class ElementBase {
 		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
 
-	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
+	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
-		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
+		gui.blit(x, y, 0, 0, width / 2, height / 2);
+		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 	}
 }

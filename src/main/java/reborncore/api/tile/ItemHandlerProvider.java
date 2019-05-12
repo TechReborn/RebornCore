@@ -28,7 +28,6 @@
 
 package reborncore.api.tile;
 
-import net.minecraftforge.items.IItemHandler;
 
 public interface ItemHandlerProvider {
 

@@ -29,7 +29,6 @@
 package reborncore.api.tile;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public interface IUpgradeable {
 

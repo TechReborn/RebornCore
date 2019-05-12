@@ -28,11 +28,10 @@
 
 package reborncore.client.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -67,7 +66,7 @@ public class GuiButtonCustomTexture extends GuiButtonExt {
 		this.textureW = textureW;
 	}
 
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(MinecraftClient mc, int mouseX, int mouseY) {
 		if (this.visible) {
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
@@ -79,27 +78,27 @@ public class GuiButtonCustomTexture extends GuiButtonExt {
 				u += width;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				this.drawTexturedModalRect(this.x, this.y, u, v, width, height);
+				this.blit(this.x, this.y, u, v, width, height);
 				GL11.glPopMatrix();
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glEnable(32826);
-			RenderHelper.enableStandardItemLighting();
-			RenderHelper.enableGUIStandardItemLighting();
+			GuiLighting.enable();
+			GuiLighting.enableForItems();
 			renderImage(this.x, this.y);
-			this.drawString(mc.fontRenderer, this.NAME, this.x + 20, this.y + 3,
+			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
 				Color.white.getRGB());
 		}
 	}
 
 	public void renderImage(int offsetX, int offsetY) {
-		TextureManager render = Minecraft.getInstance().textureManager;
-		render.bindTexture(new ResourceLocation(imageprefix + this.texturename + ".png"));
+		TextureManager render = MinecraftClient.getInstance().textureManager;
+		render.bindTexture(new Identifier(imageprefix + this.texturename + ".png"));
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(1F, 1F, 1F, 1F);
-		drawTexturedModalRect(offsetX, offsetY, this.buttonU, this.buttonV, this.textureW, this.textureH);
+		blit(offsetX, offsetY, this.buttonU, this.buttonV, this.textureW, this.textureH);
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 

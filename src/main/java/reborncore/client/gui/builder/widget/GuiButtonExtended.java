@@ -28,11 +28,11 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import org.apache.logging.log4j.util.TriConsumer;
 
 
-public class GuiButtonExtended extends GuiButton {
+public class GuiButtonExtended extends ButtonWidget {
 
 	private TriConsumer<GuiButtonExtended, Double, Double> clickHandler;
 

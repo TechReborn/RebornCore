@@ -28,20 +28,20 @@
 
 package reborncore.common.util;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import reborncore.api.ICustomToolHandler;
 
 public class GenericWrenchHelper implements ICustomToolHandler {
 
-	ResourceLocation itemLocation;
+	Identifier itemLocation;
 	boolean damage;
 
-	public GenericWrenchHelper(ResourceLocation itemLocation, boolean damage) {
+	public GenericWrenchHelper(Identifier itemLocation, boolean damage) {
 		this.itemLocation = itemLocation;
 		this.damage = damage;
 	}
@@ -52,7 +52,7 @@ public class GenericWrenchHelper implements ICustomToolHandler {
 	}
 
 	@Override
-	public boolean handleTool(ItemStack stack, BlockPos pos, World world, EntityPlayer player, EnumFacing side, boolean damage) {
+	public boolean handleTool(ItemStack stack, BlockPos pos, World world, PlayerEntity player, Direction side, boolean damage) {
 		if (this.damage && damage) {
 			stack.damageItem(1, player);
 		}

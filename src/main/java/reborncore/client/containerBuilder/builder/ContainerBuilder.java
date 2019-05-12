@@ -28,11 +28,6 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.tileentity.TileEntity;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.tile.TileMachineBase;
@@ -40,12 +35,17 @@ import reborncore.common.tile.TileMachineBase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
 
 public class ContainerBuilder {
 
 	private final String name;
 
-	private Predicate<EntityPlayer> canInteract = player -> true;
+	private Predicate<PlayerEntity> canInteract = player -> true;
 
 	final List<Slot> slots;
 	final List<Range<Integer>> playerInventoryRanges, tileInventoryRanges;
@@ -54,7 +54,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<Supplier, Consumer>> objectValues;
 
-	final List<Consumer<InventoryCrafting>> craftEvents;
+	final List<Consumer<CraftingInventory>> craftEvents;
 
 	public ContainerBuilder(final String name) {
 
@@ -71,16 +71,16 @@ public class ContainerBuilder {
 		this.craftEvents = new ArrayList<>();
 	}
 
-	public ContainerBuilder interact(final Predicate<EntityPlayer> canInteract) {
+	public ContainerBuilder interact(final Predicate<PlayerEntity> canInteract) {
 		this.canInteract = canInteract;
 		return this;
 	}
 
-	public ContainerPlayerInventoryBuilder player(final InventoryPlayer player) {
+	public ContainerPlayerInventoryBuilder player(final PlayerInventory player) {
 		return new ContainerPlayerInventoryBuilder(this, player);
 	}
 
-	public ContainerTileInventoryBuilder tile(final TileEntity tile) {
+	public ContainerTileInventoryBuilder tile(final BlockEntity tile) {
 		return new ContainerTileInventoryBuilder(this, tile);
 	}
 

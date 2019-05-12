@@ -29,16 +29,15 @@
 package reborncore.common.crafting;
 
 import net.minecraft.item.crafting.RecipeSerializers;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RecipeManager {
 
-	private static final Map<ResourceLocation, RecipeType<?>> recipeTypes = new HashMap<>();
+	private static final Map<Identifier, RecipeType<?>> recipeTypes = new HashMap<>();
 
-	public static <R extends Recipe> RecipeType<R> newRecipeType(Class<R> clazz, ResourceLocation name){
+	public static <R extends Recipe> RecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
 		if(recipeTypes.containsKey(name)){
 			throw new RuntimeException("Recipe type with this name already registered");
 		}
@@ -50,7 +49,7 @@ public class RecipeManager {
 		return type;
 	}
 
-	public static RecipeType<?> getRecipeType(ResourceLocation name){
+	public static RecipeType<?> getRecipeType(Identifier name){
 		if(!recipeTypes.containsKey(name)){
 			throw new RuntimeException("Recipe type " + name + " not found");
 		}

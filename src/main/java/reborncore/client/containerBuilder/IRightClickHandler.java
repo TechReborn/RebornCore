@@ -28,7 +28,7 @@
 
 package reborncore.client.containerBuilder;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 
 /**
@@ -36,5 +36,5 @@ import reborncore.client.containerBuilder.builder.BuiltContainer;
  */
 public interface IRightClickHandler {
 
-	public boolean handleRightClick(int slotID, EntityPlayer player, BuiltContainer container);
+	public boolean handleRightClick(int slotID, PlayerEntity player, BuiltContainer container);
 }

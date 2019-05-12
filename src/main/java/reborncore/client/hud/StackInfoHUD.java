@@ -29,19 +29,15 @@
 package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.ChatFormat;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
@@ -61,7 +57,7 @@ public class StackInfoHUD {
 
 	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
-	private static Minecraft mc = Minecraft.getInstance();
+	private static MinecraftClient mc = MinecraftClient.getInstance();
 	private int x = 2;
 	private int y = 7;
 
@@ -69,28 +65,28 @@ public class StackInfoHUD {
 		ELEMENTS.add(element);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
 		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
 			return;
 		}
 
-		if (mc.isGameFocused() || (mc.currentScreen != null && mc.gameSettings.showDebugInfo)) {
+		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
 			if (RebornCoreConfig.ShowStackInfoHUD) {
-				drawStackInfoHud(Minecraft.getInstance().mainWindow);
+				drawStackInfoHud(MinecraftClient.getInstance().window);
 			}
 		}
 	}
 
-	public void drawStackInfoHud(MainWindow res) {
-		EntityPlayer player = mc.player;
+	public void drawStackInfoHud(Window res) {
+		PlayerEntity player = mc.player;
 		List<ItemStack> stacks = new ArrayList<>();
-		for (ItemStack stack : player.getArmorInventoryList()) {
+		for (ItemStack stack : player.getArmorItems()) {
 			stacks.add(stack);
 		}
-		stacks.add(player.getHeldItemOffhand());
-		stacks.add(player.getHeldItemMainhand());
+		stacks.add(player.getOffHandStack());
+		stacks.add(player.getMainHandStack());
 
 		x = RebornCoreConfig.stackInfoX;
 
@@ -111,10 +107,10 @@ public class StackInfoHUD {
 		if (stack != EMPTY) {
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			RenderHelper.enableGUIStandardItemLighting();
+			GuiLighting.enableForItems();
 
-			ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-			itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
+			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+			itemRenderer.renderGuiItem(stack, x, y);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 		}
@@ -123,12 +119,12 @@ public class StackInfoHUD {
 	private void renderStackForInfo(ItemStack stack) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(32826);
-		RenderHelper.enableStandardItemLighting();
-		RenderHelper.enableGUIStandardItemLighting();
+		GuiLighting.enable();
+		GuiLighting.enableForItems();
 		renderItemStack(stack, x, y - 5);
 	}
 
-	private void addInfo(ItemStack stack, MainWindow res) {
+	private void addInfo(ItemStack stack, Window res) {
 		if (stack == ItemStack.EMPTY) {
 			return;
 		}
@@ -140,36 +136,36 @@ public class StackInfoHUD {
 			int maxCharge = capEnergy.getMaxEnergyStored();
 			int currentCharge = capEnergy.getEnergyStored();
 
-			TextFormatting color = TextFormatting.GREEN;
+			ChatFormat color = ChatFormat.GREEN;
 			double quarter = maxCharge / 4;
 			double half = maxCharge / 2;
 			if (currentCharge <= half) {
-				color = TextFormatting.YELLOW;
+				color = ChatFormat.YELLOW;
 			}
 			if (currentCharge <= quarter) {
-				color = TextFormatting.DARK_RED;
+				color = ChatFormat.DARK_RED;
 			}
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
 				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
-				+ PowerSystem.getDisplayPower().abbreviation + TextFormatting.GRAY;
-			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
+				+ PowerSystem.getDisplayPower().abbreviation + ChatFormat.GRAY;
+			if (stack.getTag() != null && stack.getTag().containsKey("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
-					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
-						+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
+					text = text + ChatFormat.GOLD + " (" + StringUtils.t("reborncore.message.active")
+						+ ChatFormat.GOLD + ")" + ChatFormat.GRAY;
 				} else {
-					text = text + TextFormatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
-						+ TextFormatting.GOLD + ")" + TextFormatting.GRAY;
+					text = text + ChatFormat.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
+						+ ChatFormat.GOLD + ")" + ChatFormat.GRAY;
 				}
 			}
 
 			if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
-				int strWidth = mc.fontRenderer.getStringWidth(text);
+				int strWidth = mc.textRenderer.getStringWidth(text);
 				// 18 for item icon and additionally padding from configuration file
 				x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
 			}
 
 			renderStackForInfo(stack);
-			mc.fontRenderer.drawStringWithShadow(text, x + 18, y, 0);
+			mc.textRenderer.drawWithShadow(text, x + 18, y, 0);
 
 			if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
 				y += 20;
@@ -181,7 +177,7 @@ public class StackInfoHUD {
 		for (StackInfoElement element : ELEMENTS) {
 			if (!element.getText(stack).equals("")) {
 				renderStackForInfo(stack);
-				mc.fontRenderer.drawStringWithShadow(element.getText(stack), x + 18, y, 0);
+				mc.textRenderer.drawWithShadow(element.getText(stack), x + 18, y, 0);
 				y += 20;
 			}
 		}

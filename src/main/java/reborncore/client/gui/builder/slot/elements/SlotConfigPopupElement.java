@@ -28,14 +28,14 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.EnumFacing;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
@@ -72,11 +72,11 @@ public class SlotConfigPopupElement extends ElementBase {
 		TileMachineBase machine = ((TileMachineBase) gui.tile);
 		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
-		IBlockState state = world.getBlockState(pos);
-		IBlockState actualState = state.getBlock().getDefaultState();
-		BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-		IBakedModel model = dispatcher.getBlockModelShapes().getModel(state.getBlock().getDefaultState());
-		Minecraft.getInstance().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		BlockState state = world.getBlockState(pos);
+		BlockState actualState = state.getBlock().getDefaultState();
+		BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
+		BakedModel model = dispatcher.getModels().getModel(state.getBlock().getDefaultState());
+		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
@@ -112,7 +112,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		return true;
 	}
 
-	public void cyleSlotConfig(EnumFacing side, GuiBase guiBase) {
+	public void cyleSlotConfig(Direction side, GuiBase guiBase) {
 		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().slotConfiguration.getSlotDetails(id).getSideDetail(side);
 
 		//Bit of a mess, in the future have a way to remove config options from this list
@@ -146,7 +146,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	private void drawSlotSateColor(TileMachineBase machineBase, EnumFacing side, int slotID, int inx, int iny, GuiBase gui) {
+	private void drawSlotSateColor(TileMachineBase machineBase, Direction side, int slotID, int inx, int iny, GuiBase gui) {
 		iny += 4;
 		int sx = inx + getX() + gui.getGuiLeft();
 		int sy = iny + getY() + gui.getGuiTop();
@@ -186,10 +186,10 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	public void drawState(GuiBase gui,
 	                      IWorld world,
-	                      IBakedModel model,
-	                      IBlockState actualState,
+	                      BakedModel model,
+	                      BlockState actualState,
 	                      BlockPos pos,
-	                      BlockRendererDispatcher dispatcher,
+	                      BlockRenderManager dispatcher,
 	                      int x,
 	                      int y,
 	                      float rotAngle,
@@ -206,7 +206,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		if (rotAngle != 0) {
 			GlStateManager.rotatef(rotAngle, rotX, rotY, rotZ);
 		}
-		dispatcher.getBlockModelRenderer().renderModelBrightness(model, actualState, 1F, false);
+		dispatcher.getModelRenderer().render(model, actualState, 1F, false);
 		GlStateManager.disableDepthTest();
 		GlStateManager.popMatrix();
 
@@ -224,7 +224,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		GlStateManager.popMatrix();*/
 	}
 
-	public void drawState(GuiBase gui, IWorld world, IBakedModel model, IBlockState actualState, BlockPos pos, BlockRendererDispatcher dispatcher, int x, int y) {
+	public void drawState(GuiBase gui, IWorld world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
 		drawState(gui, world, model, actualState, pos, dispatcher, x, y, 0, 0, 0, 0);
 	}
 }

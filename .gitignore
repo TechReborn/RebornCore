@@ -21,3 +21,4 @@ classes/*
 /.project
 *.launch
 /doc/
+/maven

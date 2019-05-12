@@ -28,9 +28,8 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 
@@ -56,7 +55,7 @@ public class SpriteSlot extends FilteredSlot {
 
 	@Override
 	@Nullable
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public String getSlotTexture() {
 		return this.spriteName;
 	}

@@ -28,7 +28,6 @@
 
 package reborncore.common.registration.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;

@@ -28,15 +28,13 @@
 
 package reborncore.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.util.Identifier;
 import reborncore.client.models.ModelSantaHat;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.util.CalenderUtils;
@@ -50,8 +48,8 @@ import java.util.List;
 public class HolidayRenderEvent {
 
 	static ModelSantaHat santaHat = new ModelSantaHat();
-	private static final ResourceLocation TEXTURE = new ResourceLocation("reborncore", "textures/models/santa_hat.png");
-	static List<RenderPlayer> renderPlayerList = new ArrayList<>();
+	private static final Identifier TEXTURE = new Identifier("reborncore", "textures/models/santa_hat.png");
+	static List<PlayerEntityRenderer> renderPlayerList = new ArrayList<>();
 
 	@SubscribeEvent
 	public static void holidayRender(RenderPlayerEvent.Pre event) {
@@ -59,21 +57,21 @@ public class HolidayRenderEvent {
 		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
 			return;
 		}
-		Render<?> render = Minecraft.getInstance().getRenderManager().getEntityRenderObject(event.getEntityPlayer());
-		if (render instanceof RenderPlayer) {
-			RenderPlayer renderPlayer = (RenderPlayer) render;
+		EntityRenderer<?> render = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(event.getEntityPlayer());
+		if (render instanceof PlayerEntityRenderer) {
+			PlayerEntityRenderer renderPlayer = (PlayerEntityRenderer) render;
 			if (!renderPlayerList.contains(renderPlayer)) {
-				renderPlayer.addLayer(new LayerRender());
+				renderPlayer.addFeature(new LayerRender());
 				renderPlayerList.add(renderPlayer);
 			}
 		}
 
 	}
 
-	private static class LayerRender implements LayerRenderer<AbstractClientPlayer> {
+	private static class LayerRender implements FeatureRenderer<AbstractClientPlayerEntity> {
 
 		@Override
-		public void render(AbstractClientPlayer abstractClientPlayer,
+		public void render(AbstractClientPlayerEntity abstractClientPlayer,
 		                   float limbSwing,
 		                   float limbSwingAmount,
 		                   float partialTicks,
@@ -81,9 +79,9 @@ public class HolidayRenderEvent {
 		                   float netHeadYaw,
 		                   float headPitch,
 		                   float scale) {
-			float yaw = abstractClientPlayer.prevRotationYaw + (abstractClientPlayer.rotationYaw - abstractClientPlayer.prevRotationYaw) * partialTicks - (abstractClientPlayer.prevRenderYawOffset + (abstractClientPlayer.renderYawOffset - abstractClientPlayer.prevRenderYawOffset) * partialTicks);
-			float pitch = abstractClientPlayer.prevRotationPitch + (abstractClientPlayer.rotationPitch - abstractClientPlayer.prevRotationPitch) * partialTicks;
-			Minecraft.getInstance().textureManager.bindTexture(TEXTURE);
+			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.field_6220 + (abstractClientPlayer.field_6283 - abstractClientPlayer.field_6220) * partialTicks);
+			float pitch = abstractClientPlayer.prevPitch + (abstractClientPlayer.pitch - abstractClientPlayer.prevPitch) * partialTicks;
+			MinecraftClient.getInstance().textureManager.bindTexture(TEXTURE);
 			GlStateManager.pushMatrix();
 			GlStateManager.rotatef(yaw, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotatef(pitch, 1.0F, 0.0F, 0.0F);

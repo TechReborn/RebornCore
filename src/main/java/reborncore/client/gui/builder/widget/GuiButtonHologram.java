@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.multiblock.Multiblock;
@@ -61,7 +61,7 @@ public class GuiButtonHologram extends GuiButtonExtended {
 		return false;
 	}
 
-	public void addComponent(final int x, final int y, final int z, final IBlockState blockState, final Multiblock multiblock) {
+	public void addComponent(final int x, final int y, final int z, final BlockState blockState, final Multiblock multiblock) {
 		multiblock.addComponent(new BlockPos(x, y, z), blockState);
 	}
 

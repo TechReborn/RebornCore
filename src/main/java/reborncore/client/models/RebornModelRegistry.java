@@ -30,9 +30,8 @@ package reborncore.client.models;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.state.IProperty;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.state.property.Property;
+import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class RebornModelRegistry {
 	}
 
 	public static void registerItemModel(Item item, String fileName) {
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), fileName);
+		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), fileName);
 		setMRL(item, 0, loc, "inventory");
 	}
 
@@ -82,7 +81,7 @@ public class RebornModelRegistry {
 		if (!path.isEmpty()) {
 			slash = "/";
 		}
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
+		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
 		setMRL(item, meta, loc, invVariant);
 	}
 
@@ -91,7 +90,7 @@ public class RebornModelRegistry {
 		if (!path.isEmpty()) {
 			slash = "/";
 		}
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + fileName);
+		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + slash + fileName);
 		setMRL(item, meta, loc, invVariant);
 	}
 
@@ -100,13 +99,13 @@ public class RebornModelRegistry {
 	}
 
 	public static void registerBlockState(Item item, int meta, String path, String variant) {
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
+		Identifier loc = new Identifier(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
 		setMRL(item, meta, loc, variant);
 	}
 
 	//TODO 1.13 ModelLoader stuff
 
-	public static void setMRL(Item item, int meta, ResourceLocation resourceLocation, String variant) {
+	public static void setMRL(Item item, int meta, Identifier resourceLocation, String variant) {
 		//ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(resourceLocation, variant));
 	}
 
@@ -114,15 +113,15 @@ public class RebornModelRegistry {
 	//	//	ModelLoader.setCustomStateMapper(block, mapper);
 	//	}
 
-	public static void setBlockStateMapper(Block block, IProperty<?>... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, Property<?>... ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getPath(), ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty<?>... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String blockstatePath, Property<?>... ignoredProperties) {
 		setBlockStateMapper(block, block.getRegistryName().getPath(), blockstatePath, ignoredProperties);
 	}
 
-	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty<?>... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String fileName, String path, Property<?>... ignoredProperties) {
 		final String slash = !path.isEmpty() ? "/" : "";
 		//		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
 		//			@Override
@@ -136,7 +135,7 @@ public class RebornModelRegistry {
 		//		});
 	}
 
-	public static void setBlockStateMapper(Block block, String fileName, String path, String invVariant, IProperty<?>... ignoredProperties) {
+	public static void setBlockStateMapper(Block block, String fileName, String path, String invVariant, Property<?>... ignoredProperties) {
 		final String slash = !path.isEmpty() ? "/" : "";
 		//		ModelLoader.setCustomStateMapper(block, new DefaultStateMapper() {
 		//			@Override

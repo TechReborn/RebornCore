@@ -28,7 +28,7 @@
 
 package reborncore.common.util;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Direction;
 import reborncore.common.tile.TileMachineBase;
 
 public enum MachineFacing {
@@ -39,7 +39,7 @@ public enum MachineFacing {
 	LEFT,
 	RIGHT;
 
-	public EnumFacing getFacing(TileMachineBase machineBase) {
+	public Direction getFacing(TileMachineBase machineBase) {
 		if (this == FRONT) {
 			return machineBase.getFacing();
 		}
@@ -48,34 +48,34 @@ public enum MachineFacing {
 		}
 		if (this == RIGHT) {
 			//North -> West
-			int i = machineBase.getFacing().getOpposite().getHorizontalIndex() + 1;
+			int i = machineBase.getFacing().getOpposite().getHorizontal() + 1;
 			if (i > 3) {
 				i = 0;
 			}
 			if (i < 0) {
 				i = 3;
 			}
-			return EnumFacing.byHorizontalIndex(i);
+			return Direction.fromHorizontal(i);
 		}
 		if (this == LEFT) {
 			//North -> East
-			int i = machineBase.getFacing().getOpposite().getHorizontalIndex() - 1;
+			int i = machineBase.getFacing().getOpposite().getHorizontal() - 1;
 			if (i > 3) {
 				i = 0;
 			}
 			if (i < 0) {
 				i = 3;
 			}
-			return EnumFacing.byHorizontalIndex(i);
+			return Direction.fromHorizontal(i);
 		}
 		if (this == UP) {
-			return EnumFacing.UP;
+			return Direction.UP;
 		}
 		if (this == DOWN) {
-			return EnumFacing.DOWN;
+			return Direction.DOWN;
 		}
 
-		return EnumFacing.NORTH;
+		return Direction.NORTH;
 	}
 
 }

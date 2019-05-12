@@ -28,11 +28,15 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.container.Container;
+import net.minecraft.container.ContainerListener;
+import net.minecraft.container.Slot;
+import net.minecraft.container.SlotActionType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,19 +52,19 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	private final String name;
 
-	private final Predicate<EntityPlayer> canInteract;
+	private final Predicate<PlayerEntity> canInteract;
 	private final List<Range<Integer>> playerSlotRanges;
 	private final List<Range<Integer>> tileSlotRanges;
 
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
 	private final ArrayList<MutableTriple<Supplier, Consumer, Object>> objectValues;
-	private List<Consumer<InventoryCrafting>> craftEvents;
+	private List<Consumer<CraftingInventory>> craftEvents;
 	private Integer[] integerParts;
 
 	private final TileMachineBase tile;
 
-	public BuiltContainer(final String name, final Predicate<EntityPlayer> canInteract,
+	public BuiltContainer(final String name, final Predicate<PlayerEntity> canInteract,
 	                      final List<Range<Integer>> playerSlotRange,
 	                      final List<Range<Integer>> tileSlotRange, TileMachineBase tile) {
 		this.name = name;
@@ -102,40 +106,40 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.objectValues.trimToSize();
 	}
 
-	public void addCraftEvents(final List<Consumer<InventoryCrafting>> craftEvents) {
+	public void addCraftEvents(final List<Consumer<CraftingInventory>> craftEvents) {
 		this.craftEvents = craftEvents;
 	}
 
 	@Override
-	public boolean canInteractWith(final EntityPlayer playerIn) {
+	public boolean canUse(final PlayerEntity playerIn) {
 		return this.canInteract.test(playerIn);
 	}
 
 	@Override
-	public final void onCraftMatrixChanged(final IInventory inv) {
+	public final void onContentChanged(final Inventory inv) {
 		if (!this.craftEvents.isEmpty()) {
-			this.craftEvents.forEach(consumer -> consumer.accept((InventoryCrafting) inv));
+			this.craftEvents.forEach(consumer -> consumer.accept((CraftingInventory) inv));
 		}
 	}
 
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+	public ItemStack onSlotClick(int slotId, int dragType, SlotActionType clickTypeIn, PlayerEntity player) {
 		if (dragType == 1 && slotId > 0 && slotId < 1000) {
-			Slot slot = this.inventorySlots.get(slotId);
+			Slot slot = this.slotList.get(slotId);
 			if (slot instanceof IRightClickHandler) {
 				if (((IRightClickHandler) slot).handleRightClick(slot.getSlotIndex(), player, this)) {
 					return ItemStack.EMPTY;
 				}
 			}
 		}
-		return super.slotClick(slotId, dragType, clickTypeIn, player);
+		return super.onSlotClick(slotId, dragType, clickTypeIn, player);
 	}
 
 	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
+	public void sendContentUpdates() {
+		super.sendContentUpdates();
 
-		for (final IContainerListener listener : this.listeners) {
+		for (final ContainerListener listener : this.listeners) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
@@ -143,7 +147,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					final short supplied = (short) value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
 
-						listener.sendWindowProperty(this, i, supplied);
+						listener.onContainerPropertyUpdate(this, i, supplied);
 						value.setRight(supplied);
 					}
 					i++;
@@ -155,8 +159,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					final int supplied = value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
 
-						listener.sendWindowProperty(this, i, supplied >> 16);
-						listener.sendWindowProperty(this, i + 1, (short) (supplied & 0xFFFF));
+						listener.onContainerPropertyUpdate(this, i, supplied >> 16);
+						listener.onContainerPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
 						value.setRight(supplied);
 					}
 					i += 2;
@@ -178,7 +182,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	@Override
-	public void addListener(final IContainerListener listener) {
+	public void addListener(final ContainerListener listener) {
 		super.addListener(listener);
 
 		int i = 0;
@@ -186,7 +190,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues) {
 				final short supplied = (short) value.getLeft().getAsInt();
 
-				listener.sendWindowProperty(this, i, supplied);
+				listener.onContainerPropertyUpdate(this, i, supplied);
 				value.setRight(supplied);
 				i++;
 			}
@@ -196,8 +200,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues) {
 				final int supplied = value.getLeft().getAsInt();
 
-				listener.sendWindowProperty(this, i, supplied >> 16);
-				listener.sendWindowProperty(this, i + 1, (short) (supplied & 0xFFFF));
+				listener.onContainerPropertyUpdate(this, i, supplied >> 16);
+				listener.onContainerPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
 				value.setRight(supplied);
 				i += 2;
 			}
@@ -219,9 +223,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.objectValues.get(var).getMiddle().accept(value);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	@Override
-	public void updateProgressBar(final int id, final int value) {
+	public void setProperties(final int id, final int value) {
 
 		if (id < this.shortValues.size()) {
 			this.shortValues.get(id).getMiddle().accept((short) value);
@@ -238,13 +242,13 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(final EntityPlayer player, final int index) {
+	public ItemStack transferSlot(final PlayerEntity player, final int index) {
 
 		ItemStack originalStack = ItemStack.EMPTY;
 
-		final Slot slot = this.inventorySlots.get(index);
+		final Slot slot = this.slotList.get(index);
 
-		if (slot != null && slot.getHasStack()) {
+		if (slot != null && slot.hasStack()) {
 
 			final ItemStack stackInSlot = slot.getStack();
 			originalStack = stackInSlot.copy();
@@ -272,16 +276,16 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				}
 			}
 
-			slot.onSlotChange(stackInSlot, originalStack);
-			if (stackInSlot.getCount() <= 0) {
-				slot.putStack(ItemStack.EMPTY);
+			slot.onStackChanged(stackInSlot, originalStack);
+			if (stackInSlot.getAmount() <= 0) {
+				slot.setStack(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.markDirty();
 			}
-			if (stackInSlot.getCount() == originalStack.getCount()) {
+			if (stackInSlot.getAmount() == originalStack.getAmount()) {
 				return ItemStack.EMPTY;
 			}
-			slot.onTake(player, stackInSlot);
+			slot.onTakeItem(player, stackInSlot);
 		}
 		return originalStack;
 
@@ -289,39 +293,39 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	protected boolean shiftItemStack(final ItemStack stackToShift, final int start, final int end) {
 		boolean changed = false;
-		if (stackToShift.isStackable()) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.inventorySlots.get(slotIndex);
+		if (stackToShift.canStack()) {
+			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+				final Slot slot = this.slotList.get(slotIndex);
 				final ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && ItemUtils.isItemEqual(stackInSlot, stackToShift, true, true)
-					&& slot.isItemValid(stackToShift)) {
-					final int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
-					final int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+					&& slot.canInsert(stackToShift)) {
+					final int resultingStackSize = stackInSlot.getAmount() + stackToShift.getAmount();
+					final int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
 					if (resultingStackSize <= max) {
-						stackToShift.setCount(0);
-						stackInSlot.setCount(resultingStackSize);
-						slot.onSlotChanged();
+						stackToShift.setAmount(0);
+						stackInSlot.setAmount(resultingStackSize);
+						slot.markDirty();
 						changed = true;
-					} else if (stackInSlot.getCount() < max) {
-						stackToShift.shrink(max - stackInSlot.getCount());
-						stackInSlot.setCount(max);
-						slot.onSlotChanged();
+					} else if (stackInSlot.getAmount() < max) {
+						stackToShift.subtractAmount(max - stackInSlot.getAmount());
+						stackInSlot.setAmount(max);
+						slot.markDirty();
 						changed = true;
 					}
 				}
 			}
 		}
-		if (stackToShift.getCount() > 0) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.inventorySlots.get(slotIndex);
+		if (stackToShift.getAmount() > 0) {
+			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+				final Slot slot = this.slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot.isEmpty() && slot.isItemValid(stackToShift)) {
-					final int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+				if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
+					final int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
 					stackInSlot = stackToShift.copy();
-					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.shrink(stackInSlot.getCount());
-					slot.putStack(stackInSlot);
-					slot.onSlotChanged();
+					stackInSlot.setAmount(Math.min(stackToShift.getAmount(), max));
+					stackToShift.subtractAmount(stackInSlot.getAmount());
+					slot.setStack(stackInSlot);
+					slot.markDirty();
 					changed = true;
 				}
 			}

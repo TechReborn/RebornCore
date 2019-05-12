@@ -37,7 +37,7 @@
 
 package reborncore.client.multiblock;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import reborncore.client.multiblock.component.MultiblockComponent;
 
@@ -67,7 +67,7 @@ public class Multiblock {
 	 * Constructs and adds a multiblock component to this multiblock. The x y z
 	 * coords should be pivoted to the center of the structure.
 	 */
-	public void addComponent(BlockPos pos, IBlockState state) {
+	public void addComponent(BlockPos pos, BlockState state) {
 		addComponent(new MultiblockComponent(pos, state));
 	}
 

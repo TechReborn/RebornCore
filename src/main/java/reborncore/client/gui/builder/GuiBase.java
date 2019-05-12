@@ -28,15 +28,14 @@
 
 package reborncore.client.gui.builder;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.Fluid;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
@@ -56,12 +55,12 @@ import java.util.List;
 /**
  * Created by Prospector
  */
-public class GuiBase extends GuiContainer {
+public class GuiBase extends ContainerScreen {
 
 	public int xSize = 176;
 	public int ySize = 176;
 	public GuiBuilder builder = new GuiBuilder();
-	public TileEntity tile;
+	public BlockEntity tile;
 	@Nullable
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
@@ -70,14 +69,14 @@ public class GuiBase extends GuiContainer {
 
 	public boolean upgrades;
 
-	public GuiBase(EntityPlayer player, TileEntity tile, BuiltContainer container) {
+	public GuiBase(PlayerEntity player, BlockEntity tile, BuiltContainer container) {
 		super(container);
 		this.tile = tile;
 		this.container = container;
 		slotConfigType = SlotConfigType.NONE;
 	}
 
-	public GuiBase(EntityPlayer player, TileEntity tile, RebornContainer container) {
+	public GuiBase(PlayerEntity player, BlockEntity tile, RebornContainer container) {
 		super(container);
 		this.tile = tile;
 		this.container = null;
@@ -86,24 +85,24 @@ public class GuiBase extends GuiContainer {
 
 	protected void drawSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
+			x += left;
+			y += top;
 		}
 		builder.drawSlot(this, x - 1, y - 1);
 	}
 
 	protected void drawOutputSlotBar(int x, int y, int count, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
+			x += left;
+			y += top;
 		}
 		builder.drawOutputSlotBar(this, x - 4, y - 4, count);
 	}
 
 	protected void drawArmourSlots(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
+			x += left;
+			y += top;
 		}
 		builder.drawSlot(this, x - 1, y - 1);
 		builder.drawSlot(this, x - 1, y - 1 + 18);
@@ -113,8 +112,8 @@ public class GuiBase extends GuiContainer {
 
 	protected void drawOutputSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += guiLeft;
-			y += guiTop;
+			x += left;
+			y += top;
 		}
 		builder.drawOutputSlot(this, x - 5, y - 5);
 	}
@@ -131,25 +130,25 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		builder.drawDefaultBackground(this, guiLeft, guiTop, xSize, ySize);
+		builder.drawDefaultBackground(this, left, top, containerWidth, containerHeight);
 		if (drawPlayerSlots()) {
-			builder.drawPlayerSlots(this, guiLeft + xSize / 2, guiTop + 93, true);
+			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
 		}
 		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) tile;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, guiLeft - 24, guiTop + 6);
+				builder.drawUpgrades(this, left - 24, top + 6);
 				upgrades = true;
 			}
 		}
 		int offset = upgrades ? 86 : 6;
 		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
-			builder.drawSlotTab(this, guiLeft - 24, guiTop + offset, wrenchStack);
+			builder.drawSlotTab(this, left - 24, top + offset, wrenchStack);
 		}
 		if (isConfigEnabled() && getMachine().showTankConfig()) {
-			builder.drawSlotTab(this, guiLeft - 24, guiTop + 24 + offset, fluidCellProvider.provide(null));//TODO 1.13 fluids FluidRegistry.LAVA));
+			builder.drawSlotTab(this, left - 24, top + 24 + offset, fluidCellProvider.provide(null));//TODO 1.13 fluids FluidRegistry.LAVA));
 		}
 	}
 
@@ -161,9 +160,9 @@ public class GuiBase extends GuiContainer {
 		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+	protected void drawForeground(int mouseX, int mouseY) {
 		this.buttons.clear();
 		drawTitle();
 		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
@@ -179,12 +178,12 @@ public class GuiBase extends GuiContainer {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		super.render(mouseX, mouseY, partialTicks);
-		this.renderHoveredToolTip(mouseX, mouseY);
+		this.drawMouseoverTooltip(mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderHoveredToolTip(int mouseX, int mouseY) {
-		if (isPointInRegion(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
+	protected void drawMouseoverTooltip(int mouseX, int mouseY) {
+		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
 			drawHoveringText(list, mouseX, mouseY);
@@ -192,41 +191,41 @@ public class GuiBase extends GuiContainer {
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 81 : 0;
-		if (isConfigEnabled() && isPointInRegion(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
 			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
-		if (isConfigEnabled() && isPointInRegion(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
+		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
 			drawHoveringText(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
-		super.renderHoveredToolTip(mouseX, mouseY);
+		super.drawMouseoverTooltip(mouseX, mouseY);
 	}
 
 	protected void drawTitle() {
-		drawCentredString(I18n.format(tile.getBlockState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
+		drawCentredString(I18n.translate(tile.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
-		drawString(string, (xSize / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour, layer);
+		drawString(string, (containerWidth / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour, layer);
 	}
 
 	protected void drawCentredString(String string, int y, int colour, int modifier, Layer layer) {
-		drawString(string, (xSize / 2 - (mc.fontRenderer.getStringWidth(string)) / 2) + modifier, y, colour, layer);
+		drawString(string, (containerWidth / 2 - (mc.fontRenderer.getStringWidth(string)) / 2) + modifier, y, colour, layer);
 	}
 
 	public void drawString(String string, int x, int y, int colour, Layer layer) {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
-			factorX = guiLeft;
-			factorY = guiTop;
+			factorX = left;
+			factorY = top;
 		}
 		mc.fontRenderer.drawString(string, x + factorX, y + factorY, colour);
 		GlStateManager.color4f(1, 1, 1, 1);
@@ -236,8 +235,8 @@ public class GuiBase extends GuiContainer {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
-			factorX = guiLeft;
-			factorY = guiTop;
+			factorX = left;
+			factorY = top;
 		}
 		buttons.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
 	}
@@ -246,8 +245,8 @@ public class GuiBase extends GuiContainer {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
-			factorX = guiLeft;
-			factorY = guiTop;
+			factorX = left;
+			factorY = top;
 		}
 		GuiButtonHologram buttonHologram = new GuiButtonHologram(id, x + factorX, y + factorY, this, layer);
 		buttons.add(buttonHologram);
@@ -286,7 +285,7 @@ public class GuiBase extends GuiContainer {
 		if (!upgrades) {
 			offset = 80;
 		}
-		if (isConfigEnabled() && isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointWithinBounds(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			if (slotConfigType != SlotConfigType.ITEMS) {
 				slotConfigType = SlotConfigType.ITEMS;
 			} else {
@@ -296,7 +295,7 @@ public class GuiBase extends GuiContainer {
 				GuiSlotConfiguration.reset();
 			}
 		}
-		if (isConfigEnabled() && isPointInRegion(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
+		if (isConfigEnabled() && isPointWithinBounds(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			if (slotConfigType != SlotConfigType.FLUIDS) {
 				slotConfigType = SlotConfigType.FLUIDS;
 			} else {
@@ -352,7 +351,7 @@ public class GuiBase extends GuiContainer {
 	 * @see net.minecraft.client.gui.inventory.GuiContainer()
 	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
-		return super.isPointInRegion(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
+		return super.isPointWithinBounds(rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 	}
 
 	public enum Layer {

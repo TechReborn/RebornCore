@@ -29,7 +29,6 @@
 package reborncore.client.gui.slots;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public class SlotFake extends BaseSlot {
 

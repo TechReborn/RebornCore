@@ -28,11 +28,10 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.util.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.util.Identifier;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -40,7 +39,7 @@ import java.util.List;
 public class ShieldRegistry {
 	public static List<Shield> shieldList = new ArrayList<>();
 	public static HashMap<String, Shield> shieldHashMap = new HashMap<>();
-	public static HashMap<Shield, ResourceLocation> shieldTextureHashMap = new HashMap<>();
+	public static HashMap<Shield, Identifier> shieldTextureHashMap = new HashMap<>();
 
 	public static void registerShield(Shield shield) {
 		shieldList.add(shield);

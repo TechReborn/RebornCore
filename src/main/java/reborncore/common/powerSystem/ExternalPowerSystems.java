@@ -28,10 +28,10 @@
 
 package reborncore.common.powerSystem;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
@@ -65,7 +65,7 @@ public class ExternalPowerSystems implements IRegistryFactory {
 			.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
 	}
 
-	public static boolean isPoweredTile(TileEntity tileEntity, EnumFacing facing) {
+	public static boolean isPoweredTile(BlockEntity tileEntity, Direction facing) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
 	}
 
@@ -75,7 +75,7 @@ public class ExternalPowerSystems implements IRegistryFactory {
 			.forEach(externalPowerManager -> externalPowerManager.chargeItem(powerAcceptor, stack));
 	}
 
-	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityLivingBase entity) {
+	public static void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, LivingEntity entity) {
 		externalPowerHandlerList.forEach(externalPowerManager -> externalPowerManager.requestEnergyFromArmor(powerAcceptor, entity));
 	}
 

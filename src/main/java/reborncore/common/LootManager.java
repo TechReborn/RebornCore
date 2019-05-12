@@ -30,13 +30,15 @@ package reborncore.common;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.UniformLootTableRange;
+import net.minecraft.world.loot.condition.LootCondition;
+import net.minecraft.world.loot.context.LootContext;
+import net.minecraft.world.loot.entry.ItemEntry;
+import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.world.loot.function.SetCountLootFunction;
 import net.minecraft.world.storage.loot.*;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import reborncore.RebornCore;
 import reborncore.RebornRegistry;
 
@@ -60,21 +62,21 @@ public class LootManager {
 			if (item != null) {
 				if (item.getLootTableList() == evt.getName()) {
 					LootPool main = evt.getTable().getPool("main");
-					main.addEntry(new LootEntryItem(item.item.getItem(), (int) item.chance, 1, count(0, item.maxSize), new LootCondition[0], RebornCore.MOD_NAME));
+					main.addEntry(new ItemEntry(item.item.getItem(), (int) item.chance, 1, count(0, item.maxSize), new LootCondition[0], RebornCore.MOD_NAME));
 				}
 			}
 		}
 	}
 
 	private static LootFunction[] count(float min, float max) {
-		return new LootFunction[] { new SetCount(new LootCondition[0], new RandomValueRange(min, max)) };
+		return new LootFunction[] { new SetCountLootFunction(new LootCondition[0], new UniformLootTableRange(min, max)) };
 	}
 
-	public static LootItem createLootEntry(Item item, double chance, ResourceLocation loottablelist) {
+	public static LootItem createLootEntry(Item item, double chance, Identifier loottablelist) {
 		return new LootItem(new ItemStack(item), chance, 1, 1, loottablelist);
 	}
 
-	public static LootItem createLootEntry(Item item, int minStackSize, int maxStackSize, double chance, ResourceLocation loottablelist) {
+	public static LootItem createLootEntry(Item item, int minStackSize, int maxStackSize, double chance, Identifier loottablelist) {
 		return new LootItem(new ItemStack(item, 1), chance, minStackSize, maxStackSize, loottablelist);
 	}
 
@@ -82,7 +84,7 @@ public class LootManager {
 		public final List<LootItem> items = new ArrayList<LootItem>();
 
 		public InnerPool() {
-			super(new LootEntry[0], new LootCondition[0], new RandomValueRange(0, 0), new RandomValueRange(0, 0), RebornCore.MOD_ID);
+			super(new LootEntry[0], new LootCondition[0], new UniformLootTableRange(0, 0), new UniformLootTableRange(0, 0), RebornCore.MOD_ID);
 		}
 
 		public boolean isEmpty() {

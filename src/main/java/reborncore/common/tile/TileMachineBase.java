@@ -28,23 +28,18 @@
 
 package reborncore.common.tile;
 
+import net.minecraft.ChatFormat;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
@@ -67,7 +62,7 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileMachineBase extends TileEntity implements ITickable, IUpgradeable, IUpgradeHandler, IListInfoProvider {
+public class TileMachineBase extends BlockEntity implements ITickable, IUpgradeable, IUpgradeHandler, IListInfoProvider {
 
 	public Inventory<TileMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
 	public SlotConfiguration slotConfiguration;
@@ -87,12 +82,12 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	 */
 	double powerMultiplier = 1;
 
-	public TileMachineBase(TileEntityType<?> tileEntityTypeIn) {
+	public TileMachineBase(BlockEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 	}
 
 	public void syncWithAll() {
-		if (!world.isRemote) {
+		if (!world.isClient) {
 			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
 		}
 	}
@@ -116,21 +111,21 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 
 	@Nullable
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, toInitialChunkDataTag());
 	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound compound = super.write(new NBTTagCompound());
-		write(compound);
+	public CompoundTag toInitialChunkDataTag() {
+		CompoundTag compound = super.toTag(new CompoundTag());
+		toTag(compound);
 		return compound;
 	}
 
 	@Override
-	public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+	public void onDataPacket(net.minecraft.network.ClientConnection net, BlockEntityUpdateS2CPacket pkt) {
 		super.onDataPacket(net, pkt);
-		read(pkt.getNbtCompound());
+		fromTag(pkt.getCompoundTag());
 	}
 
 	@Override
@@ -149,7 +144,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				}
 			}
 		}
-		if (!world.isRemote) {
+		if (!world.isClient) {
 			if (crafter != null) {
 				crafter.updateEntity();
 			}
@@ -171,12 +166,12 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	public int getFacingInt() {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
-			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
+			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getId();
 		}
 		return 0;
 	}
 
-	public EnumFacing getFacingEnum() {
+	public Direction getFacingEnum() {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
 			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
@@ -184,7 +179,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		return null;
 	}
 
-	public void setFacing(EnumFacing enumFacing) {
+	public void setFacing(Direction enumFacing) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (block instanceof BlockMachineBase) {
 			((BlockMachineBase) block).setFacing(enumFacing, world, pos);
@@ -247,15 +242,15 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public void read(NBTTagCompound tagCompound) {
-		super.read(tagCompound);
+	public void fromTag(CompoundTag tagCompound) {
+		super.fromTag(tagCompound);
 		if (getInventoryForTile().isPresent()) {
 			getInventoryForTile().get().read(tagCompound);
 		}
 		if (getCrafterForTile().isPresent()) {
 			getCrafterForTile().get().read(tagCompound);
 		}
-		if (tagCompound.contains("slotConfig")) {
+		if (tagCompound.containsKey("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
 		} else {
 			if (getInventoryForTile().isPresent()) {
@@ -264,7 +259,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 				slotConfiguration = new SlotConfiguration();
 			}
 		}
-		if (tagCompound.contains("fluidConfig") && getTank() != null) {
+		if (tagCompound.containsKey("fluidConfig") && getTank() != null) {
 			fluidConfiguration = new FluidConfiguration(tagCompound.getCompound("fluidConfig"));
 		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();
@@ -273,8 +268,8 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound tagCompound) {
-		super.write(tagCompound);
+	public CompoundTag toTag(CompoundTag tagCompound) {
+		super.toTag(tagCompound);
 		if (getInventoryForTile().isPresent()) {
 			getInventoryForTile().get().write(tagCompound);
 		}
@@ -307,7 +302,7 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	//Inventory end
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
 			return LazyOptional.of(() -> (T) getInventoryForTile().get().getExternal(facing));
 		}
@@ -334,12 +329,12 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 		return 4;
 	}
 
-	public EnumFacing getFacing() {
+	public Direction getFacing() {
 		return getFacingEnum();
 	}
 
 	@Override
-	public void rotate(Rotation rotationIn) {
+	public void applyRotation(BlockRotation rotationIn) {
 		setFacing(rotationIn.rotate(getFacing()));
 	}
 
@@ -406,13 +401,13 @@ public class TileMachineBase extends TileEntity implements ITickable, IUpgradeab
 	}
 
 	@Override
-	public void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData) {
+	public void addInfo(List<Component> info, boolean isRealTile, boolean hasData) {
 		if (hasData) {
 			if (getInventoryForTile().isPresent()) {
-				info.add(new TextComponentString(TextFormatting.GOLD + "" + getInventoryForTile().get().getContents() + TextFormatting.GRAY + " items"));
+				info.add(new TextComponent(ChatFormat.GOLD + "" + getInventoryForTile().get().getContents() + ChatFormat.GRAY + " items"));
 			}
 			if (!upgradeInventory.isEmpty()) {
-				info.add(new TextComponentString(TextFormatting.GOLD + "" + upgradeInventory.getContents() + TextFormatting.GRAY + " upgrades"));
+				info.add(new TextComponent(ChatFormat.GOLD + "" + upgradeInventory.getContents() + ChatFormat.GRAY + " upgrades"));
 			}
 		}
 	}

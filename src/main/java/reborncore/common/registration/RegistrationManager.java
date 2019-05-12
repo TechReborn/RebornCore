@@ -28,12 +28,8 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
-import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.Validate;
 import reborncore.Distribution;
 import reborncore.RebornCore;
@@ -108,7 +104,7 @@ public class RegistrationManager {
 		for (String modid : modOnly.split(",")) {
 			if (modid.startsWith("@")) {
 				if (modid.equals("@client")) {
-					if (RebornCore.getSide() != Dist.CLIENT) {
+					if (RebornCore.getSide() != EnvType.CLIENT) {
 						return false;
 					}
 				}
@@ -138,7 +134,7 @@ public class RegistrationManager {
 			}
 		}
 		//Checks the side only annotations
-		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(OnlyIn.class);
+		List<ModFileScanData.AnnotationData> annotations = ScanDataUtils.getAnnotations(Environment.class);
 		for (ModFileScanData.AnnotationData sideData : annotations) {
 			if (sideData.getClassType().getClassName().equals(annotationData.getClassType().getClassName())) {
 				if (sideData.getAnnotationData().containsKey("value")) {
@@ -154,7 +150,7 @@ public class RegistrationManager {
 		annotations = ScanDataUtils.getAnnotations(Mod.class);
 		for (ModFileScanData.AnnotationData sideData : annotations) {
 			if (sideData.getClassType().getClassName().equals(annotationData.getClassType().getClassName())) {
-				if (RebornCore.getSide() == Dist.CLIENT) {
+				if (RebornCore.getSide() == EnvType.CLIENT) {
 					if (sideData.getAnnotationData().containsKey("serverSideOnly")) {
 						boolean value = (boolean) sideData.getAnnotationData().get("serverSideOnly");
 						if (value) {

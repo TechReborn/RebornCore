@@ -28,48 +28,47 @@
 
 package reborncore.common.util;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeEventFactory;
 
 public class TorchHelper {
 
-	public static EnumActionResult placeTorch(ItemUseContext context){
-		return placeTorch(context.getItem(), context.getPlayer(), context.getWorld(), context.getPos(), context.getFace(), context.getHitX(), context.getHitY(), context.getHitZ(), EnumHand.MAIN_HAND);
+	public static ActionResult placeTorch(ItemUsageContext context){
+		return placeTorch(context.getItemStack(), context.getPlayer(), context.getWorld(), context.getBlockPos(), context.getFacing(), context.getHitX(), context.getHitY(), context.getHitZ(), Hand.MAIN_HAND);
 	}
 
-	public static EnumActionResult placeTorch(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
-	                                          EnumFacing side, float xOffset, float yOffset, float zOffset, EnumHand hand) {
-		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
-			ItemStack torchStack = player.inventory.getStackInSlot(i);
+	public static ActionResult placeTorch(ItemStack stack, PlayerEntity player, World world, BlockPos pos,
+	                                          Direction side, float xOffset, float yOffset, float zOffset, Hand hand) {
+		for (int i = 0; i < player.inventory.main.size(); i++) {
+			ItemStack torchStack = player.inventory.getInvStack(i);
 			if (torchStack.isEmpty() || !torchStack.getTranslationKey().toLowerCase().contains("torch")) {
 				continue;
 			}
 			Item item = torchStack.getItem();
-			if (!(item instanceof ItemBlock)) {
+			if (!(item instanceof BlockItem)) {
 				continue;
 			}
-			int oldSize = torchStack.getCount();
-			ItemUseContext context = new ItemUseContext(player, stack, pos, side, xOffset, yOffset, zOffset);
-			EnumActionResult result = torchStack.onItemUse(context);
+			int oldSize = torchStack.getAmount();
+			ItemUsageContext context = new ItemUsageContext(player, stack, pos, side, xOffset, yOffset, zOffset);
+			ActionResult result = torchStack.useOnBlock(context);
 			if (player.isCreative()) {
-				torchStack.setCount(oldSize);
-			} else if (torchStack.getCount() <= 0) {
+				torchStack.setAmount(oldSize);
+			} else if (torchStack.getAmount() <= 0) {
 				ForgeEventFactory.onPlayerDestroyItem(player, torchStack, hand);
-				player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+				player.inventory.setInvStack(i, ItemStack.EMPTY);
 			}
-			if (result == EnumActionResult.SUCCESS) {
-				return EnumActionResult.SUCCESS;
+			if (result == ActionResult.SUCCESS) {
+				return ActionResult.SUCCESS;
 			}
 		}
-		return EnumActionResult.FAIL;
+		return ActionResult.FAIL;
 	}
 }

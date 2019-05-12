@@ -28,39 +28,39 @@
 
 package reborncore.common.network;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 /**
  * Created by Gigabit101 on 21/01/2017.
  */
 public final class VanillaPacketDispatcher {
-	public static void dispatchTEToNearbyPlayers(TileEntity tile) {
-		if (tile.getWorld() instanceof WorldServer) {
-			WorldServer ws = ((WorldServer) tile.getWorld());
-			SPacketUpdateTileEntity packet = tile.getUpdatePacket();
+	public static void dispatchTEToNearbyPlayers(BlockEntity tile) {
+		if (tile.getWorld() instanceof ServerWorld) {
+			ServerWorld ws = ((ServerWorld) tile.getWorld());
+			BlockEntityUpdateS2CPacket packet = tile.toUpdatePacket();
 
 			if (packet == null) {
 				return;
 			}
 
-			for (EntityPlayer player : ws.playerEntities) {
-				EntityPlayerMP playerMP = ((EntityPlayerMP) player);
+			for (PlayerEntity player : ws.playerEntities) {
+				ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
 
-				if (playerMP.getDistanceSq(tile.getPos()) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {
-					playerMP.connection.sendPacket(packet);
+				if (playerMP.squaredDistanceTo(tile.getPos()) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {
+					playerMP.networkHandler.sendPacket(packet);
 				}
 			}
 		}
 	}
 
 	public static void dispatchTEToNearbyPlayers(World world, BlockPos pos) {
-		TileEntity tile = world.getTileEntity(pos);
+		BlockEntity tile = world.getBlockEntity(pos);
 		if (tile != null) {
 			dispatchTEToNearbyPlayers(tile);
 		}

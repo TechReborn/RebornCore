@@ -28,8 +28,6 @@
 
 package reborncore.common.powerSystem;
 
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.io.FileUtils;
 import reborncore.common.RebornCoreConfig;
 

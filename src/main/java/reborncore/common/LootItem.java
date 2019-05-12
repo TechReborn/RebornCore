@@ -29,8 +29,7 @@
 package reborncore.common;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.util.Identifier;
 import java.util.Random;
 
 /**
@@ -41,13 +40,13 @@ public class LootItem {
 	double chance;
 	int minSize;
 	int maxSize;
-	ResourceLocation lootTableList;
+	Identifier lootTableList;
 
-	public LootItem(ItemStack item, double chance, ResourceLocation lootTableList) {
+	public LootItem(ItemStack item, double chance, Identifier lootTableList) {
 		this(item, chance, 1, 1, lootTableList);
 	}
 
-	public LootItem(ItemStack item, double chance, int minSize, int maxSize, ResourceLocation lootTableList) {
+	public LootItem(ItemStack item, double chance, int minSize, int maxSize, Identifier lootTableList) {
 		this.item = item;
 		this.chance = chance;
 		this.minSize = minSize;
@@ -62,11 +61,11 @@ public class LootItem {
 		}
 
 		ItemStack result = item.copy();
-		result.setCount(size);
+		result.setAmount(size);
 		return result;
 	}
 
-	public ResourceLocation getLootTableList() {
+	public Identifier getLootTableList() {
 		return this.lootTableList;
 	}
 }

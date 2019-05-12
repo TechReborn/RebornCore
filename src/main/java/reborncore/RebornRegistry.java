@@ -28,13 +28,12 @@
 
 package reborncore;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.GameData;
+import net.minecraft.util.Identifier;
 import reborncore.common.LootManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,26 +44,26 @@ import java.lang.reflect.InvocationTargetException;
 public class RebornRegistry {
 	public static LootManager.InnerPool lp = new LootManager.InnerPool();
 
-	public static void registerBlock(Block block, Item.Properties builder, String name) {
+	public static void registerBlock(Block block, Item.Settings builder, String name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
-		ItemBlock itemBlock = new ItemBlock(block, builder);
+		BlockItem itemBlock = new BlockItem(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 	}
 
-	public static void registerBlock(Block block, Item.Properties builder, ResourceLocation name) {
+	public static void registerBlock(Block block, Item.Settings builder, Identifier name) {
 		block.setRegistryName(name);
-		ItemBlock itemBlock = new ItemBlock(block, builder);
+		BlockItem itemBlock = new BlockItem(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 		GameData.register_impl(block);
 	}
 
-	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name) {
+	public static void registerBlock(Block block, Class<? extends BlockItem> itemclass, String name) {
 		GameData.register_impl(block);
 		try {
-			ItemBlock itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
+			BlockItem itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
 			itemBlock.setRegistryName(name);
 			GameData.register_impl(itemBlock);
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -72,11 +71,11 @@ public class RebornRegistry {
 		}
 	}
 
-	public static void registerBlock(Block block, Class<? extends ItemBlock> itemclass, ResourceLocation name) {
+	public static void registerBlock(Block block, Class<? extends BlockItem> itemclass, Identifier name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
 		try {
-			ItemBlock itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
+			BlockItem itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
 			itemBlock.setRegistryName(name);
 			GameData.register_impl(itemBlock);
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -84,20 +83,20 @@ public class RebornRegistry {
 		}
 	}
 
-	public static void registerBlock(Block block, ItemBlock itemBlock, String name) {
+	public static void registerBlock(Block block, BlockItem itemBlock, String name) {
 		GameData.register_impl(block);
 		itemBlock.setRegistryName(name);
 		GameData.register_impl(itemBlock);
 	}
 
-	public static void registerBlock(Block block, ItemBlock itemBlock, ResourceLocation name) {
+	public static void registerBlock(Block block, BlockItem itemBlock, Identifier name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
 		itemBlock.setRegistryName(name);
 		GameData.register_impl(itemBlock);
 	}
 
-	public static void registerBlockNoItem(Block block, ResourceLocation name) {
+	public static void registerBlockNoItem(Block block, Identifier name) {
 		block.setRegistryName(name);
 		GameData.register_impl(block);
 	}
@@ -106,9 +105,9 @@ public class RebornRegistry {
 		GameData.register_impl(block);
 	}
 
-	public static void registerBlock(Block block, Item.Properties builder) {
+	public static void registerBlock(Block block, Item.Settings builder) {
 		GameData.register_impl(block);
-		ItemBlock itemBlock = new ItemBlock(block, builder);
+		BlockItem itemBlock = new BlockItem(block, builder);
 		itemBlock.setRegistryName(block.getRegistryName());
 		GameData.register_impl(itemBlock);
 	}
@@ -117,7 +116,7 @@ public class RebornRegistry {
 		GameData.register_impl(item);
 	}
 
-	public static void registerItem(Item item, ResourceLocation name) {
+	public static void registerItem(Item item, Identifier name) {
 		item.setRegistryName(name);
 		GameData.register_impl(item);
 	}
@@ -125,29 +124,29 @@ public class RebornRegistry {
 	//eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
 	//eg: RebornRegistry.addLoot(Items.DIAMOND, 1.95, LootTableList.ENTITIES_COW);
 
-	public static void addLoot(Item item, double chance, ResourceLocation list) {
+	public static void addLoot(Item item, double chance, Identifier list) {
 		lp.addItem(LootManager.createLootEntry(item, chance, list));
 	}
 
-	public static void addLoot(Item item, int minSize, int maxSize, double chance, ResourceLocation list) {
+	public static void addLoot(Item item, int minSize, int maxSize, double chance, Identifier list) {
 		lp.addItem(LootManager.createLootEntry(item, minSize, maxSize, chance, list));
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public static void registerItemModel(Item i, int meta) {
-		ResourceLocation loc = i.getRegistryName();
+		Identifier loc = i.getRegistryName();
 		//TODO waiting on 1.13 forge
 		//ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "inventory"));
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public static void registerItemModel(Block b, int meta) {
 		registerItemModel(Item.getItemFromBlock(b), meta);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public static void registerItemModel(Item i, int meta, String variant) {
-		ResourceLocation loc = i.getRegistryName();
+		Identifier loc = i.getRegistryName();
 		//TODO waiting on 1.13 forge
 		//ModelLoader.setCustomModelResourceLocation(i, meta, new ModelResourceLocation(loc, "type=" + variant));
 	}

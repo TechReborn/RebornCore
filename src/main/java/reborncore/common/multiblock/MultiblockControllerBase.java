@@ -28,11 +28,11 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.WorldChunk;
 import reborncore.RebornCore;
 import reborncore.common.util.WorldUtils;
 
@@ -132,7 +132,7 @@ public abstract class MultiblockControllerBase {
 	 * @param part Attached part
 	 * @param data The NBT tag containing this controller's data.
 	 */
-	public abstract void onAttachedPartWithMultiblockData(IMultiblockPart part, NBTTagCompound data);
+	public abstract void onAttachedPartWithMultiblockData(IMultiblockPart part, CompoundTag data);
 
 	/**
 	 * Check if a block is being tracked by this machine.
@@ -157,14 +157,14 @@ public abstract class MultiblockControllerBase {
 		if (!connectedParts.add(part)) {
 			RebornCore.LOGGER.warn(
 				String.format("[%s] Controller %s is double-adding part %d @ %s. This is unusual. If you encounter odd behavior, please tear down the machine and rebuild it.",
-					(worldObj.isRemote ? "CLIENT" : "SERVER"), hashCode(), part.hashCode(), coord));
+					(worldObj.isClient ? "CLIENT" : "SERVER"), hashCode(), part.hashCode(), coord));
 		}
 
 		part.onAttached(this);
 		this.onBlockAdded(part);
 
 		if (part.hasMultiblockSaveData()) {
-			NBTTagCompound savedData = part.getMultiblockSaveData();
+			CompoundTag savedData = part.getMultiblockSaveData();
 			onAttachedPartWithMultiblockData(part, savedData);
 			part.onMultiblockDataAssimilated();
 		}
@@ -172,8 +172,8 @@ public abstract class MultiblockControllerBase {
 		if (this.referenceCoord == null) {
 			referenceCoord = coord;
 			part.becomeMultiblockSaveDelegate();
-		} else if (coord.compareTo(referenceCoord) < 0) {
-			TileEntity te = this.worldObj.getTileEntity(referenceCoord);
+		} else if (coord.method_10265(referenceCoord) < 0) {
+			BlockEntity te = this.worldObj.getBlockEntity(referenceCoord);
 			((IMultiblockPart) te).forfeitMultiblockSaveDelegate();
 
 			referenceCoord = coord;
@@ -298,7 +298,7 @@ public abstract class MultiblockControllerBase {
 		if (!connectedParts.remove(part)) {
 			RebornCore.LOGGER.warn(
 				String.format("[%s] Double-removing part (%d) @ %d, %d, %d, this is unexpected and may cause problems. If you encounter anomalies, please tear down the reactor and rebuild it.",
-					worldObj.isRemote ? "CLIENT" : "SERVER", part.hashCode(), part.getPos().getX(),
+					worldObj.isClient ? "CLIENT" : "SERVER", part.hashCode(), part.getPos().getX(),
 					part.getPos().getY(), part.getPos().getZ()));
 		}
 
@@ -466,7 +466,7 @@ public abstract class MultiblockControllerBase {
 	 */
 	public void assimilate(MultiblockControllerBase other) {
 		BlockPos otherReferenceCoord = other.getReferenceCoord();
-		if (otherReferenceCoord != null && getReferenceCoord().compareTo(otherReferenceCoord) >= 0) {
+		if (otherReferenceCoord != null && getReferenceCoord().method_10265(otherReferenceCoord) >= 0) {
 			throw new IllegalArgumentException(
 				"The controller with the lowest minimum-coord value must consume the one with the higher coords");
 		}
@@ -500,7 +500,7 @@ public abstract class MultiblockControllerBase {
 	private void _onAssimilated(MultiblockControllerBase otherController) {
 		if (referenceCoord != null) {
 			if (this.worldObj.isBlockLoaded(this.referenceCoord)) {
-				TileEntity te = this.worldObj.getTileEntity(referenceCoord);
+				BlockEntity te = this.worldObj.getBlockEntity(referenceCoord);
 				if (te instanceof IMultiblockPart) {
 					((IMultiblockPart) te).forfeitMultiblockSaveDelegate();
 				}
@@ -543,7 +543,7 @@ public abstract class MultiblockControllerBase {
 			return;
 		}
 
-		if (worldObj.isRemote) {
+		if (worldObj.isClient) {
 			updateClient();
 		} else if (updateServer()) {
 			// If this returns true, the server has changed its internal data.
@@ -560,7 +560,7 @@ public abstract class MultiblockControllerBase {
 					for (int z = minChunkZ; z <= maxChunkZ; z++) {
 						// Ensure that we save our data, even if the our save
 						// delegate is in has no TEs.
-						Chunk chunkToSave = this.worldObj.getChunk(x, z);
+						WorldChunk chunkToSave = this.worldObj.getWorldChunk(x, z);
 						chunkToSave.markDirty();
 					}
 				}
@@ -683,9 +683,9 @@ public abstract class MultiblockControllerBase {
 		return connectedParts.size();
 	}
 
-	public abstract void write(NBTTagCompound data);
+	public abstract void write(CompoundTag data);
 
-	public abstract void read(NBTTagCompound data);
+	public abstract void read(CompoundTag data);
 
 	/**
 	 * Force this multiblock to recalculate its minimum and maximum coordinates
@@ -750,7 +750,7 @@ public abstract class MultiblockControllerBase {
 	 *
 	 * @param data A fresh compound tag to write your multiblock data into
 	 */
-	public abstract void formatDescriptionPacket(NBTTagCompound data);
+	public abstract void formatDescriptionPacket(CompoundTag data);
 
 	/**
 	 * Called when the save delegate's tile entity receiving a description
@@ -758,7 +758,7 @@ public abstract class MultiblockControllerBase {
 	 *
 	 * @param data A compound tag containing multiblock data to import
 	 */
-	public abstract void decodeDescriptionPacket(NBTTagCompound data);
+	public abstract void decodeDescriptionPacket(CompoundTag data);
 
 	/**
 	 * @return True if this controller has no associated blocks, false otherwise
@@ -795,7 +795,7 @@ public abstract class MultiblockControllerBase {
 			// Strip dead parts from both and retry
 			RebornCore.LOGGER.warn(
 				String.format("[%s] Encountered two controllers with the same reference coordinate. Auditing connected parts and retrying.",
-					worldObj.isRemote ? "CLIENT" : "SERVER"));
+					worldObj.isClient ? "CLIENT" : "SERVER"));
 			auditParts();
 			otherController.auditParts();
 
@@ -809,7 +809,7 @@ public abstract class MultiblockControllerBase {
 					getPartsListString()));
 				RebornCore.LOGGER.error(String.format("Other Controller (%d): size (%d), coords: %s", otherController.hashCode(),
 					otherController.connectedParts.size(), otherController.getPartsListString()));
-				throw new IllegalArgumentException("[" + (worldObj.isRemote ? "CLIENT" : "SERVER")
+				throw new IllegalArgumentException("[" + (worldObj.isClient ? "CLIENT" : "SERVER")
 					+ "] Two controllers with the same reference coord that somehow both have valid parts - this should never happen!");
 			}
 
@@ -825,7 +825,7 @@ public abstract class MultiblockControllerBase {
 		if (theirCoord == null) {
 			return -1;
 		} else {
-			return myCoord.compareTo(theirCoord);
+			return myCoord.method_10265(theirCoord);
 		}
 	}
 
@@ -851,7 +851,7 @@ public abstract class MultiblockControllerBase {
 	private void auditParts() {
 		HashSet<IMultiblockPart> deadParts = new HashSet<IMultiblockPart>();
 		for (IMultiblockPart part : connectedParts) {
-			if (part.isInvalid() || worldObj.getTileEntity(part.getPos()) != part) {
+			if (part.isInvalid() || worldObj.getBlockEntity(part.getPos()) != part) {
 				onDetachBlock(part);
 				deadParts.add(part);
 			}
@@ -859,7 +859,7 @@ public abstract class MultiblockControllerBase {
 
 		connectedParts.removeAll(deadParts);
 		RebornCore.LOGGER.warn(String.format("[%s] Controller found %d dead parts during an audit, %d parts remain attached",
-			worldObj.isRemote ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size()));
+			worldObj.isClient ? "CLIENT" : "SERVER", deadParts.size(), connectedParts.size()));
 	}
 
 	/**
@@ -896,7 +896,7 @@ public abstract class MultiblockControllerBase {
 				continue;
 			}
 
-			if (worldObj.getTileEntity(pos) != part) {
+			if (worldObj.getBlockEntity(pos) != part) {
 				deadParts.add(part);
 				onDetachBlock(part);
 				continue;
@@ -908,7 +908,7 @@ public abstract class MultiblockControllerBase {
 			if (referenceCoord == null) {
 				referenceCoord = pos;
 				referencePart = part;
-			} else if (pos.compareTo(referenceCoord) < 0) {
+			} else if (pos.method_10265(referenceCoord) < 0) {
 				referenceCoord = pos;
 				referencePart = part;
 			}
@@ -1026,7 +1026,7 @@ public abstract class MultiblockControllerBase {
 				continue;
 			}
 
-			if (referenceCoord == null || referenceCoord.compareTo(pos) > 0) {
+			if (referenceCoord == null || referenceCoord.method_10265(pos) > 0) {
 				referenceCoord = pos;
 				theChosenOne = part;
 			}
@@ -1067,7 +1067,7 @@ public abstract class MultiblockControllerBase {
 	 * @see MultiblockControllerBase#markReferenceCoordForUpdate()
 	 */
 	protected void markReferenceCoordDirty() {
-		if (worldObj == null || worldObj.isRemote) {
+		if (worldObj == null || worldObj.isClient) {
 			return;
 		}
 
@@ -1076,8 +1076,8 @@ public abstract class MultiblockControllerBase {
 			return;
 		}
 
-		TileEntity saveTe = worldObj.getTileEntity(referenceCoord);
-		worldObj.markChunkDirty(referenceCoord, saveTe);
+		BlockEntity saveTe = worldObj.getBlockEntity(referenceCoord);
+		worldObj.markDirty(referenceCoord, saveTe);
 	}
 
 }

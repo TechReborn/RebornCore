@@ -28,10 +28,10 @@
 
 package reborncore.api;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ToolManager implements ICustomToolHandler {
 	public List<ICustomToolHandler> customToolHandlerList = new ArrayList<>();
 
 	@Override
-	public boolean handleTool(ItemStack stack, BlockPos pos, World world, EntityPlayer player, EnumFacing side, boolean damage) {
+	public boolean handleTool(ItemStack stack, BlockPos pos, World world, PlayerEntity player, Direction side, boolean damage) {
 		if (stack == null || stack.isEmpty()) {
 			return false;
 		}

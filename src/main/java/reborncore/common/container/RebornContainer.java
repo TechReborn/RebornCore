@@ -28,11 +28,11 @@
 
 package reborncore.common.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
+import net.minecraft.container.Slot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
@@ -49,19 +49,19 @@ public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
-	private final TileEntity baseTile;
+	private final BlockEntity baseTile;
 
-	public RebornContainer(TileEntity tileEntity) {
+	public RebornContainer(BlockEntity tileEntity) {
 		this.baseTile = tileEntity;
 	}
 
 	public static
 	@Nullable
-	RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, TileEntity tileEntity) {
+	RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, BlockEntity tileEntity) {
 		return createContainer(clazz, tileEntity, RebornCore.proxy.getPlayer());
 	}
 
-	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player) {
+	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, BlockEntity tileEntity, PlayerEntity player) {
 		if (player == null && containerMap.containsKey(clazz.getCanonicalName())) {
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
@@ -77,11 +77,11 @@ public abstract class RebornContainer extends Container {
 						continue;
 					} else if (constructor.getParameterCount() == 2) {
 						Class[] paramTypes = constructor.getParameterTypes();
-						if (paramTypes[0].isInstance(tileEntity) && paramTypes[1] == EntityPlayer.class) {
-							container = clazz.getDeclaredConstructor(tileEntity.getClass(), EntityPlayer.class).newInstance(tileEntity, player);
+						if (paramTypes[0].isInstance(tileEntity) && paramTypes[1] == PlayerEntity.class) {
+							container = clazz.getDeclaredConstructor(tileEntity.getClass(), PlayerEntity.class).newInstance(tileEntity, player);
 							continue;
-						} else if (paramTypes[0] == EntityPlayer.class && paramTypes[1].isInstance(tileEntity)) {
-							container = clazz.getDeclaredConstructor(EntityPlayer.class, tileEntity.getClass()).newInstance(player, tileEntity);
+						} else if (paramTypes[0] == PlayerEntity.class && paramTypes[1].isInstance(tileEntity)) {
+							container = clazz.getDeclaredConstructor(PlayerEntity.class, tileEntity.getClass()).newInstance(player, tileEntity);
 							continue;
 						}
 					}
@@ -108,10 +108,10 @@ public abstract class RebornContainer extends Container {
 		if (stack1.isEmpty() || stack2.isEmpty()) {
 			return false;
 		}
-		if (!stack1.isItemEqual(stack2)) {
+		if (!stack1.isEqualIgnoreTags(stack2)) {
 			return false;
 		}
-		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
+		if (!ItemStack.areTagsEqual(stack1, stack2)) {
 			return false;
 		}
 		return true;
@@ -129,11 +129,11 @@ public abstract class RebornContainer extends Container {
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
+	public ItemStack transferSlot(PlayerEntity player, int slotIndex) {
 		ItemStack originalStack = ItemStack.EMPTY;
-		Slot slot = (Slot) inventorySlots.get(slotIndex);
-		int numSlots = inventorySlots.size();
-		if (slot != null && slot.getHasStack()) {
+		Slot slot = (Slot) slotList.get(slotIndex);
+		int numSlots = slotList.size();
+		if (slot != null && slot.hasStack()) {
 			ItemStack stackInSlot = slot.getStack();
 			originalStack = stackInSlot.copy();
 			if (slotIndex >= numSlots - 9 * 4 && tryShiftItem(stackInSlot, numSlots)) {
@@ -149,54 +149,54 @@ public abstract class RebornContainer extends Container {
 			} else if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots)) {
 				return ItemStack.EMPTY;
 			}
-			slot.onSlotChange(stackInSlot, originalStack);
-			if (stackInSlot.getCount() <= 0) {
-				slot.putStack(ItemStack.EMPTY);
+			slot.onStackChanged(stackInSlot, originalStack);
+			if (stackInSlot.getAmount() <= 0) {
+				slot.setStack(ItemStack.EMPTY);
 			} else {
-				slot.onSlotChanged();
+				slot.markDirty();
 			}
-			if (stackInSlot.getCount() == originalStack.getCount()) {
+			if (stackInSlot.getAmount() == originalStack.getAmount()) {
 				return ItemStack.EMPTY;
 			}
-			slot.onTake(player, stackInSlot);
+			slot.onTakeItem(player, stackInSlot);
 		}
 		return originalStack;
 	}
 
 	protected boolean shiftItemStack(ItemStack stackToShift, int start, int end) {
 		boolean changed = false;
-		if (stackToShift.isStackable()) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				Slot slot = (Slot) inventorySlots.get(slotIndex);
+		if (stackToShift.canStack()) {
+			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+				Slot slot = (Slot) slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && canStacksMerge(stackInSlot, stackToShift)) {
-					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
-					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+					int resultingStackSize = stackInSlot.getAmount() + stackToShift.getAmount();
+					int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
 					if (resultingStackSize <= max) {
-						stackToShift.setCount(0);
-						stackInSlot.setCount(resultingStackSize);
-						slot.onSlotChanged();
+						stackToShift.setAmount(0);
+						stackInSlot.setAmount(resultingStackSize);
+						slot.markDirty();
 						changed = true;
-					} else if (stackInSlot.getCount() < max) {
-						stackToShift.setCount(stackToShift.getCount() - (max - stackInSlot.getCount()));
-						stackInSlot.setCount(max);
-						slot.onSlotChanged();
+					} else if (stackInSlot.getAmount() < max) {
+						stackToShift.setAmount(stackToShift.getAmount() - (max - stackInSlot.getAmount()));
+						stackInSlot.setAmount(max);
+						slot.markDirty();
 						changed = true;
 					}
 				}
 			}
 		}
-		if (stackToShift.getCount() > 0) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				Slot slot = (Slot) inventorySlots.get(slotIndex);
+		if (stackToShift.getAmount() > 0) {
+			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+				Slot slot = (Slot) slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (stackInSlot.isEmpty()) {
-					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+					int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
 					stackInSlot = stackToShift.copy();
-					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.setCount(stackToShift.getCount() - stackInSlot.getCount());
-					slot.putStack(stackInSlot);
-					slot.onSlotChanged();
+					stackInSlot.setAmount(Math.min(stackToShift.getAmount(), max));
+					stackToShift.setAmount(stackToShift.getAmount() - stackInSlot.getAmount());
+					slot.setStack(stackInSlot);
+					slot.markDirty();
 					changed = true;
 				}
 			}
@@ -206,11 +206,11 @@ public abstract class RebornContainer extends Container {
 
 	private boolean tryShiftItem(ItemStack stackToShift, int numSlots) {
 		for (int machineIndex = 0; machineIndex < numSlots - 9 * 4; machineIndex++) {
-			Slot slot = (Slot) inventorySlots.get(machineIndex);
+			Slot slot = (Slot) slotList.get(machineIndex);
 			if (slot instanceof SlotFake) {
 				continue;
 			}
-			if (!slot.isItemValid(stackToShift)) {
+			if (!slot.canInsert(stackToShift)) {
 				continue;
 			}
 			if (shiftItemStack(stackToShift, machineIndex, machineIndex + 1)) {
@@ -220,14 +220,14 @@ public abstract class RebornContainer extends Container {
 		return false;
 	}
 
-	public void addPlayersHotbar(EntityPlayer player) {
+	public void addPlayersHotbar(PlayerEntity player) {
 		int i;
 		for (i = 0; i < 9; ++i) {
 			this.addSlot(new Slot(player.inventory, i, 8 + i * 18, 142));
 		}
 	}
 
-	public void addPlayersInventory(EntityPlayer player) {
+	public void addPlayersInventory(PlayerEntity player) {
 		int i;
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -236,7 +236,7 @@ public abstract class RebornContainer extends Container {
 		}
 	}
 
-	public void drawPlayersInv(EntityPlayer player) {
+	public void drawPlayersInv(PlayerEntity player) {
 		drawPlayersInv(player, 8, 81);
 		//		int i;
 		//		for (i = 0; i < 3; ++i)
@@ -249,7 +249,7 @@ public abstract class RebornContainer extends Container {
 
 	}
 
-	public void drawPlayersHotBar(EntityPlayer player) {
+	public void drawPlayersHotBar(PlayerEntity player) {
 		drawPlayersHotBar(player, 8, 139);
 		//		int i;
 		//		for (i = 0; i < 9; ++i)
@@ -258,7 +258,7 @@ public abstract class RebornContainer extends Container {
 		//		}
 	}
 
-	public void drawPlayersInv(EntityPlayer player, int x, int y) {
+	public void drawPlayersInv(PlayerEntity player, int x, int y) {
 		int i;
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -268,29 +268,29 @@ public abstract class RebornContainer extends Container {
 
 	}
 
-	public void drawPlayersHotBar(EntityPlayer player, int x, int y) {
+	public void drawPlayersHotBar(PlayerEntity player, int x, int y) {
 		int i;
 		for (i = 0; i < 9; ++i) {
 			this.addSlot(new Slot(player.inventory, i, x + i * 18, y));
 		}
 	}
 
-	public void drawPlayersInvAndHotbar(EntityPlayer player) {
+	public void drawPlayersInvAndHotbar(PlayerEntity player) {
 		drawPlayersInv(player);
 		drawPlayersHotBar(player);
 	}
 
-	public void drawPlayersInvAndHotbar(EntityPlayer player, int x, int y) {
+	public void drawPlayersInvAndHotbar(PlayerEntity player, int x, int y) {
 		drawPlayersInv(player, x, y);
 		drawPlayersHotBar(player, x, y + 58);
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canUse(PlayerEntity player) {
 		if (baseTile != null) {
 			World world = player.getEntityWorld();
 			BlockPos pos = baseTile.getPos();
-			return world.getTileEntity(pos) == baseTile && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+			return world.getBlockEntity(pos) == baseTile && player.squaredDistanceTo(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
 		}
 		return true;
 	}

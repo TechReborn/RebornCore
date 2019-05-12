@@ -28,17 +28,17 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.container.Container;
+import net.minecraft.container.ContainerListener;
+import net.minecraft.server.network.ServerPlayerEntity;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 
 public interface IExtendedContainerListener {
 
-	public default void sendObject(IContainerListener containerListener, Container containerIn, int var, Object value) {
-		if (containerListener instanceof EntityPlayerMP) {
-			NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSendObject(var, value, containerIn), (EntityPlayerMP) containerListener);
+	public default void sendObject(ContainerListener containerListener, Container containerIn, int var, Object value) {
+		if (containerListener instanceof ServerPlayerEntity) {
+			NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSendObject(var, value, containerIn), (ServerPlayerEntity) containerListener);
 		}
 	}
 

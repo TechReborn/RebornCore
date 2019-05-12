@@ -28,21 +28,19 @@
 
 package reborncore.common.util;
 
-import net.minecraft.block.BlockFlowingFluid;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import reborncore.api.tile.IUpgradeable;
 
 public class ItemHandlerUtils {
 
 	public static void dropContainedItems(World world, BlockPos pos) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+		BlockEntity tileEntity = world.getBlockEntity(pos);
 		if (tileEntity == null) {
 			return;
 		}
@@ -61,14 +59,14 @@ public class ItemHandlerUtils {
 			if (itemStack.isEmpty()) {
 				continue;
 			}
-			if (itemStack.getCount() > 0) {
-				if (itemStack.getItem() instanceof ItemBlock) {
-					if (((ItemBlock) itemStack.getItem()).getBlock() instanceof BlockFlowingFluid) {
+			if (itemStack.getAmount() > 0) {
+				if (itemStack.getItem() instanceof BlockItem) {
+					if (((BlockItem) itemStack.getItem()).getBlock() instanceof FluidBlock) {
 						continue;
 					}
 				}
 			}
-			InventoryHelper.spawnItemStack(world, (double) pos.getX(), (double) pos.getY(),
+			ItemScatterer.spawn(world, (double) pos.getX(), (double) pos.getY(),
 				(double) pos.getZ(), itemStack);
 		}
 	}

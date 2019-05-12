@@ -28,11 +28,8 @@
 
 package reborncore.common.misc;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent.Register;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 import reborncore.RebornCore;
 
 /**
@@ -51,7 +48,7 @@ public class ModSounds {
 	}
 
 	private static SoundEvent createSoundEvent(String str) {
-		ResourceLocation resourceLocation = new ResourceLocation(RebornCore.MOD_ID, str);
+		Identifier resourceLocation = new Identifier(RebornCore.MOD_ID, str);
 		SoundEvent soundEvent = new SoundEvent(resourceLocation);
 		soundEvent.setRegistryName(resourceLocation);
 		return soundEvent;

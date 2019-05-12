@@ -28,12 +28,9 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
@@ -54,11 +51,11 @@ import java.util.function.*;
 public class ContainerTileInventoryBuilder {
 
 	private final IItemHandler itemHandler;
-	private final TileEntity tile;
+	private final BlockEntity tile;
 	private final ContainerBuilder parent;
 	private final int rangeStart;
 
-	ContainerTileInventoryBuilder(final ContainerBuilder parent, final TileEntity tile) {
+	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
 		this.itemHandler =  tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(() -> new UnsupportedOperationException("tile must be an inventory: " + tile.getClass().getName()));
 		this.tile = tile;
 		this.parent = parent;
@@ -189,7 +186,7 @@ public class ContainerTileInventoryBuilder {
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder onCraft(final Consumer<InventoryCrafting> onCraft) {
+	public ContainerTileInventoryBuilder onCraft(final Consumer<CraftingInventory> onCraft) {
 		this.parent.craftEvents.add(onCraft);
 		return this;
 	}

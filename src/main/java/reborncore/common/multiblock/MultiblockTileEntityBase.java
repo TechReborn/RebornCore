@@ -28,15 +28,15 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
 
 import java.util.ArrayList;
@@ -54,10 +54,10 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	private boolean visited;
 
 	private boolean saveMultiblockData;
-	private NBTTagCompound cachedMultiblockData;
+	private CompoundTag cachedMultiblockData;
 	//private boolean paused;
 
-	public MultiblockTileEntityBase(TileEntityType<?> tTileEntityType) {
+	public MultiblockTileEntityBase(BlockEntityType<?> tTileEntityType) {
 		super(tTileEntityType);
 		controller = null;
 		visited = false;
@@ -116,24 +116,24 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	// /// Overrides from base TileEntity methods
 
 	@Override
-	public void read(NBTTagCompound data) {
-		super.read(data);
+	public void fromTag(CompoundTag data) {
+		super.fromTag(data);
 
 		// We can't directly initialize a multiblock controller yet, so we cache
 		// the data here until
 		// we receive a validate() call, which creates the controller and hands
 		// off the cached data.
-		if (data.contains("multiblockData")) {
+		if (data.containsKey("multiblockData")) {
 			this.cachedMultiblockData = data.getCompound("multiblockData");
 		}
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound data) {
-		super.write(data);
+	public CompoundTag toTag(CompoundTag data) {
+		super.toTag(data);
 
 		if (isMultiblockSaveDelegate() && isConnected()) {
-			NBTTagCompound multiblockData = new NBTTagCompound();
+			CompoundTag multiblockData = new CompoundTag();
 			this.controller.write(multiblockData);
 			data.put("multiblockData", multiblockData);
 		}
@@ -185,15 +185,15 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	// Network Communication
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound packetData = new NBTTagCompound();
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
+		CompoundTag packetData = new CompoundTag();
 		encodeDescriptionPacket(packetData);
-		return new SPacketUpdateTileEntity(getPos(), 0, packetData);
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, packetData);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager network, SPacketUpdateTileEntity packet) {
-		decodeDescriptionPacket(packet.getNbtCompound());
+	public void onDataPacket(ClientConnection network, BlockEntityUpdateS2CPacket packet) {
+		decodeDescriptionPacket(packet.getCompoundTag());
 	}
 
 	// /// Things to override in most implementations (IMultiblockPart)
@@ -207,9 +207,9 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * description data.
 	 * @see MultiblockTileEntityBase#decodeDescriptionPacket(NBTTagCompound)
 	 */
-	protected void encodeDescriptionPacket(NBTTagCompound packetData) {
+	protected void encodeDescriptionPacket(CompoundTag packetData) {
 		if (this.isMultiblockSaveDelegate() && isConnected()) {
-			NBTTagCompound tag = new NBTTagCompound();
+			CompoundTag tag = new CompoundTag();
 			getMultiblockController().formatDescriptionPacket(tag);
 			packetData.put("multiblockData", tag);
 		}
@@ -222,9 +222,9 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	 * @param packetData The NBT data from the tile entity's description packet.
 	 * @see MultiblockTileEntityBase#encodeDescriptionPacket(NBTTagCompound)
 	 */
-	protected void decodeDescriptionPacket(NBTTagCompound packetData) {
-		if (packetData.contains("multiblockData")) {
-			NBTTagCompound tag = packetData.getCompound("multiblockData");
+	protected void decodeDescriptionPacket(CompoundTag packetData) {
+		if (packetData.containsKey("multiblockData")) {
+			CompoundTag tag = packetData.getCompound("multiblockData");
 			if (isConnected()) {
 				getMultiblockController().decodeDescriptionPacket(tag);
 			} else {
@@ -240,7 +240,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	@Override
-	public NBTTagCompound getMultiblockSaveData() {
+	public CompoundTag getMultiblockSaveData() {
 		return this.cachedMultiblockData;
 	}
 
@@ -332,14 +332,14 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	@Override
 	public IMultiblockPart[] getNeighboringParts() {
-		TileEntity te;
+		BlockEntity te;
 		List<IMultiblockPart> neighborParts = new ArrayList<IMultiblockPart>();
 		BlockPos neighborPosition, partPosition = this.getWorldLocation();
 
-		for (EnumFacing facing : EnumFacing.values()) {
+		for (Direction facing : Direction.values()) {
 
 			neighborPosition = partPosition.offset(facing);
-			te = this.world.getTileEntity(neighborPosition);
+			te = this.world.getBlockEntity(neighborPosition);
 
 			if (te instanceof IMultiblockPart) {
 				neighborParts.add((IMultiblockPart) te);
@@ -352,16 +352,16 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	@Override
 	public void onOrphaned(MultiblockControllerBase controller, int oldSize, int newSize) {
 		this.markDirty();
-		getWorld().markChunkDirty(getPos(), this);
+		getWorld().markDirty(getPos(), this);
 	}
 
 	// // Helper functions for notifying neighboring blocks
 	protected void notifyNeighborsOfBlockChange() {
-		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+		world.updateNeighborsAlways(getPos(), getCachedState().getBlock());
 	}
 
 	protected void notifyNeighborsOfTileChange() {
-		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+		world.updateNeighborsAlways(getPos(), getCachedState().getBlock());
 	}
 
 	// /// Private/Protected Logic Helpers
@@ -383,7 +383,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	@Override
-	public IBlockState getBlockState() {
+	public BlockState getCachedState() {
 		return world.getBlockState(pos);
 	}
 }

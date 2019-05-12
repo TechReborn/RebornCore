@@ -30,7 +30,7 @@ package reborncore.common.multiblock;
 
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.chunk.Chunk;
 import reborncore.RebornCore;
 
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class MultiblockRegistry {
 	 * @param world The world which has finished loading a chunk
 	 * @param chunk Loaded chunk
 	 */
-	public static void onChunkLoaded(IWorld world, IChunk chunk) {
+	public static void onChunkLoaded(IWorld world, Chunk chunk) {
 		if (registries.containsKey(world)) {
 			registries.get(world).onChunkLoaded(chunk);
 		}

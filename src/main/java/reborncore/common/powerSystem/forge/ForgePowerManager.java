@@ -28,11 +28,9 @@
 
 package reborncore.common.powerSystem.forge;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.common.RebornCoreConfig;
@@ -61,7 +59,7 @@ public class ForgePowerManager implements ExternalPowerManager {
 	}
 
 	@Override
-	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side) {
+	public boolean isPoweredTile(BlockEntity tileEntity, Direction side) {
 		if (!RebornCoreConfig.enableFE) {
 			return false;
 		}

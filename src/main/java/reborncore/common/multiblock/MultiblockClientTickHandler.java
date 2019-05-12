@@ -28,16 +28,14 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraft.client.MinecraftClient;
 
 public class MultiblockClientTickHandler {
 
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
-			MultiblockRegistry.tickStart(Minecraft.getInstance().world);
+			MultiblockRegistry.tickStart(MinecraftClient.getInstance().world);
 		}
 	}
 }

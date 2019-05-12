@@ -29,12 +29,6 @@
 package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -93,8 +87,8 @@ public class FluidUtils {
 				 * merged together, there was no simple way to make that check before.
 				 */
 				if (ItemUtils.isItemEqual(outputStack, inputFluidHandlerItemStack, true, true)
-					&& outputStack.getCount() <= outputStack.getMaxStackSize()) {
-					outputStack.setCount(outputStack.getCount() + 1);
+					&& outputStack.getAmount() <= outputStack.getMaxAmount()) {
+					outputStack.setAmount(outputStack.getAmount() + 1);
 					inv.getStackInSlot(inputSlot).shrink(1);
 				} else {
 
@@ -124,14 +118,14 @@ public class FluidUtils {
 			 * ItemStack.
 			 */
 			ItemStack containerCopy = input.copy();
-			containerCopy.setCount(1);
+			containerCopy.setAmount(1);
 
 			/*
 			 * It's necessary to check before any alterations that the resulting ItemStack
 			 * can be placed into the outputSlot.
 			 */
 			if (inputFluidHandler != null
-				&& (output.isEmpty() || (output.getCount() < output.getMaxStackSize() && ItemUtils.isItemEqual(
+				&& (output.isEmpty() || (output.getAmount() < output.getMaxAmount() && ItemUtils.isItemEqual(
 				FluidUtils.getFilledContainer(fluidToFill, containerCopy), output, true, true)))) {
 
 				/*
@@ -162,7 +156,7 @@ public class FluidUtils {
 	@Nullable
 	public static IFluidHandlerItem getFluidHandler(ItemStack container) {
 		ItemStack copy = container.copy();
-		copy.setCount(1);
+		copy.setAmount(1);
 		return FluidUtil.getFluidHandler(copy).orElseGet(null);
 	}
 
@@ -172,7 +166,7 @@ public class FluidUtils {
 			ItemStack container) {
 		if (!container.isEmpty()) {
 			container = container.copy();
-			container.setCount(1);
+			container.setAmount(1);
 			final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(container).orElseGet(null);
 			if (fluidHandler != null) {
 				return fluidHandler.drain(Fluid.BUCKET_VOLUME, false);

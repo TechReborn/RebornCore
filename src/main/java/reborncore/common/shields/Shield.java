@@ -28,10 +28,10 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 import reborncore.common.util.ItemNBTHelper;
 
 import java.util.List;
@@ -47,8 +47,8 @@ public abstract class Shield {
 		this.name = name;
 	}
 
-	public ResourceLocation getShieldTexture() {
-		return new ResourceLocation("null");
+	public Identifier getShieldTexture() {
+		return new Identifier("null");
 	}
 
 	public boolean showInItemLists() {

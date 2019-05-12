@@ -31,11 +31,10 @@ package reborncore.common.util.serialization;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import java.lang.reflect.Type;
 
 //Based from ee3's code
@@ -54,7 +53,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
 			String name = null;
 			int stackSize = 1;
-			NBTTagCompound tagCompound = null;
+			CompoundTag tagCompound = null;
 
 			if (jsonObject.has(NAME) && jsonObject.get(NAME).isJsonPrimitive()) {
 				name = jsonObject.getAsJsonPrimitive(NAME).getAsString();
@@ -66,14 +65,14 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
 			if (jsonObject.has(TAG_COMPOUND) && jsonObject.get(TAG_COMPOUND).isJsonPrimitive()) {
 				try {
-					tagCompound = JsonToNBT.getTagFromJson(jsonObject.getAsJsonPrimitive(TAG_COMPOUND).getAsString());
+					tagCompound = StringNbtReader.parse(jsonObject.getAsJsonPrimitive(TAG_COMPOUND).getAsString());
 				} catch (CommandSyntaxException e) {
 
 				}
 			}
 
-			if (name != null && IRegistry.ITEM.get(new ResourceLocation(name)) != null) {
-				ItemStack itemStack = new ItemStack(IRegistry.ITEM.get(new ResourceLocation(name)), stackSize);
+			if (name != null && Registry.ITEM.get(new Identifier(name)) != null) {
+				ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(name)), stackSize);
 				itemStack.setTag(tagCompound);
 				return itemStack;
 			}
@@ -88,13 +87,13 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 		if (src != null && src.getItem() != null) {
 			JsonObject jsonObject = new JsonObject();
 
-			if (IRegistry.ITEM.getKey(src.getItem()) != null) {
-				jsonObject.addProperty(NAME, IRegistry.ITEM.getKey(src.getItem()).toString());
+			if (Registry.ITEM.getId(src.getItem()) != null) {
+				jsonObject.addProperty(NAME, Registry.ITEM.getId(src.getItem()).toString());
 			} else {
 				return JsonNull.INSTANCE;
 			}
 
-			jsonObject.addProperty(STACK_SIZE, src.getCount());
+			jsonObject.addProperty(STACK_SIZE, src.getAmount());
 
 			if (src.getTag() != null) {
 				jsonObject.addProperty(TAG_COMPOUND, src.getTag().toString());

@@ -28,11 +28,11 @@
 
 package reborncore.client.gui.builder.widget.tooltip;
 
-import net.minecraft.client.gui.FontRenderer;
 import reborncore.client.gui.GuiUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import net.minecraft.client.font.TextRenderer;
 
 public class ToolTip {
 
@@ -72,14 +72,14 @@ public class ToolTip {
 
 	protected void refresh() {}
 
-	public void draw(FontRenderer font, int mouseX, int mouseY) {
+	public void draw(TextRenderer font, int mouseX, int mouseY) {
 		refresh();
 		int maxLineLength = 0;
 		int textX = mouseX + 3;
 		int textY = mouseY + 3;
 		for (ToolTipLine toolTipLine : lines) {
 			toolTipLine.draw(font, textX, textY);
-			textY += (font.FONT_HEIGHT + 3);
+			textY += (font.fontHeight + 3);
 			int lineWidth = toolTipLine.getWidth(font);
 			if (lineWidth > maxLineLength) {
 				maxLineLength = lineWidth;

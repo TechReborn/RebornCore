@@ -28,7 +28,7 @@
 
 package reborncore.api.power;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Direction;
 
 public interface IEnergyInterfaceTile {
 
@@ -105,13 +105,13 @@ public interface IEnergyInterfaceTile {
 	 * @param direction The direction to insert energy into
 	 * @return if the tile can accept energy from the direction
 	 */
-	public boolean canAcceptEnergy(EnumFacing direction);
+	public boolean canAcceptEnergy(Direction direction);
 
 	/**
 	 * @param direction The direction to provide energy from
 	 * @return true if the tile can provide energy to that direction
 	 */
-	public boolean canProvideEnergy(EnumFacing direction);
+	public boolean canProvideEnergy(Direction direction);
 
 	/**
 	 * Gets the max output, set to -1 if you don't want the tile to provide

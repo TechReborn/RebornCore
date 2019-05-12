@@ -28,11 +28,10 @@
 
 package reborncore.client.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -58,27 +57,27 @@ public class GuiButtonItemTexture extends GuiButtonExt {
 	@Override
 	public void render(int mouseX, int mouseY, float ticks) {
 		if (this.visible) {
-			Minecraft mc = Minecraft.getInstance();
+			MinecraftClient mc = MinecraftClient.getInstance();
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
 			mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
 			int u = textureU;
 			int v = textureV;
 			if (flag) {
-				u += mc.fontRenderer.getStringWidth(this.NAME) + 25;
-				v += mc.fontRenderer.getStringWidth(this.NAME) + 25;
+				u += mc.textRenderer.getStringWidth(this.NAME) + 25;
+				v += mc.textRenderer.getStringWidth(this.NAME) + 25;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				this.drawTexturedModalRect(this.x, this.y, u, v, mc.fontRenderer.getStringWidth(this.NAME) + 25, height);
+				this.blit(this.x, this.y, u, v, mc.textRenderer.getStringWidth(this.NAME) + 25, height);
 				GL11.glPopMatrix();
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glEnable(32826);
-			RenderHelper.enableStandardItemLighting();
-			RenderHelper.enableGUIStandardItemLighting();
-			ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-			itemRenderer.renderItemIntoGUI(itemstack, this.x, this.y);
-			this.drawString(mc.fontRenderer, this.NAME, this.x + 20, this.y + 3,
+			GuiLighting.enable();
+			GuiLighting.enableForItems();
+			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+			itemRenderer.renderGuiItemIcon(itemstack, this.x, this.y);
+			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
 				Color.white.getRGB());
 		}
 	}

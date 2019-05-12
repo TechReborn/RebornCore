@@ -29,8 +29,8 @@
 package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public class ItemNBTHelper {
 
@@ -47,7 +47,7 @@ public class ItemNBTHelper {
 	 **/
 	public static void initNBT(ItemStack stack) {
 		if (!detectNBT(stack)) {
-			injectNBT(stack, new NBTTagCompound());
+			injectNBT(stack, new CompoundTag());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class ItemNBTHelper {
 	 * Injects an NBT Tag Compound to an ItemStack, no checks are made
 	 * previously
 	 **/
-	public static void injectNBT(ItemStack stack, NBTTagCompound nbt) {
+	public static void injectNBT(ItemStack stack, CompoundTag nbt) {
 		stack.setTag(nbt);
 	}
 
@@ -63,7 +63,7 @@ public class ItemNBTHelper {
 	 * Gets the NBTTagCompound in an ItemStack. Tries to init it previously in
 	 * case there isn't one present
 	 **/
-	public static NBTTagCompound getNBT(ItemStack stack) {
+	public static CompoundTag getNBT(ItemStack stack) {
 		initNBT(stack);
 		return stack.getTag();
 	}
@@ -99,7 +99,7 @@ public class ItemNBTHelper {
 		getNBT(stack).putDouble(tag, d);
 	}
 
-	public static void setCompound(ItemStack stack, String tag, NBTTagCompound cmp) {
+	public static void setCompound(ItemStack stack, String tag, CompoundTag cmp) {
 		if (!tag.equalsIgnoreCase("ench")) // not override the enchantments
 		{
 			getNBT(stack).put(tag, cmp);
@@ -110,7 +110,7 @@ public class ItemNBTHelper {
 		getNBT(stack).putString(tag, s);
 	}
 
-	public static void setList(ItemStack stack, String tag, NBTTagList list) {
+	public static void setList(ItemStack stack, String tag, ListTag list) {
 		getNBT(stack).put(tag, list);
 	}
 
@@ -118,7 +118,7 @@ public class ItemNBTHelper {
 	// ///////////////////////////////////////////////////////////////////
 
 	public static boolean verifyExistance(ItemStack stack, String tag) {
-		return !stack.isEmpty() && getNBT(stack).contains(tag);
+		return !stack.isEmpty() && getNBT(stack).containsKey(tag);
 	}
 
 	public static boolean getBoolean(ItemStack stack, String tag, boolean defaultExpected) {
@@ -153,17 +153,17 @@ public class ItemNBTHelper {
 	 * If nullifyOnFail is true it'll return null if it doesn't find any
 	 * compounds, otherwise it'll return a new one.
 	 **/
-	public static NBTTagCompound getCompound(ItemStack stack, String tag, boolean nullifyOnFail) {
+	public static CompoundTag getCompound(ItemStack stack, String tag, boolean nullifyOnFail) {
 		return verifyExistance(stack, tag) ? getNBT(stack).getCompound(tag)
-		                                   : nullifyOnFail ? null : new NBTTagCompound();
+		                                   : nullifyOnFail ? null : new CompoundTag();
 	}
 
 	public static String getString(ItemStack stack, String tag, String defaultExpected) {
 		return verifyExistance(stack, tag) ? getNBT(stack).getString(tag) : defaultExpected;
 	}
 
-	public static NBTTagList getList(ItemStack stack, String tag, int objtype, boolean nullifyOnFail) {
+	public static ListTag getList(ItemStack stack, String tag, int objtype, boolean nullifyOnFail) {
 		return verifyExistance(stack, tag) ? getNBT(stack).getList(tag, objtype)
-		                                   : nullifyOnFail ? null : new NBTTagList();
+		                                   : nullifyOnFail ? null : new ListTag();
 	}
 }

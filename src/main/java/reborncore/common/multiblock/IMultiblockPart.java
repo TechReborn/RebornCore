@@ -28,10 +28,10 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Set;
@@ -44,10 +44,10 @@ import java.util.Set;
  * <p>
  * {@link MultiblockTileEntityBase}
  */
-public abstract class IMultiblockPart extends TileEntity {
+public abstract class IMultiblockPart extends BlockEntity {
 	public static final int INVALID_DISTANCE = Integer.MAX_VALUE;
 
-	public IMultiblockPart(TileEntityType<?> tileEntityTypeIn) {
+	public IMultiblockPart(BlockEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 	}
 
@@ -250,7 +250,7 @@ public abstract class IMultiblockPart extends TileEntity {
 	 * @return The part's saved multiblock game-data in NBT format, or null if
 	 * there isn't any.
 	 */
-	public abstract NBTTagCompound getMultiblockSaveData();
+	public abstract CompoundTag getMultiblockSaveData();
 
 	/**
 	 * Called after a block is added and the controller has incorporated the
@@ -259,7 +259,7 @@ public abstract class IMultiblockPart extends TileEntity {
 	 */
 	public abstract void onMultiblockDataAssimilated();
 
-	public abstract IBlockState getBlockState();
+	public abstract BlockState getCachedState();
 
 	//TODO 1.13 seemed to have been removed in 1.13, not sure what its replacment is
 	public boolean isInvalid() {

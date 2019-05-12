@@ -28,47 +28,44 @@
 
 package reborncore.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Gigabit101 on 08/08/2016.
  */
 public class RenderUtil {
-	public static final ResourceLocation BLOCK_TEX = TextureMap.LOCATION_BLOCKS_TEXTURE;
+	public static final Identifier BLOCK_TEX = SpriteAtlasTexture.BLOCK_ATLAS_TEX;
 
 	public static TextureManager engine() {
-		return Minecraft.getInstance().getTextureManager();
+		return MinecraftClient.getInstance().getTextureManager();
 	}
 
 	public static void bindBlockTexture() {
 		engine().bindTexture(BLOCK_TEX);
 	}
 
-	public static TextureAtlasSprite getStillTexture(FluidStack fluid) {
+	public static Sprite getStillTexture(FluidStack fluid) {
 		if (fluid == null || fluid.getFluid() == null) {
 			return null;
 		}
 		return getStillTexture(fluid.getFluid());
 	}
 
-	public static TextureAtlasSprite getStillTexture(Fluid fluid) {
-		ResourceLocation iconKey = fluid.getStill();
+	public static Sprite getStillTexture(Fluid fluid) {
+		Identifier iconKey = fluid.getStill();
 		if (iconKey == null) {
 			return null;
 		}
-		return Minecraft.getInstance().getTextureMap().getAtlasSprite(iconKey.toString());
+		return MinecraftClient.getInstance().getSpriteAtlas().getSprite(iconKey.toString());
 	}
 
 	public static void renderGuiTank(FluidTank tank, double x, double y, double zLevel, double width, double height) {
@@ -81,7 +78,7 @@ public class RenderUtil {
 			return;
 		}
 
-		TextureAtlasSprite icon = getStillTexture(fluid);
+		Sprite icon = getStillTexture(fluid);
 		if (icon == null) {
 			return;
 		}
@@ -108,14 +105,14 @@ public class RenderUtil {
 				double maxV = icon.getMaxV();
 
 				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder tes = tessellator.getBuffer();
-				tes.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-				tes.pos(drawX, drawY + drawHeight, 0).tex(minU, minV + (maxV - minV) * drawHeight / 16F).endVertex();
-				tes.pos(drawX + drawWidth, drawY + drawHeight, 0)
-					.tex(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
-					.endVertex();
-				tes.pos(drawX + drawWidth, drawY, 0).tex(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
-				tes.pos(drawX, drawY, 0).tex(minU, minV).endVertex();
+				BufferBuilder tes = tessellator.getBufferBuilder();
+				tes.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+				tes.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * drawHeight / 16F).next();
+				tes.vertex(drawX + drawWidth, drawY + drawHeight, 0)
+					.texture(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
+					.next();
+				tes.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
+				tes.vertex(drawX, drawY, 0).texture(minU, minV).next();
 				tessellator.draw();
 			}
 		}

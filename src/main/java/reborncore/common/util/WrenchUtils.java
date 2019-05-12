@@ -29,14 +29,14 @@
 package reborncore.common.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
@@ -48,8 +48,8 @@ import reborncore.common.misc.ModSounds;
  */
 public class WrenchUtils {
 
-	public static boolean handleWrench(ItemStack stack, World worldIn, BlockPos pos, EntityPlayer playerIn, EnumFacing side) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public static boolean handleWrench(ItemStack stack, World worldIn, BlockPos pos, PlayerEntity playerIn, Direction side) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 		if (tileEntity == null) {
 			return false;
 		}
@@ -63,7 +63,7 @@ public class WrenchUtils {
 					}
 
 					boolean dropContents = true;
-					Block block = tileEntity.getBlockState().getBlock();
+					Block block = tileEntity.getCachedState().getBlock();
 					if (block instanceof BaseTileBlock) {
 						ItemStack tileDrop = ((BaseTileBlock) block).getDropWithContents(worldIn, pos, drop).orElse(ItemStack.EMPTY);
 						if (!tileDrop.isEmpty()) {
@@ -72,22 +72,22 @@ public class WrenchUtils {
 						}
 					}
 
-					if (!worldIn.isRemote) {
+					if (!worldIn.isClient) {
 						if (dropContents) {
 							ItemHandlerUtils.dropContainedItems(worldIn, pos);
 						}
 						if (!drop.isEmpty()) {
-							net.minecraft.inventory.InventoryHelper.spawnItemStack(worldIn, (double) pos.getX(),
+							net.minecraft.util.ItemScatterer.spawn(worldIn, (double) pos.getX(),
 								(double) pos.getY(), (double) pos.getZ(), drop);
 						}
-						worldIn.removeTileEntity(pos);
+						worldIn.removeBlockEntity(pos);
 						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 					}
-					worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, ModSounds.BLOCK_DISMANTLE,
+					worldIn.playSound(null, playerIn.x, playerIn.y, playerIn.z, ModSounds.BLOCK_DISMANTLE,
 						SoundCategory.BLOCKS, 0.6F, 1F);
 				}
 			} else {
-				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), worldIn, pos, Rotation.CLOCKWISE_90);
+				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), worldIn, pos, BlockRotation.CLOCKWISE_90);
 			}
 			return true;
 		}

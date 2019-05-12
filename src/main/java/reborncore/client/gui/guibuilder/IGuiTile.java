@@ -28,15 +28,15 @@
 
 package reborncore.client.gui.guibuilder;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.Screen;
+import net.minecraft.container.Container;
+import net.minecraft.container.Slot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,18 +45,18 @@ import java.util.List;
  * Created by Gigabit101 on 19/02/2017.
  */
 public interface IGuiTile {
-	@OnlyIn(Dist.CLIENT)
-	void drawGuiContainerForegroundLayer(GuiScreen gui, int guiLeft, int guiTop, int mouseX, int mouseY);
+	@Environment(EnvType.CLIENT)
+	void drawGuiContainerForegroundLayer(Screen gui, int guiLeft, int guiTop, int mouseX, int mouseY);
 
-	@OnlyIn(Dist.CLIENT)
-	void drawGuiContainerBackgroundLayer(GuiScreen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
+	@Environment(EnvType.CLIENT)
+	void drawGuiContainerBackgroundLayer(Screen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
 
-	@OnlyIn(Dist.CLIENT)
-	GuiContainer getGui(EntityPlayer player);
+	@Environment(EnvType.CLIENT)
+	ContainerScreen getGui(PlayerEntity player);
 
-	void opengui(EntityPlayer player, Object mod, World world, BlockPos pos);
+	void opengui(PlayerEntity player, Object mod, World world, BlockPos pos);
 
-	Container getContainer(EntityPlayer player);
+	Container getContainer(PlayerEntity player);
 
 	@Nullable
 	List<Slot> getSlots();

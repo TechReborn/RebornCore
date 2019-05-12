@@ -29,8 +29,6 @@
 package reborncore.client.gui.slots;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.items.IItemHandler;
 
 public class SlotFluid extends BaseSlot {
 	public SlotFluid(IItemHandler p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {

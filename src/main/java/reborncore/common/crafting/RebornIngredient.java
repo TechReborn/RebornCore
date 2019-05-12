@@ -30,8 +30,8 @@ package reborncore.common.crafting;
 
 import com.google.gson.JsonElement;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.util.JsonHelper;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -57,7 +57,7 @@ public class RebornIngredient implements Predicate<ItemStack> {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		return base.test(itemStack) && (size == NO_SIZE || itemStack.getCount() >= size);
+		return base.method_8093(itemStack) && (size == NO_SIZE || itemStack.getAmount() >= size);
 	}
 
 	public Ingredient getBase() {
@@ -72,7 +72,7 @@ public class RebornIngredient implements Predicate<ItemStack> {
 	}
 
 	public JsonElement serialize(){
-		JsonElement json = base.serialize();
+		JsonElement json = base.toJson();
 		if(json.isJsonObject()){
 			json.getAsJsonObject().addProperty("size", size);
 		}
@@ -81,11 +81,11 @@ public class RebornIngredient implements Predicate<ItemStack> {
 
 	public static RebornIngredient deserialize(@Nullable JsonElement json) {
 		Validate.notNull(json, "item cannot be null");
-		Ingredient base = Ingredient.deserialize(json);
+		Ingredient base = Ingredient.fromJson(json);
 		int size = NO_SIZE;
 		if(json.isJsonObject()){
 			if(json.getAsJsonObject().has("size")){
-				size = JsonUtils.getInt(json.getAsJsonObject(), "size");
+				size = JsonHelper.getInt(json.getAsJsonObject(), "size");
 			}
 		} else if (json.isJsonArray()){
 			//TODO not really supported? might be best to ensure all sizes are the same? or find a nice way to allow mutli sizes, could be possible if required

@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Screen;
 import reborncore.client.gui.builder.widget.tooltip.ToolTip;
 
 public abstract class Widget {
@@ -71,7 +71,7 @@ public abstract class Widget {
 		draw(gui, drawX, drawY);
 	}
 
-	protected abstract void draw(GuiScreen guiScreen, int x, int y);
+	protected abstract void draw(Screen guiScreen, int x, int y);
 
 	protected abstract void mouseClick(GuiWidget<?> guiWidget, int mouseX, int mouseY);
 

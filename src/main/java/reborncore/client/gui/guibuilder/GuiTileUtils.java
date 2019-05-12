@@ -28,22 +28,21 @@
 
 package reborncore.client.gui.guibuilder;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.inventory.Slot;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Screen;
+import net.minecraft.container.Slot;
 import java.util.List;
 
 /**
  * Created by Gigabit101 on 19/02/2017.
  */
 public class GuiTileUtils {
-	@OnlyIn(Dist.CLIENT)
-	public static void drawSlotsFromList(List<Slot> slotList, GuiBuilder builder, GuiScreen guiContainer, int guiLeft, int guiTop) {
+	@Environment(EnvType.CLIENT)
+	public static void drawSlotsFromList(List<Slot> slotList, GuiBuilder builder, Screen guiContainer, int guiLeft, int guiTop) {
 		if (slotList != null) {
 			for (Slot s : slotList) {
-				builder.drawSlot(guiContainer, guiLeft + s.xPos - 1, guiTop + s.yPos - 1);
+				builder.drawSlot(guiContainer, guiLeft + s.xPosition - 1, guiTop + s.yPosition - 1);
 			}
 		}
 	}

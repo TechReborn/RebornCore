@@ -28,7 +28,7 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -39,8 +39,8 @@ public class FaceShield extends Shield {
 	}
 
 	@Override
-	public ResourceLocation getShieldTexture() {
-		return new ResourceLocation("reborncore:textures/shields/people/" + name.toLowerCase() + ".png");
+	public Identifier getShieldTexture() {
+		return new Identifier("reborncore:textures/shields/people/" + name.toLowerCase() + ".png");
 	}
 
 	@Override

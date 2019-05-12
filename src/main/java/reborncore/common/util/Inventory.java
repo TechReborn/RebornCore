@@ -28,13 +28,10 @@
 
 package reborncore.common.util;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 
@@ -95,7 +92,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 
 	public ItemStack shrinkSlot(int slot, int count) {
 		ItemStack stack = getStackInSlot(slot);
-		stack.shrink(count);
+		stack.subtractAmount(count);
 		setChanged();
 		return stack;
 	}
@@ -109,7 +106,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		return true;
 	}
 
-	public IItemHandler getExternal(EnumFacing facing) {
+	public IItemHandler getExternal(Direction facing) {
 		return externalInventory.withFacing(facing);
 	}
 
@@ -135,21 +132,21 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 		return this;
 	}
 
-	public void read(NBTTagCompound data) {
+	public void read(CompoundTag data) {
 		read(data, "Items");
 	}
 
-	public void read(NBTTagCompound data, String tag) {
-		NBTTagCompound nbttaglist = data.getCompound(tag);
+	public void read(CompoundTag data, String tag) {
+		CompoundTag nbttaglist = data.getCompound(tag);
 		deserializeNBT(nbttaglist);
 		hasChanged = true;
 	}
 
-	public void write(NBTTagCompound data) {
+	public void write(CompoundTag data) {
 		write(data, "Items");
 	}
 
-	public void write(NBTTagCompound data, String tag) {
+	public void write(CompoundTag data, String tag) {
 		data.put(tag, serializeNBT());
 	}
 
@@ -159,7 +156,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			count += stack.getCount();
+			count += stack.getAmount();
 		}
 		return count;
 	}
@@ -198,7 +195,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 	public static class ExternalInventory<T extends TileMachineBase> implements IItemHandler, IItemHandlerModifiable {
 
 		Inventory<T> baseInv;
-		private EnumFacing facing = null;
+		private Direction facing = null;
 
 		public ExternalInventory(Inventory<T> baseInv) {
 			this.baseInv = baseInv;
@@ -247,7 +244,7 @@ public class Inventory<T extends TileMachineBase> extends ItemStackHandler {
 			return baseInv.getStackLimit();
 		}
 
-		public ExternalInventory<T> withFacing(EnumFacing facing) {
+		public ExternalInventory<T> withFacing(Direction facing) {
 			this.facing = facing;
 			return this;
 		}

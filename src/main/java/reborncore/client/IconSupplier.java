@@ -28,39 +28,37 @@
 
 package reborncore.client;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Identifier;
 
 public class IconSupplier {
 	public static String armour_head_name = "reborncore:gui/slot_sprites/armour_head";
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite armour_head;
+	@Environment(EnvType.CLIENT)
+	public static Sprite armour_head;
 
 	public static String armour_chest_name = "reborncore:gui/slot_sprites/armour_chest";
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite armour_chest;
+	@Environment(EnvType.CLIENT)
+	public static Sprite armour_chest;
 
 	public static String armour_legs_name = "reborncore:gui/slot_sprites/armour_legs";
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite armour_legs;
+	@Environment(EnvType.CLIENT)
+	public static Sprite armour_legs;
 
 	public static String armour_feet_name = "reborncore:gui/slot_sprites/armour_feet";
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite armour_feet;
+	@Environment(EnvType.CLIENT)
+	public static Sprite armour_feet;
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	@SubscribeEvent
 	public void preTextureStitch(TextureStitchEvent.Pre event) {
-		TextureMap map = event.getMap();
-		armour_head = map.getSprite(new ResourceLocation(armour_head_name));
-		armour_chest = map.getSprite(new ResourceLocation(armour_chest_name));
-		armour_legs = map.getSprite(new ResourceLocation(armour_legs_name));
-		armour_feet = map.getSprite(new ResourceLocation(armour_feet_name));
+		SpriteAtlasTexture map = event.getMap();
+		armour_head = map.getSprite(new Identifier(armour_head_name));
+		armour_chest = map.getSprite(new Identifier(armour_chest_name));
+		armour_legs = map.getSprite(new Identifier(armour_legs_name));
+		armour_feet = map.getSprite(new Identifier(armour_feet_name));
 	}
 
 }

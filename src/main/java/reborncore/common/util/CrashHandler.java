@@ -28,7 +28,6 @@
 
 package reborncore.common.util;
 
-import net.minecraftforge.fml.common.ICrashCallable;
 import reborncore.RebornCore;
 
 import java.util.ArrayList;

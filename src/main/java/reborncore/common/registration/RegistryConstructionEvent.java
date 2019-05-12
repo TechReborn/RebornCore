@@ -28,7 +28,6 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Created by modmuss50 on 08/06/2017.

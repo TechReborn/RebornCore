@@ -28,19 +28,19 @@
 
 package reborncore.common.tile;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 
 /**
  * Created by Mark on 19/10/2016.
  */
-public class TileBase extends TileEntity {
+public class TileBase extends BlockEntity {
 
-	public TileBase(TileEntityType<?> tileEntityTypeIn) {
+	public TileBase(BlockEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
 	}
 
 	public void markBlockForUpdate() {
-		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
+		getWorld().updateListeners(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 	}
 }

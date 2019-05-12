@@ -28,17 +28,12 @@
 
 package reborncore.common.powerSystem.forge;
 
-import net.minecraft.init.Particles;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.common.RebornCoreConfig;
@@ -60,11 +55,11 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 
 	@Override
 	public void tick() {
-		Map<EnumFacing, TileEntity> acceptors = new HashMap<>();
+		Map<Direction, BlockEntity> acceptors = new HashMap<>();
 		if (powerAcceptor.getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
-			for (EnumFacing side : EnumFacing.values()) {
+			for (Direction side : Direction.values()) {
 				if (powerAcceptor.canProvideEnergy(side)) {
-					TileEntity tile = powerAcceptor.getWorld().getTileEntity(powerAcceptor.getPos().offset(side));
+					BlockEntity tile = powerAcceptor.getWorld().getBlockEntity(powerAcceptor.getPos().offset(side));
 					if (tile == null) {
 						continue;
 					} else if (isOtherPoweredTile(tile, side.getOpposite())) {
@@ -89,9 +84,9 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 			double remainingEnergy = drain;
 
 			if (energyShare > 0) {
-				for (Map.Entry<EnumFacing, TileEntity> entry : acceptors.entrySet()) {
-					EnumFacing side = entry.getKey();
-					TileEntity tile = entry.getValue();
+				for (Map.Entry<Direction, BlockEntity> entry : acceptors.entrySet()) {
+					Direction side = entry.getKey();
+					BlockEntity tile = entry.getValue();
 					if (tile instanceof IEnergyInterfaceTile) {
 						IEnergyInterfaceTile eFace = (IEnergyInterfaceTile) tile;
 						if (RebornCoreConfig.smokeHighTeir && powerAcceptor.handleTierWithPower() && (eFace.getTier().ordinal() < powerAcceptor.getPushingTier().ordinal())) {
@@ -100,12 +95,12 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 							BlockPos pos = powerAcceptor.getPos();
 
 							for (int j = 0; j < 2; ++j) {
-								double d3 = (double) pos.getX() + world.rand.nextDouble()
-									+ (side.getXOffset() / 2);
-								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
-								double d13 = (double) pos.getZ() + world.rand.nextDouble()
-									+ (side.getZOffset() / 2);
-								((WorldServer) world).spawnParticle(Particles.LARGE_SMOKE, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
+								double d3 = (double) pos.getX() + world.random.nextDouble()
+									+ (side.getOffsetX() / 2);
+								double d8 = (double) pos.getY() + world.random.nextDouble() + 1;
+								double d13 = (double) pos.getZ() + world.random.nextDouble()
+									+ (side.getOffsetZ() / 2);
+								((ServerWorld) world).spawnParticles(ParticleTypes.LARGE_SMOKE, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {
 							double filled = eFace.addEnergy(Math.min(energyShare, remainingEnergy), false);
@@ -139,7 +134,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	@Override
 	public <T> LazyOptional<T> getCapability(
 		@Nonnull
-			Capability<T> cap, EnumFacing facing) {
+			Capability<T> cap, Direction facing) {
 		if (cap == CapabilityEnergy.ENERGY && (powerAcceptor.canAcceptEnergy(facing) || powerAcceptor.canProvideEnergy(facing))) {
 			if (powerManager == null) {
 				powerManager = new ForgeEnergyStorage(powerAcceptor, facing);
@@ -158,7 +153,7 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 	/**
 	 * Checks whether the provided tile is considered a powered tile by other power systems already
 	 */
-	private static boolean isOtherPoweredTile(TileEntity tileEntity, EnumFacing facing) {
+	private static boolean isOtherPoweredTile(BlockEntity tileEntity, Direction facing) {
 		return ExternalPowerSystems.externalPowerHandlerList.stream()
 			.filter(externalPowerManager -> !(externalPowerManager instanceof ForgePowerManager))
 			.anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));

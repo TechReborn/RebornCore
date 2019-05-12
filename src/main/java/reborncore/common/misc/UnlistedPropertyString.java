@@ -28,7 +28,6 @@
 
 package reborncore.common.misc;
 
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class UnlistedPropertyString implements IUnlistedProperty<String> {
 	private final String name;

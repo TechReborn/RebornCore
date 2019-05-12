@@ -29,12 +29,12 @@
 package reborncore.common.explosion;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.apache.commons.lang3.time.StopWatch;
 import reborncore.RebornCore;
 
@@ -58,7 +58,7 @@ public class RebornExplosion extends Explosion {
 	int radius;
 
 	@Nullable
-	EntityLivingBase livingBase;
+	LivingEntity livingBase;
 
 	public RebornExplosion(
 		@Nonnull
@@ -75,13 +75,13 @@ public class RebornExplosion extends Explosion {
 
 	public void setLivingBase(
 		@Nullable
-			EntityLivingBase livingBase) {
+			LivingEntity livingBase) {
 		this.livingBase = livingBase;
 	}
 
 	public
 	@Nullable
-	EntityLivingBase getLivingBase() {
+	LivingEntity getLivingBase() {
 		return livingBase;
 	}
 
@@ -93,10 +93,10 @@ public class RebornExplosion extends Explosion {
 				for (int tz = -radius; tz < radius + 1; tz++) {
 					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2) {
 						BlockPos pos = center.add(tx, ty, tz);
-						IBlockState state = world.getBlockState(pos);
+						BlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
 						if (block != Blocks.BEDROCK && !block.isAir(state, world, pos)) {
-							block.onExplosionDestroy(world, pos, this);
+							block.onDestroyedByExplosion(world, pos, this);
 							world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
 						}
 					}
@@ -107,31 +107,31 @@ public class RebornExplosion extends Explosion {
 	}
 
 	@Override
-	public void doExplosionA() {
+	public void collectBlocksAndDamageEntities() {
 		explode();
 	}
 
 	@Override
-	public void doExplosionB(boolean spawnParticles) {
+	public void affectWorld(boolean spawnParticles) {
 		explode();
 	}
 
 	@Override
 	public
 	@Nullable
-	EntityLivingBase getExplosivePlacedBy() {
+	LivingEntity getCausingEntity() {
 		return livingBase;
 	}
 
 	@Override
-	public List<BlockPos> getAffectedBlockPositions() {
+	public List<BlockPos> getAffectedBlocks() {
 		List<BlockPos> poses = new ArrayList<>();
 		for (int tx = -radius; tx < radius + 1; tx++) {
 			for (int ty = -radius; ty < radius + 1; ty++) {
 				for (int tz = -radius; tz < radius + 1; tz++) {
 					if (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) + Math.pow(tz, 2)) <= radius - 2) {
 						BlockPos pos = center.add(tx, ty, tz);
-						IBlockState state = world.getBlockState(pos);
+						BlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
 						if (block != Blocks.BEDROCK && !block.isAir(state, world, pos)) {
 							poses.add(pos);

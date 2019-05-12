@@ -28,13 +28,10 @@
 
 package reborncore.common.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
@@ -46,9 +43,9 @@ import reborncore.common.tile.TileMachineBase;
 public class ClientBoundPackets {
 
 	public static void init() {
-		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new Identifier("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
 			BlockPos pos = extendedPacketBuffer.readBlockPos();
-			NBTTagCompound tagCompound = extendedPacketBuffer.readCompoundTag();
+			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
 			context.enqueueWork(() -> {
 				World world = RebornCore.proxy.getClientWorld();
 				if (world.isBlockLoaded(pos)) {
@@ -60,7 +57,7 @@ public class ClientBoundPackets {
 			});
 		});
 
-		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new Identifier("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			FluidConfiguration fluidConfiguration = new FluidConfiguration(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {
@@ -78,7 +75,7 @@ public class ClientBoundPackets {
 			});
 		});
 
-		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "slot_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new Identifier("reborncore", "slot_sync"), (packetBuffer, context) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			SlotConfiguration slotConfig = new SlotConfiguration(packetBuffer.readCompoundTag());
 			context.enqueueWork(() -> {
@@ -93,7 +90,7 @@ public class ClientBoundPackets {
 			});
 		});
 
-		NetworkManager.registerPacketHandler(new ResourceLocation("reborncore", "send_object"), (packetBuffer, context) -> {
+		NetworkManager.registerPacketHandler(new Identifier("reborncore", "send_object"), (packetBuffer, context) -> {
 			int id = packetBuffer.readInt();
 			Object value = packetBuffer.readObject();
 			String container = packetBuffer.readString(packetBuffer.readInt());
@@ -109,33 +106,33 @@ public class ClientBoundPackets {
 		});
 	}
 
-	public static NetworkPacket createCustomDescriptionPacket(TileEntity tileEntity) {
-		return createCustomDescriptionPacket(tileEntity.getPos(), tileEntity.write(new NBTTagCompound()));
+	public static NetworkPacket createCustomDescriptionPacket(BlockEntity tileEntity) {
+		return createCustomDescriptionPacket(tileEntity.getPos(), tileEntity.toTag(new CompoundTag()));
 	}
 
-	public static NetworkPacket createCustomDescriptionPacket(BlockPos blockPos, NBTTagCompound nbt) {
-		return NetworkManager.createPacket(new ResourceLocation("reborncore", "custom_description"), packetBuffer -> {
+	public static NetworkPacket createCustomDescriptionPacket(BlockPos blockPos, CompoundTag nbt) {
+		return NetworkManager.createPacket(new Identifier("reborncore", "custom_description"), packetBuffer -> {
 			packetBuffer.writeBlockPos(blockPos);
 			packetBuffer.writeCompoundTag(nbt);
 		});
 	}
 
 	public static NetworkPacket createPacketFluidConfigSync(BlockPos pos, FluidConfiguration fluidConfiguration) {
-		return NetworkManager.createPacket(new ResourceLocation("reborncore", "fluid_config_sync"), packetBuffer -> {
+		return NetworkManager.createPacket(new Identifier("reborncore", "fluid_config_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(fluidConfiguration.serializeNBT());
 		});
 	}
 
 	public static NetworkPacket createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
-		return NetworkManager.createPacket(new ResourceLocation("reborncore", "slot_sync"), packetBuffer -> {
+		return NetworkManager.createPacket(new Identifier("reborncore", "slot_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.serializeNBT());
 		});
 	}
 
 	public static NetworkPacket createPacketSendObject(int id, Object value, Container container) {
-		return NetworkManager.createPacket(new ResourceLocation("reborncore", "send_object"), packetBuffer -> {
+		return NetworkManager.createPacket(new Identifier("reborncore", "send_object"), packetBuffer -> {
 			packetBuffer.writeInt(id);
 			packetBuffer.writeObject(value);
 			packetBuffer.writeInt(container.getClass().getName().length());

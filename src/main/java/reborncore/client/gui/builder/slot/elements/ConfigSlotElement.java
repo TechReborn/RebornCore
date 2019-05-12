@@ -28,12 +28,11 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
@@ -60,7 +59,7 @@ public class ConfigSlotElement extends ElementBase {
 
 		SlotConfigPopupElement popupElement;
 
-		boolean inputEnabled = gui.container.inventorySlots.stream()
+		boolean inputEnabled = gui.container.slotList.stream()
 			.filter(Objects::nonNull)
 			.filter(slot -> slot.inventory == inventory)
 			.filter(slot -> slot instanceof BaseSlot)
@@ -117,10 +116,10 @@ public class ConfigSlotElement extends ElementBase {
 		GlStateManager.pushMatrix();
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-		RenderHelper.enableGUIStandardItemLighting();
-		ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-		renderItem.renderItemAndEffectIntoGUI(gui.mc.player, stack, xPos, yPos);
-		renderItem.renderItemOverlayIntoGUI(gui.mc.fontRenderer, stack, xPos, yPos, null);
+		GuiLighting.enableForItems();
+		ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
+		renderItem.renderGuiItem(gui.mc.player, stack, xPos, yPos);
+		renderItem.renderGuiItemOverlay(gui.mc.fontRenderer, stack, xPos, yPos, null);
 		GlStateManager.disableDepthTest();
 		GlStateManager.disableLighting();
 		GlStateManager.popMatrix();

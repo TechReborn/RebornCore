@@ -28,11 +28,8 @@
 
 package reborncore.common.util;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.FluidConfiguration;
@@ -50,7 +47,7 @@ public class Tank extends FluidTank {
 	int lastAmmount;
 
 	@Nullable
-	private EnumFacing side = null;
+	private Direction side = null;
 	TileMachineBase machine;
 
 	public Tank(String name, int capacity, TileMachineBase tile) {
@@ -72,8 +69,8 @@ public class Tank extends FluidTank {
 		return getFluid() != null ? getFluid().getFluid() : null;
 	}
 
-	public final NBTTagCompound write(NBTTagCompound nbt) {
-		NBTTagCompound tankData = new NBTTagCompound();
+	public final CompoundTag write(CompoundTag nbt) {
+		CompoundTag tankData = new CompoundTag();
 		nbt.put(name, tankData);
 		return nbt;
 	}
@@ -84,34 +81,34 @@ public class Tank extends FluidTank {
 		}
 	}
 
-	public final FluidTank read(NBTTagCompound nbt) {
-		if (nbt.contains(name)) {
+	public final FluidTank read(CompoundTag nbt) {
+		if (nbt.containsKey(name)) {
 			// allow to read empty tanks
 			setFluid(null);
 
-			NBTTagCompound tankData = nbt.getCompound(name);
+			CompoundTag tankData = nbt.getCompound(name);
 		}
 		return this;
 	}
 
 	@Override
-	public FluidTank readFromNBT(NBTTagCompound nbt) {
+	public FluidTank readFromNBT(CompoundTag nbt) {
 		return read(nbt);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public CompoundTag writeToNBT(CompoundTag nbt) {
 		return write(nbt);
 	}
 
 	@Nullable
-	public EnumFacing getSide() {
+	public Direction getSide() {
 		return side;
 	}
 
 	public void setSide(
 		@Nullable
-			EnumFacing side) {
+			Direction side) {
 		this.side = side;
 	}
 

@@ -28,37 +28,37 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Container;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.LanguageMap;
-
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.container.Container;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
 
-public abstract class GuiWidget<T extends Container> extends GuiContainer {
+public abstract class GuiWidget<T extends Container> extends ContainerScreen {
 
-	public static final LanguageMap translate = LanguageMap.getInstance();
+	public static final Language translate = Language.getInstance();
 
 	private final ArrayList<Widget> widgets = new ArrayList<>();
-	private final ResourceLocation background;
+	private final Identifier background;
 
-	public GuiWidget(T inventorySlotsIn, ResourceLocation background, int xSize, int ySize) {
+	public GuiWidget(T inventorySlotsIn, Identifier background, int xSize, int ySize) {
 		super(inventorySlotsIn);
-		this.xSize = xSize;
-		this.ySize = ySize;
+		this.containerWidth = xSize;
+		this.containerHeight = ySize;
 		this.background = background;
 	}
 
 	@SuppressWarnings("unchecked")
 	public T getContainer() {
-		return (T) inventorySlots;
+		return (T) container;
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		widgets.clear();
 		initWidgets();
 	}
@@ -74,30 +74,30 @@ public abstract class GuiWidget<T extends Container> extends GuiContainer {
 	public abstract void initWidgets();
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(background);
-		int x = (this.width - this.xSize) / 2;
-		int y = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
+		int x = (this.width - this.containerWidth) / 2;
+		int y = (this.height - this.containerHeight) / 2;
+		this.blit(x, y, 0, 0, this.containerWidth, this.containerHeight);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		int x = (this.width - this.xSize) / 2;
-		int y = (this.height - this.ySize) / 2;
-		String name = translate.translateKey("tile.techreborn.industrialgrinder.name");
+	protected void drawForeground(int mouseX, int mouseY) {
+		int x = (this.width - this.containerWidth) / 2;
+		int y = (this.height - this.containerHeight) / 2;
+		String name = translate.translate("tile.techreborn.industrialgrinder.name");
 
-		fontRenderer.drawString(name, xSize / 2 - fontRenderer.getStringWidth(name) / 2, 6, 4210752);
-		fontRenderer.drawString(translate.translateKey("container.inventory"), 8, ySize - 94, 4210752);
+		font.draw(name, containerWidth / 2 - font.getStringWidth(name) / 2, 6, 4210752);
+		font.draw(translate.translate("container.inventory"), 8, containerHeight - 94, 4210752);
 
 		for (Widget widget : widgets) {
 			widget.drawWidget(this, x, y, mouseX, mouseY);
 		}
 	}
 
-	public FontRenderer getFontRenderer() {
-		return fontRenderer;
+	public TextRenderer getFontRenderer() {
+		return font;
 	}
 
 }

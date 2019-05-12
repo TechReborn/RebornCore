@@ -28,10 +28,10 @@
 
 package reborncore.client.multiblock;
 
-import net.minecraft.client.renderer.BlockFluidRenderer;
+import net.minecraft.client.render.block.FluidRenderer;
 
 //This is used to render a full height fluid without having an actaull block in the world. Requires an acess transformer to compile/work.
-public class RebornFluidRenderer extends BlockFluidRenderer {
+public class RebornFluidRenderer extends FluidRenderer {
 
 	//TODO 1.13 access transformers
 	//	@Override

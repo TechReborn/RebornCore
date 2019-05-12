@@ -29,8 +29,7 @@
 package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraft.nbt.CompoundTag;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.recipes.IRecipeInput;
@@ -50,7 +49,7 @@ public class ItemUtils {
 		if (a.getItem() != b.getItem()) {
 			return false;
 		}
-		if (matchNBT && !ItemStack.areItemStackTagsEqual(a, b)) {
+		if (matchNBT && !ItemStack.areTagsEqual(a, b)) {
 			return false;
 		}
 		return true;
@@ -89,18 +88,18 @@ public class ItemUtils {
 		return false;
 	}
 
-	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
-		if (stack.isEmpty() || stack.getCount() <= 0) {
+	public static void writeItemToNBT(ItemStack stack, CompoundTag data) {
+		if (stack.isEmpty() || stack.getAmount() <= 0) {
 			return;
 		}
-		if (stack.getCount() > 127) {
-			stack.setCount(127);
+		if (stack.getAmount() > 127) {
+			stack.setAmount(127);
 		}
-		stack.write(data);
+		stack.toTag(data);
 	}
 
-	public static ItemStack readItemFromNBT(NBTTagCompound data) {
-		return ItemStack.read(data);
+	public static ItemStack readItemFromNBT(CompoundTag data) {
+		return ItemStack.fromTag(data);
 	}
 
 	public static double getPowerForDurabilityBar(ItemStack stack) {

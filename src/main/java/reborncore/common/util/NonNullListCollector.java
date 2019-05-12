@@ -28,17 +28,16 @@
 
 package reborncore.common.util;
 
-import net.minecraft.util.NonNullList;
-
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import net.minecraft.util.DefaultedList;
 
 //Taken from https://github.com/The-Acronym-Coders/BASE/blob/develop/1.12.0/src/main/java/com/teamacronymcoders/base/util/collections/NonnullListCollector.java, thanks for this ;)
-public class NonNullListCollector<T> implements Collector<T, NonNullList<T>, NonNullList<T>> {
+public class NonNullListCollector<T> implements Collector<T, DefaultedList<T>, DefaultedList<T>> {
 
 	private final Set<Characteristics> CH_ID = Collections.unmodifiableSet(EnumSet.of(Characteristics.IDENTITY_FINISH));
 
@@ -47,17 +46,17 @@ public class NonNullListCollector<T> implements Collector<T, NonNullList<T>, Non
 	}
 
 	@Override
-	public Supplier<NonNullList<T>> supplier() {
-		return NonNullList::create;
+	public Supplier<DefaultedList<T>> supplier() {
+		return DefaultedList::create;
 	}
 
 	@Override
-	public BiConsumer<NonNullList<T>, T> accumulator() {
-		return NonNullList::add;
+	public BiConsumer<DefaultedList<T>, T> accumulator() {
+		return DefaultedList::add;
 	}
 
 	@Override
-	public BinaryOperator<NonNullList<T>> combiner() {
+	public BinaryOperator<DefaultedList<T>> combiner() {
 		return (left, right) -> {
 			left.addAll(right);
 			return left;
@@ -65,8 +64,8 @@ public class NonNullListCollector<T> implements Collector<T, NonNullList<T>, Non
 	}
 
 	@Override
-	public Function<NonNullList<T>, NonNullList<T>> finisher() {
-		return i -> (NonNullList<T>) i;
+	public Function<DefaultedList<T>, DefaultedList<T>> finisher() {
+		return i -> (DefaultedList<T>) i;
 	}
 
 	@Override

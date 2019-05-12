@@ -28,8 +28,8 @@
 
 package reborncore.common.util;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,8 +43,8 @@ import java.util.Random;
 public class WorldUtils {
 
 	public static void updateBlock(World world, BlockPos pos) {
-		IBlockState state = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, state, state, 3);
+		BlockState state = world.getBlockState(pos);
+		world.updateListeners(pos, state, state, 3);
 	}
 
 	public static boolean chunkExists(World world, int x, int z) {
@@ -58,18 +58,18 @@ public class WorldUtils {
 		float dY = rand.nextFloat() * 0.8F + 0.1F;
 		float dZ = rand.nextFloat() * 0.8F + 0.1F;
 
-		EntityItem entityItem = new EntityItem(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
+		ItemEntity entityItem = new ItemEntity(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
 			itemStack.copy());
 
 		if (itemStack.hasTag()) {
-			entityItem.getItem().setTag(itemStack.getTag().copy());
+			entityItem.getStack().setTag(itemStack.getTag().method_10553());
 		}
 
 		float factor = 0.05F;
 		entityItem.motionX = rand.nextGaussian() * factor;
 		entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
 		entityItem.motionZ = rand.nextGaussian() * factor;
-		if (!world.isRemote) {
+		if (!world.isClient) {
 			world.spawnEntity(entityItem);
 		}
 	}
@@ -77,7 +77,7 @@ public class WorldUtils {
 	public static void dropItems(List<ItemStack> itemStackList, World world, BlockPos pos) {
 		for (final ItemStack itemStack : itemStackList) {
 			WorldUtils.dropItem(itemStack, world, pos);
-			itemStack.setCount(0);
+			itemStack.setAmount(0);
 		}
 	}
 }

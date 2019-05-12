@@ -30,19 +30,19 @@ package reborncore.client.models;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.property.Property;
 
 public class ModelCompound {
 	private String inventoryVariant = "inventory";
 	private String fileName = "modelregistration.undefinedfilename";
 	private String blockstatePath;
-	private IProperty[] ignoreProperties = null;
+	private Property[] ignoreProperties = null;
 	private String modid;
 	private Block block = null;
 	private Item item = null;
 	private int meta;
 
-	public ModelCompound(String modid, Block block, int meta, String blockstatePath, IProperty<?>... ignoreProperties) {
+	public ModelCompound(String modid, Block block, int meta, String blockstatePath, Property<?>... ignoreProperties) {
 		this.modid = modid;
 		this.block = block;
 		this.blockstatePath = blockstatePath;
@@ -50,15 +50,15 @@ public class ModelCompound {
 		this.meta = meta;
 	}
 
-	public ModelCompound(String modid, Block block, int meta, IProperty<?>... ignoreProperties) {
+	public ModelCompound(String modid, Block block, int meta, Property<?>... ignoreProperties) {
 		this(modid, block, meta, "", ignoreProperties);
 	}
 
-	public ModelCompound(String modid, Block block, IProperty<?>... ignoreProperties) {
+	public ModelCompound(String modid, Block block, Property<?>... ignoreProperties) {
 		this(modid, block, 0, "", ignoreProperties);
 	}
 
-	public ModelCompound(String modid, Block block, String blockstatePath, IProperty<?>... ignoreProperties) {
+	public ModelCompound(String modid, Block block, String blockstatePath, Property<?>... ignoreProperties) {
 		this(modid, block, 0, blockstatePath, ignoreProperties);
 	}
 
@@ -136,7 +136,7 @@ public class ModelCompound {
 		return blockstatePath;
 	}
 
-	public IProperty[] getIgnoreProperties() {
+	public Property[] getIgnoreProperties() {
 		return ignoreProperties;
 	}
 

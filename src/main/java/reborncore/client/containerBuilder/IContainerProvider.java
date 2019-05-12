@@ -28,9 +28,9 @@
 
 package reborncore.client.containerBuilder;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 
 public interface IContainerProvider {
-	BuiltContainer createContainer(EntityPlayer player);
+	BuiltContainer createContainer(PlayerEntity player);
 }

@@ -28,13 +28,13 @@
 
 package reborncore.client.gui.componets;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.GL11;
 
-public class GuiHiddenButton extends GuiButton {
+public class GuiHiddenButton extends ButtonWidget {
 
 	public GuiHiddenButton(int id, int xPosition, int yPosition, String displayString) {
 		super(id, xPosition, yPosition, displayString);
@@ -47,8 +47,8 @@ public class GuiHiddenButton extends GuiButton {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (this.visible) {
-			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
-			Minecraft.getInstance().getTextureManager().bindTexture(BUTTON_TEXTURES);
+			TextRenderer fontrenderer = MinecraftClient.getInstance().textRenderer;
+			MinecraftClient.getInstance().getTextureManager().bindTexture(BUTTON_TEXTURES);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.x && mouseY >= this.y
 				&& mouseX < this.x + this.width && mouseY < this.y + this.height;

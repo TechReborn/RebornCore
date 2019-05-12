@@ -28,13 +28,13 @@
 
 package reborncore.client.texture;
 
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.data.IMetadataSectionSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
@@ -55,16 +55,16 @@ public class InputStreamTexture extends AbstractTexture {
 	}
 
 	@Override
-	public void loadTexture(IResourceManager resourceManager) throws IOException {
-		this.deleteGlTexture();
+	public void load(ResourceManager resourceManager) throws IOException {
+		this.clearGlId();
 		if (image == null) {
-			IResource iresource = null;
+			Resource iresource = null;
 			try {
-				iresource = new IResource() {
+				iresource = new Resource() {
 
 					@Override
-					public ResourceLocation getLocation() {
-						return new ResourceLocation("reborncore:loaded/" + name);
+					public Identifier getId() {
+						return new Identifier("reborncore:loaded/" + name);
 					}
 
 					@Override
@@ -79,12 +79,12 @@ public class InputStreamTexture extends AbstractTexture {
 
 					@Nullable
 					@Override
-					public <T> T getMetadata(IMetadataSectionSerializer<T> iMetadataSectionSerializer) {
+					public <T> T getMetadata(ResourceMetadataReader<T> iMetadataSectionSerializer) {
 						return null;
 					}
 
 					@Override
-					public String getPackName() {
+					public String getResourcePackName() {
 						return "reborncore";
 					}
 
@@ -93,13 +93,13 @@ public class InputStreamTexture extends AbstractTexture {
 
 					}
 				};
-				image = NativeImage.read(iresource.getInputStream());
+				image = NativeImage.fromInputStream(iresource.getInputStream());
 			} finally {
 				IOUtils.closeQuietly(iresource);
 			}
 		}
 		this.bindTexture();
-		TextureUtil.allocateTextureImpl(this.getGlTextureId(), 0, image.getWidth(), image.getHeight());
-		image.uploadTextureSub(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false);
+		TextureUtil.allocateTextureImpl(this.getGlId(), 0, image.getWidth(), image.getHeight());
+		image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false);
 	}
 }

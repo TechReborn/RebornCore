@@ -28,14 +28,14 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.powerSystem.PowerSystem;
 
 /**
  * Created by Prospector
  */
-public class GuiButtonPowerBar extends GuiButton {
+public class GuiButtonPowerBar extends ButtonWidget {
 
 	GuiBase.Layer layer;
 	GuiBase gui;

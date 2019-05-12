@@ -30,9 +30,8 @@ package reborncore.common.util;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class BucketHandler {
 
 	}
 
-	private ItemStack fillCustomBucket(World world, RayTraceResult pos) {
+	private ItemStack fillCustomBucket(World world, HitResult pos) {
 		//TODO 1.13 see IBucketPickupHandler
 		//		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
 		//			Block block = world.getBlockState(pos.getBlockPos()).getBlock();

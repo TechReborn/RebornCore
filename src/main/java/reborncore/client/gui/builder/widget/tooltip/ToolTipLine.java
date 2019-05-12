@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder.widget.tooltip;
 
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 
 public class ToolTipLine {
 
@@ -82,15 +82,15 @@ public class ToolTipLine {
 		this.shadowed = shadowed;
 	}
 
-	public int getWidth(FontRenderer fontRenderer) {
+	public int getWidth(TextRenderer fontRenderer) {
 		return fontRenderer.getStringWidth(getLine());
 	}
 
-	public void draw(FontRenderer fontRenderer, int x, int y) {
+	public void draw(TextRenderer fontRenderer, int x, int y) {
 		if (!isShadowed()) {
-			fontRenderer.drawString(getLine(), x, y, color);
+			fontRenderer.draw(getLine(), x, y, color);
 		} else {
-			fontRenderer.drawStringWithShadow(getLine(), x, y, color);
+			fontRenderer.drawWithShadow(getLine(), x, y, color);
 		}
 
 	}

@@ -29,7 +29,6 @@
 package reborncore.client.containerBuilder.builder.slot;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import reborncore.client.gui.slots.BaseSlot;
 
 import java.util.function.Predicate;

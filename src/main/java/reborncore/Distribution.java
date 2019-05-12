@@ -28,7 +28,6 @@
 
 package reborncore;
 
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public enum Distribution {
 	UNIVERSAL,

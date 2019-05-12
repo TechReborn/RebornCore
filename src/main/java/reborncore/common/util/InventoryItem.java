@@ -29,16 +29,8 @@
 package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
@@ -70,30 +62,30 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		return stack;
 	}
 
-	public NBTTagCompound getInvData() {
+	public CompoundTag getInvData() {
 		Validate.isTrue(!stack.isEmpty());
 		if (!stack.hasTag()) {
-			stack.setTag(new NBTTagCompound());
+			stack.setTag(new CompoundTag());
 		}
-		if (!stack.getTag().contains("inventory")) {
-			stack.getTag().put("inventory", new NBTTagCompound());
+		if (!stack.getTag().containsKey("inventory")) {
+			stack.getTag().put("inventory", new CompoundTag());
 		}
 		return stack.getTag().getCompound("inventory");
 	}
 
-	public NBTTagCompound getSlotData(int slot) {
+	public CompoundTag getSlotData(int slot) {
 		validateSlotIndex(slot);
-		NBTTagCompound invData = getInvData();
-		if (!invData.contains("slot_" + slot)) {
-			invData.put("slot_" + slot, new NBTTagCompound());
+		CompoundTag invData = getInvData();
+		if (!invData.containsKey("slot_" + slot)) {
+			invData.put("slot_" + slot, new CompoundTag());
 		}
 		return invData.getCompound("slot_" + slot);
 	}
 
-	public void setSlotData(int slot, NBTTagCompound tagCompound) {
+	public void setSlotData(int slot, CompoundTag tagCompound) {
 		validateSlotIndex(slot);
 		Validate.notNull(tagCompound);
-		NBTTagCompound invData = getInvData();
+		CompoundTag invData = getInvData();
 		invData.put("slot_" + slot, tagCompound);
 	}
 
@@ -111,14 +103,14 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
-		return ItemStack.read(getSlotData(slot));
+		return ItemStack.fromTag(getSlotData(slot));
 	}
 
 	@Override
 	public void setStackInSlot(int slot,
 	                           @Nonnull
 		                           ItemStack stack) {
-		setSlotData(slot, stack.write(new NBTTagCompound()));
+		setSlotData(slot, stack.toTag(new CompoundTag()));
 	}
 
 	//insertItem and extractItem are the forge methods just adjusted to work with items
@@ -137,20 +129,20 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 			if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
 				return stack;
 			}
-			limit -= existing.getCount();
+			limit -= existing.getAmount();
 		}
 		if (limit <= 0) {
 			return stack;
 		}
-		boolean reachedLimit = stack.getCount() > limit;
+		boolean reachedLimit = stack.getAmount() > limit;
 		if (!simulate) {
 			if (existing.isEmpty()) {
 				setStackInSlot(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
 			} else {
-				existing.grow(reachedLimit ? limit : stack.getCount());
+				existing.addAmount(reachedLimit ? limit : stack.getAmount());
 			}
 		}
-		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getAmount() - limit) : ItemStack.EMPTY;
 	}
 
 	@Nonnull
@@ -165,15 +157,15 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		if (existing.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
-		int toExtract = Math.min(amount, existing.getMaxStackSize());
-		if (existing.getCount() <= toExtract) {
+		int toExtract = Math.min(amount, existing.getMaxAmount());
+		if (existing.getAmount() <= toExtract) {
 			if (!simulate) {
 				setStackInSlot(slot, ItemStack.EMPTY);
 			}
 			return existing;
 		} else {
 			if (!simulate) {
-				setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
+				setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getAmount() - toExtract));
 			}
 			return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
 		}
@@ -194,7 +186,7 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 	public int getStackLimit(int slot,
 	                         @Nonnull
 		                         ItemStack stack) {
-		return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
+		return Math.min(getSlotLimit(slot), stack.getMaxAmount());
 	}
 
 	@Nonnull
@@ -203,7 +195,7 @@ public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICap
 		@Nonnull
 			Capability<T> cap,
 		@Nullable
-			EnumFacing side) {
+			Direction side) {
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull

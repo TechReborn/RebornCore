@@ -28,15 +28,13 @@
 
 package reborncore.common.network;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.network.*;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.world.chunk.WorldChunk;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,23 +45,23 @@ import java.util.function.Supplier;
 public class NetworkManager {
 
 	private static final SimpleChannel channel = NetworkRegistry.ChannelBuilder
-		.named(new ResourceLocation("reborncore", "network"))
+		.named(new Identifier("reborncore", "network"))
 		.clientAcceptedVersions(a -> true)
 		.serverAcceptedVersions(a -> true)
 		.networkProtocolVersion(() -> "1.0.0")
 		.simpleChannel();
 
-	private static Map<ResourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
+	private static Map<Identifier, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context>> packetHandlers = new HashMap<>();
 
 	static {
 		channel.registerMessage(0, ForgeMessage.class, ForgeMessage::encode, ForgeMessage::decode, ForgeMessage::handle);
 	}
 
-	public static NetworkPacket createPacket(ResourceLocation resourceLocation, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
+	public static NetworkPacket createPacket(Identifier resourceLocation, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
 		return new ForgeMessage(resourceLocation, packetBufferConsumer);
 	}
 
-	public static void registerPacketHandler(ResourceLocation resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer) {
+	public static void registerPacketHandler(Identifier resourceLocation, BiConsumer<ExtendedPacketBuffer, NetworkEvent.Context> consumer) {
 		if (packetHandlers.containsKey(resourceLocation)) {
 			throw new RuntimeException("Packet handler already registered for " + resourceLocation);
 		}
@@ -87,7 +85,7 @@ public class NetworkManager {
 
 	}
 
-	public static void sendToPlayer(NetworkPacket packet, EntityPlayerMP playerMP) {
+	public static void sendToPlayer(NetworkPacket packet, ServerPlayerEntity playerMP) {
 		send(PacketDistributor.PLAYER.with(() -> playerMP), packet);
 	}
 
@@ -95,51 +93,51 @@ public class NetworkManager {
 		send(PacketDistributor.DIMENSION.with(() -> world.getDimension().getType()), packet);
 	}
 
-	public static void sendToTracking(NetworkPacket packet, Chunk chunk) {
+	public static void sendToTracking(NetworkPacket packet, WorldChunk chunk) {
 		send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
 	}
 
 	public static void sendToTracking(NetworkPacket packet, World world, BlockPos pos) {
-		sendToTracking(packet, world.getChunk(pos));
+		sendToTracking(packet, world.getWorldChunk(pos));
 	}
 
-	public static void sendToTracking(NetworkPacket packet, TileEntity tileEntity) {
+	public static void sendToTracking(NetworkPacket packet, BlockEntity tileEntity) {
 		sendToTracking(packet, tileEntity.getWorld(), tileEntity.getPos());
 	}
 
 	private static class ForgeMessage extends NetworkPacket {
 
-		ResourceLocation resourceLocation;
+		Identifier resourceLocation;
 		Consumer<ExtendedPacketBuffer> encodeBufferConsumer;
 		ExtendedPacketBuffer decodeBuffer;
 
-		private ForgeMessage(ResourceLocation resourceLocation, Consumer<ExtendedPacketBuffer> encodeBufferConsumer) {
+		private ForgeMessage(Identifier resourceLocation, Consumer<ExtendedPacketBuffer> encodeBufferConsumer) {
 			this(resourceLocation);
 			this.encodeBufferConsumer = encodeBufferConsumer;
 		}
 
-		private ForgeMessage(ResourceLocation resourceLocation, ExtendedPacketBuffer decodeBuffer) {
+		private ForgeMessage(Identifier resourceLocation, ExtendedPacketBuffer decodeBuffer) {
 			this(resourceLocation);
 			this.decodeBuffer = decodeBuffer;
 		}
 
-		private ForgeMessage(ResourceLocation resourceLocation) {
+		private ForgeMessage(Identifier resourceLocation) {
 			this.resourceLocation = resourceLocation;
 			if (!packetHandlers.containsKey(resourceLocation)) {
 				throw new RuntimeException("No packet handler found for " + resourceLocation);
 			}
 		}
 
-		private static void encode(ForgeMessage msg, PacketBuffer buf) {
+		private static void encode(ForgeMessage msg, PacketByteBuf buf) {
 			buf.writeInt(msg.resourceLocation.toString().length());
 			buf.writeString(msg.resourceLocation.toString());
 			msg.encodeBufferConsumer.accept(new ExtendedPacketBuffer(buf));
 		}
 
-		private static ForgeMessage decode(PacketBuffer buf) {
+		private static ForgeMessage decode(PacketByteBuf buf) {
 			//Clone this as im not sure what is done with the other one, do we need to also
-			PacketBuffer clonedBuf = new PacketBuffer(buf.duplicate());
-			ResourceLocation resourceLocation = new ResourceLocation(clonedBuf.readString(clonedBuf.readInt()));
+			PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
+			Identifier resourceLocation = new Identifier(clonedBuf.readString(clonedBuf.readInt()));
 			return new ForgeMessage(resourceLocation, new ExtendedPacketBuffer(clonedBuf));
 		}
 

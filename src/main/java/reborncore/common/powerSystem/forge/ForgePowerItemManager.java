@@ -29,8 +29,7 @@
 package reborncore.common.powerSystem.forge;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraft.nbt.CompoundTag;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 
@@ -66,10 +65,10 @@ public class ForgePowerItemManager implements IEnergyStorage, IEnergyStorageModi
 	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
 	private void validateNBT() {
 		if (!stack.hasTag()) {
-			stack.setTag(new NBTTagCompound());
+			stack.setTag(new CompoundTag());
 			stack.getTag().putInt("energy", 0);
 		} else {
-			if (stack.getTag().contains("charge")) {
+			if (stack.getTag().containsKey("charge")) {
 				//Upgrades the item from the old format to the new format
 				stack.getTag().putInt("energy", stack.getTag().getInt("charge") * RebornCoreConfig.euPerFU);
 				stack.getTag().remove("charge");

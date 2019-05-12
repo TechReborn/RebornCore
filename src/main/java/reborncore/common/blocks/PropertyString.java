@@ -29,9 +29,8 @@
 package reborncore.common.blocks;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.state.AbstractProperty;
-
 import java.util.*;
+import net.minecraft.state.property.AbstractProperty;
 
 /**
  * Created by covers1624 on 2/6/2016.
@@ -55,12 +54,12 @@ public class PropertyString extends AbstractProperty<String> {
 	}
 
 	@Override
-	public Collection<String> getAllowedValues() {
+	public Collection<String> getValues() {
 		return ImmutableSet.copyOf(valuesSet);
 	}
 
 	@Override
-	public Optional<String> parseValue(String value) {
+	public Optional<String> getValue(String value) {
 		if (valuesSet.contains(value.intern())) {
 			return Optional.of(value.intern());
 		}

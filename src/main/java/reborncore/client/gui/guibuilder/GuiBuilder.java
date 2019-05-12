@@ -28,21 +28,18 @@
 
 package reborncore.client.gui.guibuilder;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.ChatFormat;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.menu.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Identifier;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.gui.builder.GuiBase;
@@ -60,34 +57,34 @@ import com.google.common.collect.Lists;
  * Created by Gigabit101 on 08/08/2016.
  */
 public class GuiBuilder {
-	public static final ResourceLocation defaultTextureSheet = new ResourceLocation("reborncore", "textures/gui/guielements.png");
-	static ResourceLocation resourceLocation;
+	public static final Identifier defaultTextureSheet = new Identifier("reborncore", "textures/gui/guielements.png");
+	static Identifier resourceLocation;
 
 	public GuiBuilder() {
 		GuiBuilder.resourceLocation = defaultTextureSheet;
 	}
 
-	public GuiBuilder(ResourceLocation resourceLocation) {
+	public GuiBuilder(Identifier resourceLocation) {
 		GuiBuilder.resourceLocation = resourceLocation;
 	}
 
-	public void drawDefaultBackground(GuiScreen gui, int x, int y, int width, int height) {
+	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+		gui.blit(x, y, 0, 0, width / 2, height / 2);
+		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
 			height / 2);
 	}
 
 	public void drawEnergyBar(GuiBase gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 
-		gui.drawTexturedModalRect(x, y, 0, 150, 14, height);
-		gui.drawTexturedModalRect(x, y + height - 1, 0, 255, 14, 1);
+		gui.blit(x, y, 0, 150, 14, height);
+		gui.blit(x, y + height - 1, 0, 255, 14, 1);
 		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (height - 2));
-		gui.drawTexturedModalRect(x + 1, y + height - draw - 1, 14, height + 150 - draw, 12, draw);
+		gui.blit(x + 1, y + height - draw - 1, 14, height + 150 - draw, 12, draw);
 
 		if (gui.isPointInRect(x, y, 14, height, mouseX, mouseY)) {
 			List<String> list = new ArrayList<String>();
@@ -97,8 +94,8 @@ public class GuiBuilder {
 		}
 	}
 
-	public void drawPlayerSlots(GuiScreen gui, int posX, int posY, boolean center) {
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
+	public void drawPlayerSlots(Screen gui, int posX, int posY, boolean center) {
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 
 		if (center) {
 			posX -= 81;
@@ -106,57 +103,57 @@ public class GuiBuilder {
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				gui.drawTexturedModalRect(posX + x * 18, posY + y * 18, 150, 0, 18, 18);
+				gui.blit(posX + x * 18, posY + y * 18, 150, 0, 18, 18);
 			}
 		}
 
 		for (int x = 0; x < 9; x++) {
-			gui.drawTexturedModalRect(posX + x * 18, posY + 58, 150, 0, 18, 18);
+			gui.blit(posX + x * 18, posY + 58, 150, 0, 18, 18);
 		}
 	}
 
-	public void drawSlot(GuiScreen gui, int posX, int posY) {
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(posX, posY, 150, 0, 18, 18);
+	public void drawSlot(Screen gui, int posX, int posY) {
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+		gui.blit(posX, posY, 150, 0, 18, 18);
 	}
 
-	public void drawString(GuiScreen gui, String string, int x, int y) {
+	public void drawString(Screen gui, String string, int x, int y) {
 		gui.mc.fontRenderer.drawString(string, x, y, 16777215);
 	}
 
-	public void drawString(GuiScreen gui, String string, int x, int y, int color) {
+	public void drawString(Screen gui, String string, int x, int y, int color) {
 		gui.mc.fontRenderer.drawString(string, x, y, color);
 	}
 
-	public void drawProgressBar(GuiScreen gui, double progress, int x, int y) {
+	public void drawProgressBar(Screen gui, double progress, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 18, 22, 15);
+		gui.blit(x, y, 150, 18, 22, 15);
 		int j = (int) (progress);
 		if (j > 0) {
-			gui.drawTexturedModalRect(x, y, 150, 34, j + 1, 15);
+			gui.blit(x, y, 150, 34, j + 1, 15);
 		}
 	}
 
-	public void drawOutputSlot(GuiScreen gui, int x, int y) {
+	public void drawOutputSlot(Screen gui, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 174, 0, 26, 26);
+		gui.blit(x, y, 174, 0, 26, 26);
 	}
 
-	public void drawInfoButton(int buttonID, int x, int y, List<GuiButton> buttonList) {
+	public void drawInfoButton(int buttonID, int x, int y, List<ButtonWidget> buttonList) {
 		buttonList.add(new GuiButtonSimple(0, x, y, 20, 20, "i"));
 	}
 
-	public void handleInfoButtonClick(int buttonID, List<GuiButton> buttonList) {
+	public void handleInfoButtonClick(int buttonID, List<ButtonWidget> buttonList) {
 		// buttonList.get(buttonID).
 	}
 
-	public void drawInfo(GuiScreen gui, int x, int y, int height, int width, boolean draw) {
+	public void drawInfo(Screen gui, int x, int y, int height, int width, boolean draw) {
 		if (draw) {
-			Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-			gui.drawTexturedModalRect(x, y, 0, 0, width / 2, height / 2);
-			gui.drawTexturedModalRect(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-			gui.drawTexturedModalRect(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-			gui.drawTexturedModalRect(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+			MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+			gui.blit(x, y, 0, 0, width / 2, height / 2);
+			gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+			gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+			gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 		}
 	}
 
@@ -178,7 +175,7 @@ public class GuiBuilder {
 				y += gui.getGuiTop();
 			}
 			gui.mc.getTextureManager().bindTexture(resourceLocation);
-			gui.drawTexturedModalRect(x, y, 202, 0, 12, 12);
+			gui.blit(x, y, 202, 0, 12, 12);
 		}
 	}
 
@@ -202,7 +199,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
+		gui.blit(x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			if (locked) {
@@ -236,9 +233,9 @@ public class GuiBuilder {
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
 		if (ClientProxy.multiblockRenderEvent.currentMultiblock == null) {
-			gui.drawTexturedModalRect(x, y, 174, 50, 20, 12);
+			gui.blit(x, y, 174, 50, 20, 12);
 		} else {
-			gui.drawTexturedModalRect(x, y, 174, 62, 20, 12);
+			gui.blit(x, y, 174, 62, 20, 12);
 		}
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
@@ -270,10 +267,10 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 174, 74, 12, 12);
-		gui.drawTexturedModalRect(x + 12, y, 174, 86, 12, 12);
-		gui.drawTexturedModalRect(x + 24, y, 174, 98, 12, 12);
-		gui.drawTexturedModalRect(x + 36, y, 174, 110, 12, 12);
+		gui.blit(x, y, 174, 74, 12, 12);
+		gui.blit(x + 12, y, 174, 86, 12, 12);
+		gui.blit(x + 24, y, 174, 98, 12, 12);
+		gui.blit(x + 36, y, 174, 110, 12, 12);
 	}
 
 	/**
@@ -295,13 +292,13 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 26, 218, 114, 18);
+		gui.blit(x, y, 26, 218, 114, 18);
 		if (value != 0) {
 			int j = (int) ((double) value / (double) max * 106);
 			if (j < 0) {
 				j = 0;
 			}
-			gui.drawTexturedModalRect(x + 4, y + 4, 26, 246, j, 10);
+			gui.blit(x + 4, y + 4, 26, 246, j, 10);
 			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
 		}
 	}
@@ -334,7 +331,7 @@ public class GuiBuilder {
 		if (j < 0) {
 			j = 0;
 		}
-		gui.drawTexturedModalRect(x + 4, y + 4, 0, 236, j, 10);
+		gui.blit(x + 4, y + 4, 0, 236, j, 10);
 		if (!suffix.equals("")) {
 			suffix = " " + suffix;
 		}
@@ -342,14 +339,14 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY)) {
 			int percentage = percentage(max, value);
 			List<String> list = new ArrayList<>();
-			list.add("" + TextFormatting.GOLD + value + "/" + max + suffix);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
+			list.add("" + ChatFormat.GOLD + value + "/" + max + suffix);
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + ChatFormat.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
 			list.add(line2);
 
 			if (value > max) {
-				list.add(TextFormatting.GRAY + "Yo this is storing more than it should be able to");
-				list.add(TextFormatting.GRAY + "prolly a bug");
-				list.add(TextFormatting.GRAY + "pls report and tell how tf you did this");
+				list.add(ChatFormat.GRAY + "Yo this is storing more than it should be able to");
+				list.add(ChatFormat.GRAY + "prolly a bug");
+				list.add(ChatFormat.GRAY + "pls report and tell how tf you did this");
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
@@ -407,7 +404,7 @@ public class GuiBuilder {
 	 */
 	public void drawUpgrades(GuiBase gui, int x, int y) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 217, 0, 24, 81);
+		gui.blit(x, y, 217, 0, 24, 81);
 	}
 
 	/**
@@ -420,20 +417,20 @@ public class GuiBuilder {
 	 */
 	public void drawSlotTab(GuiBase gui, int x, int y, ItemStack stack) {
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 217, 82, 24, 24);
+		gui.blit(x, y, 217, 82, 24, 24);
 		gui.mc.getItemRenderer().renderItemAndEffectIntoGUI(stack, x + 5, y + 4);
 	}
 
 	// This stuff is WIP
-	public void drawSlotTabExpanded(GuiScreen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
+	public void drawSlotTabExpanded(Screen gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
 		int offset = -1;
 		if (!upgrades) {
 			offset = 80;
 		}
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
-		gui.drawTexturedModalRect(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
-		gui.drawTexturedModalRect(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+		gui.blit(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
+		gui.blit(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
+		gui.blit(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
 		GlStateManager.color4f(1, 1, 1, 1);
 
 		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
@@ -447,13 +444,13 @@ public class GuiBuilder {
 	}
 
 	// This stuff is WIP
-	private class TipsList extends GuiListExtended {
+	private class TipsList extends AlwaysSelectedEntryListWidget {
 
 		@SuppressWarnings("unused")
-		private GuiScreen gui;
+		private Screen gui;
 		private List<String> tips = null;
 
-		public TipsList(GuiScreen gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
+		public TipsList(Screen gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
 			super(gui.mc, width, height, top, bottom, left);
 			this.gui = gui;
 			this.tips = tips;
@@ -492,7 +489,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 91, 16, 16);
+		gui.blit(x, y, 150, 91, 16, 16);
 	}
 
 	/**
@@ -518,7 +515,7 @@ public class GuiBuilder {
 		}
 
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, direction.x, direction.y, direction.width, direction.height);
+		gui.blit(x, y, direction.x, direction.y, direction.width, direction.height);
 		int j = (int) ((double) progress / (double) maxProgress * 16);
 		if (j < 0) {
 			j = 0;
@@ -526,16 +523,16 @@ public class GuiBuilder {
 
 		switch (direction) {
 			case RIGHT:
-				gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, j, 10);
+				gui.blit(x, y, direction.xActive, direction.yActive, j, 10);
 				break;
 			case LEFT:
-				gui.drawTexturedModalRect(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
+				gui.blit(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
 				break;
 			case UP:
-				gui.drawTexturedModalRect(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
+				gui.blit(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
 				break;
 			case DOWN:
-				gui.drawTexturedModalRect(x, y, direction.xActive, direction.yActive, 10, j);
+				gui.blit(x, y, direction.xActive, direction.yActive, 10, j);
 				break;
 			default:
 				return;
@@ -579,30 +576,30 @@ public class GuiBuilder {
 		}
 
 		EnergySystem displayPower = PowerSystem.getDisplayPower();
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+		gui.blit(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
 		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (48));
 		if (energyStored > maxEnergyStored) {
 			draw = 48;
 		}
-		gui.drawTexturedModalRect(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
+		gui.blit(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
-			List<ITextComponent> list = Lists.newArrayList();
-			list.add(new TextComponentString(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
+			List<Component> list = Lists.newArrayList();
+			list.add(new TextComponent(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
 					+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
-					+ displayPower.abbreviation).applyTextStyle(TextFormatting.GOLD));
-			list.add(new TextComponentString(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
-					+ TextFormatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
+					+ displayPower.abbreviation).applyFormat(ChatFormat.GOLD));
+			list.add(new TextComponent(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
+					+ ChatFormat.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
 			if (gui.tile instanceof IListInfoProvider) {
-				if (GuiScreen.isShiftKeyDown()) {
+				if (Screen.isShiftKeyDown()) {
 					((IListInfoProvider) gui.tile).addInfo(list, true, true);
-					list.add(new TextComponentString(""));
-					list.add(new TextComponentString(
-							TextFormatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
+					list.add(new TextComponent(""));
+					list.add(new TextComponent(
+							ChatFormat.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
 				} else {
-					list.add(new TextComponentString(""));
-					list.add((new TextComponentString(TextFormatting.BLUE + "Shift" + TextFormatting.GRAY + " "
+					list.add(new TextComponent(""));
+					list.add((new TextComponent(ChatFormat.BLUE + "Shift" + ChatFormat.GRAY + " "
 							+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"))));
 				}
 			}
@@ -612,7 +609,7 @@ public class GuiBuilder {
 			}
 			List<String> list1 = Lists.newArrayList();
 
-			for (ITextComponent itextcomponent : list) {
+			for (Component itextcomponent : list) {
 				list1.add(itextcomponent.getFormattedText());
 			}
 			gui.drawHoveringText(list1, mouseX, mouseY);
@@ -651,20 +648,20 @@ public class GuiBuilder {
 			percentage = percentage(maxCapacity, amount);
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 194, 26, 22, 56);
+		gui.blit(x, y, 194, 26, 22, 56);
 		if (!isTankEmpty) {
 			drawFluid(gui, fluid, x + 4, y + 4, 14, 48, maxCapacity);
 		}
-		gui.drawTexturedModalRect(x + 3, y + 3, 194, 82, 16, 50);
+		gui.blit(x + 3, y + 3, 194, 82, 16, 50);
 
 		if (gui.isPointInRect(x, y, 22, 56, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			if (isTankEmpty) {
-				list.add(TextFormatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
+				list.add(ChatFormat.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
 			} else {
-				list.add(TextFormatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + fluid.getLocalizedName());
+				list.add(ChatFormat.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + fluid.getLocalizedName());
 			}
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + TextFormatting.GRAY + " "
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + ChatFormat.GRAY + " "
 				+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
@@ -688,10 +685,10 @@ public class GuiBuilder {
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
 	public void drawFluid(GuiBase gui, FluidStack fluid, int x, int y, int width, int height, int maxCapacity) {
-		gui.mc.textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		gui.mc.textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		y += height;
-		final ResourceLocation still = fluid.getFluid().getStill(fluid);
-		final TextureAtlasSprite sprite = gui.mc.getTextureMap().getAtlasSprite(still.toString());
+		final Identifier still = fluid.getFluid().getStill(fluid);
+		final Sprite sprite = gui.mc.getTextureMap().getAtlasSprite(still.toString());
 
 		final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
 		final int iconHeight = sprite.getHeight();
@@ -700,7 +697,7 @@ public class GuiBuilder {
 		int iteration = 0;
 		while (offsetHeight != 0) {
 			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
-			gui.drawTexturedModalRect(x, y - offsetHeight, sprite, width, curHeight);
+			gui.blit(x, y - offsetHeight, sprite, width, curHeight);
 			offsetHeight -= curHeight;
 			iteration++;
 			if (iteration > 50) {
@@ -731,10 +728,10 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.mc.getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 64, 13, 13);
+		gui.blit(x, y, 150, 64, 13, 13);
 		int j = 13 - (int) ((double) progress / (double) maxProgress * 13);
 		if (j > 0) {
-			gui.drawTexturedModalRect(x, y + j, 150, 51 + j, 13, 13 - j);
+			gui.blit(x, y + j, 150, 51 + j, 13, 13 - j);
 
 		}
 		if (gui.isPointInRect(x, y, 12, 12, mouseX, mouseY)) {
@@ -760,14 +757,14 @@ public class GuiBuilder {
 	 * @param count int Number of output slots
 	 */
 	public void drawOutputSlotBar(GuiBase gui, int x, int y, int count) {
-		Minecraft.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexturedModalRect(x, y, 150, 122, 3, 26);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
+		gui.blit(x, y, 150, 122, 3, 26);
 		x += 3;
 		for (int i = 1; i <= count; i++) {
-			gui.drawTexturedModalRect(x, y, 150 + 3, 122, 20, 26);
+			gui.blit(x, y, 150 + 3, 122, 20, 26);
 			x += 20;
 		}
-		gui.drawTexturedModalRect(x, y, 150 + 23, 122, 3, 26);
+		gui.blit(x, y, 150 + 23, 122, 3, 26);
 	}
 
 	protected int percentage(int MaxValue, int CurrentValue) {

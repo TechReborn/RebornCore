@@ -29,7 +29,6 @@
 package reborncore.client.gui.slots;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public class SlotOutput extends BaseSlot {
 

@@ -28,38 +28,34 @@
 
 package reborncore.common.tile;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
+public class FluidConfiguration implements INBTSerializable<CompoundTag> {
 
-	HashMap<EnumFacing, FluidConfig> sideMap;
+	HashMap<Direction, FluidConfig> sideMap;
 	boolean input, output;
 
 	public FluidConfiguration() {
 		sideMap = new HashMap<>();
-		Arrays.stream(EnumFacing.values()).forEach(facing -> sideMap.put(facing, new FluidConfig(facing)));
+		Arrays.stream(Direction.values()).forEach(facing -> sideMap.put(facing, new FluidConfig(facing)));
 	}
 
-	public FluidConfiguration(NBTTagCompound tagCompound) {
+	public FluidConfiguration(CompoundTag tagCompound) {
 		sideMap = new HashMap<>();
 		deserializeNBT(tagCompound);
 	}
 
-	public FluidConfig getSideDetail(EnumFacing side) {
+	public FluidConfig getSideDetail(Direction side) {
 		if (side == null) {
-			return sideMap.get(EnumFacing.NORTH);
+			return sideMap.get(Direction.NORTH);
 		}
 		return sideMap.get(side);
 	}
@@ -77,10 +73,10 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		if (!input && !output) {
 			return;
 		}
-		if (machineBase.getTank() == null || machineBase.getWorld().getGameTime() % machineBase.slotTransferSpeed() != 0) {
+		if (machineBase.getTank() == null || machineBase.getWorld().getTime() % machineBase.slotTransferSpeed() != 0) {
 			return;
 		}
-		for (EnumFacing facing : EnumFacing.values()) {
+		for (Direction facing : Direction.values()) {
 			FluidConfig fluidConfig = getSideDetail(facing);
 			if (fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()) {
 				continue;
@@ -98,9 +94,9 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		}
 	}
 
-	private IFluidHandler getFluidHandler(TileMachineBase machine, EnumFacing facing) {
+	private IFluidHandler getFluidHandler(TileMachineBase machine, Direction facing) {
 		BlockPos pos = machine.getPos().offset(facing);
-		TileEntity tileEntity = machine.getWorld().getTileEntity(pos);
+		BlockEntity tileEntity = machine.getWorld().getBlockEntity(pos);
 		if (tileEntity == null) {
 			return null;
 		}
@@ -124,19 +120,19 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT() {
-		NBTTagCompound compound = new NBTTagCompound();
-		Arrays.stream(EnumFacing.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
+	public CompoundTag serializeNBT() {
+		CompoundTag compound = new CompoundTag();
+		Arrays.stream(Direction.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).serializeNBT()));
 		compound.putBoolean("input", input);
 		compound.putBoolean("output", output);
 		return compound;
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void deserializeNBT(CompoundTag nbt) {
 		sideMap.clear();
-		Arrays.stream(EnumFacing.values()).forEach(facing -> {
-			NBTTagCompound compound = nbt.getCompound("side_" + facing.ordinal());
+		Arrays.stream(Direction.values()).forEach(facing -> {
+			CompoundTag compound = nbt.getCompound("side_" + facing.ordinal());
 			FluidConfig config = new FluidConfig(compound);
 			sideMap.put(facing, config);
 		});
@@ -144,25 +140,25 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		output = nbt.getBoolean("output");
 	}
 
-	public static class FluidConfig implements INBTSerializable<NBTTagCompound> {
-		EnumFacing side;
+	public static class FluidConfig implements INBTSerializable<CompoundTag> {
+		Direction side;
 		FluidConfiguration.ExtractConfig ioConfig;
 
-		public FluidConfig(EnumFacing side) {
+		public FluidConfig(Direction side) {
 			this.side = side;
 			this.ioConfig = ExtractConfig.ALL;
 		}
 
-		public FluidConfig(EnumFacing side, FluidConfiguration.ExtractConfig ioConfig) {
+		public FluidConfig(Direction side, FluidConfiguration.ExtractConfig ioConfig) {
 			this.side = side;
 			this.ioConfig = ioConfig;
 		}
 
-		public FluidConfig(NBTTagCompound tagCompound) {
+		public FluidConfig(CompoundTag tagCompound) {
 			deserializeNBT(tagCompound);
 		}
 
-		public EnumFacing getSide() {
+		public Direction getSide() {
 			return side;
 		}
 
@@ -171,16 +167,16 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
 		}
 
 		@Override
-		public NBTTagCompound serializeNBT() {
-			NBTTagCompound tagCompound = new NBTTagCompound();
+		public CompoundTag serializeNBT() {
+			CompoundTag tagCompound = new CompoundTag();
 			tagCompound.putInt("side", side.ordinal());
 			tagCompound.putInt("config", ioConfig.ordinal());
 			return tagCompound;
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagCompound nbt) {
-			side = EnumFacing.values()[nbt.getInt("side")];
+		public void deserializeNBT(CompoundTag nbt) {
+			side = Direction.values()[nbt.getInt("side")];
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInt("config")];
 		}
 	}

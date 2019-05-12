@@ -28,10 +28,9 @@
 
 package reborncore.common.recipes;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
 import reborncore.RebornCore;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.recipe.IRecipeCrafterProvider;
@@ -59,7 +58,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	/**
 	 * This is the parent tile
 	 */
-	public TileEntity tile;
+	public BlockEntity tile;
 
 	/**
 	 * This is the place to use the power from
@@ -104,7 +103,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	@Nullable
 	public static ICrafterSoundHanlder soundHanlder = (firstRun, tileEntity) -> {};
 
-	public RecipeCrafter(RecipeType<?> recipeType, TileEntity tile, int inputs, int outputs, Inventory inventory,
+	public RecipeCrafter(RecipeType<?> recipeType, BlockEntity tile, int inputs, int outputs, Inventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeType = recipeType;
 		this.tile = tile;
@@ -128,7 +127,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	 * Call this on the tile tick
 	 */
 	public void updateEntity() {
-		if (tile.getWorld().isRemote) {
+		if (tile.getWorld().isClient) {
 			return;
 		}
 		ticksSinceLastChange++;
@@ -262,7 +261,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true)) {
-			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {
+			if (stack.getAmount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxAmount()) {
 				return true;
 			}
 		}
@@ -278,9 +277,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getCount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxStackSize()) {// Check to see if it fits
+			if (stack.getAmount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxAmount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setCount(inventory.getStackInSlot(slot).getCount() + stack.getCount());// Sets
+				newStack.setAmount(inventory.getStackInSlot(slot).getCount() + stack.getAmount());// Sets
 				// the
 				// new
 				// stack
@@ -290,15 +289,15 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 	}
 
-	public void read(NBTTagCompound tag) {
-		NBTTagCompound data = tag.getCompound("Crater");
+	public void read(CompoundTag tag) {
+		CompoundTag data = tag.getCompound("Crater");
 
-		if (data.contains("currentTickTime")) {
+		if (data.containsKey("currentTickTime")) {
 			currentTickTime = data.getInt("currentTickTime");
 		}
 
-		if (tile != null && tile.getWorld() != null && tile.getWorld().isRemote) {
-			tile.getWorld().notifyBlockUpdate(tile.getPos(),
+		if (tile != null && tile.getWorld() != null && tile.getWorld().isClient) {
+			tile.getWorld().updateListeners(tile.getPos(),
 			                                  tile.getWorld().getBlockState(tile.getPos()),
 			                                  tile.getWorld().getBlockState(tile.getPos()), 3);
 			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos().getX(), tile.getPos().getY(),
@@ -307,9 +306,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 	}
 
-	public void write(NBTTagCompound tag) {
+	public void write(CompoundTag tag) {
 
-		NBTTagCompound data = new NBTTagCompound();
+		CompoundTag data = new CompoundTag();
 
 		data.putDouble("currentTickTime", currentTickTime);
 
@@ -346,7 +345,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			boolean isActive = isActive() || canCraftAgain();
 			blockMachineBase.setActive(isActive, tile.getWorld(), tile.getPos());
 		}
-		tile.getWorld().notifyBlockUpdate(tile.getPos(),
+		tile.getWorld().updateListeners(tile.getPos(),
 		                                  tile.getWorld().getBlockState(tile.getPos()),
 		                                  tile.getWorld().getBlockState(tile.getPos()), 3);
 	}

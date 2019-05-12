@@ -29,11 +29,10 @@
 package reborncore.api;
 
 import java.util.List;
-
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public interface IListInfoProvider {
 
-	void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData);
+	void addInfo(List<Component> info, boolean isRealTile, boolean hasData);
 
 }

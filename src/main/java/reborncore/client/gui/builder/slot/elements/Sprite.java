@@ -28,10 +28,10 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 import reborncore.common.tile.TileMachineBase;
 
 public class Sprite implements ISprite {
@@ -61,7 +61,7 @@ public class Sprite implements ISprite {
 	public static final Sprite.CheckBox DARK_CHECK_BOX = new Sprite.CheckBox(new Sprite(ElementBase.MECH_ELEMENTS, 74, 18, 13, 13), new Sprite(ElementBase.MECH_ELEMENTS, 87, 18, 16, 13));
 	public static final Sprite.CheckBox LIGHT_CHECK_BOX = new Sprite.CheckBox(new Sprite(ElementBase.MECH_ELEMENTS, 74, 31, 13, 13), new Sprite(ElementBase.MECH_ELEMENTS, 87, 31, 16, 13));
 
-	public final ResourceLocation textureLocation;
+	public final Identifier textureLocation;
 	public final int x;
 	public final int y;
 	public final int width;
@@ -70,7 +70,7 @@ public class Sprite implements ISprite {
 	public int offsetY = 0;
 	public ItemStack itemStack;
 
-	public Sprite(ResourceLocation textureLocation, int x, int y, int width, int height) {
+	public Sprite(Identifier textureLocation, int x, int y, int width, int height) {
 		this.textureLocation = textureLocation;
 		this.x = x;
 		this.y = y;

@@ -31,7 +31,7 @@ package reborncore.common.multiblock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.chunk.Chunk;
 import reborncore.RebornCore;
 
 import java.util.*;
@@ -95,7 +95,7 @@ public class MultiblockWorldRegistry {
 	public void tickStart() {
 		if (controllers.size() > 0) {
 			for (MultiblockControllerBase controller : controllers) {
-				if (controller.worldObj == worldObj && controller.worldObj.isRemote == worldObj.isRemote) {
+				if (controller.worldObj == worldObj && controller.worldObj.isClient == worldObj.isClient) {
 					if (controller.isEmpty()) {
 						// This happens on the server when the user breaks the
 						// last block. It's fine.
@@ -154,7 +154,7 @@ public class MultiblockWorldRegistry {
 					}
 
 					// This block has been replaced by another.
-					if (worldObj.getTileEntity(coord) != orphan) {
+					if (worldObj.getBlockEntity(coord) != orphan) {
 						continue;
 					}
 
@@ -407,7 +407,7 @@ public class MultiblockWorldRegistry {
 	 * @param chunk Chunk that was
 	 * loaded
 	 */
-	public void onChunkLoaded(IChunk chunk) {
+	public void onChunkLoaded(Chunk chunk) {
 		int chunkHash = chunk.getPos().hashCode();
 		if (partsAwaitingChunkLoad.containsKey(chunkHash)) {
 			synchronized (partsAwaitingChunkLoadMutex) {

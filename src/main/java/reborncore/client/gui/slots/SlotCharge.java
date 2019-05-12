@@ -29,7 +29,6 @@
 package reborncore.client.gui.slots;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import reborncore.api.power.IEnergyItemInfo;
 
 /**

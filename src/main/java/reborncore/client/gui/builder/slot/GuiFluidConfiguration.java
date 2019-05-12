@@ -29,9 +29,7 @@
 package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
@@ -145,10 +143,10 @@ public class GuiFluidConfiguration {
 
 	@Nullable
 	private static TileMachineBase getMachine() {
-		if (!(Minecraft.getInstance().currentScreen instanceof GuiBase)) {
+		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
-		GuiBase base = (GuiBase) Minecraft.getInstance().currentScreen;
+		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
 		if (!(base.tile instanceof TileMachineBase)) {
 			return null;
 		}

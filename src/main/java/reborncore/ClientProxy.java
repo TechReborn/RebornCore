@@ -28,12 +28,10 @@
 
 package reborncore;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.item.ItemDynamicRenderer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModList;
 import reborncore.client.HolidayRenderEvent;
 import reborncore.client.IconSupplier;
 import reborncore.client.hud.StackInfoHUD;
@@ -56,7 +54,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new StackInfoHUD());
 		multiblockRenderEvent = new MultiblockRenderEvent();
 		MinecraftForge.EVENT_BUS.register(multiblockRenderEvent);
-		TileEntityItemStackRenderer.instance = new RebornItemStackRenderer(TileEntityItemStackRenderer.instance);
+		ItemDynamicRenderer.INSTANCE = new RebornItemStackRenderer(ItemDynamicRenderer.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(new MultiblockClientTickHandler());
 	}
 
@@ -68,12 +66,12 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public World getClientWorld() {
-		return Minecraft.getInstance().world;
+		return MinecraftClient.getInstance().world;
 	}
 
 	@Override
-	public EntityPlayer getPlayer() {
-		return Minecraft.getInstance().player;
+	public PlayerEntity getPlayer() {
+		return MinecraftClient.getInstance().player;
 	}
 
 	@Override

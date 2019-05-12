@@ -28,9 +28,9 @@
 
 package reborncore.common.multiblock.rectangular;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import reborncore.common.multiblock.MultiblockControllerBase;
 import reborncore.common.multiblock.MultiblockTileEntityBase;
 import reborncore.common.multiblock.MultiblockValidationException;
@@ -38,9 +38,9 @@ import reborncore.common.multiblock.MultiblockValidationException;
 public abstract class RectangularMultiblockTileEntityBase extends MultiblockTileEntityBase {
 
 	PartPosition position;
-	EnumFacing outwards;
+	Direction outwards;
 
-	public RectangularMultiblockTileEntityBase(TileEntityType<?> tileEntityType) {
+	public RectangularMultiblockTileEntityBase(BlockEntityType<?> tileEntityType) {
 		super(tileEntityType);
 
 		position = PartPosition.Unknown;
@@ -48,7 +48,7 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 	}
 
 	// Positional Data
-	public EnumFacing getOutwardsDir() {
+	public Direction getOutwardsDir() {
 		return outwards;
 	}
 
@@ -104,22 +104,22 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 			// 1 face matches
 			if (maxCoord.getX() == this.getPos().getX()) {
 				position = PartPosition.EastFace;
-				outwards = EnumFacing.EAST;
+				outwards = Direction.EAST;
 			} else if (minCoord.getX() == this.getPos().getX()) {
 				position = PartPosition.WestFace;
-				outwards = EnumFacing.WEST;
+				outwards = Direction.WEST;
 			} else if (maxCoord.getZ() == this.getPos().getZ()) {
 				position = PartPosition.SouthFace;
-				outwards = EnumFacing.SOUTH;
+				outwards = Direction.SOUTH;
 			} else if (minCoord.getZ() == this.getPos().getZ()) {
 				position = PartPosition.NorthFace;
-				outwards = EnumFacing.NORTH;
+				outwards = Direction.NORTH;
 			} else if (maxCoord.getY() == this.getPos().getY()) {
 				position = PartPosition.TopFace;
-				outwards = EnumFacing.UP;
+				outwards = Direction.UP;
 			} else {
 				position = PartPosition.BottomFace;
-				outwards = EnumFacing.DOWN;
+				outwards = Direction.DOWN;
 			}
 		}
 	}

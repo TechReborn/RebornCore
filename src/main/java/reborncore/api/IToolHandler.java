@@ -28,10 +28,10 @@
 
 package reborncore.api;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 /**
@@ -50,6 +50,6 @@ public interface IToolHandler {
 	 * @param damage if the tool should be damged, or power taken
 	 * @return If the tool can handle being actived on the block, return false when the tool is broken or out of power for example.
 	 */
-	boolean handleTool(ItemStack stack, BlockPos pos, World world, EntityPlayer player, EnumFacing side, boolean damage);
+	boolean handleTool(ItemStack stack, BlockPos pos, World world, PlayerEntity player, Direction side, boolean damage);
 
 }

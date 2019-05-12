@@ -28,9 +28,9 @@
 
 package reborncore.client.shields;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.init.Items;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.item.Items;
 
 /**
  * Created by mark on 14/05/16.
@@ -38,7 +38,7 @@ import net.minecraft.init.Items;
 public class ShieldModelLoader {
 
 	public static void load() {
-		Minecraft.getInstance().getItemRenderer().getItemModelMesher().register(Items.SHIELD, new ModelResourceLocation("shield", "inventory"));
+		MinecraftClient.getInstance().getItemRenderer().getModels().putModel(Items.SHIELD, new ModelIdentifier("shield", "inventory"));
 	}
 
 }

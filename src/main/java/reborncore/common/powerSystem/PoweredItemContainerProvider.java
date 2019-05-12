@@ -29,12 +29,7 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraft.util.math.Direction;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
@@ -71,7 +66,7 @@ public class PoweredItemContainerProvider implements ICapabilityProvider {
 		@Nonnull
 			Capability<T> cap,
 		@Nullable
-			EnumFacing side) {
+			Direction side) {
 		if (isEnergyItem && cap == CapabilityEnergy.ENERGY && RebornCoreConfig.enableFE) {
 			return LazyOptional.of(new NonNullSupplier<T>() {
 				@Nonnull

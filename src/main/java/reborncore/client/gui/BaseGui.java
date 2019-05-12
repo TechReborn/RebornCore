@@ -28,22 +28,22 @@
 
 package reborncore.client.gui;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import reborncore.common.util.StringUtils;
 
-public class BaseGui extends GuiContainer {
+public class BaseGui extends ContainerScreen {
 	Container container;
-	TileEntity tileEntity;
-	ResourceLocation overlays;
-	ResourceLocation guitexture;
-	EntityPlayer player;
+	BlockEntity tileEntity;
+	Identifier overlays;
+	Identifier guitexture;
+	PlayerEntity player;
 	String name;
 
-	public BaseGui(Container container, TileEntity tileEntity, EntityPlayer player, ResourceLocation overlays, ResourceLocation guitexture, String name) {
+	public BaseGui(Container container, BlockEntity tileEntity, PlayerEntity player, Identifier overlays, Identifier guitexture, String name) {
 		super(container);
 		this.container = container;
 		this.tileEntity = tileEntity;
@@ -54,16 +54,16 @@ public class BaseGui extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
+	protected void drawForeground(int p_146979_1_, int p_146979_2_) {
 		String name = StringUtils.t("tile." + this.name + ".name");
-		this.fontRenderer.drawString(name, this.xSize / 2 - 6 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);
+		this.fontRenderer.drawString(name, this.containerWidth / 2 - 6 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
+	protected void drawBackground(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
 		this.mc.getTextureManager().bindTexture(guitexture);
-		int k = (this.width - this.xSize) / 2;
-		int l = (this.height - this.ySize) / 2;
-		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		int k = (this.width - this.containerWidth) / 2;
+		int l = (this.height - this.containerHeight) / 2;
+		this.blit(k, l, 0, 0, this.containerWidth, this.containerHeight);
 	}
 }

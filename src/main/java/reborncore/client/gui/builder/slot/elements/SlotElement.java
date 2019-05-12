@@ -28,7 +28,6 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import net.minecraftforge.items.ItemStackHandler;
 
 public class SlotElement extends ElementBase {
 	protected ItemStackHandler slotInventory;

@@ -56,7 +56,7 @@ public class MultiblockSet {
 	}
 
 	public Multiblock getForEntity(Entity e) {
-		return getForRotation(e.rotationYaw);
+		return getForRotation(e.yaw);
 	}
 
 	public Multiblock getForRotation(double rotation) {

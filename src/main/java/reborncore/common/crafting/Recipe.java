@@ -31,15 +31,14 @@ package reborncore.common.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.util.NonNullListCollector;
@@ -49,23 +48,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Recipe implements IRecipe {
+public class Recipe implements net.minecraft.recipe.Recipe {
 
 	private final RecipeType<?> type;
-	private final ResourceLocation name;
+	private final Identifier name;
 
-	private NonNullList<RebornIngredient> ingredients;
-	private NonNullList<ItemStack> outputs;
+	private DefaultedList<RebornIngredient> ingredients;
+	private DefaultedList<ItemStack> outputs;
 	private int power;
 	private int time;
 
-	public Recipe(RecipeType<?> type, ResourceLocation name) {
+	public Recipe(RecipeType<?> type, Identifier name) {
 		this.type = type;
 		this.name = name;
 	}
 
 	//Only really used for code recipes, try to use json
-	public Recipe(RecipeType<?> type, ResourceLocation name, NonNullList<RebornIngredient> ingredients, NonNullList<ItemStack> outputs, int power, int time) {
+	public Recipe(RecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
 		this.type = type;
 		this.name = name;
 		this.ingredients = ingredients;
@@ -78,14 +77,14 @@ public class Recipe implements IRecipe {
 		//Crash if the recipe has all ready been deserialized
 		Validate.isTrue(ingredients == null);
 
-		power = JsonUtils.getInt(jsonObject, "power");
-		time = JsonUtils.getInt(jsonObject, "time");
+		power = JsonHelper.getInt(jsonObject, "power");
+		time = JsonHelper.getInt(jsonObject, "time");
 
-		ingredients = SerializationUtil.stream(JsonUtils.getJsonArray(jsonObject, "ingredients"))
+		ingredients = SerializationUtil.stream(JsonHelper.getArray(jsonObject, "ingredients"))
 			.map(RebornIngredient::deserialize)
 			.collect(NonNullListCollector.toList());
 
-		JsonArray resultsJson = JsonUtils.getJsonArray(jsonObject, "results");
+		JsonArray resultsJson = JsonHelper.getArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
 	}
 
@@ -99,12 +98,12 @@ public class Recipe implements IRecipe {
 
 
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return name;
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return type;
 	}
 
@@ -115,11 +114,11 @@ public class Recipe implements IRecipe {
 	// use the RebornIngredient version to ensure stack sizes are checked
 	@Deprecated
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
+	public DefaultedList<Ingredient> getPreviewInputs() {
 		return ingredients.stream().map(RebornIngredient::getBase).collect(NonNullListCollector.toList());
 	}
 
-	public NonNullList<RebornIngredient> getRebornIngredients() {
+	public DefaultedList<RebornIngredient> getRebornIngredients() {
 		return ingredients;
 	}
 
@@ -139,7 +138,7 @@ public class Recipe implements IRecipe {
 	 * @param tile the tile that is doing the crafting
 	 * @return if true the recipe will craft, if false it will not
 	 */
-	public boolean canCraft(TileEntity tile){
+	public boolean canCraft(BlockEntity tile){
 		return true;
 	}
 
@@ -147,7 +146,7 @@ public class Recipe implements IRecipe {
 	 * @param tile the tile that is doing the crafting
 	 * @return return true if fluid was taken and should craft
 	 */
-	public boolean onCraft(TileEntity tile){
+	public boolean onCraft(BlockEntity tile){
 		return true; //TODO look into this being a boolean, seems a little odd, not sure what usees it for now
 	}
 
@@ -155,36 +154,36 @@ public class Recipe implements IRecipe {
 
 	@Deprecated
 	@Override
-	public boolean matches(IInventory inv, World worldIn) {
+	public boolean matches(Inventory inv, World worldIn) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Deprecated
 	@Override
-	public ItemStack getCraftingResult(IInventory inv) {
+	public ItemStack craft(Inventory inv) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Deprecated
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean fits(int width, int height) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Deprecated
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getOutput() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(IInventory p_179532_1_) {
+	public DefaultedList<ItemStack> getRemainingStacks(Inventory p_179532_1_) {
 		throw new UnsupportedOperationException();
 	}
 
 	//Done to try and stop the table from loading it
 	@Override
-	public boolean isDynamic() {
+	public boolean isIgnoredInRecipeBook() {
 		return true;
 	}
 }

@@ -28,10 +28,10 @@
 
 package reborncore.api.power;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Direction;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
@@ -41,7 +41,7 @@ public interface ExternalPowerManager {
 
 	public boolean isPoweredItem(ItemStack stack);
 
-	public boolean isPoweredTile(TileEntity tileEntity, EnumFacing side);
+	public boolean isPoweredTile(BlockEntity tileEntity, Direction side);
 
 	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
 
@@ -55,5 +55,5 @@ public interface ExternalPowerManager {
 	 * @param powerAcceptor The item requesting to be charged
 	 * @param entity The entity whose inventory contains the power acceptor
 	 */
-	default void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, EntityLivingBase entity) { }
+	default void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, LivingEntity entity) { }
 }

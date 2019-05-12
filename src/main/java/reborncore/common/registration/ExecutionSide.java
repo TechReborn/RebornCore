@@ -28,7 +28,7 @@
 
 package reborncore.common.registration;
 
-import net.minecraftforge.api.distmarker.Dist;
+import net.fabricmc.api.EnvType;
 import reborncore.RebornCore;
 
 public enum ExecutionSide {
@@ -40,7 +40,7 @@ public enum ExecutionSide {
 		if (this == COMMON) {
 			return true;
 		}
-		if (RebornCore.getSide() == Dist.CLIENT && this == CLIENT) {
+		if (RebornCore.getSide() == EnvType.CLIENT && this == CLIENT) {
 			return true;
 		}
 		if (RebornCore.getSide() == Dist.DEDICATED_SERVER && this == SERVER) {

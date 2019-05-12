@@ -28,15 +28,13 @@
 
 package reborncore.common.powerSystem;
 
+import net.minecraft.ChatFormat;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.ExternalPowerHandler;
@@ -67,7 +65,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	private List<ExternalPowerHandler> powerManagers;
 
-	public TilePowerAcceptor(TileEntityType<?> tileEntityType) {
+	public TilePowerAcceptor(BlockEntityType<?> tileEntityType) {
 		super(tileEntityType);
 		checkTier();
 		setupManagers();
@@ -75,7 +73,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	// don't manually set tiers
 	@Deprecated
-	public TilePowerAcceptor(TileEntityType<?> tileEntityType, EnumPowerTier tier) {
+	public TilePowerAcceptor(BlockEntityType<?> tileEntityType, EnumPowerTier tier) {
 		this(tileEntityType);
 	}
 
@@ -115,7 +113,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	 * @param slot int Slot ID for battery slot
 	 */
 	public void charge(int slot) {
-		if (world.isRemote) {
+		if (world.isClient) {
 			return;
 		}
 
@@ -141,15 +139,15 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		return (int) ((getEnergy() * scale / getMaxPower()));
 	}
 
-	public void readWithoutCoords(NBTTagCompound tag) {
-		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
+	public void readWithoutCoords(CompoundTag tag) {
+		CompoundTag data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
 		}
 	}
 
-	public NBTTagCompound writeWithoutCoords(NBTTagCompound tag) {
-		NBTTagCompound data = new NBTTagCompound();
+	public CompoundTag writeWithoutCoords(CompoundTag tag) {
+		CompoundTag data = new CompoundTag();
 		data.putDouble("energy", energy);
 		tag.put("TilePowerAcceptor", data);
 		return tag;
@@ -175,7 +173,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	@Override
 	public void tick() {
 		super.tick();
-		if (world.isRemote) {
+		if (world.isClient) {
 			return;
 		}
 
@@ -186,18 +184,18 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public void read(NBTTagCompound tag) {
-		super.read(tag);
-		NBTTagCompound data = tag.getCompound("TilePowerAcceptor");
+	public void fromTag(CompoundTag tag) {
+		super.fromTag(tag);
+		CompoundTag data = tag.getCompound("TilePowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
 		}
 	}
 
 	@Override
-	public NBTTagCompound write(NBTTagCompound tag) {
-		super.write(tag);
-		NBTTagCompound data = new NBTTagCompound();
+	public CompoundTag toTag(CompoundTag tag) {
+		super.toTag(tag);
+		CompoundTag data = new CompoundTag();
 		data.putDouble("energy", getEnergy());
 		tag.put("TilePowerAcceptor", data);
 		return tag;
@@ -212,7 +210,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
 		LazyOptional<T> externalCap = powerManagers.stream()
 			.filter(Objects::nonNull)
 			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
@@ -364,27 +362,27 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	// IListInfoProvider
 	@Override
-	public void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData) {
-		info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
-			+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
+	public void addInfo(List<Component> info, boolean isRealTile, boolean hasData) {
+		info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
+			+ ChatFormat.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
 		if (getMaxInput() != 0) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
-				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput())));
+			info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
+				+ ChatFormat.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput())));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate")
-				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput())));
+			info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate")
+				+ ": " + ChatFormat.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput())));
 		}
-		info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
-			+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
+		info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
+			+ ChatFormat.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
 		if (isRealTile) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
-				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
+			info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
+				+ ": " + ChatFormat.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
 		}
 
 		if (hasData) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
-				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy)));
+			info.add(new TextComponent(ChatFormat.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
+				+ ChatFormat.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy)));
 		}
 
 		super.addInfo(info, isRealTile, hasData);
@@ -392,11 +390,11 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 
 	// Old cofh stuff, still used to implement Forge Energy, should be removed at somepoint
 	@Deprecated
-	public boolean canConnectEnergy(EnumFacing from) {
+	public boolean canConnectEnergy(Direction from) {
 		return canAcceptEnergy(from) || canProvideEnergy(from);
 	}
 
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
+	public int receiveEnergy(Direction from, int maxReceive, boolean simulate) {
 		if (!canAcceptEnergy(from)) {
 			return 0;
 		}
@@ -410,15 +408,15 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		return feReceived;
 	}
 
-	public int getEnergyStored(EnumFacing from) {
+	public int getEnergyStored(Direction from) {
 		return ((int) getEnergy() * RebornCoreConfig.euPerFU);
 	}
 
-	public int getMaxEnergyStored(EnumFacing from) {
+	public int getMaxEnergyStored(Direction from) {
 		return ((int) getMaxPower() * RebornCoreConfig.euPerFU);
 	}
 
-	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+	public int extractEnergy(Direction from, int maxExtract, boolean simulate) {
 		if (!canProvideEnergy(from)) {
 			return 0;
 		}

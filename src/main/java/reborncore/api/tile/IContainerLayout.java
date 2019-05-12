@@ -28,17 +28,16 @@
 
 package reborncore.api.tile;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-
 import javax.annotation.Nullable;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Direction;
 import java.util.List;
 
 /**
  * Created by modmuss50 on 12/04/2016.
  */
-public interface IContainerLayout<T extends TileEntity> {
+public interface IContainerLayout<T extends BlockEntity> {
 
 	public void addInventorySlots();
 
@@ -50,13 +49,13 @@ public interface IContainerLayout<T extends TileEntity> {
 	@Nullable
 	T getTile();
 
-	public void setPlayer(EntityPlayer player);
+	public void setPlayer(PlayerEntity player);
 
 	public
 	@Nullable
-	EntityPlayer getPlayer();
+	PlayerEntity getPlayer();
 
 	public
 	@Nullable
-	List<Integer> getSlotsForSide(EnumFacing facing);
+	List<Integer> getSlotsForSide(Direction facing);
 }

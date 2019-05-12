@@ -38,16 +38,16 @@
 package reborncore.client.multiblock.component;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MultiblockComponent {
 
 	public BlockPos relPos;
-	public final IBlockState state;
+	public final BlockState state;
 
-	public MultiblockComponent(BlockPos relPos, IBlockState state) {
+	public MultiblockComponent(BlockPos relPos, BlockState state) {
 		this.relPos = relPos;
 		this.state = state;
 	}
@@ -60,7 +60,7 @@ public class MultiblockComponent {
 		return state.getBlock();
 	}
 
-	public IBlockState getState() {
+	public BlockState getState() {
 		return state;
 	}
 
