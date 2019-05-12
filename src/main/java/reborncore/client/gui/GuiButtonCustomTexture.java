@@ -71,7 +71,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 		if (this.visible) {
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
-			mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
 

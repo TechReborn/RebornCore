@@ -47,15 +47,15 @@ import java.util.List;
 
 public class RecipeUtils {
 
-	public static <R extends Recipe> List<R> getRecipes(World world, RecipeType<R> type){
-		List<R> recipes = new ArrayList<>();
-		for(Recipe recipe : world.getRecipeManager().getRecipes()){
-			if(recipe instanceof reborncore.common.crafting.Recipe && ((reborncore.common.crafting.Recipe) recipe).getRecipeType().equals(type)){
+	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<T> type){
+		List<T> recipes = new ArrayList<>();
+		for(Recipe recipe : world.getRecipeManager().values()){
+			if(recipe instanceof RebornRecipe && recipe.equals(type)){
 				if(type.getRecipeClass() != recipe.getClass()){
 					throw new RuntimeException("Invalid recipe in " + type.getName());
 				}
 				//noinspection unchecked
-				recipes.add((R) recipe);
+				recipes.add((T) recipe);
 			}
 		}
 		return Collections.unmodifiableList(recipes);

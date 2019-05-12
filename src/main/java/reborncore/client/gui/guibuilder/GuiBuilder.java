@@ -29,6 +29,7 @@
 package reborncore.client.gui.guibuilder;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
@@ -42,6 +43,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Identifier;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
+import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.widget.GuiButtonSimple;
 import reborncore.common.powerSystem.PowerSystem;
@@ -90,8 +92,7 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 14, height, mouseX, mouseY)) {
 			List<String> list = new ArrayList<String>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
-			net.minecraftforge.fml.client.config.GuiUtils.drawHoveringText(list, mouseX, mouseY, gui.width, gui.height,
-				-1, gui.getMinecraft().fontRenderer);
+			gui.drawHoveringText(list, mouseX, mouseY);
 		}
 	}
 
@@ -170,7 +171,7 @@ public class GuiBuilder {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
-		if (ModList.get().isLoaded("jei")) {
+		if (FabricLoader.getInstance().isModLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
 				x += gui.getGuiLeft();
 				y += gui.getGuiTop();
@@ -387,9 +388,9 @@ public class GuiBuilder {
 		GlStateManager.disableLighting();
 		GlStateManager.enableDepthTest();
 		GlStateManager.colorMask(true, true, true, false);
-		GuiUtils.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
-		GuiUtils.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
-		GuiUtils.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
+		RenderUtil.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
+		RenderUtil.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
+		RenderUtil.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
 		GlStateManager.colorMask(true, true, true, true);
 		GlStateManager.disableDepthTest();
 		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);

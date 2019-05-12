@@ -67,7 +67,7 @@ public class RebornExplosion extends Explosion {
 			World world,
 		@Nonnull
 			int radius) {
-		super(world, null, center.getX(), center.getY(), center.getZ(), radius, false, true);
+		super(world, null, center.getX(), center.getY(), center.getZ(), radius, false, DestructionType.DESTROY);
 		this.center = center;
 		this.world = world;
 		this.radius = radius;
@@ -133,7 +133,7 @@ public class RebornExplosion extends Explosion {
 						BlockPos pos = center.add(tx, ty, tz);
 						BlockState state = world.getBlockState(pos);
 						Block block = state.getBlock();
-						if (block != Blocks.BEDROCK && !block.isAir(state, world, pos)) {
+						if (block != Blocks.BEDROCK && !state.isAir()) {
 							poses.add(pos);
 						}
 					}

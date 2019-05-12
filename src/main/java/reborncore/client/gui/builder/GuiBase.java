@@ -38,6 +38,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.TextComponent;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
@@ -73,14 +74,14 @@ public class GuiBase extends ContainerScreen {
 	public boolean upgrades;
 
 	public GuiBase(PlayerEntity player, BlockEntity tile, BuiltContainer container) {
-		super(container);
+		super(container, player.inventory, new TextComponent(container.getName()));
 		this.tile = tile;
 		this.container = container;
 		slotConfigType = SlotConfigType.NONE;
 	}
 
 	public GuiBase(PlayerEntity player, BlockEntity tile, RebornContainer container) {
-		super(container);
+		super(container, player.inventory, container.getTitle());
 		this.tile = tile;
 		this.container = null;
 		slotConfigType = SlotConfigType.NONE;
@@ -220,11 +221,11 @@ public class GuiBase extends ContainerScreen {
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
-		drawString(string, (containerWidth / 2 - mc.fontRenderer.getStringWidth(string) / 2), y, colour, layer);
+		drawString(string, (containerWidth / 2 - getTextRenderer().getStringWidth(string) / 2), y, colour, layer);
 	}
 
 	protected void drawCentredString(String string, int y, int colour, int modifier, Layer layer) {
-		drawString(string, (containerWidth / 2 - (mc.fontRenderer.getStringWidth(string)) / 2) + modifier, y, colour, layer);
+		drawString(string, (containerWidth / 2 - (getTextRenderer().getStringWidth(string)) / 2) + modifier, y, colour, layer);
 	}
 
 	public void drawString(String string, int x, int y, int colour, Layer layer) {
@@ -355,7 +356,6 @@ public class GuiBase extends ContainerScreen {
 	 * @param pointX int Mouse pointer
 	 * @param pointY int Mouse pointer
 	 * @return boolean Returns true if mouse pointer is in region specified
-	 * @see net.minecraft.client.gui.inventory.GuiContainer()
 	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
 		return super.isPointWithinBounds(rectX, rectY, rectWidth, rectHeight, pointX, pointY);

@@ -29,11 +29,14 @@
 package reborncore.client.gui.builder.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager;
+
 import java.util.ArrayList;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
@@ -44,8 +47,8 @@ public abstract class GuiWidget<T extends Container> extends ContainerScreen {
 	private final ArrayList<Widget> widgets = new ArrayList<>();
 	private final Identifier background;
 
-	public GuiWidget(T inventorySlotsIn, Identifier background, int xSize, int ySize) {
-		super(inventorySlotsIn);
+	public GuiWidget(T inventorySlotsIn, Identifier background, int xSize, int ySize, Component title) {
+		super(inventorySlotsIn, MinecraftClient.getInstance().player.inventory, title);
 		this.containerWidth = xSize;
 		this.containerHeight = ySize;
 		this.background = background;

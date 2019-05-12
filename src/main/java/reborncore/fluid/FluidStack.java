@@ -10,4 +10,8 @@ public class FluidStack {
 	public Fluid getFluid() {
 		return null;
 	}
+
+	public String getLocalizedName() {
+		return null;
+	}
 }

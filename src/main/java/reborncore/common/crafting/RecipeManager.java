@@ -28,30 +28,30 @@
 
 package reborncore.common.crafting;
 
-import net.minecraft.item.crafting.RecipeSerializers;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RecipeManager {
 
-	private static final Map<Identifier, RecipeType<?>> recipeTypes = new HashMap<>();
+	private static final Map<Identifier, RebornRecipeType<?>> recipeTypes = new HashMap<>();
 
-	public static <R extends Recipe> RecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
+	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
 		if(recipeTypes.containsKey(name)){
-			throw new RuntimeException("Recipe type with this name already registered");
+			throw new RuntimeException("RebornRecipe type with this name already registered");
 		}
-		RecipeType<R> type = new RecipeType<>(clazz, name);
+		RebornRecipeType<R> type = new RebornRecipeType<>(clazz, name);
 		recipeTypes.put(name, type);
 
-		RecipeSerializers.register(type);
+		RecipeSerializer.register(name.toString(), type);
 
 		return type;
 	}
 
-	public static RecipeType<?> getRecipeType(Identifier name){
+	public static RebornRecipeType<?> getRecipeType(Identifier name){
 		if(!recipeTypes.containsKey(name)){
-			throw new RuntimeException("Recipe type " + name + " not found");
+			throw new RuntimeException("RebornRecipe type " + name + " not found");
 		}
 		return recipeTypes.get(name);
 	}

@@ -90,7 +90,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		RebornCore.LOGGER.info("Loading " + configs.size() + " configs for " + modId);
 		configs.forEach(rebornConfig -> {
 //			Pair<ConfigRegistryFactory, ForgeConfigSpec> configSpec = new ForgeConfigSpec.Builder().configure(builder -> buildConfigs(builder, rebornConfig));
-//			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configSpec.getRight(), rebornConfig.getName() + ".toml");
+//			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, configSpec.getRight(), rebornConfig.getTitle() + ".toml");
 		});
 	}
 
@@ -110,7 +110,7 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 
 //	public RebornConfig fromModConfig(ModConfig modConfig) {
 //		return configs.stream()
-//			.filter(config -> modConfig.getFileName().endsWith(config.getName() + ".toml"))
+//			.filter(config -> modConfig.getFileName().endsWith(config.getTitle() + ".toml"))
 //			.findFirst()
 //			.orElseThrow(() -> new RuntimeException("Failed to find config: " + modConfig.getFileName()));
 //	}

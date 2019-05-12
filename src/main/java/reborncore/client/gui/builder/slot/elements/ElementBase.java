@@ -37,6 +37,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.Identifier;
+import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.tile.TileMachineBase;
@@ -282,31 +283,8 @@ public class ElementBase {
 		int top = y;
 		int right = x + width;
 		int bottom = y + height;
-		float f = (float) (startColor >> 24 & 255) / 255.0F;
-		float f1 = (float) (startColor >> 16 & 255) / 255.0F;
-		float f2 = (float) (startColor >> 8 & 255) / 255.0F;
-		float f3 = (float) (startColor & 255) / 255.0F;
-		float f4 = (float) (endColor >> 24 & 255) / 255.0F;
-		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
-		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
-		float f7 = (float) (endColor & 255) / 255.0F;
-		GlStateManager.disableTexture();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlphaTest();
-		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.shadeModel(7425);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
-		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
-		vertexbuffer.vertex((double) right, (double) top, (double) 0).color(f1, f2, f3, f).next();
-		vertexbuffer.vertex((double) left, (double) top, (double) 0).color(f1, f2, f3, f).next();
-		vertexbuffer.vertex((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
-		vertexbuffer.vertex((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
-		tessellator.draw();
-		GlStateManager.shadeModel(7424);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture();
+
+		RenderUtil.drawGradientRect(0, left, top, right, bottom, startColor, endColor);
 	}
 
 	public int adjustX(GuiBase gui, int x) {
@@ -336,7 +314,7 @@ public class ElementBase {
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.getXSize() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (gui.xSize / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int x, int y, int colour) {

@@ -33,7 +33,7 @@ public class NetworkPacket {
 	protected NetworkPacket() {
 	}
 
-	//	ResourceLocation getName();
+	//	ResourceLocation getTitle();
 	//
 	//	Distribution getProcessingSide();
 	//

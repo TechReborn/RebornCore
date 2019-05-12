@@ -43,7 +43,7 @@ public class SlotOutput extends BaseSlot {
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackAmount() {
 		return 64;
 	}
 

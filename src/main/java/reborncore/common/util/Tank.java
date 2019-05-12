@@ -30,8 +30,6 @@ package reborncore.common.util;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
-import reborncore.common.network.ClientBoundPackets;
-import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.FluidConfiguration;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.fluid.Fluid;
@@ -61,7 +59,7 @@ public class Tank  {
 		this.machine = tile;
 	}
 
-	public Fluid getFluid(){
+	public FluidStack getFluid(){
 		return new Fluid();
 	}
 
@@ -181,4 +179,7 @@ public class Tank  {
 //		}
 	}
 
+	public int getFluidAmount() {
+		return 0;
+	}
 }

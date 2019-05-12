@@ -28,7 +28,7 @@
 
 package reborncore.client.gui;
 
-import net.minecraft.client.gui.DrawableHelper;
+import reborncore.client.RenderUtil;
 
 public class GuiUtil {
 	public static void drawTooltipBox(int x, int y, int w, int h) {
@@ -48,13 +48,7 @@ public class GuiUtil {
 	}
 
 	public static void drawGradientRect(int x, int y, int w, int h, int colour1, int colour2) {
-		new GuiHook().drawGradientRect(x, y, x + w, y + h, colour1, colour2);
+		RenderUtil.drawGradientRect(0, x, y, x + w, y + h, colour1, colour2);
 	}
 
-	public static class GuiHook extends DrawableHelper {
-		@Override
-		public void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6) {
-			super.drawGradientRect(par1, par2, par3, par4, par5, par6);
-		}
-	}
 }

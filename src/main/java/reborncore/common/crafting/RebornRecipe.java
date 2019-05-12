@@ -35,6 +35,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
@@ -48,9 +49,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Recipe implements net.minecraft.recipe.Recipe {
+public class RebornRecipe implements Recipe {
 
-	private final RecipeType<?> type;
+	private final RebornRecipeType<?> type;
 	private final Identifier name;
 
 	private DefaultedList<RebornIngredient> ingredients;
@@ -58,13 +59,13 @@ public class Recipe implements net.minecraft.recipe.Recipe {
 	private int power;
 	private int time;
 
-	public Recipe(RecipeType<?> type, Identifier name) {
+	public RebornRecipe(RebornRecipeType<?> type, Identifier name) {
 		this.type = type;
 		this.name = name;
 	}
 
 	//Only really used for code recipes, try to use json
-	public Recipe(RecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
+	public RebornRecipe(RebornRecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
 		this.type = type;
 		this.name = name;
 		this.ingredients = ingredients;
@@ -107,7 +108,8 @@ public class Recipe implements net.minecraft.recipe.Recipe {
 		return type;
 	}
 
-	public RecipeType<?> getRecipeType() {
+	@Override
+	public net.minecraft.recipe.RecipeType<?> getType() {
 		return type;
 	}
 

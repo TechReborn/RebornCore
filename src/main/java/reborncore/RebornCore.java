@@ -30,15 +30,21 @@ package reborncore;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.metadata.LoaderModMetadata;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.multiblock.MultiblockEventHandler;
+import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
@@ -103,8 +109,10 @@ public class RebornCore implements ModInitializer {
 
 		// Multiblock events
 		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
-		MinecraftForge.EVENT_BUS.register(new MultiblockServerTickHandler());
-		MinecraftForge.EVENT_BUS.register(BlockWrenchEventHandler.class);
+
+		BlockWrenchEventHandler.setup();
+		ClientTickCallback.EVENT.register(minecraftClient -> MultiblockRegistry.tickStart(minecraftClient.world));
+		WorldTickCallback.EVENT.register(world -> MultiblockRegistry.tickStart(world));
 
 		// packets
 		ServerBoundPackets.init();

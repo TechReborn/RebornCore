@@ -51,18 +51,18 @@ public class SlotFake extends BaseSlot {
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackAmount() {
 		return this.mMaxStacksize;
 	}
 
 	@Override
-	public boolean getHasStack() {
+	public boolean hasStack() {
 		return false;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int par1) {
-		return !this.mCanStackItem ? ItemStack.EMPTY : super.decrStackSize(par1);
+	public ItemStack takeStack(int par1) {
+		return !this.mCanStackItem ? ItemStack.EMPTY : super.takeStack(par1);
 	}
 
 	@Override

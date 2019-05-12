@@ -123,12 +123,8 @@ public class PowerSystem {
 				}
 			}
 		}
-
-		if (EffectiveSide.get() == LogicalSide.CLIENT && doFormat) {
-
-		} else {
-			ret += value;
-		}
+		
+		ret += value;
 
 		if (showMagnitude) {
 			ret += magnitude[i];

@@ -30,10 +30,12 @@ package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.util.Identifier;
 import reborncore.client.models.ModelSantaHat;
 import reborncore.common.RebornCoreConfig;
@@ -51,8 +53,8 @@ public class HolidayRenderEvent {
 	private static final Identifier TEXTURE = new Identifier("reborncore", "textures/models/santa_hat.png");
 	static List<PlayerEntityRenderer> renderPlayerList = new ArrayList<>();
 
-	@SubscribeEvent
-	public static void holidayRender(RenderPlayerEvent.Pre event) {
+	//TODO player render event
+	public static void holidayRender() {
 
 		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
 			return;
@@ -68,7 +70,7 @@ public class HolidayRenderEvent {
 
 	}
 
-	private static class LayerRender implements FeatureRenderer<AbstractClientPlayerEntity> {
+	private static class LayerRender implements FeatureRenderer<AbstractClientPlayerEntity, EntityModel> {
 
 		@Override
 		public void render(AbstractClientPlayerEntity abstractClientPlayer,
@@ -81,7 +83,7 @@ public class HolidayRenderEvent {
 		                   float scale) {
 			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.field_6220 + (abstractClientPlayer.field_6283 - abstractClientPlayer.field_6220) * partialTicks);
 			float pitch = abstractClientPlayer.prevPitch + (abstractClientPlayer.pitch - abstractClientPlayer.prevPitch) * partialTicks;
-			MinecraftClient.getInstance().textureManager.bindTexture(TEXTURE);
+			MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
 			GlStateManager.pushMatrix();
 			GlStateManager.rotatef(yaw, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotatef(pitch, 1.0F, 0.0F, 0.0F);
@@ -98,9 +100,10 @@ public class HolidayRenderEvent {
 		}
 
 		@Override
-		public boolean shouldCombineTextures() {
-			return true;
+		public boolean hasHurtOverlay() {
+			return false;
 		}
+
 	}
 
 }

@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
+import reborncore.api.items.InventoryUtils;
 import reborncore.api.items.InventoryWrapper;
 
 import javax.annotation.Nonnull;
@@ -127,7 +128,7 @@ public class InventoryItem extends InventoryWrapper {
 		ItemStack existing = getStackInSlot(slot);
 		int limit = getStackLimit(slot, stack);
 		if (!existing.isEmpty()) {
-			if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
+			if (!InventoryUtils.canItemStacksStack(stack, existing)) {
 				return stack;
 			}
 			limit -= existing.getAmount();
@@ -138,12 +139,12 @@ public class InventoryItem extends InventoryWrapper {
 		boolean reachedLimit = stack.getAmount() > limit;
 		if (!simulate) {
 			if (existing.isEmpty()) {
-				setStackInSlot(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+				setStackInSlot(slot, reachedLimit ? InventoryUtils.copyStackWithSize(stack, limit) : stack);
 			} else {
 				existing.addAmount(reachedLimit ? limit : stack.getAmount());
 			}
 		}
-		return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getAmount() - limit) : ItemStack.EMPTY;
+		return reachedLimit ? InventoryUtils.copyStackWithSize(stack, stack.getAmount() - limit) : ItemStack.EMPTY;
 	}
 
 	@Nonnull
@@ -166,9 +167,9 @@ public class InventoryItem extends InventoryWrapper {
 			return existing;
 		} else {
 			if (!simulate) {
-				setStackInSlot(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getAmount() - toExtract));
+				setStackInSlot(slot, InventoryUtils.copyStackWithSize(existing, existing.getAmount() - toExtract));
 			}
-			return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
+			return InventoryUtils.copyStackWithSize(existing, toExtract);
 		}
 	}
 
@@ -190,27 +191,8 @@ public class InventoryItem extends InventoryWrapper {
 		return Math.min(getSlotLimit(slot), stack.getMaxAmount());
 	}
 
-	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(
-		@Nonnull
-			Capability<T> cap,
-		@Nullable
-			Direction side) {
-		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return LazyOptional.of(new NonNullSupplier<T>() {
-				@Nonnull
-				@Override
-				public T get() {
-					return (T) this;
-				}
-			});
-		}
-		return LazyOptional.empty();
-	}
-
-	@Override
-	public boolean isItemValid(int slot, ItemStack stack) {
+	public boolean isValidInvStack(int slot, ItemStack stack) {
 		return true;
 	}
 

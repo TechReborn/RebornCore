@@ -33,6 +33,7 @@ import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
@@ -51,8 +52,16 @@ public abstract class RebornContainer extends Container {
 
 	private final BlockEntity baseTile;
 
-	public RebornContainer(BlockEntity tileEntity) {
+	Component title;
+
+	public RebornContainer(BlockEntity tileEntity, Component title) {
+		super(null, 0);
 		this.baseTile = tileEntity;
+		this.title = title;
+	}
+
+	public Component getTitle() {
+		return title;
 	}
 
 	public static

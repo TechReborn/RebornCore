@@ -29,7 +29,9 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.PacketByteBuf;
@@ -39,59 +41,56 @@ import reborncore.common.util.serialization.SerializationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class RecipeType<R extends Recipe> implements RecipeSerializer<R> {
+public class RebornRecipeType<T extends RebornRecipe> implements RecipeType<T>, RecipeSerializer<T> {
 
-	private final Class<R> clazz;
+	private final Class<T> clazz;
 
 	private final Identifier typeId;
 
-	private final net.minecraftforge.common.crafting.RecipeType<R> recipeType;
-
-	public RecipeType(Class<R> clazz, Identifier typeId) {
+	public RebornRecipeType(Class<T> clazz, Identifier typeId) {
 		this.clazz = clazz;
 		this.typeId = typeId;
-		this.recipeType = net.minecraftforge.common.crafting.RecipeType.get(typeId, clazz);
 	}
 
 	@Override
-	public R read(Identifier recipeId, JsonObject json) {
+	public T read(Identifier recipeId, JsonObject json) {
 		Identifier type = new Identifier(JsonHelper.getString(json, "type"));
 		if(!type.equals(typeId)){
-			throw new RuntimeException("Recipe type not supported!");
+			throw new RuntimeException("RebornRecipe type not supported!");
 		}
 
-		R recipe = newRecipe(recipeId);
-		recipe.deserialize(json);
+		T recipe = newRecipe(recipeId);
+		recipe.read(json);
 		return recipe;
 	}
 
-	public JsonObject toJson(R recipe){
+	public JsonObject toJson(T recipe){
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", typeId.toString());
 		recipe.serialize(jsonObject);
 		return jsonObject;
 	}
 
-	public R fromJson(Identifier recipeType, JsonObject json){
+	public T fromJson(Identifier recipeType, JsonObject json){
 		return read(recipeType, json);
 	}
 
-	R newRecipe(Identifier recipeId){
+	T newRecipe(Identifier recipeId){
 		try {
-			return clazz.getConstructor(RecipeType.class, Identifier.class).newInstance(this, recipeId);
+			return clazz.getConstructor(RebornRecipeType.class, Identifier.class).newInstance(this, recipeId);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			throw new RuntimeException("Failed to create new recipe class for " + recipeId + " using " + clazz.getName());
 		}
 	}
 
 	@Override
-	public R read(Identifier recipeId, PacketByteBuf buffer) {
+	public T read(Identifier recipeId, PacketByteBuf buffer) {
 		String input = buffer.readString(buffer.readInt());
 		return read(recipeId, SerializationUtil.GSON_FLAT.fromJson(input, JsonObject.class));
 	}
 
 	@Override
-	public void write(PacketByteBuf buffer, R recipe) {
+	public void write(PacketByteBuf buffer, T recipe) {
 		JsonObject jsonObject = toJson(recipe);
 		String output = SerializationUtil.GSON_FLAT.toJson(jsonObject);
 		buffer.writeInt(output.length());
@@ -103,20 +102,12 @@ public class RecipeType<R extends Recipe> implements RecipeSerializer<R> {
 		return typeId;
 	}
 
-	public List<R> getRecipes(World world){
+	public List<T> getRecipes(World world){
 		return RecipeUtils.getRecipes(world, this);
 	}
 
-	public Class<R> getRecipeClass() {
+	public Class<T> getRecipeClass() {
 		return clazz;
-	}
-
-	/**
-	 *
-	 * @return Returns a forge recipe type
-	 */
-	public net.minecraftforge.common.crafting.RecipeType<R> getRecipeType(){
-		return recipeType;
 	}
 
 }

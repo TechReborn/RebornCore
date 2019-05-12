@@ -28,10 +28,15 @@
 
 package reborncore.common.blocks;
 
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.mixin.eventsinteraction.MixinClientPlayerInteractionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.World;
 import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreConfig;
 
@@ -42,28 +47,23 @@ public class BlockWrenchEventHandler {
 
 	public static List<Block> wrenableBlocks = new ArrayList<>();
 
-	@SubscribeEvent
-	public static void rightClickBlockEvent(PlayerInteractEvent.RightClickBlock event) {
-		Hand hand = event.getHand();
-		if (hand == Hand.OFF_HAND) {
-			// Wrench should be in main hand
-			return;
-		}
-		if (ToolManager.INSTANCE.canHandleTool(event.getEntityPlayer().getHeldItem(Hand.MAIN_HAND))) {
-			BlockState state = event.getWorld().getBlockState(event.getPos());
-			if(wrenableBlocks.contains(state.getBlock())){
-				Block block = state.getBlock();
-				block.onBlockActivated(state, event.getWorld(), event.getPos(), event.getEntityPlayer(), hand, event.getFace(), 0F, 0F, 0F);
-				event.setCanceled(true);
-				event.setCancellationResult(ActionResult.SUCCESS);
+
+	public static void setup(){
+		UseBlockCallback.EVENT.register((UseBlockCallback) (playerEntity, world, hand, blockHitResult) -> {
+			if (hand == Hand.OFF_HAND) {
+				// Wrench should be in main hand
+				return ActionResult.PASS;
 			}
-		}
+			if (ToolManager.INSTANCE.canHandleTool(playerEntity.getStackInHand(Hand.MAIN_HAND))) {
+				BlockState state = world.getBlockState(blockHitResult.getBlockPos());
+				if(wrenableBlocks.contains(state.getBlock())){
+					Block block = state.getBlock();
+					block.activate(state, world, blockHitResult.getBlockPos(), playerEntity, hand, blockHitResult);
+					return ActionResult.SUCCESS;
+				}
+			}
+		});
 	}
 
-	@SubscribeEvent
-	public static void getDigSpeed(PlayerEvent.BreakSpeed event) {
-		if (wrenableBlocks.contains(event.getState().getBlock()) && RebornCoreConfig.wrenchRequired) {
-			event.setNewSpeed(event.getOriginalSpeed() / 25);
-		}
-	}
+
 }
