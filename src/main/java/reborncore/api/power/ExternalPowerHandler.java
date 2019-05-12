@@ -29,9 +29,7 @@
 package reborncore.api.power;
 
 
-import javax.annotation.Nonnull;
-
-public interface ExternalPowerHandler extends ICapabilityProvider {
+public interface ExternalPowerHandler {
 
 	public void tick();
 
@@ -39,11 +37,4 @@ public interface ExternalPowerHandler extends ICapabilityProvider {
 
 	public void invalidate();
 
-	@Nonnull
-	@Override
-	default <T> LazyOptional<T> getCapability(
-		@Nonnull
-			Capability<T> cap) {
-		return LazyOptional.empty();
-	}
 }

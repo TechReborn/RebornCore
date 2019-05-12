@@ -36,7 +36,6 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.renderer.*;
 import net.minecraft.util.Identifier;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.guibuilder.GuiBuilder;
@@ -325,7 +324,7 @@ public class ElementBase {
 	public void drawString(GuiBase gui, String string, int x, int y, int color) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
-		gui.getMinecraft().fontRenderer.drawString(string, x, y, color);
+		gui.getTextRenderer().draw(string, x, y, color);
 	}
 
 	public void drawString(GuiBase gui, String string, int x, int y) {
@@ -337,11 +336,11 @@ public class ElementBase {
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.getXSize() / 2 - gui.getMinecraft().fontRenderer.getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (gui.getXSize() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawCenteredString(GuiBase gui, String string, int x, int y, int colour) {
-		drawString(gui, string, (x - gui.getMinecraft().fontRenderer.getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (x - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
 	public int getStringWidth(String string) {

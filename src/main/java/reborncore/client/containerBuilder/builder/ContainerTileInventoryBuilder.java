@@ -45,12 +45,13 @@ import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.util.Inventory;
 
 import java.util.function.*;
 
 public class ContainerTileInventoryBuilder {
 
-	private final IItemHandler itemHandler;
+	private final Inventory itemHandler;
 	private final BlockEntity tile;
 	private final ContainerBuilder parent;
 	private final int rangeStart;

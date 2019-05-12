@@ -30,6 +30,7 @@ package reborncore.client.containerBuilder.builder.slot;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.inventory.Inventory;
 
 import javax.annotation.Nullable;
 
@@ -38,13 +39,13 @@ public class SpriteSlot extends FilteredSlot {
 	private final String spriteName;
 	int stacksize;
 
-	public SpriteSlot(final IItemHandler inventory, final int index, final int xPosition, final int yPosition, final String sprite, final int stacksize) {
+	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final String sprite, final int stacksize) {
 		super(inventory, index, xPosition, yPosition);
 		this.spriteName = sprite;
 		this.stacksize = stacksize;
 	}
 
-	public SpriteSlot(final IItemHandler inventory, final int index, final int xPosition, final int yPosition, final String sprite) {
+	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final String sprite) {
 		this(inventory, index, xPosition, yPosition, sprite, 64);
 	}
 

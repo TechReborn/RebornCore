@@ -28,10 +28,11 @@
 
 package reborncore.client.gui.slots;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 public class SlotFluid extends BaseSlot {
-	public SlotFluid(IItemHandler p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
+	public SlotFluid(Inventory p_i1824_1_, int p_i1824_2_, int p_i1824_3_, int p_i1824_4_) {
 		super(p_i1824_1_, p_i1824_2_, p_i1824_3_, p_i1824_4_);
 	}
 

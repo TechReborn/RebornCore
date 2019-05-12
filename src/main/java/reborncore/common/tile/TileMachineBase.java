@@ -39,8 +39,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
+import reborncore.api.items.InventoryWrapper;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IContainerProvider;
 import reborncore.api.tile.IUpgrade;
@@ -62,7 +64,7 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileMachineBase extends BlockEntity implements ITickable, IUpgradeable, IUpgradeHandler, IListInfoProvider {
+public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider {
 
 	public Inventory<TileMachineBase> upgradeInventory = new Inventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
 	public SlotConfiguration slotConfiguration;
@@ -301,26 +303,26 @@ public class TileMachineBase extends BlockEntity implements ITickable, IUpgradea
 	}
 	//Inventory end
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-			return LazyOptional.of(() -> (T) getInventoryForTile().get().getExternal(facing));
-		}
-		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
-				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if (!fluidConfig.getIoConfig().isEnabled()) {
-					return LazyOptional.empty();
-				}
-			}
-			getTank().setSide(facing);
-			return LazyOptional.of(() -> (T) getTank());
-		}
-		return super.getCapability(capability, facing);
-	}
+//	@Override
+//	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+//		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
+//			return LazyOptional.of(() -> (T) getInventoryForTile().get().getExternal(facing));
+//		}
+//		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+//			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
+//				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+//				if (!fluidConfig.getIoConfig().isEnabled()) {
+//					return LazyOptional.empty();
+//				}
+//			}
+//			getTank().setSide(facing);
+//			return LazyOptional.of(() -> (T) getTank());
+//		}
+//		return super.getCapability(capability, facing);
+//	}
 
 	@Override
-	public IItemHandler getUpgradeInvetory() {
+	public InventoryWrapper getUpgradeInvetory() {
 		return upgradeInventory;
 	}
 

@@ -32,6 +32,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -66,9 +67,7 @@ public class WorldUtils {
 		}
 
 		float factor = 0.05F;
-		entityItem.motionX = rand.nextGaussian() * factor;
-		entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-		entityItem.motionZ = rand.nextGaussian() * factor;
+		entityItem.setVelocity(new Vec3d(rand.nextGaussian() * factor, rand.nextGaussian() * factor + 0.2F, rand.nextGaussian() * factor));
 		if (!world.isClient) {
 			world.spawnEntity(entityItem);
 		}

@@ -53,10 +53,4 @@ public class CommonProxy {
 	public PlayerEntity getPlayer() {
 		return null;
 	}
-
-	public void getCrashData(List<String> list) {
-		list.add("Plugin Engine: " + (ModList.get().isLoaded("sponge") ? "1" : "0"));
-		list.add("RebornCore Version: " + RebornCore.MOD_VERSION);
-		list.addAll(invalidFingerprints);
-	}
 }

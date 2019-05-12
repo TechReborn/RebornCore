@@ -28,11 +28,12 @@
 
 package reborncore.client.gui.slots;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 public class SlotOutput extends BaseSlot {
 
-	public SlotOutput(IItemHandler itemHandler, int par2, int par3, int par4) {
+	public SlotOutput(Inventory itemHandler, int par2, int par3, int par4) {
 		super(itemHandler, par2, par3, par4);
 	}
 

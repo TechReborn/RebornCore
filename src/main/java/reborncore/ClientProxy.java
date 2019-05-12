@@ -73,10 +73,4 @@ public class ClientProxy extends CommonProxy {
 	public PlayerEntity getPlayer() {
 		return MinecraftClient.getInstance().player;
 	}
-
-	@Override
-	public void getCrashData(List<String> list) {
-		super.getCrashData(list);
-		list.add("RenderEngine: " + (ModList.get().isLoaded("optifine") ? "1" : "0"));
-	}
 }

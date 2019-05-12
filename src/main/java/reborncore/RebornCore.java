@@ -29,6 +29,9 @@
 package reborncore;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.metadata.LoaderModMetadata;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,11 +47,10 @@ import reborncore.common.registration.RegistrationManager;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
-import reborncore.common.util.CrashHandler;
 import reborncore.common.util.GenericWrenchHelper;
 import java.io.File;
 
-public class RebornCore {
+public class RebornCore implements ModInitializer {
 
 	public static final String MOD_NAME = "Reborn Core";
 	public static final String MOD_ID = "reborncore";
@@ -62,14 +64,12 @@ public class RebornCore {
 	public static boolean LOADED = false;
 
 	public RebornCore() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		eventBus.addListener(this::setup);
-	}
 
-	private void setup(FMLCommonSetupEvent event) {
+	}
+	@Override
+	public void onInitialize() {
 		LOGGER.info("Hello minecraft!");
 
-		CrashReportExtender.registerCrashCallable(new CrashHandler());
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");
 		if (!configDir.exists()) {
@@ -114,7 +114,7 @@ public class RebornCore {
 	}
 
 	public static EnvType getSide() {
-		return FMLEnvironment.dist;
+		return FabricLoader.getInstance().getEnvironmentType();
 	}
 
 }

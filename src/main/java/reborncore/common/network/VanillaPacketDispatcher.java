@@ -49,7 +49,7 @@ public final class VanillaPacketDispatcher {
 				return;
 			}
 
-			for (PlayerEntity player : ws.playerEntities) {
+			for (PlayerEntity player : ws.getPlayers()) {
 				ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
 
 				if (playerMP.squaredDistanceTo(tile.getPos()) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {

@@ -209,21 +209,21 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		extraPowerInput = 0;
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-		LazyOptional<T> externalCap = powerManagers.stream()
-			.filter(Objects::nonNull)
-			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
-			.filter(LazyOptional::isPresent)
-			.findFirst()
-			.orElse(null);
-
-		if (externalCap != null) {
-			return externalCap;
-		}
-
-		return super.getCapability(capability, facing);
-	}
+//	@Override
+//	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+//		LazyOptional<T> externalCap = powerManagers.stream()
+//			.filter(Objects::nonNull)
+//			.map(externalPowerHandler -> externalPowerHandler.getCapability(capability, facing))
+//			.filter(LazyOptional::isPresent)
+//			.findFirst()
+//			.orElse(null);
+//
+//		if (externalCap != null) {
+//			return externalCap;
+//		}
+//
+//		return super.getCapability(capability, facing);
+//	}
 
 	public abstract double getBaseMaxPower();
 

@@ -118,15 +118,15 @@ public class GuiBuilder {
 		gui.blit(posX, posY, 150, 0, 18, 18);
 	}
 
-	public void drawString(Screen gui, String string, int x, int y) {
-		gui.getMinecraft().fontRenderer.drawString(string, x, y, 16777215);
+	public void drawString(GuiBase gui, String string, int x, int y) {
+		gui.getTextRenderer().draw(string, x, y, 16777215);
 	}
 
-	public void drawString(Screen gui, String string, int x, int y, int color) {
-		gui.getMinecraft().fontRenderer.drawString(string, x, y, color);
+	public void drawString(GuiBase gui, String string, int x, int y, int color) {
+		gui.getTextRenderer().draw(string, x, y, color);
 	}
 
-	public void drawProgressBar(Screen gui, double progress, int x, int y) {
+	public void drawProgressBar(GuiBase gui, double progress, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 150, 18, 22, 15);
 		int j = (int) (progress);
@@ -135,7 +135,7 @@ public class GuiBuilder {
 		}
 	}
 
-	public void drawOutputSlot(Screen gui, int x, int y) {
+	public void drawOutputSlot(GuiBase gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 174, 0, 26, 26);
 	}
@@ -457,14 +457,14 @@ public class GuiBuilder {
 			this.tips = tips;
 		}
 
-		@Override
-		protected boolean isSelected(int index) {
-			return false;
-		}
-
-		@Override
-		protected void drawBackground() {
-		}
+//		@Override
+//		protected boolean isSelected(int index) {
+//			return false;
+//		}
+//
+//		@Override
+//		protected void drawBackground() {
+//		}
 
 	}
 

@@ -28,6 +28,7 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import reborncore.client.gui.slots.BaseSlot;
 
@@ -38,11 +39,11 @@ public class FilteredSlot extends BaseSlot {
 	private Predicate<ItemStack> filter;
 	private int stackLimit = 64;
 
-	public FilteredSlot(final IItemHandler inventory, final int index, final int xPosition, final int yPosition) {
+	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition) {
 		super(inventory, index, xPosition, yPosition);
 	}
 
-	public FilteredSlot(final IItemHandler inventory, final int index, final int xPosition, final int yPosition, int stackLimit) {
+	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, int stackLimit) {
 		super(inventory, index, xPosition, yPosition);
 		this.stackLimit = stackLimit;
 	}

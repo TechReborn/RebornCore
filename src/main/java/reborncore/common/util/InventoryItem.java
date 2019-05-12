@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
+import reborncore.api.items.InventoryWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class InventoryItem implements IItemHandler, IItemHandlerModifiable, ICapabilityProvider {
+public class InventoryItem extends InventoryWrapper {
 
 	@Nonnull
 	ItemStack stack;

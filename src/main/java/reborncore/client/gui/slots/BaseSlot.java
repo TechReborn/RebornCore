@@ -28,6 +28,8 @@
 
 package reborncore.client.gui.slots;
 
+import net.minecraft.container.Slot;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.Predicate;
@@ -35,15 +37,15 @@ import java.util.function.Predicate;
 /**
  * Created by modmuss50 on 11/04/2016.
  */
-public class BaseSlot extends SlotItemHandler {
+public class BaseSlot extends Slot {
 
 	private Predicate<ItemStack> filter = (stack) -> true;
 
-	public BaseSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition) {
+	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
 	}
 
-	public BaseSlot(IItemHandler inventoryIn, int index, int xPosition, int yPosition, Predicate<ItemStack> filter) {
+	public BaseSlot(Inventory inventoryIn, int index, int xPosition, int yPosition, Predicate<ItemStack> filter) {
 		super(inventoryIn, index, xPosition, yPosition);
 		this.filter = filter;
 	}

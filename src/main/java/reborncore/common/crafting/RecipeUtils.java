@@ -36,6 +36,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import reborncore.common.util.NonNullListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
@@ -70,7 +71,7 @@ public class RecipeUtils {
 
 	private static ItemStack deserializeItem(JsonObject jsonObject){
 		Identifier resourceLocation = new Identifier(JsonHelper.getString(jsonObject, "item"));
-		Item item = ForgeRegistries.ITEMS.getValue(resourceLocation);
+		Item item = Registry.ITEM.get(resourceLocation);
 		if(item == null){
 			throw new IllegalStateException(resourceLocation + " did not exist");
 		}

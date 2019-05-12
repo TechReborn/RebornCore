@@ -28,9 +28,10 @@
 
 package reborncore.api.tile;
 
+import net.minecraft.inventory.Inventory;
 
 public interface ItemHandlerProvider {
 
-	IItemHandler getInventory();
+	Inventory getInventory();
 
 }

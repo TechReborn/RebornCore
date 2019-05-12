@@ -560,7 +560,7 @@ public abstract class MultiblockControllerBase {
 					for (int z = minChunkZ; z <= maxChunkZ; z++) {
 						// Ensure that we save our data, even if the our save
 						// delegate is in has no TEs.
-						WorldChunk chunkToSave = this.worldObj.getWorldChunk(x, z);
+						WorldChunk chunkToSave = this.worldObj.method_8497(x, z);
 						chunkToSave.markDirty();
 					}
 				}

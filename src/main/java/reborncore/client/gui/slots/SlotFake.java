@@ -28,6 +28,7 @@
 
 package reborncore.client.gui.slots;
 
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 public class SlotFake extends BaseSlot {
@@ -36,7 +37,7 @@ public class SlotFake extends BaseSlot {
 	public boolean mCanStackItem;
 	public int mMaxStacksize = 127;
 
-	public SlotFake(IItemHandler itemHandler, int par2, int par3, int par4, boolean aCanInsertItem,
+	public SlotFake(Inventory itemHandler, int par2, int par3, int par4, boolean aCanInsertItem,
 	                boolean aCanStackItem, int aMaxStacksize) {
 		super(itemHandler, par2, par3, par4);
 		this.mCanInsertItem = aCanInsertItem;

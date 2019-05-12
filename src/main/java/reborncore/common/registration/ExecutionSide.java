@@ -43,7 +43,7 @@ public enum ExecutionSide {
 		if (RebornCore.getSide() == EnvType.CLIENT && this == CLIENT) {
 			return true;
 		}
-		if (RebornCore.getSide() == Dist.DEDICATED_SERVER && this == SERVER) {
+		if (RebornCore.getSide() == EnvType.SERVER && this == SERVER) {
 			return true;
 		}
 		return false;

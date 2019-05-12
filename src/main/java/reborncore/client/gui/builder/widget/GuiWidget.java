@@ -76,7 +76,7 @@ public abstract class GuiWidget<T extends Container> extends ContainerScreen {
 	@Override
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(background);
+		minecraft.getTextureManager().bindTexture(background);
 		int x = (this.width - this.containerWidth) / 2;
 		int y = (this.height - this.containerHeight) / 2;
 		this.blit(x, y, 0, 0, this.containerWidth, this.containerHeight);

@@ -65,7 +65,7 @@ public class SlotConfiguration implements INBTSerializable<CompoundTag> {
 		//This is done to ensure that the inventory is set to use configured access,
 		Validate.isTrue(inventory.configuredAccess);
 
-		for (int i = 0; i < inventory.getSlots(); i++) {
+		for (int i = 0; i < inventory.getInvSize(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));
 		}
 	}
@@ -74,8 +74,8 @@ public class SlotConfiguration implements INBTSerializable<CompoundTag> {
 		if (inventory == null && machineBase.getInventoryForTile().isPresent()) {
 			inventory = machineBase.getInventoryForTile().get();
 		}
-		if (inventory != null && slotDetails.size() != inventory.getSlots()) {
-			for (int i = 0; i < inventory.getSlots(); i++) {
+		if (inventory != null && slotDetails.size() != inventory.getInvSize()) {
+			for (int i = 0; i < inventory.getInvSize(); i++) {
 				SlotConfigHolder holder = getSlotDetails(i);
 				if (holder == null) {
 					RebornCore.LOGGER.debug("Fixed slot " + i + " in " + machineBase);
@@ -303,8 +303,8 @@ public class SlotConfiguration implements INBTSerializable<CompoundTag> {
 			if (tileEntity == null || !tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).isPresent()) {
 				return;
 			}
-			IItemHandler sourceHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
-			for (int i = 0; i < sourceHandler.getSlots(); i++) {
+			Inventory sourceHandler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).orElse(null);
+			for (int i = 0; i < sourceHandler.getInvSize(); i++) {
 				ItemStack sourceStack = sourceHandler.getStackInSlot(i);
 				if (sourceStack.isEmpty()) {
 					continue;
@@ -323,7 +323,7 @@ public class SlotConfiguration implements INBTSerializable<CompoundTag> {
 				if (targetStack.isEmpty()) {
 					inventory.setStackInSlot(slotID, extractedStack);
 				} else {
-					inventory.getStackInSlot(slotID).grow(extractedStack.getAmount());
+					inventory.getStackInSlot(slotID).addAmount(extractedStack.getAmount());
 				}
 				inventory.setChanged();
 				break;

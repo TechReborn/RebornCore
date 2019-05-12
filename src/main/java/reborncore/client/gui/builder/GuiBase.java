@@ -49,6 +49,7 @@ import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.StringUtils;
+import reborncore.fluid.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -121,8 +122,8 @@ public class GuiBase extends ContainerScreen {
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		if (isConfigEnabled()) {
 			GuiSlotConfiguration.init(this);
 		}
@@ -154,6 +155,10 @@ public class GuiBase extends ContainerScreen {
 		}
 	}
 
+	public void drawHoveringText(List<String> textLines, int x, int y) {
+		throw new UnsupportedOperationException("make this work"); //TOOD
+	}
+
 	public boolean drawPlayerSlots() {
 		return true;
 	}
@@ -178,7 +183,7 @@ public class GuiBase extends ContainerScreen {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.drawDefaultBackground();
+		this.drawBackground(partialTicks, mouseX, mouseY);
 		super.render(mouseX, mouseY, partialTicks);
 		this.drawMouseoverTooltip(mouseX, mouseY);
 	}
@@ -229,7 +234,7 @@ public class GuiBase extends ContainerScreen {
 			factorX = left;
 			factorY = top;
 		}
-		mc.fontRenderer.drawString(string, x + factorX, y + factorY, colour);
+		getTextRenderer().draw(string, x + factorX, y + factorY, colour);
 		GlStateManager.color4f(1, 1, 1, 1);
 	}
 
@@ -332,9 +337,9 @@ public class GuiBase extends ContainerScreen {
 	}
 
 	@Override
-	public void onGuiClosed() {
+	public void onClose() {
 		slotConfigType = SlotConfigType.NONE;
-		super.onGuiClosed();
+		super.onClose();
 	}
 
 	@Nullable
