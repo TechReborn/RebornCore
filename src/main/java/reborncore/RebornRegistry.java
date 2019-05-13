@@ -43,7 +43,7 @@ import java.lang.reflect.InvocationTargetException;
  * Created by Gigabit101 on 16/08/2016.
  */
 public class RebornRegistry {
-	public static LootManager.InnerPool lp = new LootManager.InnerPool();
+	//public static LootManager.InnerPool lp = new LootManager.InnerPool();
 
 	public static void registerBlock(Block block, Item.Settings builder, Identifier name) {
 		Registry.register(Registry.BLOCK, name, block);
@@ -80,11 +80,11 @@ public class RebornRegistry {
 	//eg: RebornRegistry.addLoot(Items.DIAMOND, 1.95, LootTableList.ENTITIES_COW);
 
 	public static void addLoot(Item item, double chance, Identifier list) {
-		lp.addItem(LootManager.createLootEntry(item, chance, list));
+	//	lp.addItem(LootManager.createLootEntry(item, chance, list));
 	}
 
 	public static void addLoot(Item item, int minSize, int maxSize, double chance, Identifier list) {
-		lp.addItem(LootManager.createLootEntry(item, minSize, maxSize, chance, list));
+	//	lp.addItem(LootManager.createLootEntry(item, minSize, maxSize, chance, list));
 	}
 
 }

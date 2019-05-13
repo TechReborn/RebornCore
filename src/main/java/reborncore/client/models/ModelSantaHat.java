@@ -36,9 +36,10 @@ package reborncore.client.models;
 
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 
-public class ModelSantaHat extends Model {
+public class ModelSantaHat extends EntityModel {
 	Cuboid hatband1;
 	Cuboid hatband2;
 	Cuboid hatband3;
@@ -175,7 +176,7 @@ public class ModelSantaHat extends Model {
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		super.render(entity, f, f1, f2, f3, f4, f5);
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+		//setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 		hatband1.render(f5);
 		hatband2.render(f5);
 		hatband3.render(f5);

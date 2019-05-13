@@ -132,7 +132,7 @@ public abstract class RebornContainer extends Container {
 		Slot slot = super.addSlot(slotIn);
 		if (slot instanceof BaseSlot) {
 			//TODO remove player slots
-			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
+			slotMap.put(slot.id, (BaseSlot) slot);
 		}
 		return slot;
 	}

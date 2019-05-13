@@ -37,138 +37,116 @@
 
 package reborncore.client.multiblock;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.block.BlockRenderLayer;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.FrustumWithOrigin;
-import net.minecraft.client.render.GuiLighting;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.VisibleRegion;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
-import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import reborncore.client.multiblock.component.MultiblockComponent;
-
-import java.util.Random;
-
+//TODO a lot of 1.14 work needed here
 public class MultiblockRenderEvent {
 
-	public static BlockPos anchor;
-	//private static BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
+//	public static BlockPos anchor;
+//	//private static BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
-	//public Location parent;
-	public BlockPos parent;
-	RebornFluidRenderer fluidRenderer;
-	private VisibleRegion camera;
-
-	public MultiblockRenderEvent() {
-		//this.fluidRenderer = new RebornFluidRenderer();
-	}
-
-	public void setMultiblock(MultiblockSet set) {
-		currentMultiblock = set;
-		anchor = null;
-		parent = null;
-	}
-
-	@SubscribeEvent
-	public void onWorldRenderLast(RenderWorldLastEvent event) {
-		MinecraftClient mc = MinecraftClient.getInstance();
-		if (mc.player != null && mc.hitResult != null && !mc.player.isSneaking()) {
-			if (currentMultiblock != null) {
-				BlockPos anchorPos = anchor != null ? anchor : mc.hitResult.getBlockPos();
-
-				Multiblock mb = currentMultiblock.getForIndex(0);
-
-				//TODO 1.13 fluid rendering
-				//Render the liquids first, it looks better.
-				for (MultiblockComponent comp : mb.getComponents()) {
-					//	if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
-					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-					//	}
-				}
-				//				for (MultiblockComponent comp : mb.getComponents()) {
-				//					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
-				//						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
-				//					}
-				//				}
-
-			}
-		}
-	}
-
-	private void renderComponent(MultiblockComponent comp, BlockPos anchor, float partialTicks, ClientPlayerEntity player) {
-		double dx = player.prevRenderX + (player.x - player.prevRenderX) * partialTicks;
-		double dy = player.prevRenderY + (player.y - player.prevRenderY) * partialTicks;
-		double dz = player.prevRenderZ + (player.z - player.prevRenderZ) * partialTicks;
-		if (camera == null) {
-			camera = new FrustumWithOrigin();
-		}
-		camera.setOrigin(dx, dy, dz);
-		BlockPos pos = anchor.add(comp.getRelativePosition());
-		if (!camera.intersects(new BoundingBox(pos))) {
-			return;
-		}
-		MinecraftClient minecraft = MinecraftClient.getInstance();
-		World world = player.world;
-
-		minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		BlockRenderLayer originalLayer = MinecraftForgeClient.getRenderLayer();
-		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
-
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(-dx, -dy, -dz);
-		GlStateManager.translated(pos.getX(), pos.getY(), pos.getZ());
-		GlStateManager.scaled(0.8, 0.8, 0.8);
-		GlStateManager.translated(0.2, 0.2, 0.2);
-
-		GuiLighting.disable();
-		GlStateManager.enableBlend();
-
-		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
-		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
-
-		this.renderModel(world, pos, comp.state);
-		GlStateManager.disableBlend();
-		GlStateManager.popMatrix();
-		ForgeHooksClient.setRenderLayer(originalLayer);
-	}
-
-	private void renderModel(World world, BlockPos pos, BlockState state) {
-		final BlockRenderManager blockRendererDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
-		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder buffer = tessellator.getBufferBuilder();
-		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
-		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
-		//TODO 1.13 fluids
-		//		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
-		//			fluidRenderer.renderFluid(world, state, pos, buffer);
-		//		} else {
-		blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());
-		//	}
-		tessellator.draw();
-	}
-
-	@SubscribeEvent
-	public void breakBlock(BlockEvent.BreakEvent event) {
-		if (parent != null) {
-			if (event.getPos().getX() == parent.getX() && event.getPos().getY() == parent.getY() && event.getPos().getZ() == parent.getZ()) {
-				setMultiblock(null);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void worldUnloaded(WorldEvent.Unload event) {
-		setMultiblock(null);
-	}
+//	//public Location parent;
+//	public BlockPos parent;
+//	RebornFluidRenderer fluidRenderer;
+//	private VisibleRegion camera;
+//
+//	public MultiblockRenderEvent() {
+//		//this.fluidRenderer = new RebornFluidRenderer();
+//	}
+//
+//	public void setMultiblock(MultiblockSet set) {
+//		currentMultiblock = set;
+//		anchor = null;
+//		parent = null;
+//	}
+//
+//	@SubscribeEvent
+//	public void onWorldRenderLast(RenderWorldLastEvent event) {
+//		MinecraftClient mc = MinecraftClient.getInstance();
+//		if (mc.player != null && mc.hitResult != null && !mc.player.isSneaking()) {
+//			if (currentMultiblock != null) {
+//				BlockPos anchorPos = anchor != null ? anchor : mc.hitResult.getBlockPos();
+//
+//				Multiblock mb = currentMultiblock.getForIndex(0);
+//
+//				//TODO 1.13 fluid rendering
+//				//Render the liquids first, it looks better.
+//				for (MultiblockComponent comp : mb.getComponents()) {
+//					//	if (comp.state.getRenderType() == EnumBlockRenderType.LIQUID) {
+//					renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+//					//	}
+//				}
+//				//				for (MultiblockComponent comp : mb.getComponents()) {
+//				//					if (comp.state.getRenderType() != EnumBlockRenderType.LIQUID) {
+//				//						renderComponent(comp, anchorPos.up(), event.getPartialTicks(), mc.player);
+//				//					}
+//				//				}
+//
+//			}
+//		}
+//	}
+//
+//	private void renderComponent(MultiblockComponent comp, BlockPos anchor, float partialTicks, ClientPlayerEntity player) {
+//		double dx = player.prevRenderX + (player.x - player.prevRenderX) * partialTicks;
+//		double dy = player.prevRenderY + (player.y - player.prevRenderY) * partialTicks;
+//		double dz = player.prevRenderZ + (player.z - player.prevRenderZ) * partialTicks;
+//		if (camera == null) {
+//			camera = new FrustumWithOrigin();
+//		}
+//		camera.setOrigin(dx, dy, dz);
+//		BlockPos pos = anchor.add(comp.getRelativePosition());
+//		if (!camera.intersects(new BoundingBox(pos))) {
+//			return;
+//		}
+//		MinecraftClient minecraft = MinecraftClient.getInstance();
+//		World world = player.world;
+//
+//		minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+//		BlockRenderLayer originalLayer = MinecraftForgeClient.getRenderLayer();
+//		ForgeHooksClient.setRenderLayer(BlockRenderLayer.CUTOUT);
+//
+//		GlStateManager.pushMatrix();
+//		GlStateManager.translated(-dx, -dy, -dz);
+//		GlStateManager.translated(pos.getX(), pos.getY(), pos.getZ());
+//		GlStateManager.scaled(0.8, 0.8, 0.8);
+//		GlStateManager.translated(0.2, 0.2, 0.2);
+//
+//		GuiLighting.disable();
+//		GlStateManager.enableBlend();
+//
+//		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
+//		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
+//
+//		this.renderModel(world, pos, comp.state);
+//		GlStateManager.disableBlend();
+//		GlStateManager.popMatrix();
+//		ForgeHooksClient.setRenderLayer(originalLayer);
+//	}
+//
+//	private void renderModel(World world, BlockPos pos, BlockState state) {
+//		final BlockRenderManager blockRendererDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
+//		final Tessellator tessellator = Tessellator.getInstance();
+//		final BufferBuilder buffer = tessellator.getBufferBuilder();
+//		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
+//		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
+//		//TODO 1.13 fluids
+//		//		if (state.getRenderType() == EnumBlockRenderType.LIQUID) {
+//		//			fluidRenderer.renderFluid(world, state, pos, buffer);
+//		//		} else {
+//		blockRendererDispatcher.renderBlock(state, pos, world, buffer, new Random());
+//		//	}
+//		tessellator.draw();
+//	}
+//
+//	@SubscribeEvent
+//	public void breakBlock(BlockEvent.BreakEvent event) {
+//		if (parent != null) {
+//			if (event.getPos().getX() == parent.getX() && event.getPos().getY() == parent.getY() && event.getPos().getZ() == parent.getZ()) {
+//				setMultiblock(null);
+//			}
+//		}
+//	}
+//
+//	@SubscribeEvent
+//	public void worldUnloaded(WorldEvent.Unload event) {
+//		setMultiblock(null);
+//	}
 }

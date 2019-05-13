@@ -61,6 +61,7 @@ public class SlotFilteredVoid extends BaseSlot {
 	}
 
 	@Override
-	public void putStack(ItemStack arg0) {
+	public void setStack(ItemStack arg0) {
+
 	}
 }

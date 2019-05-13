@@ -69,6 +69,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	public SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 
+	private int ticktime = 0;
+
 	/**
 	 * This is used to change the speed of the crafting operation.
 	 * <p/>
@@ -93,9 +95,7 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		}
 	}
 
-	@Override
 	public void onLoad() {
-		super.onLoad();
 		if (slotConfiguration == null) {
 			if (getInventoryForTile().isPresent()) {
 				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
@@ -125,6 +125,10 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 
 	@Override
 	public void tick() {
+		if(ticktime == 0){
+			onLoad();
+		}
+		ticktime ++;
 		@Nullable
 		RecipeCrafter crafter = null;
 		if (getCrafterForTile().isPresent()) {

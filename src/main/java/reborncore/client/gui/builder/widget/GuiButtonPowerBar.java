@@ -40,8 +40,8 @@ public class GuiButtonPowerBar extends ButtonWidget {
 	GuiBase.Layer layer;
 	GuiBase gui;
 
-	public GuiButtonPowerBar(int buttonId, int x, int y, GuiBase gui, GuiBase.Layer layer) {
-		super(buttonId, x, y, 12, 48, "");
+	public GuiButtonPowerBar( int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+		super(x, y, 12, 48, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;
 	}
@@ -54,16 +54,11 @@ public class GuiButtonPowerBar extends ButtonWidget {
 			mouseY -= gui.getGuiTop();
 		}
 
-		if (this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+		if (this.active && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
 			PowerSystem.bumpPowerConfig();
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void drawButtonForegroundLayer(int mouseX, int mouseY) {
-
 	}
 
 	@Override

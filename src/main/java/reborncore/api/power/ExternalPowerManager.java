@@ -33,7 +33,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.common.powerSystem.TilePowerAcceptor;
-import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 
 public interface ExternalPowerManager {
 
@@ -47,7 +46,7 @@ public interface ExternalPowerManager {
 
 	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
 
-	public void chargeItem(ForgePowerItemManager powerAcceptor, ItemStack stack);
+	public void chargeItem(ItemPowerManager powerAcceptor, ItemStack stack);
 
 	/**
 	 * Requests that the specified power acceptor be charged from the armor slots in an entity's inventory.
@@ -55,5 +54,5 @@ public interface ExternalPowerManager {
 	 * @param powerAcceptor The item requesting to be charged
 	 * @param entity The entity whose inventory contains the power acceptor
 	 */
-	default void requestEnergyFromArmor(ForgePowerItemManager powerAcceptor, LivingEntity entity) { }
+	default void requestEnergyFromArmor(ItemPowerManager powerAcceptor, LivingEntity entity) { }
 }

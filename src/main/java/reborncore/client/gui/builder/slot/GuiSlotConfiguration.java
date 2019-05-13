@@ -71,8 +71,8 @@ public class GuiSlotConfiguration {
 			if (guiBase.tile != slot.inventory) {
 				continue;
 			}
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null), slot.getSlotIndex(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(slot.getSlotIndex(), slotElement);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getInventoryForTile().get(), slot.id, SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(slot.id, slotElement);
 		}
 
 	}
@@ -103,14 +103,15 @@ public class GuiSlotConfiguration {
 			.collect(Collectors.toList());
 	}
 
+	//TODO fabric events
 	//Allows closing of the widget with the escape key
-	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
-		if (!getVisibleElements().isEmpty() && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
-			selectedSlot = -1;
-			event.setCanceled(true);
-		}
-	}
+//	@SubscribeEvent
+//	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
+//		if (!getVisibleElements().isEmpty() && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
+//			selectedSlot = -1;
+//			event.setCanceled(true);
+//		}
+//	}
 
 	public static void copyToClipboard() {
 		TileMachineBase machine = getMachine();
@@ -179,7 +180,7 @@ public class GuiSlotConfiguration {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
-					selectedSlot = slot.getSlotIndex();
+					selectedSlot = slot.id;
 					return true;
 				}
 			}

@@ -34,6 +34,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
+//TODO move to fabric api
 public class IconSupplier {
 	public static String armour_head_name = "reborncore:gui/slot_sprites/armour_head";
 	@Environment(EnvType.CLIENT)
@@ -51,14 +52,14 @@ public class IconSupplier {
 	@Environment(EnvType.CLIENT)
 	public static Sprite armour_feet;
 
-	@Environment(EnvType.CLIENT)
-	@SubscribeEvent
-	public void preTextureStitch(TextureStitchEvent.Pre event) {
-		SpriteAtlasTexture map = event.getMap();
-		armour_head = map.getSprite(new Identifier(armour_head_name));
-		armour_chest = map.getSprite(new Identifier(armour_chest_name));
-		armour_legs = map.getSprite(new Identifier(armour_legs_name));
-		armour_feet = map.getSprite(new Identifier(armour_feet_name));
-	}
+//	@Environment(EnvType.CLIENT)
+//	@SubscribeEvent
+//	public void preTextureStitch(TextureStitchEvent.Pre event) {
+//		SpriteAtlasTexture map = event.getMap();
+//		armour_head = map.getSprite(new Identifier(armour_head_name));
+//		armour_chest = map.getSprite(new Identifier(armour_chest_name));
+//		armour_legs = map.getSprite(new Identifier(armour_legs_name));
+//		armour_feet = map.getSprite(new Identifier(armour_feet_name));
+//	}
 
 }

@@ -61,6 +61,7 @@ import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
+import reborncore.fluid.FluidUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

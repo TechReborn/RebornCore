@@ -106,7 +106,7 @@ public final class ContainerPlayerInventoryBuilder {
 
 		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
 		                                                   final EquipmentSlot slotType, final String sprite) {
-			this.parent.parent.slots.add(new SpriteSlot(new InvWrapper(this.parent.player), index, xStart, yStart, sprite, 1)
+			this.parent.parent.slots.add(new SpriteSlot(this.parent.player, index, xStart, yStart, sprite, 1)
 				.setFilter(stack -> stack.getItem() instanceof ArmorItem));
 			return this;
 		}

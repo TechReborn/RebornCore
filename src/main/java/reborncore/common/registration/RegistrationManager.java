@@ -28,18 +28,13 @@
 
 package reborncore.common.registration;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.Validate;
-import reborncore.Distribution;
 import reborncore.RebornCore;
-import reborncore.common.util.ScanDataUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

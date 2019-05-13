@@ -594,7 +594,7 @@ public class GuiBuilder {
 			list.add(new TextComponent(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
 					+ ChatFormat.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
 			if (gui.tile instanceof IListInfoProvider) {
-				if (Screen.isShiftKeyDown()) {
+				if (Screen.hasShiftDown()) {
 					((IListInfoProvider) gui.tile).addInfo(list, true, true);
 					list.add(new TextComponent(""));
 					list.add(new TextComponent(
@@ -687,26 +687,27 @@ public class GuiBuilder {
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
 	public void drawFluid(GuiBase gui, FluidStack fluid, int x, int y, int width, int height, int maxCapacity) {
-		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		y += height;
-		final Identifier still = fluid.getFluid().getStill(fluid);
-		final Sprite sprite = gui.getMinecraft().getTextureMap().getAtlasSprite(still.toString());
-
-		final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
-		final int iconHeight = sprite.getHeight();
-		int offsetHeight = drawHeight;
-
-		int iteration = 0;
-		while (offsetHeight != 0) {
-			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
-			gui.blit(x, y - offsetHeight, sprite, width, curHeight);
-			offsetHeight -= curHeight;
-			iteration++;
-			if (iteration > 50) {
-				break;
-			}
-		}
-		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		//TODO fluids
+//		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+//		y += height;
+//		final Identifier still = fluid.getFluid().getStill(fluid);
+//		final Sprite sprite = gui.getMinecraft().getTextureMap().getAtlasSprite(still.toString());
+//
+//		final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
+//		final int iconHeight = sprite.getHeight();
+//		int offsetHeight = drawHeight;
+//
+//		int iteration = 0;
+//		while (offsetHeight != 0) {
+//			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
+//			gui.blit(x, y - offsetHeight, sprite, width, curHeight);
+//			offsetHeight -= curHeight;
+//			iteration++;
+//			if (iteration > 50) {
+//				break;
+//			}
+//		}
+//		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 	}
 
 	/**

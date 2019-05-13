@@ -31,21 +31,16 @@ package reborncore;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.metadata.LoaderModMetadata;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
-import reborncore.common.multiblock.MultiblockEventHandler;
+import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
-import reborncore.common.multiblock.MultiblockServerTickHandler;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
@@ -54,6 +49,7 @@ import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
+
 import java.io.File;
 
 public class RebornCore implements ModInitializer {
@@ -107,12 +103,20 @@ public class RebornCore implements ModInitializer {
 
 		RebornCoreShields.init();
 
-		// Multiblock events
-		MinecraftForge.EVENT_BUS.register(new MultiblockEventHandler());
+		ModSounds.setup();
 
 		BlockWrenchEventHandler.setup();
 		ClientTickCallback.EVENT.register(minecraftClient -> MultiblockRegistry.tickStart(minecraftClient.world));
-		WorldTickCallback.EVENT.register(world -> MultiblockRegistry.tickStart(world));
+
+		/**
+		 * This is a generic multiblock tick handler. If you are using this code on your
+		 * own, you will need to register this with the Forge TickRegistry on both the
+		 * client AND server sides. Note that different types of ticks run on different
+		 * parts of the system. CLIENT ticks only run on the client, at the start/end of
+		 * each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
+		 * ticks run only on the server, and only when worlds are loaded.
+		 */
+		WorldTickCallback.EVENT.register(MultiblockRegistry::tickStart);
 
 		// packets
 		ServerBoundPackets.init();

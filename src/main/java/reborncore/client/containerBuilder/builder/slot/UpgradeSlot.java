@@ -40,7 +40,7 @@ import reborncore.common.util.Inventory;
 
 public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 
-	public UpgradeSlot(final IItemHandler inventory, final int index, final int xPosition, final int yPosition) {
+	public UpgradeSlot(final net.minecraft.inventory.Inventory inventory, final int index, final int xPosition, final int yPosition) {
 		super(inventory, index, xPosition, yPosition);
 	}
 
@@ -60,7 +60,7 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackAmount() {
 		return 1;
 	}
 
@@ -72,7 +72,7 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 			if (tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeable = (IUpgradeable) tileEntity;
 				if (upgradeable.canBeUpgraded()) {
-					ItemStack stack = upgradeable.getUpgradeInvetory().getStackInSlot(slotID);
+					ItemStack stack = upgradeable.getUpgradeInvetory().getInvStack(slotID);
 					if (!stack.isEmpty() && stack.getItem() instanceof IRightClickHandler) {
 						if (player.world.isClient) {
 							((IRightClickHandler) stack.getItem()).handleRightClick(slotID, player, container);

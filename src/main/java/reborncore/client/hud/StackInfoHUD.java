@@ -42,7 +42,6 @@ import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
@@ -65,19 +64,19 @@ public class StackInfoHUD {
 		ELEMENTS.add(element);
 	}
 
-	@Environment(EnvType.CLIENT)
-	@SubscribeEvent(priority = EventPriority.LOW)
-	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
-			return;
-		}
-
-		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
-			if (RebornCoreConfig.ShowStackInfoHUD) {
-				drawStackInfoHud(MinecraftClient.getInstance().window);
-			}
-		}
-	}
+	//TODO needs porting
+//	@Environment(EnvType.CLIENT)
+//	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
+//		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+//			return;
+//		}
+//
+//		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
+//			if (RebornCoreConfig.ShowStackInfoHUD) {
+//				drawStackInfoHud(MinecraftClient.getInstance().window);
+//			}
+//		}
+//	}
 
 	public void drawStackInfoHud(Window res) {
 		PlayerEntity player = mc.player;
@@ -131,10 +130,15 @@ public class StackInfoHUD {
 
 		String text = "";
 		if (stack.getItem() instanceof IEnergyItemInfo) {
-			IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
+//			IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
+//
+//			int maxCharge = capEnergy.getMaxEnergyStored();
+//			int currentCharge = capEnergy.getEnergyStored();
 
-			int maxCharge = capEnergy.getMaxEnergyStored();
-			int currentCharge = capEnergy.getEnergyStored();
+			//TODO item power
+
+			int maxCharge = 0;
+			int currentCharge = 0;
 
 			ChatFormat color = ChatFormat.GREEN;
 			double quarter = maxCharge / 4;

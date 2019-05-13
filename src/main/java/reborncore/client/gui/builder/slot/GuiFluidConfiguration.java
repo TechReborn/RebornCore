@@ -53,13 +53,14 @@ public class GuiFluidConfiguration {
 		fluidConfigElement.draw(guiBase);
 	}
 
-	@SubscribeEvent
-	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
-		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
-			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
-			event.setCanceled(true);
-		}
-	}
+	//TODO keyboard event
+//	@SubscribeEvent
+//	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
+//		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.FLUIDS && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
+//			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
+//			event.setCanceled(true);
+//		}
+//	}
 
 	public static List<ConfigFluidElement> getVisibleElements() {
 		return Collections.singletonList(fluidConfigElement);

@@ -34,6 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -52,7 +53,7 @@ public final class VanillaPacketDispatcher {
 			for (PlayerEntity player : ws.getPlayers()) {
 				ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
 
-				if (playerMP.squaredDistanceTo(tile.getPos()) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {
+				if (playerMP.squaredDistanceTo(new Vec3d(tile.getPos())) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {
 					playerMP.networkHandler.sendPacket(packet);
 				}
 			}

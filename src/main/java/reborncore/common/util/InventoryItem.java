@@ -97,7 +97,6 @@ public class InventoryItem extends InventoryWrapper {
 			.collect(Collectors.toList());
 	}
 
-	@Override
 	public int getSlots() {
 		return size;
 	}
@@ -173,7 +172,6 @@ public class InventoryItem extends InventoryWrapper {
 		}
 	}
 
-	@Override
 	public int getSlotLimit(int slot) {
 		return 64;
 	}

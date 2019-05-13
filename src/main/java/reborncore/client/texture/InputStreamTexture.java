@@ -72,11 +72,6 @@ public class InputStreamTexture extends AbstractTexture {
 						return textureLocation;
 					}
 
-					@Override
-					public boolean hasMetadata() {
-						return false;
-					}
-
 					@Nullable
 					@Override
 					public <T> T getMetadata(ResourceMetadataReader<T> iMetadataSectionSerializer) {

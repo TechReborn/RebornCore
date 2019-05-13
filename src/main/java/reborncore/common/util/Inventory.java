@@ -51,10 +51,10 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
 		name = invName;
-		stackLimit = (invStackLimit == 64 ? Items.AIR.getItemStackLimit(ItemStack.EMPTY) : invStackLimit); //Blame asie for this
+		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxAmount() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
-		this.externalInventory = new ExternalInventory<>(this);
+		this.externalInventory = new ExternalInventory<>(tileEntity.getInventoryForTile().get());
 	}
 
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
@@ -196,10 +196,10 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	/**
 	 * This is used to provide a filtered inv to external machines
 	 */
-	public static class ExternalInventory<T extends TileMachineBase>  {//implements IItemHandler, IItemHandlerModifiable {
+	public static class ExternalInventory<T extends Inventory>  {//implements IItemHandler, IItemHandlerModifiable {
 
 //		Inventory<T> baseInv;
-//		private Direction facing = null;
+		private Direction facing = null;
 //
 //		public ExternalInventory(Inventory<T> baseInv) {
 //			this.baseInv = baseInv;
@@ -248,10 +248,10 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 //			return baseInv.getStackLimit();
 //		}
 //
-//		public ExternalInventory<T> withFacing(Direction facing) {
-//			this.facing = facing;
-//			return this;
-//		}
+		public ExternalInventory<T> withFacing(Direction facing) {
+			this.facing = facing;
+			return this;
+		}
 //
 //		@Override
 //		public boolean isItemValid(int slot, ItemStack stack) {

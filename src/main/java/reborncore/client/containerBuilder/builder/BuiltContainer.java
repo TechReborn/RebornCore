@@ -67,6 +67,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public BuiltContainer(final String name, final Predicate<PlayerEntity> canInteract,
 	                      final List<Range<Integer>> playerSlotRange,
 	                      final List<Range<Integer>> tileSlotRange, TileMachineBase tile) {
+		super(null, 0);
 		this.name = name;
 
 		this.canInteract = canInteract;
@@ -127,7 +128,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		if (dragType == 1 && slotId > 0 && slotId < 1000) {
 			Slot slot = this.slotList.get(slotId);
 			if (slot instanceof IRightClickHandler) {
-				if (((IRightClickHandler) slot).handleRightClick(slot.getSlotIndex(), player, this)) {
+				if (((IRightClickHandler) slot).handleRightClick(slot.id, player, this)) {
 					return ItemStack.EMPTY;
 				}
 			}

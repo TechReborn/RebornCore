@@ -28,10 +28,10 @@
 
 package reborncore.client.gui.componets;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.GL11;
 
 public class GuiHiddenButton extends ButtonWidget {
@@ -53,15 +53,13 @@ public class GuiHiddenButton extends ButtonWidget {
 			this.isHovered = mouseX >= this.x && mouseY >= this.y
 				&& mouseX < this.x + this.width && mouseY < this.y + this.height;
 			GL11.glEnable(GL11.GL_BLEND);
-			OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			int l = 14737632;
 
-			if (packedFGColor != 0) {
-				l = packedFGColor;
-			} else if (!this.enabled) {
+			if (!this.active) {
 				l = 10526880;
-			} else if (this.hovered) {
+			} else if (this.isHovered) {
 				l = 16777120;
 			}
 

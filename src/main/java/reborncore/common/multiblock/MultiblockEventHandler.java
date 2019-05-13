@@ -38,16 +38,16 @@ import net.minecraft.world.chunk.Chunk;
  * that are in chunks which are still loading.
  */
 public class MultiblockEventHandler {
-	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onChunkLoad(ChunkEvent.Load loadEvent) {
-		Chunk chunk = loadEvent.getChunk();
-		IWorld world = loadEvent.getWorld();
-		MultiblockRegistry.onChunkLoaded(world, chunk);
-	}
 
-	// Cleanup, for nice memory usageness
-	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onWorldUnload(WorldEvent.Unload unloadWorldEvent) {
-		MultiblockRegistry.onWorldUnloaded(unloadWorldEvent.getWorld());
-	}
+	//TODO mixins needed for this
+//	public void onChunkLoad(ChunkEvent.Load loadEvent) {
+//		Chunk chunk = loadEvent.getChunk();
+//		IWorld world = loadEvent.getWorld();
+//		MultiblockRegistry.onChunkLoaded(world, chunk);
+//	}
+//
+//
+//	public void onWorldUnload(WorldEvent.Unload unloadWorldEvent) {
+//		MultiblockRegistry.onWorldUnloaded(unloadWorldEvent.getWorld());
+//	}
 }

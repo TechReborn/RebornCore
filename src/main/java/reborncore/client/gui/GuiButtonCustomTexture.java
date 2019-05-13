@@ -51,9 +51,9 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 	public int textureH;
 	public int textureW;
 
-	public GuiButtonCustomTexture(int id, int xPos, int yPos, int u, int v, int buttonWidth, int buttonHeight,
-	                              String texturename, String linkedPage, String name, int buttonU, int buttonV, int textureH, int textureW) {
-		super(id, xPos, yPos, buttonWidth, buttonHeight, "_");
+	public GuiButtonCustomTexture(int xPos, int yPos, int u, int v, int buttonWidth, int buttonHeight,
+	                              String texturename, String linkedPage, String name, int buttonU, int buttonV, int textureH, int textureW, ButtonWidget.PressAction pressAction) {
+		super(xPos, yPos, buttonWidth, buttonHeight, "_", pressAction);
 		this.textureU = u;
 		this.textureV = v;
 		this.texturename = texturename;
@@ -103,7 +103,4 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 
-	public boolean getIsHovering() {
-		return hovered;
-	}
 }

@@ -55,7 +55,7 @@ public class GuiButtonHologram extends GuiButtonExtended {
 			mouseY -= gui.getGuiTop();
 		}
 
-		if (this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+		if (this.active && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
 			return true;
 		}
 		return false;

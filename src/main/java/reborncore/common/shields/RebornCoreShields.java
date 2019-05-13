@@ -28,27 +28,22 @@
 
 package reborncore.common.shields;
 
-import net.minecraft.item.Items;
-import reborncore.common.util.ItemNBTHelper;
-
-import java.util.function.Consumer;
-
 /**
  * Created by Mark on 21/03/2016.
  */
 public class RebornCoreShields {
 
 	public static void init() {
-		MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.ItemCraftedEvent>) event -> {
-			if (event.getCrafting().getItem() == Items.SHIELD) {
-				for (Shield shield : ShieldRegistry.shieldList) {
-					if (shield.name.equalsIgnoreCase(event.getPlayer().getName().toString())) {
-						ItemNBTHelper.setString(event.getCrafting(), "type", shield.name);
-						ItemNBTHelper.setBoolean(event.getCrafting(), "vanilla", false);
-					}
-				}
-			}
-		});
+//		MinecraftForge.EVENT_BUS.addListener((Consumer<PlayerEvent.ItemCraftedEvent>) event -> {
+//			if (event.getCrafting().getItem() == Items.SHIELD) {
+//				for (Shield shield : ShieldRegistry.shieldList) {
+//					if (shield.name.equalsIgnoreCase(event.getPlayer().getName().toString())) {
+//						ItemNBTHelper.setString(event.getCrafting(), "type", shield.name);
+//						ItemNBTHelper.setBoolean(event.getCrafting(), "vanilla", false);
+//					}
+//				}
+//			}
+//		});
 	}
 
 }

@@ -46,13 +46,8 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void setup() {
 		super.setup();
-		MinecraftForge.EVENT_BUS.register(HolidayRenderEvent.class);
-		MinecraftForge.EVENT_BUS.register(new IconSupplier());
-		MinecraftForge.EVENT_BUS.register(new StackInfoHUD());
 		multiblockRenderEvent = new MultiblockRenderEvent();
-		MinecraftForge.EVENT_BUS.register(multiblockRenderEvent);
-		ItemDynamicRenderer.INSTANCE = new RebornItemStackRenderer(ItemDynamicRenderer.INSTANCE);
-		MinecraftForge.EVENT_BUS.register(new MultiblockClientTickHandler());
+		//ItemDynamicRenderer.INSTANCE = new RebornItemStackRenderer(ItemDynamicRenderer.INSTANCE);
 	}
 
 	@Override

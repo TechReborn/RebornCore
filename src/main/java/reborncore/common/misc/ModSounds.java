@@ -30,27 +30,23 @@ package reborncore.common.misc;
 
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import reborncore.RebornCore;
 
 /**
  * @author drcrazy
  */
 
-@Mod.EventBusSubscriber(modid = RebornCore.MOD_ID)
 public class ModSounds {
 
 	public static SoundEvent BLOCK_DISMANTLE;
 
-	@SubscribeEvent
-	public static void onSoundRegistry(Register<SoundEvent> event) {
-		BLOCK_DISMANTLE = createSoundEvent("block_dismantle");
-		event.getRegistry().register(ModSounds.BLOCK_DISMANTLE);
+	public static void setup() {
+		BLOCK_DISMANTLE = createSoundEvent(new Identifier("reborncore", "block_dismantle"));
+
 	}
 
-	private static SoundEvent createSoundEvent(String str) {
-		Identifier resourceLocation = new Identifier(RebornCore.MOD_ID, str);
-		SoundEvent soundEvent = new SoundEvent(resourceLocation);
-		soundEvent.setRegistryName(resourceLocation);
-		return soundEvent;
+	private static SoundEvent createSoundEvent(Identifier identifier) {
+		return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
 	}
 }

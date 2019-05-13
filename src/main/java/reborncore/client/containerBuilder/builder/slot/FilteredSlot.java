@@ -63,7 +63,7 @@ public class FilteredSlot extends BaseSlot {
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackAmount() {
 		return stackLimit;
 	}
 }
