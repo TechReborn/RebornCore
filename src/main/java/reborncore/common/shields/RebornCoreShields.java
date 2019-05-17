@@ -42,7 +42,7 @@ public class RebornCoreShields {
 			if (stack.getItem() == Items.SHIELD) {
 				for (Shield shield : ShieldRegistry.shieldList) {
 					System.out.println(shield.name);
-					if (shield.name.equalsIgnoreCase(playerEntity.getName().toString()) || shield.name.equals("modmuss50")) {
+					if (shield.name.equalsIgnoreCase(playerEntity.getName().toString())) {
 						ItemNBTHelper.setString(stack, "type", shield.name);
 						ItemNBTHelper.setBoolean(stack, "vanilla", false);
 					}
