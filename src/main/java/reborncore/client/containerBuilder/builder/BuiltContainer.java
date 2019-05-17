@@ -43,6 +43,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.common.tile.TileMachineBase;
 import reborncore.common.util.ItemUtils;
+import reborncore.mixin.extensions.ContainerExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,16 +137,12 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		return super.onSlotClick(slotId, dragType, clickTypeIn, player);
 	}
 
-	public List<ContainerListener> getListeners(){
-		//this.listeners TODO mixin to get this
-		return this.getListeners();
-	}
 
 	@Override
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ContainerListener listener : this.getListeners()) {
+		for (final ContainerListener listener : ContainerExtensions.get(this).getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
