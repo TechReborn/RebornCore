@@ -46,7 +46,7 @@ public class SlotFake extends BaseSlot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack par1ItemStack) {
+	public boolean canInsert(ItemStack par1ItemStack) {
 		return this.mCanInsertItem;
 	}
 

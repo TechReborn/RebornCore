@@ -30,6 +30,7 @@ package reborncore.common.util;
 
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemScatterer;
@@ -44,8 +45,8 @@ public class ItemHandlerUtils {
 		if (tileEntity == null) {
 			return;
 		}
-		if (tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) != null) {
-			IItemHandler inventory = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null);
+		if (tileEntity instanceof Inventory) {
+			Inventory inventory = (Inventory) tileEntity;
 			dropItemHandler(world, pos, inventory);
 		}
 		if (tileEntity instanceof IUpgradeable) {
@@ -53,9 +54,9 @@ public class ItemHandlerUtils {
 		}
 	}
 
-	public static void dropItemHandler(World world, BlockPos pos, IItemHandler inventory) {
-		for (int i = 0; i < inventory.getSlots(); i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
+	public static void dropItemHandler(World world, BlockPos pos, Inventory inventory) {
+		for (int i = 0; i < inventory.getInvSize(); i++) {
+			ItemStack itemStack = inventory.getInvStack(i);
 			if (itemStack.isEmpty()) {
 				continue;
 			}

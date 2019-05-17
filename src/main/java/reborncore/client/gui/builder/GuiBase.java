@@ -32,7 +32,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.ContainerScreen;
+
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -59,7 +61,7 @@ import java.util.List;
 /**
  * Created by Prospector
  */
-public class GuiBase extends ContainerScreen {
+public class GuiBase extends AbstractContainerScreen {
 
 	public int xSize = 176;
 	public int ySize = 176;
@@ -246,7 +248,12 @@ public class GuiBase extends ContainerScreen {
 			factorX = left;
 			factorY = top;
 		}
-		buttons.add(new GuiButtonPowerBar(id, x + factorX, y + factorY, this, layer));
+		buttons.add(new GuiButtonPowerBar(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
+			@Override
+			public void onPress(ButtonWidget var1) {
+
+			}
+		}));
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
@@ -256,7 +263,12 @@ public class GuiBase extends ContainerScreen {
 			factorX = left;
 			factorY = top;
 		}
-		GuiButtonHologram buttonHologram = new GuiButtonHologram(id, x + factorX, y + factorY, this, layer);
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
+			@Override
+			public void onPress(ButtonWidget var1) {
+
+			}
+		});
 		buttons.add(buttonHologram);
 		return buttonHologram;
 	}
@@ -326,10 +338,10 @@ public class GuiBase extends ContainerScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS) {
-			if (isCtrlKeyDown() && keyCode == GLFW.GLFW_KEY_C) {
+			if (hasControlDown() && keyCode == GLFW.GLFW_KEY_C) {
 				GuiSlotConfiguration.copyToClipboard();
 				return true;
-			} else if (isCtrlKeyDown() && keyCode == GLFW.GLFW_KEY_V) {
+			} else if (hasControlDown() && keyCode == GLFW.GLFW_KEY_V) {
 				GuiSlotConfiguration.pasteFromClipboard();
 				return true;
 			}

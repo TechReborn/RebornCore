@@ -29,13 +29,14 @@
 package reborncore.client.gui;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Identifier;
 import reborncore.common.util.StringUtils;
 
-public class BaseGui extends ContainerScreen {
+public class BaseGui extends AbstractContainerScreen {
 	Container container;
 	BlockEntity tileEntity;
 	Identifier overlays;
@@ -44,7 +45,7 @@ public class BaseGui extends ContainerScreen {
 	String name;
 
 	public BaseGui(Container container, BlockEntity tileEntity, PlayerEntity player, Identifier overlays, Identifier guitexture, String name) {
-		super(container);
+		super(container, player.inventory, new TextComponent(name));
 		this.container = container;
 		this.tileEntity = tileEntity;
 		this.overlays = overlays;
@@ -61,7 +62,7 @@ public class BaseGui extends ContainerScreen {
 
 	@Override
 	protected void drawBackground(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
-		this.mc.getTextureManager().bindTexture(guitexture);
+		this.minecraft.getTextureManager().bindTexture(guitexture);
 		int k = (this.width - this.containerWidth) / 2;
 		int l = (this.height - this.containerHeight) / 2;
 		this.blit(k, l, 0, 0, this.containerWidth, this.containerHeight);

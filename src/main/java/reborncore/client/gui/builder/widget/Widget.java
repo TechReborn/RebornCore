@@ -28,7 +28,8 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.client.gui.Screen;
+
+import net.minecraft.client.gui.screen.Screen;
 import reborncore.client.gui.builder.widget.tooltip.ToolTip;
 
 public abstract class Widget {

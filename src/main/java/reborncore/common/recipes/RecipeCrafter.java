@@ -261,7 +261,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true)) {
-			if (stack.getAmount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxAmount()) {
+			if (stack.getAmount() + inventory.getStackInSlot(slot).getAmount() <= stack.getMaxAmount()) {
 				return true;
 			}
 		}
@@ -277,9 +277,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getAmount() + inventory.getStackInSlot(slot).getCount() <= stack.getMaxAmount()) {// Check to see if it fits
+			if (stack.getAmount() + inventory.getStackInSlot(slot).getAmount() <= stack.getMaxAmount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setAmount(inventory.getStackInSlot(slot).getCount() + stack.getAmount());// Sets
+				newStack.setAmount(inventory.getStackInSlot(slot).getAmount() + stack.getAmount());// Sets
 				// the
 				// new
 				// stack
@@ -300,9 +300,6 @@ public class RecipeCrafter implements IUpgradeHandler {
 			tile.getWorld().updateListeners(tile.getPos(),
 			                                  tile.getWorld().getBlockState(tile.getPos()),
 			                                  tile.getWorld().getBlockState(tile.getPos()), 3);
-			tile.getWorld().markBlockRangeForRenderUpdate(tile.getPos().getX(), tile.getPos().getY(),
-			                                              tile.getPos().getZ(), tile.getPos().getX(), tile.getPos().getY(),
-			                                              tile.getPos().getZ());
 		}
 	}
 

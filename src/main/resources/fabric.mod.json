@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "reborncore",
+  "version": "${version}",
+  "name": "Reborn Core",
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "reborncore.RebornCore"
+    ]
+  },
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}

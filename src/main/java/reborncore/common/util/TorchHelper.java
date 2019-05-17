@@ -35,18 +35,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class TorchHelper {
 
-	public static ActionResult placeTorch(ItemUsageContext context){
-		return placeTorch(context.getItemStack(), context.getPlayer(), context.getWorld(), context.getBlockPos(), context.getFacing(), context.getHitX(), context.getHitY(), context.getHitZ(), Hand.MAIN_HAND);
-	}
+	public static ActionResult placeTorch(ItemUsageContext itemUsageContext) {
+		PlayerEntity player = itemUsageContext.getPlayer();
 
-	public static ActionResult placeTorch(ItemStack stack, PlayerEntity player, World world, BlockPos pos,
-	                                          Direction side, float xOffset, float yOffset, float zOffset, Hand hand) {
 		for (int i = 0; i < player.inventory.main.size(); i++) {
 			ItemStack torchStack = player.inventory.getInvStack(i);
 			if (torchStack.isEmpty() || !torchStack.getTranslationKey().toLowerCase().contains("torch")) {
@@ -57,12 +55,11 @@ public class TorchHelper {
 				continue;
 			}
 			int oldSize = torchStack.getAmount();
-			ItemUsageContext context = new ItemUsageContext(player, stack, pos, side, xOffset, yOffset, zOffset);
+			ItemUsageContext context = new ItemUsageContext(player, itemUsageContext.getHand(), new BlockHitResult(itemUsageContext.getPos(), itemUsageContext.getFacing(), itemUsageContext.getBlockPos(), true));
 			ActionResult result = torchStack.useOnBlock(context);
 			if (player.isCreative()) {
 				torchStack.setAmount(oldSize);
 			} else if (torchStack.getAmount() <= 0) {
-				ForgeEventFactory.onPlayerDestroyItem(player, torchStack, hand);
 				player.inventory.setInvStack(i, ItemStack.EMPTY);
 			}
 			if (result == ActionResult.SUCCESS) {

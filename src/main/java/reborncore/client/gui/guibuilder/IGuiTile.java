@@ -28,8 +28,9 @@
 
 package reborncore.client.gui.guibuilder;
 
-import net.minecraft.client.gui.ContainerScreen;
-import net.minecraft.client.gui.Screen;
+
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,7 +53,7 @@ public interface IGuiTile {
 	void drawGuiContainerBackgroundLayer(Screen gui, int guiLeft, int guiTop, int xSize, int ySize, float partialTicks, int mouseX, int mouseY);
 
 	@Environment(EnvType.CLIENT)
-	ContainerScreen getGui(PlayerEntity player);
+	AbstractContainerScreen getGui(PlayerEntity player);
 
 	void opengui(PlayerEntity player, Object mod, World world, BlockPos pos);
 

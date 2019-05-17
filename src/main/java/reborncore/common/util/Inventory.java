@@ -49,12 +49,11 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	private ExternalInventory<?> externalInventory;
 
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
-		super(size);
 		name = invName;
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxAmount() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
-		this.externalInventory = new ExternalInventory<>(tileEntity.getInventoryForTile().get());
+		this.externalInventory = new ExternalInventory<>();
 	}
 
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
@@ -109,7 +108,8 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	}
 
 	public Inventory getExternal(Direction facing) {
-		return externalInventory.withFacing(facing);
+		throw new UnsupportedOperationException("needs fixing");
+		//return externalInventory.withFacing(facing);
 	}
 
 	public boolean configuredAccess;

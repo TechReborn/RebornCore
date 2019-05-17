@@ -54,7 +54,7 @@ public class FilteredSlot extends BaseSlot {
 	}
 
 	@Override
-	public boolean isItemValid(final ItemStack stack) {
+	public boolean canInsert(final ItemStack stack) {
 		try {
 			return this.filter.test(stack);
 		} catch (NullPointerException e) {

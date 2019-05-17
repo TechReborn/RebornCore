@@ -43,6 +43,7 @@ import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
+import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
 import reborncore.common.util.Inventory;
@@ -57,7 +58,7 @@ public class ContainerTileInventoryBuilder {
 	private final int rangeStart;
 
 	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
-		this.itemHandler =  tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(() -> new UnsupportedOperationException("tile must be an inventory: " + tile.getClass().getName()));
+		this.itemHandler =  null; //TODO get the inv from the tile
 		this.tile = tile;
 		this.parent = parent;
 		this.rangeStart = parent.slots.size();
@@ -100,7 +101,7 @@ public class ContainerTileInventoryBuilder {
 
 	public ContainerTileInventoryBuilder fluidSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.itemHandler, index, x, y).setFilter(
-			stack -> stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null).isPresent()));
+			stack -> true /* TODO fluid item stack  */));
 		return this;
 	}
 

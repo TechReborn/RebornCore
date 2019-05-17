@@ -28,6 +28,7 @@
 
 package reborncore.client.gui.builder.widget;
 
+import net.minecraft.client.gui.widget.ButtonWidget;
 import reborncore.client.gui.builder.GuiBase;
 
 /**
@@ -38,8 +39,8 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 	GuiBase.Layer layer;
 	GuiBase gui;
 
-	public GuiButtonUpDown(int buttonId, int x, int y, GuiBase gui, GuiBase.Layer layer) {
-		super(buttonId, x, y, 12, 12, "");
+	public GuiButtonUpDown(int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+		super(x, y, 12, 12, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;
 	}
@@ -50,7 +51,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 			mouseX -= gui.getGuiLeft();
 			mouseY -= gui.getGuiTop();
 		}
-		if (this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+		if (this.active && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
 			return true;
 		}
 		return false;

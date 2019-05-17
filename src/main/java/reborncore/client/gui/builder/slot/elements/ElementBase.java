@@ -30,11 +30,8 @@ package reborncore.client.gui.builder.slot.elements;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GuiLighting;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.Identifier;
 import reborncore.client.RenderUtil;

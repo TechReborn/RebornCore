@@ -45,7 +45,7 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 	}
 
 	@Override
-	public boolean isItemValid(final ItemStack stack) {
+	public boolean canInsert(final ItemStack stack) {
 		if(!(stack.getItem() instanceof IUpgrade)){
 			return false;
 		}

@@ -28,6 +28,7 @@
 
 package reborncore.common.network;
 
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +37,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.function.Predicate;
 
 /**
  * Created by Gigabit101 on 21/01/2017.
@@ -53,7 +56,7 @@ public final class VanillaPacketDispatcher {
 			for (PlayerEntity player : ws.getPlayers()) {
 				ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
 
-				if (playerMP.squaredDistanceTo(new Vec3d(tile.getPos())) < 64 * 64 && ws.getPlayerChunkMap().isPlayerWatchingChunk(playerMP, tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)) {
+				if (playerMP.squaredDistanceTo(new Vec3d(tile.getPos())) < 64 * 64 && PlayerStream.watching(tile.getWorld(), tile.getPos()).anyMatch(playerEntity -> playerEntity.getUuid().equals(playerMP.getUuid()))) {
 					playerMP.networkHandler.sendPacket(packet);
 				}
 			}

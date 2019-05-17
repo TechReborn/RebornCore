@@ -55,7 +55,7 @@ public class BaseSlot extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean canInsert(ItemStack stack) {
 		return filter.test(stack);
 	}
 

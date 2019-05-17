@@ -41,7 +41,7 @@ public class SlotCharge extends BaseSlot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean canInsert(ItemStack stack) {
 		if (stack.getItem() instanceof IEnergyItemInfo) {
 			return true;
 		} else {

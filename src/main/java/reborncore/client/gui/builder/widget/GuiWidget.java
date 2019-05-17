@@ -34,13 +34,13 @@ import java.util.ArrayList;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
-public abstract class GuiWidget<T extends Container> extends ContainerScreen {
+public abstract class GuiWidget<T extends Container> extends AbstractContainerScreen {
 
 	public static final Language translate = Language.getInstance();
 

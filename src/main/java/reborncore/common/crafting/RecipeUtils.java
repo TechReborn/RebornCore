@@ -33,6 +33,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -47,7 +48,7 @@ import java.util.List;
 
 public class RecipeUtils {
 
-	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<T> type){
+	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
 		List<T> recipes = new ArrayList<>();
 		for(Recipe recipe : world.getRecipeManager().values()){
 			if(recipe instanceof RebornRecipe && recipe.equals(type)){

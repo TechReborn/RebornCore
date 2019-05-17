@@ -50,14 +50,14 @@ public class SlotFilteredVoid extends BaseSlot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean canInsert(ItemStack stack) {
 		for (ItemStack itemStack : filter) {
 			if (itemStack.getItem().equals(stack.getItem())) {
 				return false;
 			}
 		}
 
-		return super.isItemValid(stack);
+		return super.canInsert(stack);
 	}
 
 	@Override

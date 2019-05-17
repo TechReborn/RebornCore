@@ -31,11 +31,11 @@ package reborncore.client.gui.builder.widget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 
 public class GuiButtonSimple extends ButtonWidget {
-	public GuiButtonSimple(int buttonId, int x, int y, String buttonText) {
-		super(buttonId, x, y, buttonText);
+	public GuiButtonSimple( int x, int y, String buttonText, ButtonWidget.PressAction pressAction) {
+		super(x, y, 20, 200, buttonText, pressAction);
 	}
 
-	public GuiButtonSimple(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
-		super(buttonId, x, y, widthIn, heightIn, buttonText);
+	public GuiButtonSimple(int x, int y, int widthIn, int heightIn, String buttonText, ButtonWidget.PressAction pressAction) {
+		super(x, y, widthIn, heightIn, buttonText, pressAction);
 	}
 }

@@ -136,11 +136,16 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		return super.onSlotClick(slotId, dragType, clickTypeIn, player);
 	}
 
+	public List<ContainerListener> getListeners(){
+		//this.listeners TODO mixin to get this
+		return this.getListeners();
+	}
+
 	@Override
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ContainerListener listener : this.listeners) {
+		for (final ContainerListener listener : this.getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {

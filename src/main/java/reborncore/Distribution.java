@@ -28,6 +28,7 @@
 
 package reborncore;
 
+import net.fabricmc.api.EnvType;
 
 public enum Distribution {
 	UNIVERSAL,
@@ -38,6 +39,6 @@ public enum Distribution {
 		if (this == UNIVERSAL) {
 			return false;
 		}
-		return FMLEnvironment.dist.isClient() && this == CLIENT;
+		return RebornCore.getSide() == EnvType.CLIENT && this == CLIENT;
 	}
 }

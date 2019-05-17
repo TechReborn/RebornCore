@@ -35,7 +35,9 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.util.Identifier;
 import reborncore.client.models.ModelSantaHat;
 import reborncore.common.RebornCoreConfig;
@@ -54,23 +56,27 @@ public class HolidayRenderEvent {
 	static List<PlayerEntityRenderer> renderPlayerList = new ArrayList<>();
 
 	//TODO player render event
-	public static void holidayRender() {
+//	public static void holidayRender() {
+//
+//		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
+//			return;
+//		}
+//		EntityRenderer<?> render = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(MinecraftClient.getInstance().player);
+//		if (render instanceof PlayerEntityRenderer) {
+//			PlayerEntityRenderer renderPlayer = (PlayerEntityRenderer) render;
+//			if (!renderPlayerList.contains(renderPlayer)) {
+//				renderPlayer.addFeature(new LayerRender());
+//				renderPlayerList.add(renderPlayer);
+//			}
+//		}
+//
+//	}
 
-		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
-			return;
+	private static class LayerRender extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+
+		public LayerRender(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
+			super(featureRendererContext_1);
 		}
-		EntityRenderer<?> render = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(MinecraftClient.getInstance().player);
-		if (render instanceof PlayerEntityRenderer) {
-			PlayerEntityRenderer renderPlayer = (PlayerEntityRenderer) render;
-			if (!renderPlayerList.contains(renderPlayer)) {
-				renderPlayer.addFeature(new LayerRender());
-				renderPlayerList.add(renderPlayer);
-			}
-		}
-
-	}
-
-	private static class LayerRender implements FeatureRenderer<AbstractClientPlayerEntity, EntityModel> {
 
 		@Override
 		public void render(AbstractClientPlayerEntity abstractClientPlayer,

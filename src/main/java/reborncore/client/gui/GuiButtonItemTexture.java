@@ -45,9 +45,9 @@ public class GuiButtonItemTexture extends ButtonWidget {
 	public String LINKED_PAGE;
 	public String NAME;
 
-	public GuiButtonItemTexture(int id, int xPos, int yPos, int u, int v, int width, int height, ItemStack stack,
-	                            String linkedPage, String name) {
-		super(id, xPos, yPos, width, height, "_");
+	public GuiButtonItemTexture(int xPos, int yPos, int u, int v, int width, int height, ItemStack stack,
+	                            String linkedPage, String name, ButtonWidget.PressAction pressAction) {
+		super(xPos, yPos, width, height, "_", pressAction);
 		textureU = u;
 		textureV = v;
 		itemstack = stack;
@@ -61,7 +61,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
-			mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
 			if (flag) {
@@ -81,10 +81,6 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
 				Color.white.getRGB());
 		}
-	}
-
-	public boolean getIsHovering() {
-		return hovered;
 	}
 
 }

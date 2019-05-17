@@ -38,7 +38,7 @@ public class SlotFluid extends BaseSlot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack stack) {
+	public boolean canInsert(ItemStack stack) {
 
 		return FluidUtil.getFluidHandler(stack) != null;
 

@@ -41,41 +41,43 @@ import reborncore.common.util.serialization.SerializationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class RebornRecipeType<T extends RebornRecipe> implements RecipeType<T>, RecipeSerializer<T> {
+public class RebornRecipeType<R extends Recipe<?>> implements RecipeType<R>, RecipeSerializer<R> {
 
-	private final Class<T> clazz;
+	private final Class<R> clazz;
 
 	private final Identifier typeId;
 
-	public RebornRecipeType(Class<T> clazz, Identifier typeId) {
+	public RebornRecipeType(Class<R> clazz, Identifier typeId) {
 		this.clazz = clazz;
 		this.typeId = typeId;
 	}
 
 	@Override
-	public T read(Identifier recipeId, JsonObject json) {
+	public R read(Identifier recipeId, JsonObject json) {
 		Identifier type = new Identifier(JsonHelper.getString(json, "type"));
 		if(!type.equals(typeId)){
 			throw new RuntimeException("RebornRecipe type not supported!");
 		}
 
-		T recipe = newRecipe(recipeId);
-		recipe.read(json);
-		return recipe;
+		R recipe = newRecipe(recipeId);
+		recipe.getSerializer().read(recipeId, json);
+		return (R) recipe;
 	}
 
-	public JsonObject toJson(T recipe){
+	public JsonObject toJson(R recipe){
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", typeId.toString());
-		recipe.serialize(jsonObject);
-		return jsonObject;
+
+		throw new UnsupportedOperationException("TOOD code this");
+		//recipe.serialize(jsonObject);
+		//return jsonObject;
 	}
 
-	public T fromJson(Identifier recipeType, JsonObject json){
+	public R fromJson(Identifier recipeType, JsonObject json){
 		return read(recipeType, json);
 	}
 
-	T newRecipe(Identifier recipeId){
+	R newRecipe(Identifier recipeId){
 		try {
 			return clazz.getConstructor(RebornRecipeType.class, Identifier.class).newInstance(this, recipeId);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -84,29 +86,28 @@ public class RebornRecipeType<T extends RebornRecipe> implements RecipeType<T>, 
 	}
 
 	@Override
-	public T read(Identifier recipeId, PacketByteBuf buffer) {
+	public R read(Identifier recipeId, PacketByteBuf buffer) {
 		String input = buffer.readString(buffer.readInt());
-		return read(recipeId, SerializationUtil.GSON_FLAT.fromJson(input, JsonObject.class));
+		return (R) read(recipeId, SerializationUtil.GSON_FLAT.fromJson(input, JsonObject.class));
 	}
 
 	@Override
-	public void write(PacketByteBuf buffer, T recipe) {
+	public void write(PacketByteBuf buffer, R recipe) {
 		JsonObject jsonObject = toJson(recipe);
 		String output = SerializationUtil.GSON_FLAT.toJson(jsonObject);
 		buffer.writeInt(output.length());
 		buffer.writeString(output);
 	}
 
-	@Override
 	public Identifier getName() {
 		return typeId;
 	}
 
-	public List<T> getRecipes(World world){
+	public List<RebornRecipe> getRecipes(World world){
 		return RecipeUtils.getRecipes(world, this);
 	}
 
-	public Class<T> getRecipeClass() {
+	public Class<R> getRecipeClass() {
 		return clazz;
 	}
 

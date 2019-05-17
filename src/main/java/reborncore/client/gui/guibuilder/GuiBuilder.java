@@ -32,11 +32,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
-import net.minecraft.client.gui.menu.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -141,8 +140,13 @@ public class GuiBuilder {
 		gui.blit(x, y, 174, 0, 26, 26);
 	}
 
-	public void drawInfoButton(int buttonID, int x, int y, List<ButtonWidget> buttonList) {
-		buttonList.add(new GuiButtonSimple(0, x, y, 20, 20, "i"));
+	public void drawInfoButton(int x, int y, List<ButtonWidget> buttonList) {
+		buttonList.add(new GuiButtonSimple(x, y, 20, 20, "i", new ButtonWidget.PressAction() {
+			@Override
+			public void onPress(ButtonWidget var1) {
+
+			}
+		}));
 	}
 
 	public void handleInfoButtonClick(int buttonID, List<ButtonWidget> buttonList) {

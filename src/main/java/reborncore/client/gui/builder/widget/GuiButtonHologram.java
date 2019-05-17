@@ -29,6 +29,7 @@
 package reborncore.client.gui.builder.widget;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.util.math.BlockPos;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.multiblock.Multiblock;
@@ -41,8 +42,8 @@ public class GuiButtonHologram extends GuiButtonExtended {
 	GuiBase.Layer layer;
 	GuiBase gui;
 
-	public GuiButtonHologram(int buttonId, int x, int y, GuiBase gui, GuiBase.Layer layer) {
-		super(buttonId, x, y, 20, 12, "");
+	public GuiButtonHologram(int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+		super(x, y, 20, 12, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;
 	}

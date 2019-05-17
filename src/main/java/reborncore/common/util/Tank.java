@@ -28,6 +28,7 @@
 
 package reborncore.common.util;
 
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import reborncore.common.tile.FluidConfiguration;
@@ -60,7 +61,7 @@ public class Tank  {
 	}
 
 	public FluidStack getFluid(){
-		return new Fluid();
+		return new FluidStack();
 	}
 
 	public int getCapacity(){

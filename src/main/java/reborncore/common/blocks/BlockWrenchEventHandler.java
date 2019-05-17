@@ -62,6 +62,7 @@ public class BlockWrenchEventHandler {
 					return ActionResult.SUCCESS;
 				}
 			}
+			return ActionResult.PASS;
 		});
 	}
 
