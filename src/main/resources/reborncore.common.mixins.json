@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "reborncore.mixin.common",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "MixinCraftingResultSlot"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

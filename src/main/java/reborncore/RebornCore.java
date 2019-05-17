@@ -37,6 +37,7 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
+import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.misc.ModSounds;
@@ -102,6 +103,7 @@ public class RebornCore implements ModInitializer {
 		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
 
 		RebornCoreShields.init();
+		RebornItemStackRenderer.setup();
 
 		ModSounds.setup();
 

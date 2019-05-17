@@ -41,12 +41,14 @@ import net.minecraft.util.Identifier;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.shields.json.ShieldUser;
 import reborncore.common.util.ItemNBTHelper;
+import reborncore.mixin.extensions.ItemDynamicRendererExtensions;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Created by Mark on 21/03/2016.
@@ -60,6 +62,10 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue());
 
 	ItemDynamicRenderer renderer;
+
+	public static void setup(){
+		ItemDynamicRendererExtensions.getExtension().extend(RebornItemStackRenderer::new);
+	}
 
 	public RebornItemStackRenderer(ItemDynamicRenderer renderer) {
 		this.renderer = renderer;

@@ -53,26 +53,8 @@ public class HolidayRenderEvent {
 
 	static ModelSantaHat santaHat = new ModelSantaHat();
 	private static final Identifier TEXTURE = new Identifier("reborncore", "textures/models/santa_hat.png");
-	static List<PlayerEntityRenderer> renderPlayerList = new ArrayList<>();
 
-	//TODO player render event
-//	public static void holidayRender() {
-//
-//		if (!CalenderUtils.christmas || !RebornCoreConfig.easterEggs) {
-//			return;
-//		}
-//		EntityRenderer<?> render = MinecraftClient.getInstance().getEntityRenderManager().getRenderer(MinecraftClient.getInstance().player);
-//		if (render instanceof PlayerEntityRenderer) {
-//			PlayerEntityRenderer renderPlayer = (PlayerEntityRenderer) render;
-//			if (!renderPlayerList.contains(renderPlayer)) {
-//				renderPlayer.addFeature(new LayerRender());
-//				renderPlayerList.add(renderPlayer);
-//			}
-//		}
-//
-//	}
-
-	private static class LayerRender extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+	public static class LayerRender extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
 		public LayerRender(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> featureRendererContext_1) {
 			super(featureRendererContext_1);

@@ -10,6 +10,10 @@
       "reborncore.RebornCore"
     ]
   },
+  "mixins": [
+    "reborncore.client.mixins.json",
+    "reborncore.common.mixins.json"
+  ],
   "requires": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
