@@ -75,94 +75,32 @@ processResources{
 //	ignoreFailures = true //Stops the build from failing if a file does not have a license header
 //}
 
- jar {
- 	classifier = 'universal'
- }
 
-//task deobfJar(type: Jar) {
-//	from sourceSets.main.output
-//	classifier = 'dev'
-//}
-//
-//build.dependsOn deobfJar
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+}
 
-//artifacts {
-//	archives deobfJar
-//}
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			// add all the jars that should be included when publishing to maven
+			artifact(jar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
 
-// task apiJar(type: Jar) {
-// 	from sourceSets.main.allSource
-// 	from sourceSets.main.output
-// 	include 'reborncore/api/**/*'
-
-// 	classifier = "api"
-// }
-
-// apiJar.mustRunAfter jar
-
-// artifacts {
-// 	archives apiJar
-// }
-
-uploadArchives {
 	repositories {
-		mavenDeployer {
-			//This is used when the build is done on a slave node
+		maven {
+			url "http://mavenupload.modmuss50.me/"
 			if (project.hasProperty('mavenPass')) {
-				println 'Uploading to remote Maven Repo'
-				repository(url: "http://mavenupload.modmuss50.me/") {
-					authentication(userName: "buildslave", password: project.getProperty('mavenPass'))
-				}
-			} else {
-				//this is when the build is executed on the master node
-				println 'Uploading to local Maven Repo'
-				repository(url: "file:///var/www/maven/")
-			}
-
-			pom.whenConfigured {
-				p ->
-					p.dependencies = p.dependencies.findAll {
-						dep -> dep.artifactId != "Tesla"
-					}
-			}
-
-			pom {
-				groupId = "RebornCore"
-				version = project.version
-				artifactId = project.archivesBaseName
-				project {
-					name project.archivesBaseName
-					packaging 'jar'
-					description 'RebornCore'
-					url 'https://github.com/TechReborn/RebornCore'
-					scm {
-						url 'https://github.com/TechReborn/RebornCore'
-						connection 'scm:git:git@github.com:TechReborn/RebornCore.git'
-						developerConnection 'scm:git:git@github.com:TechReborn/RebornCore.git'
-					}
-					issueManagement {
-						system 'github'
-						url 'https://github.com/TechReborn/RebornCore/issues'
-					}
-					licenses {
-						license {
-							name 'License'
-							url 'https://raw.githubusercontent.com/TechReborn/RebornCore/master/LICENSE.md'
-							distribution 'repo'
-						}
-					}
-					developers {
-						developer {
-							id 'modmuss50'
-							name 'modmuss50'
-							roles {role 'developer'}
-						}
-						developer {
-							id 'Gigabit101'
-							name 'Gigabit101'
-							roles {role 'developer'}
-						}
-					}
+				credentials {
+					username 'buildslave'
+					password project.getProperty('mavenPass')
 				}
 			}
 		}
