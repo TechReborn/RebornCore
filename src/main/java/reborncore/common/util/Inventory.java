@@ -31,7 +31,6 @@ package reborncore.common.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.math.Direction;
 import reborncore.api.items.InventoryWrapper;
 import reborncore.common.tile.SlotConfiguration;
@@ -92,7 +91,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	}
 
 	public ItemStack shrinkSlot(int slot, int count) {
-		ItemStack stack = getStackInSlot(slot);
+		ItemStack stack = getStack(slot);
 		stack.subtractAmount(count);
 		setChanged();
 		return stack;
@@ -239,8 +238,8 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 //
 //		@Nonnull
 //		@Override
-//		public ItemStack getStackInSlot(int slot) {
-//			return baseInv.getStackInSlot(slot);
+//		public ItemStack getStack(int slot) {
+//			return baseInv.getStack(slot);
 //		}
 //
 //		@Override

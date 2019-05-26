@@ -30,13 +30,11 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
 import reborncore.api.items.InventoryUtils;
 import reborncore.api.items.InventoryWrapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -93,7 +91,7 @@ public class InventoryItem extends InventoryWrapper {
 
 	public List<ItemStack> getAllStacks() {
 		return IntStream.range(0, size)
-			.mapToObj(this::getStackInSlot)
+			.mapToObj(this::getStack)
 			.collect(Collectors.toList());
 	}
 
@@ -103,7 +101,7 @@ public class InventoryItem extends InventoryWrapper {
 
 	@Nonnull
 	@Override
-	public ItemStack getStackInSlot(int slot) {
+	public ItemStack getStack(int slot) {
 		return ItemStack.fromTag(getSlotData(slot));
 	}
 
@@ -124,7 +122,7 @@ public class InventoryItem extends InventoryWrapper {
 			return ItemStack.EMPTY;
 		}
 		validateSlotIndex(slot);
-		ItemStack existing = getStackInSlot(slot);
+		ItemStack existing = getStack(slot);
 		int limit = getStackLimit(slot, stack);
 		if (!existing.isEmpty()) {
 			if (!InventoryUtils.canItemStacksStack(stack, existing)) {
@@ -153,7 +151,7 @@ public class InventoryItem extends InventoryWrapper {
 			return ItemStack.EMPTY;
 		}
 		validateSlotIndex(slot);
-		ItemStack existing = getStackInSlot(slot);
+		ItemStack existing = getStack(slot);
 
 		if (existing.isEmpty()) {
 			return ItemStack.EMPTY;

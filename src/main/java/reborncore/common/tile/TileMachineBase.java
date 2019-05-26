@@ -137,7 +137,7 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		if (canBeUpgraded()) {
 			resetUpgrades();
 			for (int i = 0; i < getUpgradeSlotCount(); i++) {
-				ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
+				ItemStack stack = getUpgradeInvetory().getStack(i);
 				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
 					((IUpgrade) stack.getItem()).process(this, this, stack);
 				}

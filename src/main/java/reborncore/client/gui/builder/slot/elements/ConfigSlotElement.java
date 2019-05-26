@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import reborncore.api.items.InventoryWrapper;
 import reborncore.api.recipe.IRecipeCrafterProvider;
@@ -110,7 +109,7 @@ public class ConfigSlotElement extends ElementBase {
 	@Override
 	public void draw(GuiBase gui) {
 		super.draw(gui);
-		ItemStack stack = inventory.getStackInSlot(id);
+		ItemStack stack = inventory.getStack(id);
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
 

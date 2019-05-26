@@ -228,7 +228,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		for (RebornIngredient ingredient : recipeType.getRebornIngredients()) {
 			boolean hasItem = false;
 			for (int slot : inputSlots) {
-				if (ingredient.test(inventory.getStackInSlot(slot))) {
+				if (ingredient.test(inventory.getStack(slot))) {
 					hasItem = true;
 				}
 			}
@@ -245,7 +245,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (RebornIngredient ingredient : currentRecipe.getRebornIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
-				if (ingredient.test(inventory.getStackInSlot(inputSlot))) {
+				if (ingredient.test(inventory.getStack(inputSlot))) {
 					inventory.shrinkSlot(inputSlot, ingredient.getSize());
 					break;
 				}
@@ -257,11 +257,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		if (inventory.getStackInSlot(slot).isEmpty()) {
+		if (inventory.getStack(slot).isEmpty()) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true, true)) {
-			if (stack.getAmount() + inventory.getStackInSlot(slot).getAmount() <= stack.getMaxAmount()) {
+		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true, true)) {
+			if (stack.getAmount() + inventory.getStack(slot).getAmount() <= stack.getMaxAmount()) {
 				return true;
 			}
 		}
@@ -272,14 +272,14 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return;
 		}
-		if (inventory.getStackInSlot(slot).isEmpty()) {// If the slot is empty set the contents
+		if (inventory.getStack(slot).isEmpty()) {// If the slot is empty set the contents
 			inventory.setStackInSlot(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStackInSlot(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getAmount() + inventory.getStackInSlot(slot).getAmount() <= stack.getMaxAmount()) {// Check to see if it fits
+		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true)) {// If the slot has stuff in
+			if (stack.getAmount() + inventory.getStack(slot).getAmount() <= stack.getMaxAmount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setAmount(inventory.getStackInSlot(slot).getAmount() + stack.getAmount());// Sets
+				newStack.setAmount(inventory.getStack(slot).getAmount() + stack.getAmount());// Sets
 				// the
 				// new
 				// stack

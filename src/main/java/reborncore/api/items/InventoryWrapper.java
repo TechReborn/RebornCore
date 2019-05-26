@@ -10,7 +10,7 @@ public class InventoryWrapper implements Inventory {
 
 	public ItemStack[] stacks;
 
-	public ItemStack getStackInSlot(int slot){
+	public ItemStack getStack(int slot){
 		return getInvStack(slot);
 	}
 

@@ -42,7 +42,6 @@ import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
-import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.ItemUtils;
 import reborncore.common.util.NBTSerializable;
 
@@ -296,7 +295,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 		private void handleItemInput(TileMachineBase machineBase) {
 			Inventory inventory = machineBase.getInventoryForTile().get();
-			ItemStack targetStack = inventory.getStackInSlot(slotID);
+			ItemStack targetStack = inventory.getStack(slotID);
 			if (targetStack.getMaxAmount() == targetStack.getAmount()) {
 				return;
 			}
@@ -306,7 +305,7 @@ public class SlotConfiguration implements NBTSerializable {
 			}
 			Inventory sourceHandler = null; //TODO
 			for (int i = 0; i < sourceHandler.getInvSize(); i++) {
-				ItemStack sourceStack = sourceHandler.getStackInSlot(i);
+				ItemStack sourceStack = sourceHandler.getStack(i);
 				if (sourceStack.isEmpty()) {
 					continue;
 				}
@@ -324,7 +323,7 @@ public class SlotConfiguration implements NBTSerializable {
 				if (targetStack.isEmpty()) {
 					inventory.setStackInSlot(slotID, extractedStack);
 				} else {
-					inventory.getStackInSlot(slotID).addAmount(extractedStack.getAmount());
+					inventory.getStack(slotID).addAmount(extractedStack.getAmount());
 				}
 				inventory.setChanged();
 				break;
@@ -333,7 +332,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 		private void handleItemOutput(TileMachineBase machineBase) {
 			Inventory inventory = machineBase.getInventoryForTile().get();
-			ItemStack sourceStack = inventory.getStackInSlot(slotID);
+			ItemStack sourceStack = inventory.getStack(slotID);
 			if (sourceStack.isEmpty()) {
 				return;
 			}
