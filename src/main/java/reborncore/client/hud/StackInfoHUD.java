@@ -40,6 +40,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
+import reborncore.api.power.ItemPowerManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.StringUtils;
@@ -130,15 +131,10 @@ public class StackInfoHUD {
 
 		String text = "";
 		if (stack.getItem() instanceof IEnergyItemInfo) {
-//			IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
-//
-//			int maxCharge = capEnergy.getMaxEnergyStored();
-//			int currentCharge = capEnergy.getEnergyStored();
+			ItemPowerManager capEnergy = new ItemPowerManager(stack);
 
-			//TODO item power
-
-			int maxCharge = 0;
-			int currentCharge = 0;
+			int maxCharge = capEnergy.getMaxEnergyStored();
+			int currentCharge = capEnergy.getEnergyStored();
 
 			ChatFormat color = ChatFormat.GREEN;
 			double quarter = maxCharge / 4;
