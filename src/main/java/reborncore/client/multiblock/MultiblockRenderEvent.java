@@ -37,14 +37,16 @@
 
 package reborncore.client.multiblock;
 
+import net.minecraft.util.math.BlockPos;
+
 //TODO a lot of 1.14 work needed here
 public class MultiblockRenderEvent {
 
-//	public static BlockPos anchor;
+	public static BlockPos anchor;
 //	//private static BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
 	public MultiblockSet currentMultiblock;
 //	//public Location parent;
-//	public BlockPos parent;
+	public BlockPos parent;
 //	RebornFluidRenderer fluidRenderer;
 //	private VisibleRegion camera;
 //
@@ -52,11 +54,11 @@ public class MultiblockRenderEvent {
 //		//this.fluidRenderer = new RebornFluidRenderer();
 //	}
 //
-//	public void setMultiblock(MultiblockSet set) {
-//		currentMultiblock = set;
-//		anchor = null;
-//		parent = null;
-//	}
+	public void setMultiblock(MultiblockSet set) {
+		currentMultiblock = set;
+		anchor = null;
+		parent = null;
+	}
 //
 //	@SubscribeEvent
 //	public void onWorldRenderLast(RenderWorldLastEvent event) {

@@ -28,6 +28,7 @@
 
 package reborncore.common.util;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
@@ -182,5 +183,13 @@ public class Tank  {
 
 	public int getFluidAmount() {
 		return 0;
+	}
+
+	public void drain(int currentWithdraw, boolean b) {
+
+	}
+
+	public void setTileEntity(BlockEntity tileBaseFluidGenerator) {
+
 	}
 }

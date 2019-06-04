@@ -28,9 +28,9 @@
 
 package reborncore.common.crafting;
 
-import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class RecipeManager {
 
 	private static final Map<Identifier, RebornRecipeType<?>> recipeTypes = new HashMap<>();
 
-	public static <R extends Recipe<?>> RebornRecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
+	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
 		if(recipeTypes.containsKey(name)){
 			throw new RuntimeException("RebornRecipe type with this name already registered");
 		}

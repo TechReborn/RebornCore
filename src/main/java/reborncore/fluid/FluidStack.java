@@ -14,4 +14,8 @@ public class FluidStack {
 	public String getLocalizedName() {
 		return null;
 	}
+
+	public boolean isFluidEqual(FluidStack recipeFluid) {
+		return false;
+	}
 }

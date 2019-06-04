@@ -29,6 +29,7 @@
 package reborncore.common.powerSystem;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
@@ -65,6 +66,10 @@ public class ExternalPowerSystems implements IRegistryFactory {
 
 	public static boolean isPoweredTile(BlockEntity tileEntity, Direction facing) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
+	}
+
+	public static void requestEnergyFromArmor(ItemPowerManager capEnergy, LivingEntity entityLiving) {
+
 	}
 
 	@Override

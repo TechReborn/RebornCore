@@ -38,7 +38,7 @@ public class ItemPowerManager {
 			stack.setTag(new CompoundTag());
 			stack.getTag().putInt("energy", 0);
 		} else {
-			if (stack.getTag().contains("charge")) {
+			if (stack.getTag().containsKey("charge")) {
 				//Upgrades the item from the old format to the new format
 				stack.getTag().putInt("energy", stack.getTag().getInt("charge") * RebornCoreConfig.euPerFU);
 				stack.getTag().remove("charge");

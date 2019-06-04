@@ -41,7 +41,7 @@ import reborncore.common.util.serialization.SerializationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class RebornRecipeType<R extends Recipe<?>> implements RecipeType<R>, RecipeSerializer<R> {
+public class RebornRecipeType<R extends RebornRecipe> implements RecipeType<R>, RecipeSerializer<R> {
 
 	private final Class<R> clazz;
 
