@@ -38,6 +38,7 @@ import reborncore.RebornCore;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.api.tile.ItemHandlerProvider;
 import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
 import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
@@ -57,7 +58,12 @@ public class ContainerTileInventoryBuilder {
 	private final int rangeStart;
 
 	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
-		this.itemHandler =  null; //TODO get the inv from the tile
+		if(tile instanceof ItemHandlerProvider){
+			this.itemHandler = (Inventory) ((ItemHandlerProvider) tile).getInventory();
+		} else {
+			this.itemHandler = null;
+		}
+		 //TODO get the inv from the tile
 		this.tile = tile;
 		this.parent = parent;
 		this.rangeStart = parent.slots.size();

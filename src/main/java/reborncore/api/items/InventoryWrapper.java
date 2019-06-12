@@ -19,11 +19,11 @@ public class InventoryWrapper implements Inventory {
 	}
 
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public Tag serializeNBT() {
@@ -48,7 +48,7 @@ public class InventoryWrapper implements Inventory {
 
 	@Override
 	public ItemStack getInvStack(int i) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -80,6 +80,8 @@ public class InventoryWrapper implements Inventory {
 	public void clear() {
 
 	}
+
+
 
 
 }

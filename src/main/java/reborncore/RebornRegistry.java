@@ -33,14 +33,19 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 /**
  * Created by Gigabit101 on 16/08/2016.
  */
 public class RebornRegistry {
 	//public static LootManager.InnerPool lp = new LootManager.InnerPool();
+
+	//Yeah, this is horrible
+	private static final HashMap<Object, Identifier> objIdentMap = new HashMap<>();
 
 	public static void registerBlock(Block block, Item.Settings builder, Identifier name) {
 		Registry.register(Registry.BLOCK, name, block);
@@ -58,6 +63,15 @@ public class RebornRegistry {
 		}
 	}
 
+	public static void registerBlock(Block block, Item.Settings itemGroup) {
+		Validate.isTrue(objIdentMap.containsKey(block));
+		registerBlock(block, itemGroup, objIdentMap.get(block));
+	}
+
+	public static void registerBlock(Block block, Class<? extends BlockItem> itemclass){
+		Validate.isTrue(objIdentMap.containsKey(block));
+		registerBlock(block, itemclass, objIdentMap.get(block));
+	}
 
 	public static void registerBlock(Block block, BlockItem itemBlock, Identifier name) {
 		Registry.register(Registry.BLOCK, name, block);
@@ -71,6 +85,15 @@ public class RebornRegistry {
 
 	public static void registerItem(Item item, Identifier name) {
 		Registry.register(Registry.ITEM, name, item);
+	}
+
+	public static void registerItem(Item item){
+		Validate.isTrue(objIdentMap.containsKey(item));
+		registerItem(item, objIdentMap.get(item));
+	}
+
+	public static void registerIdent(Object object, Identifier identifier){
+		objIdentMap.put(object, identifier);
 	}
 
 	//eg: RebornRegistry.addLoot(Items.NETHER_STAR, 0.95, LootTableList.CHESTS_VILLAGE_BLACKSMITH);
