@@ -6,7 +6,8 @@
   ],
   "client": [
     "MixinPlayerEntityRenderer",
-    "MixinItemDynamicRenderer"
+    "MixinItemDynamicRenderer",
+    "MixinItemStack"
   ],
   "injectors": {
     "defaultRequire": 1

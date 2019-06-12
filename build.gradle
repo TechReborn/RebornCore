@@ -47,7 +47,7 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:0.4.7+build.147"
 
 	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0-pre+build.156"
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0+build.183"
 
 	compileOnly "com.google.code.findbugs:jsr305:+"
 	modCompile "io.github.prospector.modmenu:ModMenu:1.5.4-85"
