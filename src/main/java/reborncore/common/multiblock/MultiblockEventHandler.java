@@ -28,9 +28,6 @@
 
 package reborncore.common.multiblock;
 
-import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.Chunk;
-
 /**
  * In your mod, subscribe this on both the client and server sides side to
  * handle chunk load events for your multiblock machines. Chunks can load

@@ -35,6 +35,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -81,5 +82,9 @@ public abstract class BaseTileBlock extends Block implements BlockEntityProvider
 		compound.putInt("x", pos.getX());
 		compound.putInt("y", pos.getY());
 		compound.putInt("z", pos.getZ());
+	}
+
+	public void getDrops(BlockState state, DefaultedList<ItemStack> drops, World world, BlockPos pos, int fortune){
+		
 	}
 }

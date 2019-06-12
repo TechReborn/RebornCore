@@ -28,14 +28,11 @@
 
 package reborncore;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import reborncore.common.LootManager;
 
 import java.lang.reflect.InvocationTargetException;
 

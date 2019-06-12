@@ -29,14 +29,9 @@
 package reborncore;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemDynamicRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import reborncore.client.HolidayRenderEvent;
-import reborncore.client.IconSupplier;
-import reborncore.client.hud.StackInfoHUD;
 import reborncore.client.multiblock.MultiblockRenderEvent;
-import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.client.shields.ShieldTextureStore;
 
 public class ClientProxy extends CommonProxy {

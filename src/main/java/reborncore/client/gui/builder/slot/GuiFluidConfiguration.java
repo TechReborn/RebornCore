@@ -30,7 +30,6 @@ package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.MinecraftClient;
-import org.lwjgl.glfw.GLFW;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;

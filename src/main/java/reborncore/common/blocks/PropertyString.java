@@ -29,8 +29,9 @@
 package reborncore.common.blocks;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.*;
 import net.minecraft.state.property.AbstractProperty;
+
+import java.util.*;
 
 /**
  * Created by covers1624 on 2/6/2016.

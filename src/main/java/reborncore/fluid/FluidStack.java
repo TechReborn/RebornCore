@@ -1,11 +1,16 @@
 package reborncore.fluid;
 
-import net.minecraft.fluid.BaseFluid;
-
 public class FluidStack {
 
 	Fluid fluid;
 	public int amount;
+
+	public FluidStack(Fluid fluid, int i) {
+
+	}
+
+	public FluidStack() {
+	}
 
 	public Fluid getFluid() {
 		return null;

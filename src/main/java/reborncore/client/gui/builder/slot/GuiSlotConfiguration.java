@@ -33,7 +33,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Slot;
 import net.minecraft.network.chat.TextComponent;
-import org.lwjgl.glfw.GLFW;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;

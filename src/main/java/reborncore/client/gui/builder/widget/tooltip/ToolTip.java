@@ -28,11 +28,11 @@
 
 package reborncore.client.gui.builder.widget.tooltip;
 
+import net.minecraft.client.font.TextRenderer;
 import reborncore.client.gui.GuiUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import net.minecraft.client.font.TextRenderer;
 
 public class ToolTip {
 

@@ -29,9 +29,6 @@
 package reborncore.client.gui.builder.widget;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-
-import java.util.ArrayList;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
@@ -39,6 +36,8 @@ import net.minecraft.container.Container;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
+
+import java.util.ArrayList;
 
 public abstract class GuiWidget<T extends Container> extends AbstractContainerScreen {
 

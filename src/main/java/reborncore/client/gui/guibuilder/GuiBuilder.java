@@ -28,6 +28,7 @@
 
 package reborncore.client.gui.guibuilder;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormat;
@@ -35,7 +36,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -48,12 +48,10 @@ import reborncore.client.gui.builder.widget.GuiButtonSimple;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
+import reborncore.fluid.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.Lists;
-import reborncore.fluid.FluidStack;
 
 /**
  * Created by Gigabit101 on 08/08/2016.

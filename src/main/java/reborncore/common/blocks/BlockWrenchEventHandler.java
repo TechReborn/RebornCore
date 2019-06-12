@@ -29,16 +29,11 @@
 package reborncore.common.blocks;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.mixin.eventsinteraction.MixinClientPlayerInteractionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
 import reborncore.api.ToolManager;
-import reborncore.common.RebornCoreConfig;
 
 import java.util.ArrayList;
 import java.util.List;

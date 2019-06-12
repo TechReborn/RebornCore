@@ -28,13 +28,16 @@
 
 package reborncore.common.util;
 
-import java.util.*;
+import net.minecraft.util.DefaultedList;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import net.minecraft.util.DefaultedList;
 
 //Taken from https://github.com/The-Acronym-Coders/BASE/blob/develop/1.12.0/src/main/java/com/teamacronymcoders/base/util/collections/NonnullListCollector.java, thanks for this ;)
 public class NonNullListCollector<T> implements Collector<T, DefaultedList<T>, DefaultedList<T>> {

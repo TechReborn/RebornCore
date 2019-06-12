@@ -28,10 +28,11 @@
 
 package reborncore.common.shields;
 
+import net.minecraft.util.Identifier;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import net.minecraft.util.Identifier;
 
 /**
  * Created by Mark on 21/03/2016.

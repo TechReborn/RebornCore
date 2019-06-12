@@ -29,7 +29,6 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;

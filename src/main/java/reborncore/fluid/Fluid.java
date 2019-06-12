@@ -6,6 +6,13 @@ public class Fluid {
 
 	public int amount;
 
+	public Fluid(String name, Identifier identifier, Identifier identifier1) {
+
+	}
+
+	public Fluid() {
+	}
+
 	public Fluid getFluid() {
 		return null;
 	}
@@ -20,5 +27,9 @@ public class Fluid {
 
 	public int getColor(FluidStack fluid) {
 		return 0;
+	}
+
+	public String getName() {
+		return "";
 	}
 }

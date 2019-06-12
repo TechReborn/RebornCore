@@ -28,8 +28,9 @@
 
 package reborncore.api;
 
-import java.util.List;
 import net.minecraft.network.chat.Component;
+
+import java.util.List;
 
 public interface IListInfoProvider {
 

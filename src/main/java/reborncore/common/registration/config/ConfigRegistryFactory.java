@@ -29,7 +29,6 @@
 package reborncore.common.registration.config;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
 import reborncore.common.registration.IRegistryFactory;
 import reborncore.common.registration.RebornRegister;
@@ -41,7 +40,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 @IRegistryFactory.RegistryFactory
 public class ConfigRegistryFactory implements IRegistryFactory {

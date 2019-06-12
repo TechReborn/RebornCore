@@ -28,6 +28,11 @@
 
 package reborncore.client.containerBuilder.builder;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.tile.TileMachineBase;
@@ -35,11 +40,6 @@ import reborncore.common.tile.TileMachineBase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Slot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 
 public class ContainerBuilder {
 

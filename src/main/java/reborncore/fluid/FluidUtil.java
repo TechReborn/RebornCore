@@ -14,4 +14,8 @@ public class FluidUtil {
 	public static boolean interactWithFluidHandler(PlayerEntity playerIn, Hand hand, Tank tank) {
 		return false;
 	}
+
+	public static ItemStack getFilledBucket(FluidStack stack) {
+		return null;
+	}
 }

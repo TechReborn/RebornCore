@@ -31,20 +31,7 @@ package reborncore.common;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.UniformLootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.context.LootContext;
-import net.minecraft.world.loot.entry.ItemEntry;
 import net.minecraft.world.loot.function.LootFunction;
-import net.minecraft.world.loot.function.SetCountLootFunction;
-import reborncore.RebornCore;
-import reborncore.RebornRegistry;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Gigabit101 on 16/08/2016.

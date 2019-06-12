@@ -31,8 +31,6 @@ package reborncore.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.Identifier;
 
 //TODO move to fabric api
 public class IconSupplier {

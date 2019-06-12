@@ -28,10 +28,10 @@
 
 package reborncore.client.shields;
 
+import net.minecraft.client.texture.AbstractTexture;
 import reborncore.client.texture.InputStreamTexture;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.texture.AbstractTexture;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;

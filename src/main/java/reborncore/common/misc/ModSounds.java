@@ -31,7 +31,6 @@ package reborncore.common.misc;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import reborncore.RebornCore;
 
 /**
  * @author drcrazy

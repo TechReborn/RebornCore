@@ -32,6 +32,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.container.Slot;
+
 import java.util.List;
 
 /**

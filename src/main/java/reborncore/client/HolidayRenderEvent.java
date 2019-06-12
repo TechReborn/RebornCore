@@ -30,21 +30,12 @@ package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.util.Identifier;
 import reborncore.client.models.ModelSantaHat;
-import reborncore.common.RebornCoreConfig;
-import reborncore.common.util.CalenderUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Mark on 27/11/2016.

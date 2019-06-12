@@ -38,8 +38,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.function.Predicate;
-
 /**
  * Created by Gigabit101 on 21/01/2017.
  */
