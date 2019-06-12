@@ -45,7 +45,7 @@ public class RecipeManager {
 		RebornRecipeType<R> type = new RebornRecipeType<>(clazz, name);
 		recipeTypes.put(name, type);
 
-		RecipeSerializer.register(name.toString(), type);
+		//RecipeSerializer.register(name.toString(), type);
 
 		return type;
 	}
