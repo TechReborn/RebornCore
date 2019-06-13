@@ -62,7 +62,7 @@ public class LootItem {
 		}
 
 		ItemStack result = item.copy();
-		result.setAmount(size);
+		result.setCount(size);
 		return result;
 	}
 

@@ -94,7 +94,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 				return JsonNull.INSTANCE;
 			}
 
-			jsonObject.addProperty(STACK_SIZE, src.getAmount());
+			jsonObject.addProperty(STACK_SIZE, src.getCount());
 
 			if (src.getTag() != null) {
 				jsonObject.addProperty(TAG_COMPOUND, src.getTag().toString());

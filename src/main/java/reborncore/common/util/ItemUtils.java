@@ -88,11 +88,11 @@ public class ItemUtils {
 	}
 
 	public static void writeItemToNBT(ItemStack stack, CompoundTag data) {
-		if (stack.isEmpty() || stack.getAmount() <= 0) {
+		if (stack.isEmpty() || stack.getCount() <= 0) {
 			return;
 		}
-		if (stack.getAmount() > 127) {
-			stack.setAmount(127);
+		if (stack.getCount() > 127) {
+			stack.setCount(127);
 		}
 		stack.toTag(data);
 	}

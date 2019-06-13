@@ -296,7 +296,7 @@ public class SlotConfiguration implements NBTSerializable {
 		private void handleItemInput(TileMachineBase machineBase) {
 			Inventory inventory = machineBase.getInventoryForTile().get();
 			ItemStack targetStack = inventory.getStack(slotID);
-			if (targetStack.getMaxAmount() == targetStack.getAmount()) {
+			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
 			}
 			BlockEntity tileEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
@@ -317,13 +317,13 @@ public class SlotConfiguration implements NBTSerializable {
 				}
 				int extract = 4;
 				if (!targetStack.isEmpty()) {
-					extract = Math.min(targetStack.getMaxAmount() - targetStack.getAmount(), extract);
+					extract = Math.min(targetStack.getMaxCount() - targetStack.getCount(), extract);
 				}
 				ItemStack extractedStack = sourceHandler.extractItem(i, extract, false);
 				if (targetStack.isEmpty()) {
 					inventory.setStackInSlot(slotID, extractedStack);
 				} else {
-					inventory.getStack(slotID).addAmount(extractedStack.getAmount());
+					inventory.getStack(slotID).increment(extractedStack.getCount());
 				}
 				inventory.setChanged();
 				break;

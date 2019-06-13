@@ -76,7 +76,7 @@ public class WorldUtils {
 	public static void dropItems(List<ItemStack> itemStackList, World world, BlockPos pos) {
 		for (final ItemStack itemStack : itemStackList) {
 			WorldUtils.dropItem(itemStack, world, pos);
-			itemStack.setAmount(0);
+			itemStack.setCount(0);
 		}
 	}
 }

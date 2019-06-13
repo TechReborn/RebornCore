@@ -281,12 +281,12 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			}
 
 			slot.onStackChanged(stackInSlot, originalStack);
-			if (stackInSlot.getAmount() <= 0) {
+			if (stackInSlot.getCount() <= 0) {
 				slot.setStack(ItemStack.EMPTY);
 			} else {
 				slot.markDirty();
 			}
-			if (stackInSlot.getAmount() == originalStack.getAmount()) {
+			if (stackInSlot.getCount() == originalStack.getCount()) {
 				return ItemStack.EMPTY;
 			}
 			slot.onTakeItem(player, stackInSlot);
@@ -297,37 +297,37 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	protected boolean shiftItemStack(final ItemStack stackToShift, final int start, final int end) {
 		boolean changed = false;
-		if (stackToShift.canStack()) {
-			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+		if (stackToShift.isStackable()) {
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				final Slot slot = this.slotList.get(slotIndex);
 				final ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && ItemUtils.isItemEqual(stackInSlot, stackToShift, true, true)
 					&& slot.canInsert(stackToShift)) {
-					final int resultingStackSize = stackInSlot.getAmount() + stackToShift.getAmount();
-					final int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
+					final int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
+					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());
 					if (resultingStackSize <= max) {
-						stackToShift.setAmount(0);
-						stackInSlot.setAmount(resultingStackSize);
+						stackToShift.setCount(0);
+						stackInSlot.setCount(resultingStackSize);
 						slot.markDirty();
 						changed = true;
-					} else if (stackInSlot.getAmount() < max) {
-						stackToShift.subtractAmount(max - stackInSlot.getAmount());
-						stackInSlot.setAmount(max);
+					} else if (stackInSlot.getCount() < max) {
+						stackToShift.decrement(max - stackInSlot.getCount());
+						stackInSlot.setCount(max);
 						slot.markDirty();
 						changed = true;
 					}
 				}
 			}
 		}
-		if (stackToShift.getAmount() > 0) {
-			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+		if (stackToShift.getCount() > 0) {
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				final Slot slot = this.slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
-					final int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
+					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());
 					stackInSlot = stackToShift.copy();
-					stackInSlot.setAmount(Math.min(stackToShift.getAmount(), max));
-					stackToShift.subtractAmount(stackInSlot.getAmount());
+					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
+					stackToShift.decrement(stackInSlot.getCount());
 					slot.setStack(stackInSlot);
 					slot.markDirty();
 					changed = true;

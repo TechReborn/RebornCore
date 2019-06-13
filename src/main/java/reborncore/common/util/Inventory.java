@@ -49,7 +49,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		name = invName;
-		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxAmount() : invStackLimit); //Blame asie for this
+		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxCount() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
 		this.externalInventory = new ExternalInventory<>();
@@ -92,7 +92,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	public ItemStack shrinkSlot(int slot, int count) {
 		ItemStack stack = getStack(slot);
-		stack.subtractAmount(count);
+		stack.decrement(count);
 		setChanged();
 		return stack;
 	}
@@ -159,7 +159,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 			if (stack.isEmpty()) {
 				continue;
 			}
-			count += stack.getAmount();
+			count += stack.getCount();
 		}
 		return count;
 	}

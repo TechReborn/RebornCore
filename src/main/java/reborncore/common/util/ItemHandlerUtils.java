@@ -60,7 +60,7 @@ public class ItemHandlerUtils {
 			if (itemStack.isEmpty()) {
 				continue;
 			}
-			if (itemStack.getAmount() > 0) {
+			if (itemStack.getCount() > 0) {
 				if (itemStack.getItem() instanceof BlockItem) {
 					if (((BlockItem) itemStack.getItem()).getBlock() instanceof FluidBlock) {
 						continue;

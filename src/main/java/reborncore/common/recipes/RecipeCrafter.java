@@ -261,7 +261,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true, true)) {
-			if (stack.getAmount() + inventory.getStack(slot).getAmount() <= stack.getMaxAmount()) {
+			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {
 				return true;
 			}
 		}
@@ -277,9 +277,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getAmount() + inventory.getStack(slot).getAmount() <= stack.getMaxAmount()) {// Check to see if it fits
+			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setAmount(inventory.getStack(slot).getAmount() + stack.getAmount());// Sets
+				newStack.setCount(inventory.getStack(slot).getCount() + stack.getCount());// Sets
 				// the
 				// new
 				// stack

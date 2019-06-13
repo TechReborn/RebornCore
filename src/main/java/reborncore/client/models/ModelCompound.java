@@ -113,7 +113,7 @@ public class ModelCompound {
 
 	public Item getItem() {
 		if (isBlock()) {
-			return Item.getItemFromBlock(block);
+			return Item.fromBlock(block);
 		}
 		return item;
 	}

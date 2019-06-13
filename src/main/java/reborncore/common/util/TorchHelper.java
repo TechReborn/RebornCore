@@ -50,12 +50,12 @@ public class TorchHelper {
 			if (!(item instanceof BlockItem)) {
 				continue;
 			}
-			int oldSize = torchStack.getAmount();
-			ItemUsageContext context = new ItemUsageContext(player, itemUsageContext.getHand(), new BlockHitResult(itemUsageContext.getPos(), itemUsageContext.getFacing(), itemUsageContext.getBlockPos(), true));
+			int oldSize = torchStack.getCount();
+			ItemUsageContext context = new ItemUsageContext(player, itemUsageContext.getHand(), new BlockHitResult(itemUsageContext.getHitPos(), itemUsageContext.getSide(), itemUsageContext.getBlockPos(), true));
 			ActionResult result = torchStack.useOnBlock(context);
 			if (player.isCreative()) {
-				torchStack.setAmount(oldSize);
-			} else if (torchStack.getAmount() <= 0) {
+				torchStack.setCount(oldSize);
+			} else if (torchStack.getCount() <= 0) {
 				player.inventory.setInvStack(i, ItemStack.EMPTY);
 			}
 			if (result == ActionResult.SUCCESS) {

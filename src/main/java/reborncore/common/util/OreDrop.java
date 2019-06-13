@@ -45,7 +45,7 @@ public class OreDrop {
 	 */
 	public OreDrop(ItemStack drop, int maxQuantity) {
 		this.drop = drop;
-		this.minQuantity = drop.getAmount();
+		this.minQuantity = drop.getCount();
 		if (this.minQuantity == 0) {
 			this.minQuantity = 1;
 		}
@@ -60,7 +60,7 @@ public class OreDrop {
 	 */
 	public OreDrop(ItemStack drop, double baseChance, int maxQuantity) {
 		this.drop = drop;
-		this.minQuantity = drop.getAmount();
+		this.minQuantity = drop.getCount();
 		if (this.minQuantity == 0) {
 			this.minQuantity = 1;
 		}

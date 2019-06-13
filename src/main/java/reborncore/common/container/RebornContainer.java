@@ -117,7 +117,7 @@ public abstract class RebornContainer extends Container {
 		if (stack1.isEmpty() || stack2.isEmpty()) {
 			return false;
 		}
-		if (!stack1.isEqualIgnoreTags(stack2)) {
+		if (!stack1.isItemEqualIgnoreDamage(stack2)) {
 			return false;
 		}
 		if (!ItemStack.areTagsEqual(stack1, stack2)) {
@@ -159,12 +159,12 @@ public abstract class RebornContainer extends Container {
 				return ItemStack.EMPTY;
 			}
 			slot.onStackChanged(stackInSlot, originalStack);
-			if (stackInSlot.getAmount() <= 0) {
+			if (stackInSlot.getCount() <= 0) {
 				slot.setStack(ItemStack.EMPTY);
 			} else {
 				slot.markDirty();
 			}
-			if (stackInSlot.getAmount() == originalStack.getAmount()) {
+			if (stackInSlot.getCount() == originalStack.getCount()) {
 				return ItemStack.EMPTY;
 			}
 			slot.onTakeItem(player, stackInSlot);
@@ -174,36 +174,36 @@ public abstract class RebornContainer extends Container {
 
 	protected boolean shiftItemStack(ItemStack stackToShift, int start, int end) {
 		boolean changed = false;
-		if (stackToShift.canStack()) {
-			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+		if (stackToShift.isStackable()) {
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && canStacksMerge(stackInSlot, stackToShift)) {
-					int resultingStackSize = stackInSlot.getAmount() + stackToShift.getAmount();
-					int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
+					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
+					int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());
 					if (resultingStackSize <= max) {
-						stackToShift.setAmount(0);
-						stackInSlot.setAmount(resultingStackSize);
+						stackToShift.setCount(0);
+						stackInSlot.setCount(resultingStackSize);
 						slot.markDirty();
 						changed = true;
-					} else if (stackInSlot.getAmount() < max) {
-						stackToShift.setAmount(stackToShift.getAmount() - (max - stackInSlot.getAmount()));
-						stackInSlot.setAmount(max);
+					} else if (stackInSlot.getCount() < max) {
+						stackToShift.setCount(stackToShift.getCount() - (max - stackInSlot.getCount()));
+						stackInSlot.setCount(max);
 						slot.markDirty();
 						changed = true;
 					}
 				}
 			}
 		}
-		if (stackToShift.getAmount() > 0) {
-			for (int slotIndex = start; stackToShift.getAmount() > 0 && slotIndex < end; slotIndex++) {
+		if (stackToShift.getCount() > 0) {
+			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
 				Slot slot = (Slot) slotList.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (stackInSlot.isEmpty()) {
-					int max = Math.min(stackToShift.getMaxAmount(), slot.getMaxStackAmount());
+					int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());
 					stackInSlot = stackToShift.copy();
-					stackInSlot.setAmount(Math.min(stackToShift.getAmount(), max));
-					stackToShift.setAmount(stackToShift.getAmount() - stackInSlot.getAmount());
+					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
+					stackToShift.setCount(stackToShift.getCount() - stackInSlot.getCount());
 					slot.setStack(stackInSlot);
 					slot.markDirty();
 					changed = true;

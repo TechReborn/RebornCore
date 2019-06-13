@@ -128,20 +128,20 @@ public class InventoryItem extends InventoryWrapper {
 			if (!InventoryUtils.canItemStacksStack(stack, existing)) {
 				return stack;
 			}
-			limit -= existing.getAmount();
+			limit -= existing.getCount();
 		}
 		if (limit <= 0) {
 			return stack;
 		}
-		boolean reachedLimit = stack.getAmount() > limit;
+		boolean reachedLimit = stack.getCount() > limit;
 		if (!simulate) {
 			if (existing.isEmpty()) {
 				setStackInSlot(slot, reachedLimit ? InventoryUtils.copyStackWithSize(stack, limit) : stack);
 			} else {
-				existing.addAmount(reachedLimit ? limit : stack.getAmount());
+				existing.increment(reachedLimit ? limit : stack.getCount());
 			}
 		}
-		return reachedLimit ? InventoryUtils.copyStackWithSize(stack, stack.getAmount() - limit) : ItemStack.EMPTY;
+		return reachedLimit ? InventoryUtils.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
 	}
 
 	@Nonnull
@@ -156,15 +156,15 @@ public class InventoryItem extends InventoryWrapper {
 		if (existing.isEmpty()) {
 			return ItemStack.EMPTY;
 		}
-		int toExtract = Math.min(amount, existing.getMaxAmount());
-		if (existing.getAmount() <= toExtract) {
+		int toExtract = Math.min(amount, existing.getMaxCount());
+		if (existing.getCount() <= toExtract) {
 			if (!simulate) {
 				setStackInSlot(slot, ItemStack.EMPTY);
 			}
 			return existing;
 		} else {
 			if (!simulate) {
-				setStackInSlot(slot, InventoryUtils.copyStackWithSize(existing, existing.getAmount() - toExtract));
+				setStackInSlot(slot, InventoryUtils.copyStackWithSize(existing, existing.getCount() - toExtract));
 			}
 			return InventoryUtils.copyStackWithSize(existing, toExtract);
 		}
@@ -184,7 +184,7 @@ public class InventoryItem extends InventoryWrapper {
 	public int getStackLimit(int slot,
 	                         @Nonnull
 		                         ItemStack stack) {
-		return Math.min(getSlotLimit(slot), stack.getMaxAmount());
+		return Math.min(getSlotLimit(slot), stack.getMaxCount());
 	}
 
 	@Override

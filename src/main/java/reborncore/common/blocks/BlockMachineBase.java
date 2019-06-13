@@ -64,8 +64,8 @@ import java.util.List;
 
 public abstract class BlockMachineBase extends BaseTileBlock {
 
-	public static DirectionProperty FACING = DirectionProperty.create("facing", Direction.Type.HORIZONTAL);
-	public static BooleanProperty ACTIVE = BooleanProperty.create("active");
+	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
+	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
 
 	public static ItemStack basicFrameStack;
 	public static ItemStack advancedFrameStack;
@@ -92,8 +92,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 
 	@Override
 	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
-		FACING = DirectionProperty.create("facing", Direction.Type.HORIZONTAL);
-		ACTIVE = BooleanProperty.create("active");
+		FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
+		ACTIVE = BooleanProperty.of("active");
 		builder.add(FACING, ACTIVE);
 	}
 
@@ -168,7 +168,7 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
 					if (InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
-					                                     true).getAmount() > 0) {
+					                                     true).getCount() > 0) {
 						stack = InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setStackInHand(Hand.MAIN_HAND, stack);
 						return true;
