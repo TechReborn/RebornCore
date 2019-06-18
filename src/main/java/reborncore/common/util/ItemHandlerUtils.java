@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import reborncore.api.tile.IUpgradeable;
@@ -46,9 +47,9 @@ public class ItemHandlerUtils {
 		if (tileEntity == null) {
 			return;
 		}
-		if (tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) != null) {
-			IItemHandler inventory = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseGet(null);
-			dropItemHandler(world, pos, inventory);
+		LazyOptional<IItemHandler> cap = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if (cap.isPresent()) {
+			cap.ifPresent(inventory -> dropItemHandler(world, pos, inventory));
 		}
 		if (tileEntity instanceof IUpgradeable) {
 			dropItemHandler(world, pos, ((IUpgradeable) tileEntity).getUpgradeInvetory());
