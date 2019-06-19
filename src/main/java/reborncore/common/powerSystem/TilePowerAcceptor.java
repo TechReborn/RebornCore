@@ -365,26 +365,19 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 	// IListInfoProvider
 	@Override
 	public void addInfo(List<ITextComponent> info, boolean isRealTile, boolean hasData) {
-		info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
-			+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
 		if (getMaxInput() != 0) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
-				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput())));
+			info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.inputRate", getMaxInput()));
 		}
 		if (getMaxOutput() != 0) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate")
-				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput())));
+			info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.outputRate", getMaxOutput()));
 		}
-		info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
-			+ TextFormatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
+		info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.tier", getTier().toString()));
 		if (isRealTile) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change")
-				+ ": " + TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
+			info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.change", PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
 		}
-
+		info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.maxEnergy", getMaxPower()));
 		if (hasData) {
-			info.add(new TextComponentString(TextFormatting.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
-				+ TextFormatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy)));
+			info.add(StringUtils.makeTooltipLine("reborncore.tooltip.energy.currentValue", energy));
 		}
 
 		super.addInfo(info, isRealTile, hasData);

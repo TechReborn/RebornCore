@@ -28,8 +28,10 @@
 
 package reborncore.common.util;
 
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import reborncore.common.powerSystem.PowerSystem;
 
 /**
  * @author Prospector on 11/05/16
@@ -87,6 +89,26 @@ public class StringUtils {
 		} else {
 			return TextFormatting.YELLOW;
 		}
+	}
+	
+	public static TextComponentString makeTooltipLine (String translationKey, double energy) {
+		String msg = "" + TextFormatting.GRAY;
+		msg += StringUtils.t(translationKey);
+		msg += ": ";
+		msg += TextFormatting.GOLD;
+		msg += PowerSystem.getLocaliszedPowerFormatted(energy);
+				
+		return new TextComponentString(msg);
+	}
+	
+	public static TextComponentString makeTooltipLine(String translationKey, String value) {
+		String msg = "" + TextFormatting.GRAY;
+		msg += StringUtils.t(translationKey);
+		msg += ": ";
+		msg += TextFormatting.GOLD;
+		msg += StringUtils.toFirstCapitalAllLowercase(value);
+				
+		return new TextComponentString(msg);
 	}
 
 }
