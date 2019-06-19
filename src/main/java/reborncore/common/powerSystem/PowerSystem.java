@@ -28,6 +28,7 @@
 
 package reborncore.common.powerSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.io.FileUtils;
@@ -36,7 +37,9 @@ import reborncore.common.RebornCoreConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class PowerSystem {
@@ -127,7 +130,8 @@ public class PowerSystem {
 		}
 
 		if (EffectiveSide.get() == LogicalSide.CLIENT && doFormat) {
-
+			String languageCode = Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getLanguageCode();
+			ret += NumberFormat.getNumberInstance(Locale.forLanguageTag(languageCode)).format(value);
 		} else {
 			ret += value;
 		}
