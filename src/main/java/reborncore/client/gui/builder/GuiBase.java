@@ -39,7 +39,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
@@ -75,7 +75,7 @@ public class GuiBase extends AbstractContainerScreen {
 	public boolean upgrades;
 
 	public GuiBase(PlayerEntity player, BlockEntity tile, BuiltContainer container) {
-		super(container, player.inventory, new TextComponent(container.getName()));
+		super(container, player.inventory, new LiteralText(container.getName()));
 		this.tile = tile;
 		this.container = container;
 		slotConfigType = SlotConfigType.NONE;

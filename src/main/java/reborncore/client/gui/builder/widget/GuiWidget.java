@@ -33,7 +33,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
@@ -46,7 +46,7 @@ public abstract class GuiWidget<T extends Container> extends AbstractContainerSc
 	private final ArrayList<Widget> widgets = new ArrayList<>();
 	private final Identifier background;
 
-	public GuiWidget(T inventorySlotsIn, Identifier background, int xSize, int ySize, Component title) {
+	public GuiWidget(T inventorySlotsIn, Identifier background, int xSize, int ySize, Text title) {
 		super(inventorySlotsIn, MinecraftClient.getInstance().player.inventory, title);
 		this.containerWidth = xSize;
 		this.containerHeight = ySize;

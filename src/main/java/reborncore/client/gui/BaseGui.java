@@ -32,7 +32,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import reborncore.common.util.StringUtils;
 
@@ -45,7 +45,7 @@ public class BaseGui extends AbstractContainerScreen {
 	String name;
 
 	public BaseGui(Container container, BlockEntity tileEntity, PlayerEntity player, Identifier overlays, Identifier guitexture, String name) {
-		super(container, player.inventory, new TextComponent(name));
+		super(container, player.inventory, new LiteralText(name));
 		this.container = container;
 		this.tileEntity = tileEntity;
 		this.overlays = overlays;

@@ -6,7 +6,8 @@
   ],
   "client": [
     "MixinCraftingResultSlot",
-    "MixinContainer"
+    "MixinContainer",
+    "MixinRecipeManager"
   ],
   "injectors": {
     "defaultRequire": 1

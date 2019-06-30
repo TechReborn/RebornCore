@@ -28,8 +28,8 @@
 
 package reborncore.common.util;
 
-import net.minecraft.ChatFormat;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 /**
  * @author Prospector on 11/05/16
@@ -59,7 +59,7 @@ public class StringUtils {
 	 * @return String Translated string
 	 */
 	public static String t(String translationKey) {
-		return new TranslatableComponent(translationKey).getFormattedText();
+		return new TranslatableText(translationKey).asFormattedString();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class StringUtils {
 	 * @return String Translated string
 	 */
 	public static String t(String translationKey, Object... format) {
-		return new TranslatableComponent(translationKey, format).getFormattedText();
+		return new TranslatableText(translationKey, format).asFormattedString();
 	}
 
 	/**
@@ -79,13 +79,13 @@ public class StringUtils {
 	 * @param percentage int percentage amount
 	 * @return TextFormatting Red or Yellow or Green
 	 */
-	public static ChatFormat getPercentageColour(int percentage) {
+	public static Formatting getPercentageColour(int percentage) {
 		if (percentage <= 10) {
-			return ChatFormat.RED;
+			return Formatting.RED;
 		} else if (percentage >= 75) {
-			return ChatFormat.GREEN;
+			return Formatting.GREEN;
 		} else {
-			return ChatFormat.YELLOW;
+			return Formatting.YELLOW;
 		}
 	}
 

@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Slot;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -119,7 +119,7 @@ public class GuiSlotConfiguration {
 		}
 		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
 		MinecraftClient.getInstance().keyboard.setClipboard(json);
-		MinecraftClient.getInstance().player.sendMessage(new TextComponent("Slot configuration copyied to clipboard"));
+		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration copyied to clipboard"));
 	}
 
 	public static void pasteFromClipboard() {
@@ -131,9 +131,9 @@ public class GuiSlotConfiguration {
 		try {
 			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
 			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.slotConfiguration));
-			MinecraftClient.getInstance().player.sendMessage(new TextComponent("Slot configuration loaded from clipboard"));
+			MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
-			MinecraftClient.getInstance().player.sendMessage(new TextComponent(e.getMessage()));
+			MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.getMessage()));
 		}
 	}
 

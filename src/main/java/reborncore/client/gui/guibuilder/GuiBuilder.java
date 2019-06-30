@@ -31,14 +31,14 @@ package reborncore.client.gui.guibuilder;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import reborncore.ClientProxy;
 import reborncore.api.IListInfoProvider;
@@ -343,14 +343,14 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY)) {
 			int percentage = percentage(max, value);
 			List<String> list = new ArrayList<>();
-			list.add("" + ChatFormat.GOLD + value + "/" + max + suffix);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + ChatFormat.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
+			list.add("" + Formatting.GOLD + value + "/" + max + suffix);
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + Formatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
 			list.add(line2);
 
 			if (value > max) {
-				list.add(ChatFormat.GRAY + "Yo this is storing more than it should be able to");
-				list.add(ChatFormat.GRAY + "prolly a bug");
-				list.add(ChatFormat.GRAY + "pls report and tell how tf you did this");
+				list.add(Formatting.GRAY + "Yo this is storing more than it should be able to");
+				list.add(Formatting.GRAY + "prolly a bug");
+				list.add(Formatting.GRAY + "pls report and tell how tf you did this");
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
@@ -589,21 +589,21 @@ public class GuiBuilder {
 		gui.blit(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
-			List<Component> list = Lists.newArrayList();
-			list.add(new TextComponent(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
+			List<Text> list = Lists.newArrayList();
+			list.add(new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
 					+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
-					+ displayPower.abbreviation).applyFormat(ChatFormat.GOLD));
-			list.add(new TextComponent(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
-					+ ChatFormat.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
+					+ displayPower.abbreviation).formatted(Formatting.GOLD));
+			list.add(new LiteralText(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
+					+ Formatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
 			if (gui.tile instanceof IListInfoProvider) {
 				if (Screen.hasShiftDown()) {
 					((IListInfoProvider) gui.tile).addInfo(list, true, true);
-					list.add(new TextComponent(""));
-					list.add(new TextComponent(
-							ChatFormat.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
+					list.add(new LiteralText(""));
+					list.add(new LiteralText(
+							Formatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
 				} else {
-					list.add(new TextComponent(""));
-					list.add((new TextComponent(ChatFormat.BLUE + "Shift" + ChatFormat.GRAY + " "
+					list.add(new LiteralText(""));
+					list.add((new LiteralText(Formatting.BLUE + "Shift" + Formatting.GRAY + " "
 							+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"))));
 				}
 			}
@@ -613,8 +613,8 @@ public class GuiBuilder {
 			}
 			List<String> list1 = Lists.newArrayList();
 
-			for (Component itextcomponent : list) {
-				list1.add(itextcomponent.getFormattedText());
+			for (Text itextcomponent : list) {
+				list1.add(itextcomponent.asFormattedString());
 			}
 			gui.renderTooltip(list1, mouseX, mouseY);
 			GlStateManager.disableLighting();
@@ -661,11 +661,11 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 22, 56, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			if (isTankEmpty) {
-				list.add(ChatFormat.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
+				list.add(Formatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
 			} else {
-				list.add(ChatFormat.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + fluid.getLocalizedName());
+				list.add(Formatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + fluid.getLocalizedName());
 			}
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + ChatFormat.GRAY + " "
+			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + Formatting.GRAY + " "
 				+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();

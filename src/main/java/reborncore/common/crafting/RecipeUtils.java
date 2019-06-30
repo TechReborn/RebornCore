@@ -40,25 +40,19 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import reborncore.common.util.NonNullListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
+import reborncore.mixin.extensions.RecipeManagerExtensions;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecipeUtils {
 
 	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
-		List<T> recipes = new ArrayList<>();
-		for(Recipe recipe : world.getRecipeManager().values()){
-			if(recipe instanceof RebornRecipe && recipe.equals(type)){
-				if(type.getRecipeClass() != recipe.getClass()){
-					throw new RuntimeException("Invalid recipe in " + type.getName());
-				}
-				//noinspection unchecked
-				recipes.add((T) recipe);
-			}
-		}
-		return Collections.unmodifiableList(recipes);
+		RecipeManagerExtensions recipeManagerExtensions = (RecipeManagerExtensions) world.getRecipeManager();
+		//noinspection unchecked
+		return new ArrayList<>(recipeManagerExtensions.getAll(type).values());
 	}
 
 	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject){

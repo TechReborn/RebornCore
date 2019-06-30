@@ -28,16 +28,16 @@
 
 package reborncore.common.tile;
 
-import net.minecraft.ChatFormat;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
@@ -400,13 +400,13 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	}
 
 	@Override
-	public void addInfo(List<Component> info, boolean isRealTile, boolean hasData) {
+	public void addInfo(List<Text> info, boolean isRealTile, boolean hasData) {
 		if (hasData) {
 			if (getInventoryForTile().isPresent()) {
-				info.add(new TextComponent(ChatFormat.GOLD + "" + getInventoryForTile().get().getContents() + ChatFormat.GRAY + " items"));
+				info.add(new LiteralText(Formatting.GOLD + "" + getInventoryForTile().get().getContents() + Formatting.GRAY + " items"));
 			}
-			if (!upgradeInventory.isEmpty()) {
-				info.add(new TextComponent(ChatFormat.GOLD + "" + upgradeInventory.getContents() + ChatFormat.GRAY + " upgrades"));
+			if (!upgradeInventory.isInvEmpty()) {
+				info.add(new LiteralText(Formatting .GOLD + "" + upgradeInventory.getContents() + Formatting .GRAY + " upgrades"));
 			}
 		}
 	}

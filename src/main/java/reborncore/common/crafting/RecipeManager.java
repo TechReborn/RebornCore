@@ -30,6 +30,7 @@ package reborncore.common.crafting;
 
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class RecipeManager {
 		RebornRecipeType<R> type = new RebornRecipeType<>(clazz, name);
 		recipeTypes.put(name, type);
 
-		//RecipeSerializer.register(name.toString(), type);
+		Registry.register(Registry.RECIPE_SERIALIZER, name, (RecipeSerializer<?>) type);
 
 		return type;
 	}

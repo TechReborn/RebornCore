@@ -48,6 +48,7 @@ public class InventoryItem extends InventoryWrapper {
 	private InventoryItem(
 		@Nonnull
 			ItemStack stack, int size) {
+		super(size);
 		Validate.notNull(stack);
 		Validate.isTrue(!stack.isEmpty());
 		this.size = size;

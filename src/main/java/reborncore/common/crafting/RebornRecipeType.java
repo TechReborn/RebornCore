@@ -55,16 +55,17 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 	@Override
 	public R read(Identifier recipeId, JsonObject json) {
 		Identifier type = new Identifier(JsonHelper.getString(json, "type"));
-		if(!type.equals(typeId)){
+		if (!type.equals(typeId)) {
 			throw new RuntimeException("RebornRecipe type not supported!");
 		}
 
 		R recipe = newRecipe(recipeId);
-		recipe.getSerializer().read(recipeId, json);
-		return (R) recipe;
+		recipe.deserialize(json);
+		return recipe;
+
 	}
 
-	public JsonObject toJson(R recipe){
+	public JsonObject toJson(R recipe) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", typeId.toString());
 
@@ -73,11 +74,11 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		//return jsonObject;
 	}
 
-	public R fromJson(Identifier recipeType, JsonObject json){
+	public R fromJson(Identifier recipeType, JsonObject json) {
 		return read(recipeType, json);
 	}
 
-	R newRecipe(Identifier recipeId){
+	R newRecipe(Identifier recipeId) {
 		try {
 			return clazz.getConstructor(RebornRecipeType.class, Identifier.class).newInstance(this, recipeId);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -103,7 +104,7 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		return typeId;
 	}
 
-	public List<RebornRecipe> getRecipes(World world){
+	public List<RebornRecipe> getRecipes(World world) {
 		return RecipeUtils.getRecipes(world, this);
 	}
 

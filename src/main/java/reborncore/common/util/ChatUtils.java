@@ -30,7 +30,7 @@ package reborncore.common.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 
 /**
  * Class stolen from SteamAgeRevolution, which I stole from BloodMagic, which was stolen from EnderCore, which stole the
@@ -43,7 +43,7 @@ import net.minecraft.network.chat.Component;
 public class ChatUtils {
 	private static final int DELETION_ID = 1337; //MAKE THIS UNIQUE PER MOD THAT USES THIS
 
-	public static void sendNoSpamMessages(int messageID, Component message) {
+	public static void sendNoSpamMessages(int messageID, Text message) {
 		int deleteID = DELETION_ID + messageID;
 		ChatHud chat = MinecraftClient.getInstance().inGameHud.getChatHud();
 		chat.addMessage(message, deleteID);

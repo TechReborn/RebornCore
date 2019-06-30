@@ -48,6 +48,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	private ExternalInventory<?> externalInventory;
 
 	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
+		super(size);
 		name = invName;
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxCount() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
@@ -74,6 +75,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	@Nonnull
 	@Override
+	@Deprecated
 	public ItemStack insertItem(int slot,
 	                            @Nonnull
 		                            ItemStack stack, boolean simulate) {
@@ -84,6 +86,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	@Nonnull
 	@Override
+	@Deprecated
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		ItemStack stack = super.extractItem(slot, amount, simulate);
 		setChanged();
@@ -97,14 +100,6 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 		return stack;
 	}
 
-	public boolean isEmpty() {
-		for (ItemStack itemstack : stacks) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	public Inventory getExternal(Direction facing) {
 		throw new UnsupportedOperationException("needs fixing");
@@ -155,7 +150,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	public int getContents() {
 		int count = 0;
-		for (ItemStack stack : stacks) {
+		for (ItemStack stack : getStacks()) {
 			if (stack.isEmpty()) {
 				continue;
 			}
@@ -190,6 +185,12 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 
 	public int getStackLimit() {
 		return stackLimit;
+	}
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
+		tile.markDirty();
 	}
 
 	/**

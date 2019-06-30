@@ -29,13 +29,13 @@
 package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
-import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Formatting;
 import org.lwjgl.opengl.GL11;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.ItemPowerManager;
@@ -134,25 +134,25 @@ public class StackInfoHUD {
 			int maxCharge = capEnergy.getMaxEnergyStored();
 			int currentCharge = capEnergy.getEnergyStored();
 
-			ChatFormat color = ChatFormat.GREEN;
+			Formatting color = Formatting.GREEN;
 			double quarter = maxCharge / 4;
 			double half = maxCharge / 2;
 			if (currentCharge <= half) {
-				color = ChatFormat.YELLOW;
+				color = Formatting.YELLOW;
 			}
 			if (currentCharge <= quarter) {
-				color = ChatFormat.DARK_RED;
+				color = Formatting.DARK_RED;
 			}
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
 				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
-				+ PowerSystem.getDisplayPower().abbreviation + ChatFormat.GRAY;
+				+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
 			if (stack.getTag() != null && stack.getTag().containsKey("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
-					text = text + ChatFormat.GOLD + " (" + StringUtils.t("reborncore.message.active")
-						+ ChatFormat.GOLD + ")" + ChatFormat.GRAY;
+					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
+						+ Formatting.GOLD + ")" + Formatting.GRAY;
 				} else {
-					text = text + ChatFormat.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
-						+ ChatFormat.GOLD + ")" + ChatFormat.GRAY;
+					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
+						+ Formatting.GOLD + ")" + Formatting.GRAY;
 				}
 			}
 

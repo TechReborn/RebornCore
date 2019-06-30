@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -17,6 +17,6 @@ public interface ItemTooltipCallback {
 	});
 
 
-	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Component> components);
+	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Text> components);
 
 }

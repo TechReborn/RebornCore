@@ -57,7 +57,7 @@ public class RebornIngredient implements Predicate<ItemStack> {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		return base.method_8093(itemStack) && (size == NO_SIZE || itemStack.getCount() >= size);
+		return base.test(itemStack) && (size == NO_SIZE || itemStack.getCount() >= size);
 	}
 
 	public Ingredient getBase() {
