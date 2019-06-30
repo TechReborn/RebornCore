@@ -38,7 +38,7 @@ import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.crafting.RebornIngredient;
 import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.crafting.RebornRecipeType;
-import reborncore.common.util.Inventory;
+import reborncore.common.util.RebornInventory;
 import reborncore.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
@@ -80,7 +80,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	/**
 	 * This is the inventory to use for the crafting
 	 */
-	public Inventory inventory;
+	public RebornInventory inventory;
 
 	/**
 	 * This is the list of the slots that the crafting logic should look for the
@@ -103,7 +103,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	@Nullable
 	public static ICrafterSoundHanlder soundHanlder = (firstRun, tileEntity) -> {};
 
-	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity tile, int inputs, int outputs, Inventory inventory,
+	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity tile, int inputs, int outputs, RebornInventory inventory,
 	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeType = recipeType;
 		this.tile = tile;
@@ -228,7 +228,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		for (RebornIngredient ingredient : recipeType.getRebornIngredients()) {
 			boolean hasItem = false;
 			for (int slot : inputSlots) {
-				if (ingredient.test(inventory.getStack(slot))) {
+				if (ingredient.test(inventory.getInvStack(slot))) {
 					hasItem = true;
 				}
 			}
@@ -245,7 +245,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (RebornIngredient ingredient : currentRecipe.getRebornIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
-				if (ingredient.test(inventory.getStack(inputSlot))) {
+				if (ingredient.test(inventory.getInvStack(inputSlot))) {
 					inventory.shrinkSlot(inputSlot, ingredient.getSize());
 					break;
 				}
@@ -257,11 +257,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		if (inventory.getStack(slot).isEmpty()) {
+		if (inventory.getInvStack(slot).isEmpty()) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true, true)) {
-			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {
+		if (ItemUtils.isItemEqual(inventory.getInvStack(slot), stack, true, true)) {
+			if (stack.getCount() + inventory.getInvStack(slot).getCount() <= stack.getMaxCount()) {
 				return true;
 			}
 		}
@@ -272,19 +272,19 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return;
 		}
-		if (inventory.getStack(slot).isEmpty()) {// If the slot is empty set the contents
-			inventory.setStackInSlot(slot, stack);
+		if (inventory.getInvStack(slot).isEmpty()) {// If the slot is empty set the contents
+			inventory.setInvStack(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {// Check to see if it fits
+		if (ItemUtils.isItemEqual(inventory.getInvStack(slot), stack, true)) {// If the slot has stuff in
+			if (stack.getCount() + inventory.getInvStack(slot).getCount() <= stack.getMaxCount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setCount(inventory.getStack(slot).getCount() + stack.getCount());// Sets
+				newStack.setCount(inventory.getInvStack(slot).getCount() + stack.getCount());// Sets
 				// the
 				// new
 				// stack
 				// size
-				inventory.setStackInSlot(slot, newStack);
+				inventory.setInvStack(slot, newStack);
 			}
 		}
 	}

@@ -28,14 +28,14 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import reborncore.api.items.InventoryWrapper;
+import net.minecraft.inventory.Inventory;
 
 public class SlotElement extends ElementBase {
-	protected InventoryWrapper slotInventory;
+	protected Inventory slotInventory;
 	protected SlotType type;
 	int slotId, slotX, slotY;
 
-	public SlotElement(InventoryWrapper slotInventory, int slotId, int slotX, int slotY, SlotType type, int x, int y) {
+	public SlotElement(Inventory slotInventory, int slotId, int slotX, int slotY, SlotType type, int x, int y) {
 		super(x, y, type.getSprite());
 		this.type = type;
 		this.slotInventory = slotInventory;
@@ -48,7 +48,7 @@ public class SlotElement extends ElementBase {
 		return type;
 	}
 
-	public InventoryWrapper getSlotInventory() {
+	public Inventory getSlotInventory() {
 		return slotInventory;
 	}
 

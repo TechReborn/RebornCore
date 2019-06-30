@@ -124,7 +124,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements
 		if (!getInventoryForTile().isPresent()) {
 			return;
 		}
-		ItemStack batteryStack = getInventoryForTile().get().getStack(slot);
+		ItemStack batteryStack = getInventoryForTile().get().getInvStack(slot);
 		if (batteryStack.isEmpty()) {
 			return;
 		}

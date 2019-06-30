@@ -41,7 +41,7 @@ import reborncore.api.items.InventoryUtils;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.recipes.RecipeCrafter;
-import reborncore.common.util.Inventory;
+import reborncore.common.util.RebornInventory;
 import reborncore.common.util.ItemUtils;
 import reborncore.common.util.NBTSerializable;
 
@@ -55,12 +55,12 @@ public class SlotConfiguration implements NBTSerializable {
 	List<SlotConfigHolder> slotDetails = new ArrayList<>();
 
 	@Nullable
-	Inventory inventory;
+	RebornInventory inventory;
 
 	public SlotConfiguration() {
 	}
 
-	public SlotConfiguration(Inventory inventory) {
+	public SlotConfiguration(RebornInventory inventory) {
 		this.inventory = inventory;
 		//This is done to ensure that the inventory is set to use configured access,
 		Validate.isTrue(inventory.configuredAccess);
@@ -294,8 +294,8 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		private void handleItemInput(TileMachineBase machineBase) {
-			Inventory inventory = machineBase.getInventoryForTile().get();
-			ItemStack targetStack = inventory.getStack(slotID);
+			RebornInventory inventory = machineBase.getInventoryForTile().get();
+			ItemStack targetStack = inventory.getInvStack(slotID);
 			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
 			}
@@ -303,9 +303,9 @@ public class SlotConfiguration implements NBTSerializable {
 			if (!(tileEntity instanceof net.minecraft.inventory.Inventory)) {
 				return;
 			}
-			Inventory sourceHandler = null; //TODO
-			for (int i = 0; i < sourceHandler.getInvSize(); i++) {
-				ItemStack sourceStack = sourceHandler.getStack(i);
+			RebornInventory sourceInv = null; //TODO
+			for (int i = 0; i < sourceInv.getInvSize(); i++) {
+				ItemStack sourceStack = sourceInv.getInvStack(i);
 				if (sourceStack.isEmpty()) {
 					continue;
 				}
@@ -319,11 +319,11 @@ public class SlotConfiguration implements NBTSerializable {
 				if (!targetStack.isEmpty()) {
 					extract = Math.min(targetStack.getMaxCount() - targetStack.getCount(), extract);
 				}
-				ItemStack extractedStack = sourceHandler.extractItem(i, extract, false);
+				ItemStack extractedStack = sourceInv.takeInvStack(i, extract);
 				if (targetStack.isEmpty()) {
-					inventory.setStackInSlot(slotID, extractedStack);
+					inventory.setInvStack(slotID, extractedStack);
 				} else {
-					inventory.getStack(slotID).increment(extractedStack.getCount());
+					inventory.getInvStack(slotID).increment(extractedStack.getCount());
 				}
 				inventory.setChanged();
 				break;
@@ -331,8 +331,8 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		private void handleItemOutput(TileMachineBase machineBase) {
-			Inventory inventory = machineBase.getInventoryForTile().get();
-			ItemStack sourceStack = inventory.getStack(slotID);
+			RebornInventory inventory = machineBase.getInventoryForTile().get();
+			ItemStack sourceStack = inventory.getInvStack(slotID);
 			if (sourceStack.isEmpty()) {
 				return;
 			}
@@ -342,7 +342,7 @@ public class SlotConfiguration implements NBTSerializable {
 			}
 			net.minecraft.inventory.Inventory destHandler = (net.minecraft.inventory.Inventory)tileEntity;
 			ItemStack stack = InventoryUtils.insertItemStacked(destHandler, sourceStack, false);
-			inventory.setStackInSlot(slotID, stack);
+			inventory.setInvStack(slotID, stack);
 		}
 
 		@Override

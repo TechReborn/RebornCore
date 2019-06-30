@@ -31,15 +31,14 @@ package reborncore.common.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.Validate;
-import reborncore.api.items.InventoryUtils;
-import reborncore.api.items.InventoryWrapper;
+import reborncore.api.items.InventoryBase;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class InventoryItem extends InventoryWrapper {
+public class InventoryItem extends InventoryBase {
 
 	@Nonnull
 	ItemStack stack;
@@ -92,7 +91,7 @@ public class InventoryItem extends InventoryWrapper {
 
 	public List<ItemStack> getAllStacks() {
 		return IntStream.range(0, size)
-			.mapToObj(this::getStack)
+			.mapToObj(this::getInvStack)
 			.collect(Collectors.toList());
 	}
 
@@ -102,73 +101,15 @@ public class InventoryItem extends InventoryWrapper {
 
 	@Nonnull
 	@Override
-	public ItemStack getStack(int slot) {
+	public ItemStack getInvStack(int slot) {
 		return ItemStack.fromTag(getSlotData(slot));
 	}
 
 	@Override
-	public void setStackInSlot(int slot,
+	public void setInvStack(int slot,
 	                           @Nonnull
 		                           ItemStack stack) {
 		setSlotData(slot, stack.toTag(new CompoundTag()));
-	}
-
-	//insertItem and extractItem are the forge methods just adjusted to work with items
-	@Nonnull
-	@Override
-	public ItemStack insertItem(int slot,
-	                            @Nonnull
-		                            ItemStack stack, boolean simulate) {
-		if (stack.isEmpty()) {
-			return ItemStack.EMPTY;
-		}
-		validateSlotIndex(slot);
-		ItemStack existing = getStack(slot);
-		int limit = getStackLimit(slot, stack);
-		if (!existing.isEmpty()) {
-			if (!InventoryUtils.canItemStacksStack(stack, existing)) {
-				return stack;
-			}
-			limit -= existing.getCount();
-		}
-		if (limit <= 0) {
-			return stack;
-		}
-		boolean reachedLimit = stack.getCount() > limit;
-		if (!simulate) {
-			if (existing.isEmpty()) {
-				setStackInSlot(slot, reachedLimit ? InventoryUtils.copyStackWithSize(stack, limit) : stack);
-			} else {
-				existing.increment(reachedLimit ? limit : stack.getCount());
-			}
-		}
-		return reachedLimit ? InventoryUtils.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (amount == 0) {
-			return ItemStack.EMPTY;
-		}
-		validateSlotIndex(slot);
-		ItemStack existing = getStack(slot);
-
-		if (existing.isEmpty()) {
-			return ItemStack.EMPTY;
-		}
-		int toExtract = Math.min(amount, existing.getMaxCount());
-		if (existing.getCount() <= toExtract) {
-			if (!simulate) {
-				setStackInSlot(slot, ItemStack.EMPTY);
-			}
-			return existing;
-		} else {
-			if (!simulate) {
-				setStackInSlot(slot, InventoryUtils.copyStackWithSize(existing, existing.getCount() - toExtract));
-			}
-			return InventoryUtils.copyStackWithSize(existing, toExtract);
-		}
 	}
 
 	public int getSlotLimit(int slot) {

@@ -46,20 +46,20 @@ import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
-import reborncore.common.util.Inventory;
+import reborncore.common.util.RebornInventory;
 
 import java.util.function.*;
 
 public class ContainerTileInventoryBuilder {
 
-	private final Inventory itemHandler;
+	private final RebornInventory itemHandler;
 	private final BlockEntity tile;
 	private final ContainerBuilder parent;
 	private final int rangeStart;
 
 	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
 		if(tile instanceof ItemHandlerProvider){
-			this.itemHandler = (Inventory) ((ItemHandlerProvider) tile).getInventory();
+			this.itemHandler = (RebornInventory) ((ItemHandlerProvider) tile).getInventory();
 		} else {
 			this.itemHandler = null;
 		}

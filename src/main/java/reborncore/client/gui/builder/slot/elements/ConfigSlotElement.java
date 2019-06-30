@@ -32,8 +32,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import reborncore.api.items.InventoryWrapper;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
@@ -47,12 +47,12 @@ import java.util.Objects;
 
 public class ConfigSlotElement extends ElementBase {
 	SlotType type;
-	InventoryWrapper inventory;
+	Inventory inventory;
 	int id;
 	public List<ElementBase> elements = new ArrayList<>();
 	boolean filter = false;
 
-	public ConfigSlotElement(InventoryWrapper slotInventory, int slotId, SlotType type, int x, int y, GuiBase gui) {
+	public ConfigSlotElement(Inventory slotInventory, int slotId, SlotType type, int x, int y, GuiBase gui) {
 		super(x, y, type.getButtonSprite());
 		this.type = type;
 		this.inventory = slotInventory;
@@ -109,7 +109,7 @@ public class ConfigSlotElement extends ElementBase {
 	@Override
 	public void draw(GuiBase gui) {
 		super.draw(gui);
-		ItemStack stack = inventory.getStack(id);
+		ItemStack stack = inventory.getInvStack(id);
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
 

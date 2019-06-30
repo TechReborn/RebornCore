@@ -36,7 +36,7 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.slots.BaseSlot;
-import reborncore.common.util.Inventory;
+import reborncore.common.util.RebornInventory;
 
 public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 
@@ -51,7 +51,7 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 		}
 		IUpgrade upgrade = (IUpgrade) stack.getItem();
 		IUpgradeable upgradeable = null;
-		Inventory inv = (Inventory) inventory;
+		RebornInventory inv = (RebornInventory) inventory;
 		BlockEntity tileEntity = inv.getTile();
 		if (tileEntity instanceof IUpgradeable) {
 			upgradeable = (IUpgradeable) tileEntity;
@@ -66,8 +66,8 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 
 	@Override
 	public boolean handleRightClick(int slotID, PlayerEntity player, BuiltContainer container) {
-		if (inventory instanceof Inventory) {
-			Inventory inv = (Inventory) inventory;
+		if (inventory instanceof RebornInventory) {
+			RebornInventory inv = (RebornInventory) inventory;
 			BlockEntity tileEntity = inv.getTile();
 			if (tileEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeable = (IUpgradeable) tileEntity;

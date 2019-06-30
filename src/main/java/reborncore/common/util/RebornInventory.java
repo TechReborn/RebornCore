@@ -32,32 +32,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
-import reborncore.api.items.InventoryWrapper;
+import reborncore.api.items.InventoryBase;
 import reborncore.common.tile.SlotConfiguration;
 import reborncore.common.tile.TileMachineBase;
 
 import javax.annotation.Nonnull;
 
-public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
+public class RebornInventory<T extends TileMachineBase> extends InventoryBase {
 
 	private final String name;
 	private final int stackLimit;
 	private T tile;
 	private boolean hasChanged = false;
 	private IInventoryAccess<T> inventoryAccess;
-	private ExternalInventory<?> externalInventory;
 
-	public Inventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
+	public RebornInventory(int size, String invName, int invStackLimit, T tileEntity, IInventoryAccess<T> access) {
 		super(size);
 		name = invName;
 		stackLimit = (invStackLimit == 64 ? Items.AIR.getMaxCount() : invStackLimit); //Blame asie for this
 		this.tile = tileEntity;
 		this.inventoryAccess = access;
-		this.externalInventory = new ExternalInventory<>();
 	}
 
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
-	public Inventory(int size, String invName, int invStackLimit, T tileEntity) {
+	public RebornInventory(int size, String invName, int invStackLimit, T tileEntity) {
 		this(size, invName, invStackLimit, tileEntity, (slotID, stack, facing, direction, tile) -> true);
 	}
 	
@@ -66,42 +64,22 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	}
 
 	@Override
-	public void setStackInSlot(int slot,
+	public void setInvStack(int slot,
 	                           @Nonnull
 		                           ItemStack stack) {
-		super.setStackInSlot(slot, stack);
+		super.setInvStack(slot, stack);
 		setChanged();
-	}
-
-	@Nonnull
-	@Override
-	@Deprecated
-	public ItemStack insertItem(int slot,
-	                            @Nonnull
-		                            ItemStack stack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, stack, simulate);
-		setChanged();
-		return result;
-	}
-
-	@Nonnull
-	@Override
-	@Deprecated
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		setChanged();
-		return stack;
 	}
 
 	public ItemStack shrinkSlot(int slot, int count) {
-		ItemStack stack = getStack(slot);
+		ItemStack stack = getInvStack(slot);
 		stack.decrement(count);
 		setChanged();
 		return stack;
 	}
 
 
-	public Inventory getExternal(Direction facing) {
+	public RebornInventory getExternal(Direction facing) {
 		throw new UnsupportedOperationException("needs fixing");
 		//return externalInventory.withFacing(facing);
 	}
@@ -111,7 +89,7 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	/**
 	 * This enables the default IO access that is setup to use the SlotConfiguration of the tile
 	 */
-	public Inventory<T> withConfiguredAccess() {
+	public RebornInventory<T> withConfiguredAccess() {
 		configuredAccess = true;
 		this.inventoryAccess = (slotID, stack, facing, direction, tile) -> {
 			if(facing == null){
@@ -191,72 +169,6 @@ public class Inventory<T extends TileMachineBase> extends InventoryWrapper {
 	public void markDirty() {
 		super.markDirty();
 		tile.markDirty();
-	}
-
-	/**
-	 * This is used to provide a filtered inv to external machines
-	 */
-	public static class ExternalInventory<T extends Inventory>  {//implements IItemHandler, IItemHandlerModifiable {
-
-//		Inventory<T> baseInv;
-		private Direction facing = null;
-//
-//		public ExternalInventory(Inventory<T> baseInv) {
-//			this.baseInv = baseInv;
-//		}
-//
-//		@Nonnull
-//		@Override
-//		public ItemStack insertItem(int slot,
-//		                            @Nonnull
-//			                            ItemStack stack, boolean simulate) {
-//			if (!baseInv.inventoryAccess.canHandleIO(slot, stack, facing, IInventoryAccess.AccessDirection.INSERT, baseInv.tile)) {
-//				return stack;
-//			}
-//			return baseInv.insertItem(slot, stack, simulate);
-//		}
-//
-//		@Nonnull
-//		@Override
-//		public ItemStack extractItem(int slot, int amount, boolean simulate) {
-//			if (!baseInv.inventoryAccess.canHandleIO(slot, ItemStack.EMPTY, facing, IInventoryAccess.AccessDirection.EXTRACT, baseInv.tile)) {
-//				return ItemStack.EMPTY;
-//			}
-//			return baseInv.extractItem(slot, amount, simulate);
-//		}
-//
-//		@Override
-//		public void setStackInSlot(int slot,
-//		                           @Nonnull
-//			                           ItemStack stack) {
-//			baseInv.setStackInSlot(slot, stack);
-//		}
-//
-//		@Override
-//		public int getSlots() {
-//			return baseInv.getSlots();
-//		}
-//
-//		@Nonnull
-//		@Override
-//		public ItemStack getStack(int slot) {
-//			return baseInv.getStack(slot);
-//		}
-//
-//		@Override
-//		public int getSlotLimit(int slot) {
-//			return baseInv.getStackLimit();
-//		}
-//
-		public ExternalInventory<T> withFacing(Direction facing) {
-			this.facing = facing;
-			return this;
-		}
-//
-//		@Override
-//		public boolean isItemValid(int slot, ItemStack stack) {
-//			return true;
-//		}
 	}
 
 }
