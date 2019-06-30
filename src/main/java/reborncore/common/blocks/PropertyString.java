@@ -68,7 +68,7 @@ public class PropertyString extends AbstractProperty<String> {
 	}
 
 	@Override
-	public String getValueAsString(String value) {
+	public String getName(String value) {
 		return value.intern();
 	}
 }

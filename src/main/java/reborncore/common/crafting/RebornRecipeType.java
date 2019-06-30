@@ -29,6 +29,7 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
@@ -40,7 +41,7 @@ import reborncore.common.util.serialization.SerializationUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class RebornRecipeType<R extends RebornRecipe> implements RecipeType<R>, RecipeSerializer<R> {
+public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, RecipeSerializer {
 
 	private final Class<R> clazz;
 
@@ -91,8 +92,8 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType<R>, 
 	}
 
 	@Override
-	public void write(PacketByteBuf buffer, R recipe) {
-		JsonObject jsonObject = toJson(recipe);
+	public void write(PacketByteBuf buffer, Recipe recipe) {
+		JsonObject jsonObject = toJson((R) recipe);
 		String output = SerializationUtil.GSON_FLAT.toJson(jsonObject);
 		buffer.writeInt(output.length());
 		buffer.writeString(output);

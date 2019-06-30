@@ -157,9 +157,6 @@ public class GuiBase extends AbstractContainerScreen {
 		}
 	}
 
-	public void drawHoveringText(List<String> textLines, int x, int y) {
-		throw new UnsupportedOperationException("make this work"); //TOOD
-	}
 
 	public boolean drawPlayerSlots() {
 		return true;
@@ -195,7 +192,7 @@ public class GuiBase extends AbstractContainerScreen {
 		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
-			drawHoveringText(list, mouseX, mouseY);
+			renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
@@ -203,14 +200,14 @@ public class GuiBase extends AbstractContainerScreen {
 		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
-			drawHoveringText(list, mouseX, mouseY);
+			renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
 		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
-			drawHoveringText(list, mouseX, mouseY);
+			renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}

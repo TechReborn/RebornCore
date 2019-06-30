@@ -89,7 +89,7 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 14, height, mouseX, mouseY)) {
 			List<String> list = new ArrayList<String>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 		}
 	}
 
@@ -212,7 +212,7 @@ public class GuiBuilder {
 				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
 			}
 			GlStateManager.pushMatrix();
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.popMatrix();
 		}
 	}
@@ -249,7 +249,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.popMatrix();
 		}
 	}
@@ -356,7 +356,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
@@ -550,7 +550,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
@@ -616,7 +616,7 @@ public class GuiBuilder {
 			for (Component itextcomponent : list) {
 				list1.add(itextcomponent.getFormattedText());
 			}
-			gui.drawHoveringText(list1, mouseX, mouseY);
+			gui.renderTooltip(list1, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
@@ -671,7 +671,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
@@ -747,7 +747,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.drawHoveringText(list, mouseX, mouseY);
+			gui.renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
