@@ -30,6 +30,7 @@ package reborncore.client.containerBuilder.builder;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
@@ -38,7 +39,6 @@ import reborncore.RebornCore;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
-import reborncore.api.tile.ItemHandlerProvider;
 import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
 import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
@@ -46,79 +46,77 @@ import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.TilePowerAcceptor;
-import reborncore.common.util.RebornInventory;
 
 import java.util.function.*;
 
 public class ContainerTileInventoryBuilder {
 
-	private final RebornInventory itemHandler;
+	private final Inventory inventory;
 	private final BlockEntity tile;
 	private final ContainerBuilder parent;
 	private final int rangeStart;
 
 	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
-		if(tile instanceof ItemHandlerProvider){
-			this.itemHandler = (RebornInventory) ((ItemHandlerProvider) tile).getInventory();
+		if(tile instanceof Inventory){
+			this.inventory = (Inventory) tile;
 		} else {
-			this.itemHandler = null;
+			throw new RuntimeException(tile.getClass().getName() + " is not an inventory");
 		}
-		 //TODO get the inv from the tile
 		this.tile = tile;
 		this.parent = parent;
 		this.rangeStart = parent.slots.size();
-		if (itemHandler instanceof IUpgradeable) {
-			upgradeSlots((IUpgradeable) itemHandler);
+		if (inventory instanceof IUpgradeable) {
+			upgradeSlots((IUpgradeable) inventory);
 		}
 	}
 
 	public ContainerTileInventoryBuilder slot(final int index, final int x, final int y) {
-		this.parent.slots.add(new BaseSlot(this.itemHandler, index, x, y));
+		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
-		this.parent.slots.add(new BaseSlot(this.itemHandler, index, x, y, filter));
+		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y, filter));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder outputSlot(final int index, final int x, final int y) {
-		this.parent.slots.add(new SlotOutput(this.itemHandler, index, x, y));
+		this.parent.slots.add(new SlotOutput(this.inventory, index, x, y));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder fakeSlot(final int index, final int x, final int y) {
-		this.parent.slots.add(new SlotFake(this.itemHandler, index, x, y, false, false, Integer.MAX_VALUE));
+		this.parent.slots.add(new SlotFake(this.inventory, index, x, y, false, false, Integer.MAX_VALUE));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
 	                                                final Predicate<ItemStack> filter) {
-		this.parent.slots.add(new FilteredSlot(this.itemHandler, index, x, y).setFilter(filter));
+		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(filter));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder energySlot(final int index, final int x, final int y) {
-		this.parent.slots.add(new FilteredSlot(this.itemHandler, index, x, y)
+		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(ExternalPowerSystems::isPoweredItem));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder fluidSlot(final int index, final int x, final int y) {
-		this.parent.slots.add(new FilteredSlot(this.itemHandler, index, x, y).setFilter(
+		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
 			stack -> true /* TODO fluid item stack  */));
 		return this;
 	}
 
 	public ContainerTileInventoryBuilder fuelSlot(final int index, final int x, final int y) {
 		throw new NotImplementedException("add a item handler version of furnace slots");
-		//this.parent.slots.add(new SlotFurnaceFuel(this.itemHandler, index, x, y));
+		//this.parent.slots.add(new SlotFurnaceFuel(this.inventory, index, x, y));
 		//return this;
 	}
 
 	@Deprecated
 	public ContainerTileInventoryBuilder upgradeSlot(final int index, final int x, final int y) {
-		this.parent.slots.add(new FilteredSlot(this.itemHandler, index, x, y)
+		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(stack -> stack.getItem() instanceof IUpgrade));
 		return this;
 	}
@@ -174,7 +172,7 @@ public class ContainerTileInventoryBuilder {
 				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getPowerChange(),
 					((TilePowerAcceptor) this.tile)::setPowerChange);
 		}
-		RebornCore.LOGGER.error(this.itemHandler + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
+		RebornCore.LOGGER.error(this.inventory + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
 		return this;
 	}
 
@@ -189,7 +187,7 @@ public class ContainerTileInventoryBuilder {
 						.getRecipeCrafter().currentNeededTicks = currentNeededTicks);
 		}
 		RebornCore.LOGGER
-			.error(this.itemHandler + " is not an instance of IRecipeCrafterProvider! Craft progress cannot be synced.");
+			.error(this.inventory + " is not an instance of IRecipeCrafterProvider! Craft progress cannot be synced.");
 		return this;
 	}
 

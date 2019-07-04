@@ -63,8 +63,8 @@ public class ItemUtils {
 			return false;
 		}
 		if (useTags) {
+
 			//TODO tags
-			throw new UnsupportedOperationException("1.13 tags");
 		}
 		return false;
 	}

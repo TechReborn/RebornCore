@@ -34,6 +34,7 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.Validate;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class ConfigSlotElement extends ElementBase {
 	SlotType type;

@@ -30,7 +30,7 @@ package reborncore.api.tile;
 
 import net.minecraft.inventory.Inventory;
 
-public interface ItemHandlerProvider {
+public interface InventoryProvider {
 
 	Inventory getInventory();
 

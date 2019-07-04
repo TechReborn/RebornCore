@@ -28,6 +28,7 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
+import org.apache.commons.lang3.Validate;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.tile.TileMachineBase;
 

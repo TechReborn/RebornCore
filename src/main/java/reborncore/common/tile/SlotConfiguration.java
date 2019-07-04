@@ -31,6 +31,7 @@ package reborncore.common.tile;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.container.Slot;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
@@ -55,10 +56,7 @@ public class SlotConfiguration implements NBTSerializable {
 	List<SlotConfigHolder> slotDetails = new ArrayList<>();
 
 	@Nullable
-	RebornInventory inventory;
-
-	public SlotConfiguration() {
-	}
+	Inventory inventory;
 
 	public SlotConfiguration(RebornInventory inventory) {
 		this.inventory = inventory;
