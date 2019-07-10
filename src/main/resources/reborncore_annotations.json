@@ -70,13 +70,13 @@
         }
       ]
     },
-    "reborncore/common/shields/json/ShieldUser": {
-      "className": "reborncore/common/shields/json/ShieldUser",
-      "fields": [
+    "reborncore/client/containerBuilder/builder/slot/SpriteSlot": {
+      "className": "reborncore/client/containerBuilder/builder/slot/SpriteSlot",
+      "methods": [
         {
           "access": 1,
-          "name": "textureName",
-          "desc": "Ljava/lang/String;",
+          "name": "method_7679",
+          "desc": "()Ljava/lang/String;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -86,13 +86,13 @@
         }
       ]
     },
-    "reborncore/client/containerBuilder/builder/slot/SpriteSlot": {
-      "className": "reborncore/client/containerBuilder/builder/slot/SpriteSlot",
-      "methods": [
+    "reborncore/common/shields/json/ShieldUser": {
+      "className": "reborncore/common/shields/json/ShieldUser",
+      "fields": [
         {
           "access": 1,
-          "name": "method_7679",
-          "desc": "()Ljava/lang/String;",
+          "name": "textureName",
+          "desc": "Ljava/lang/String;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -1151,6 +1151,19 @@
               "api": 458752
             }
           ]
+        }
+      ]
+    },
+    "reborncore/common/powerSystem/PowerManager": {
+      "className": "reborncore/common/powerSystem/PowerManager",
+      "annotations": [
+        {
+          "desc": "Lreborncore/common/registration/RebornRegister;",
+          "values": [
+            "value",
+            "reborncore"
+          ],
+          "api": 458752
         }
       ]
     },

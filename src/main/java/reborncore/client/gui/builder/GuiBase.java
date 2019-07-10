@@ -384,6 +384,9 @@ public class GuiBase extends AbstractContainerScreen {
 	}
 
 	public boolean isConfigEnabled() {
+		if(true){ //TODO fix this
+			return false;
+		}
 		return tile instanceof TileMachineBase && container != null;
 	}
 
