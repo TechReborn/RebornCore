@@ -23,12 +23,14 @@ targetCompatibility = 1.8
 repositories {
 	mavenLocal()
 	mavenCentral()
+	jcenter()
 	maven {
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
 	}
-	flatDir {
-		dirs 'maven'
+	maven {
+		name = 'sponge'
+		url = 'https://repo.spongepowered.org/maven'
 	}
 }
 
@@ -51,6 +53,9 @@ dependencies {
 
 	compileOnly "com.google.code.findbugs:jsr305:+"
 	modCompile "io.github.prospector.modmenu:ModMenu:1.5.4-85"
+
+	compile 'org.spongepowered:configurate-hocon:3.6'
+	include 'org.spongepowered:configurate-hocon:3.6'
 }
 
 processResources{

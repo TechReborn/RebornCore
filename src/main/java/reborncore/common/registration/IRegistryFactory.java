@@ -122,7 +122,7 @@ public interface IRegistryFactory {
 	}
 
 	default LoadStage getProcessSate() {
-		return LoadStage.CONSTRUCTION;
+		return LoadStage.SETUP;
 	}
 
 }

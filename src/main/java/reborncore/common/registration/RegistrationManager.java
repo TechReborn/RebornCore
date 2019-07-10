@@ -28,14 +28,22 @@
 
 package reborncore.common.registration;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import org.apache.commons.lang3.Validate;
 import reborncore.RebornCore;
+import reborncore.RebornRegistry;
+import reborncore.common.util.serialization.SerializationUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -43,25 +51,28 @@ import java.util.stream.Collectors;
  */
 public class RegistrationManager {
 
-	String modid;
+	private static final List<IRegistryFactory> factoryList = new ArrayList<>();
 
-	public RegistrationManager(String modid) {
+	private String modid;
+	private AnnotationModel annotationModel;
+	private  List<Class> registryClasses = new ArrayList<>();
+
+	public RegistrationManager(String modid, Class<? extends ModInitializer> modClass) {
 		this.modid = modid;
+		annotationModel = getAnnotationModel(modClass);
+		loadRegistryClasses();
 		loadFactorys();
-		init();
-		load(LoadStage.CONSTRUCTION);
+		load(LoadStage.SETUP);
 	}
 
-	List<IRegistryFactory> factoryList = new ArrayList<>();
-	List<Class> registryClasses = new ArrayList<>();
-
-	private void init() {
-		long start = System.currentTimeMillis();
-
-		RebornCore.LOGGER.info("Pre loaded registries in " + (System.currentTimeMillis() - start) + "ms");
+	private AnnotationModel getAnnotationModel(Class<? extends ModInitializer> modClass) {
+		String annotationJson = modid + "_annotations.json";
+		try(InputStream stream = FabricLauncherBase.getLauncher().getResourceAsStream(annotationJson)){
+			return SerializationUtil.GSON.fromJson(new InputStreamReader(stream), AnnotationModel.class);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-
 
 	public void load(LoadStage event) {
 		long start = System.currentTimeMillis();
@@ -128,8 +139,34 @@ public class RegistrationManager {
 		return null;
 	}
 
+	private void loadRegistryClasses() {
+		annotationModel.findClasses(RebornRegister.class).forEach(classData -> registryClasses.add(getAsClass(classData)));
+		RebornCore.LOGGER.info("Loaded " + registryClasses.size() + " registry classes");
+	}
+
 	private void loadFactorys() {
-		RebornCore.LOGGER.info("Loaded " + factoryList.size() + " factories for " + modid);
+		annotationModel.findClasses(IRegistryFactory.RegistryFactory.class).forEach(classData -> {
+			Class<?> clazz = getAsClass(classData);
+			try {
+				IRegistryFactory registryFactory = (IRegistryFactory) clazz.newInstance();
+				//TODO check sides and modid
+				factoryList.add(registryFactory);
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		RebornCore.LOGGER.info("Loaded " + factoryList.size() + " factories");
+	}
+
+	private Class<?> getAsClass(AnnotationModel.ClassData classData) {
+		Validate.notNull(classData);
+		Validate.notNull(classData.className);
+		try {
+			return Class.forName(classData.className.replaceAll("/", "."));
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

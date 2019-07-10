@@ -1,0 +1,1287 @@
+{
+  "classes": {
+    "reborncore/client/shields/ShieldTexture": {
+      "className": "reborncore/client/shields/ShieldTexture",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getTexture",
+          "desc": "()Lnet/minecraft/class_1044;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 0,
+          "name": "texture",
+          "desc": "Lnet/minecraft/class_1044;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/gui/builder/slot/GuiFluidConfiguration": {
+      "className": "reborncore/client/gui/builder/slot/GuiFluidConfiguration",
+      "methods": [
+        {
+          "access": 10,
+          "name": "getMachine",
+          "desc": "()Lreborncore/common/tile/TileMachineBase;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/registration/config/ConfigRegistryFactory": {
+      "className": "reborncore/common/registration/config/ConfigRegistryFactory",
+      "annotations": [
+        {
+          "desc": "Lreborncore/common/registration/IRegistryFactory$RegistryFactory;",
+          "api": 458752
+        }
+      ]
+    },
+    "reborncore/client/texture/InputStreamTexture$1": {
+      "className": "reborncore/client/texture/InputStreamTexture$1",
+      "methods": [
+        {
+          "access": 1,
+          "name": "method_14481",
+          "desc": "(Lnet/minecraft/class_3270;)Ljava/lang/Object;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/shields/json/ShieldUser": {
+      "className": "reborncore/common/shields/json/ShieldUser",
+      "fields": [
+        {
+          "access": 1,
+          "name": "textureName",
+          "desc": "Ljava/lang/String;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/containerBuilder/builder/slot/SpriteSlot": {
+      "className": "reborncore/client/containerBuilder/builder/slot/SpriteSlot",
+      "methods": [
+        {
+          "access": 1,
+          "name": "method_7679",
+          "desc": "()Ljava/lang/String;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/registration/RebornRegister": {
+      "className": "reborncore/common/registration/RebornRegister",
+      "annotations": [
+        {
+          "desc": "Ljava/lang/annotation/Retention;",
+          "values": [
+            "value",
+            [
+              "Ljava/lang/annotation/RetentionPolicy;",
+              "RUNTIME"
+            ]
+          ],
+          "api": 458752
+        },
+        {
+          "desc": "Ljava/lang/annotation/Target;",
+          "values": [
+            "value",
+            [
+              [
+                "Ljava/lang/annotation/ElementType;",
+                "TYPE"
+              ]
+            ]
+          ],
+          "api": 458752
+        }
+      ],
+      "methods": [
+        {
+          "access": 1025,
+          "name": "value",
+          "desc": "()Ljava/lang/String;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/shields/json/ShieldJsonLoader": {
+      "className": "reborncore/common/shields/json/ShieldJsonLoader",
+      "fields": [
+        {
+          "access": 9,
+          "name": "shieldJsonFile",
+          "desc": "Lreborncore/common/shields/json/ShieldJsonFile;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/registration/config/ConfigRegistry": {
+      "className": "reborncore/common/registration/config/ConfigRegistry",
+      "annotations": [
+        {
+          "desc": "Ljava/lang/annotation/Retention;",
+          "values": [
+            "value",
+            [
+              "Ljava/lang/annotation/RetentionPolicy;",
+              "RUNTIME"
+            ]
+          ],
+          "api": 458752
+        },
+        {
+          "desc": "Ljava/lang/annotation/Target;",
+          "values": [
+            "value",
+            [
+              [
+                "Ljava/lang/annotation/ElementType;",
+                "FIELD"
+              ]
+            ]
+          ],
+          "api": 458752
+        }
+      ]
+    },
+    "reborncore/mixin/client/MixinItemDynamicRenderer": {
+      "className": "reborncore/mixin/client/MixinItemDynamicRenderer",
+      "fields": [
+        {
+          "access": 9,
+          "name": "field_3986",
+          "desc": "Lnet/minecraft/class_756;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Mutable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder": {
+      "className": "reborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder",
+      "methods": [
+        {
+          "access": 131073,
+          "name": "upgradeSlot",
+          "desc": "(III)Lreborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/crafting/RebornRecipe": {
+      "className": "reborncore/common/crafting/RebornRecipe",
+      "methods": [
+        {
+          "access": 131073,
+          "name": "method_8117",
+          "desc": "()Lnet/minecraft/class_2371;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "method_8115",
+          "desc": "(Lnet/minecraft/class_1263;Lnet/minecraft/class_1937;)Z",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "method_8116",
+          "desc": "(Lnet/minecraft/class_1263;)Lnet/minecraft/class_1799;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "method_8113",
+          "desc": "(II)Z",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "method_8110",
+          "desc": "()Lnet/minecraft/class_1799;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/registration/IRegistryFactory$RegistryFactory": {
+      "className": "reborncore/common/registration/IRegistryFactory$RegistryFactory",
+      "annotations": [
+        {
+          "desc": "Ljava/lang/annotation/Retention;",
+          "values": [
+            "value",
+            [
+              "Ljava/lang/annotation/RetentionPolicy;",
+              "RUNTIME"
+            ]
+          ],
+          "api": 458752
+        },
+        {
+          "desc": "Ljava/lang/annotation/Target;",
+          "values": [
+            "value",
+            [
+              [
+                "Ljava/lang/annotation/ElementType;",
+                "TYPE"
+              ]
+            ]
+          ],
+          "api": 458752
+        }
+      ]
+    },
+    "reborncore/common/registration/config/RebornConfig": {
+      "className": "reborncore/common/registration/config/RebornConfig",
+      "fields": [
+        {
+          "access": 0,
+          "name": "modid",
+          "desc": "Ljava/lang/String;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 0,
+          "name": "configName",
+          "desc": "Ljava/lang/String;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/util/InventoryItem": {
+      "className": "reborncore/common/util/InventoryItem",
+      "methods": [
+        {
+          "access": 1,
+          "name": "method_5438",
+          "desc": "(I)Lnet/minecraft/class_1799;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 0,
+          "name": "stack",
+          "desc": "Lnet/minecraft/class_1799;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/client/MixinPlayerEntityRenderer": {
+      "className": "reborncore/mixin/client/MixinPlayerEntityRenderer",
+      "methods": [
+        {
+          "access": 2,
+          "name": "construct",
+          "desc": "(Lnet/minecraft/class_898;ZLorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/Inject;",
+              "values": [
+                "method",
+                [
+                  "\u003cinit\u003e(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V"
+                ],
+                "at",
+                [
+                  {
+                    "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                    "values": [
+                      "value",
+                      "RETURN"
+                    ],
+                    "api": 458752
+                  }
+                ]
+              ],
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/util/Tank": {
+      "className": "reborncore/common/util/Tank",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getSide",
+          "desc": "()Lnet/minecraft/class_2350;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 2,
+          "name": "side",
+          "desc": "Lnet/minecraft/class_2350;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/common/MixinContainer": {
+      "className": "reborncore/mixin/common/MixinContainer",
+      "fields": [
+        {
+          "access": 2,
+          "name": "field_7765",
+          "desc": "Ljava/util/List;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1,
+          "name": "field_7763",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Mutable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/RebornCoreConfig": {
+      "className": "reborncore/common/RebornCoreConfig",
+      "annotations": [
+        {
+          "desc": "Lreborncore/common/registration/RebornRegister;",
+          "values": [
+            "value",
+            "reborncore"
+          ],
+          "api": 458752
+        }
+      ],
+      "fields": [
+        {
+          "access": 9,
+          "name": "euPerFU",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "power",
+                "key",
+                "EU - FU ratio",
+                "comment",
+                "The Amount of FU to output from EU"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "enableFE",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "power",
+                "key",
+                "Enable FE support",
+                "comment",
+                "Whether energy blocks will accept and emit Forge Energy (FE/RF/etc)"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "ShowStackInfoHUD",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "client",
+                "key",
+                "Show Stack Info HUD",
+                "comment",
+                "Show Stack Info HUD"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "stackInfoCorner",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "client",
+                "key",
+                "Stack Info Corner",
+                "comment",
+                "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "stackInfoX",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "client",
+                "key",
+                "Stack Info X",
+                "comment",
+                "X padding for HUD "
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "stackInfoY",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "client",
+                "key",
+                "Stack Info Y",
+                "comment",
+                "Y padding for HUD "
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "versionCheck",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "misc",
+                "key",
+                "Version Check",
+                "comment",
+                "Enable version checker"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "easterEggs",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "misc",
+                "key",
+                "Enable Seasonal Easter Eggs",
+                "comment",
+                "Disable this is you don\u0027t want seasonal easter eggs"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "oreDebug",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "misc",
+                "category",
+                "debug",
+                "key",
+                "Enable Debug tools for ores",
+                "comment",
+                "Contains some debug tools to help fix issues with ores"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "configUpdating",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "misc",
+                "key",
+                "Config Updater",
+                "comment",
+                "AutoUpdates none user chnaged config values, when the mod default changes."
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "smokeHighTeir",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "power",
+                "key",
+                "Energy smoking",
+                "comment",
+                "When enabled machines that try to insert power into a machine with a lower teir will smoke"
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "wrenchRequired",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "misc",
+                "key",
+                "Wrench Required",
+                "comment",
+                "Wrench required to pick machine. If not wrenched than machine frame will drop instead."
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 9,
+          "name": "exponentialMachineSpeedScaling",
+          "desc": "Z",
+          "annotations": [
+            {
+              "desc": "Lreborncore/common/registration/config/ConfigRegistry;",
+              "values": [
+                "config",
+                "upgrades",
+                "key",
+                "Use Exponential Machine Speed Scaling",
+                "comment",
+                "Whether to use an alternative, exponential scaling algorithm like IC2.\nWith the exponential scaling algorithm (true), processing time will be determined by (1 - OverclockerSpeed)^NumberOfOverclockers.\nWithout the algorithm (false), processing time is determined by (1 - OverclockerSpeed*NumberOfOverclockers), with a minimum of 1% processing time."
+              ],
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/container/RebornContainer": {
+      "className": "reborncore/common/container/RebornContainer",
+      "methods": [
+        {
+          "access": 9,
+          "name": "getContainerFromClass",
+          "desc": "(Ljava/lang/Class;Lnet/minecraft/class_2586;)Lreborncore/common/container/RebornContainer;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/gui/builder/GuiBase": {
+      "className": "reborncore/client/gui/builder/GuiBase",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getMachine",
+          "desc": "()Lreborncore/common/tile/TileMachineBase;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 1,
+          "name": "container",
+          "desc": "Lreborncore/client/containerBuilder/builder/BuiltContainer;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/tile/TileMachineBase": {
+      "className": "reborncore/common/tile/TileMachineBase",
+      "methods": [
+        {
+          "access": 1,
+          "name": "method_16886",
+          "desc": "()Lnet/minecraft/class_2622;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1,
+          "name": "getTank",
+          "desc": "()Lreborncore/common/util/Tank;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/common/MixinRecipeManager": {
+      "className": "reborncore/mixin/common/MixinRecipeManager",
+      "methods": [
+        {
+          "access": 1028,
+          "name": "method_17717",
+          "desc": "(Lnet/minecraft/class_3956;)Ljava/util/Map;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/containerBuilder/builder/ContainerBuilder": {
+      "className": "reborncore/client/containerBuilder/builder/ContainerBuilder",
+      "methods": [
+        {
+          "access": 131073,
+          "name": "create",
+          "desc": "()Lreborncore/client/containerBuilder/builder/BuiltContainer;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/gui/builder/slot/GuiSlotConfiguration": {
+      "className": "reborncore/client/gui/builder/slot/GuiSlotConfiguration",
+      "methods": [
+        {
+          "access": 10,
+          "name": "getMachine",
+          "desc": "()Lreborncore/common/tile/TileMachineBase;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/api/tile/IContainerLayout": {
+      "className": "reborncore/api/tile/IContainerLayout",
+      "methods": [
+        {
+          "access": 1025,
+          "name": "getTile",
+          "desc": "()Lnet/minecraft/class_2586;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1025,
+          "name": "getPlayer",
+          "desc": "()Lnet/minecraft/class_1657;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1025,
+          "name": "getSlotsForSide",
+          "desc": "(Lnet/minecraft/class_2350;)Ljava/util/List;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/explosion/RebornExplosion": {
+      "className": "reborncore/common/explosion/RebornExplosion",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getLivingBase",
+          "desc": "()Lnet/minecraft/class_1309;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1,
+          "name": "method_8347",
+          "desc": "()Lnet/minecraft/class_1309;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 0,
+          "name": "center",
+          "desc": "Lnet/minecraft/class_2338;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 0,
+          "name": "world",
+          "desc": "Lnet/minecraft/class_1937;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 0,
+          "name": "radius",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 0,
+          "name": "livingBase",
+          "desc": "Lnet/minecraft/class_1309;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/shields/ShieldTextureStore": {
+      "className": "reborncore/client/shields/ShieldTextureStore",
+      "methods": [
+        {
+          "access": 9,
+          "name": "getTexture",
+          "desc": "(Ljava/lang/String;)Lreborncore/client/shields/ShieldTexture;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/powerSystem/ExternalPowerSystems": {
+      "className": "reborncore/common/powerSystem/ExternalPowerSystems",
+      "annotations": [
+        {
+          "desc": "Lreborncore/common/registration/IRegistryFactory$RegistryFactory;",
+          "api": 458752
+        }
+      ]
+    },
+    "reborncore/common/recipes/RecipeCrafter": {
+      "className": "reborncore/common/recipes/RecipeCrafter",
+      "fields": [
+        {
+          "access": 9,
+          "name": "soundHanlder",
+          "desc": "Lreborncore/common/recipes/ICrafterSoundHanlder;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/tile/SlotConfiguration$SlotConfig": {
+      "className": "reborncore/common/tile/SlotConfiguration$SlotConfig",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getSide",
+          "desc": "()Lnet/minecraft/class_2350;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1,
+          "name": "getSlotIO",
+          "desc": "()Lreborncore/common/tile/SlotConfiguration$SlotIO;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 2,
+          "name": "side",
+          "desc": "Lnet/minecraft/class_2350;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 2,
+          "name": "slotIO",
+          "desc": "Lreborncore/common/tile/SlotConfiguration$SlotIO;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/client/gui/guibuilder/IGuiTile": {
+      "className": "reborncore/client/gui/guibuilder/IGuiTile",
+      "methods": [
+        {
+          "access": 1025,
+          "name": "getSlots",
+          "desc": "()Ljava/util/List;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/powerSystem/TilePowerAcceptor": {
+      "className": "reborncore/common/powerSystem/TilePowerAcceptor",
+      "methods": [
+        {
+          "access": 131073,
+          "name": "\u003cinit\u003e",
+          "desc": "(Lnet/minecraft/class_2591;Lreborncore/api/power/EnumPowerTier;)V",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "getBaseTier",
+          "desc": "()Lreborncore/api/power/EnumPowerTier;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131073,
+          "name": "canConnectEnergy",
+          "desc": "(Lnet/minecraft/class_2350;)Z",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/client/MixinItemStack": {
+      "className": "reborncore/mixin/client/MixinItemStack",
+      "methods": [
+        {
+          "access": 2,
+          "name": "getTooltip",
+          "desc": "(Lnet/minecraft/class_1657;Lnet/minecraft/class_1836;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfoReturnable;Ljava/util/List;)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/Inject;",
+              "values": [
+                "method",
+                [
+                  "getTooltip"
+                ],
+                "at",
+                [
+                  {
+                    "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                    "values": [
+                      "value",
+                      "RETURN"
+                    ],
+                    "api": 458752
+                  }
+                ],
+                "locals",
+                [
+                  "Lorg/spongepowered/asm/mixin/injection/callback/LocalCapture;",
+                  "CAPTURE_FAILHARD"
+                ]
+              ],
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/common/MixinCraftingResultSlot": {
+      "className": "reborncore/mixin/common/MixinCraftingResultSlot",
+      "methods": [
+        {
+          "access": 2,
+          "name": "defaultedList",
+          "desc": "(Lnet/minecraft/class_2371;)Lnet/minecraft/class_2371;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/ModifyVariable;",
+              "values": [
+                "method",
+                [
+                  "onTakeItem"
+                ],
+                "at",
+                {
+                  "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                  "values": [
+                    "value",
+                    "INVOKE"
+                  ],
+                  "api": 458752
+                },
+                "index",
+                3
+              ],
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 2,
+          "name": "onCrafted",
+          "desc": "(Lnet/minecraft/class_1799;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/Inject;",
+              "values": [
+                "method",
+                [
+                  "onCrafted(Lnet/minecraft/item/ItemStack;)V"
+                ],
+                "at",
+                [
+                  {
+                    "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                    "values": [
+                      "value",
+                      "INVOKE",
+                      "target",
+                      "Lnet/minecraft/item/ItemStack;onCraft(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;I)V",
+                      "shift",
+                      [
+                        "Lorg/spongepowered/asm/mixin/injection/At$Shift;",
+                        "AFTER"
+                      ]
+                    ],
+                    "api": 458752
+                  }
+                ]
+              ],
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 2,
+          "name": "field_7870",
+          "desc": "Lnet/minecraft/class_1715;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 2,
+          "name": "field_7868",
+          "desc": "Lnet/minecraft/class_1657;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/tile/SlotConfiguration": {
+      "className": "reborncore/common/tile/SlotConfiguration",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getSlotDetails",
+          "desc": "(I)Lreborncore/common/tile/SlotConfiguration$SlotConfigHolder;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 0,
+          "name": "inventory",
+          "desc": "Lnet/minecraft/class_1263;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
