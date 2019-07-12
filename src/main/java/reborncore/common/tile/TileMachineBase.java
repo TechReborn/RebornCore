@@ -466,6 +466,11 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean isValidInvStack(int slot, ItemStack stack) {
+		return isItemValidForSlot(slot, stack);
+	}
 
 	@Override
 	public void clear() {
