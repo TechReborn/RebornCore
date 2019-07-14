@@ -209,8 +209,8 @@ public class GuiBuilder {
 			}
 
 			if (layer == GuiBase.Layer.FOREGROUND) {
-				mouseX -= gui.getGuiLeft();
-				mouseY -= gui.getGuiTop();
+				mouseX -= gui.getGuiLeft() + (gui.getGuiLeft() / 2);
+				mouseY -= gui.getGuiTop() - (gui.getGuiTop() / 2) - 1;
 			}
 
 			gui.drawHoveringText(list, mouseX, mouseY);
@@ -244,8 +244,8 @@ public class GuiBuilder {
 				list.add(StringUtils.t("reborncore.gui.tooltip.energy_storage_redstone_mode_" + mode));
 
 				if (layer == GuiBase.Layer.FOREGROUND) {
-					mouseX -= gui.getGuiLeft();
-					mouseY -= gui.getGuiTop();
+					mouseX -= gui.getGuiLeft() + (gui.getGuiLeft() / 2);
+					mouseY -= gui.getGuiTop() - (gui.getGuiTop() / 2) - 1;
 				}
 
 				gui.drawHoveringText(list, mouseX, mouseY);
