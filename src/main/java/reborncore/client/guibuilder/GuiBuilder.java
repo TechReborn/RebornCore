@@ -193,6 +193,7 @@ public class GuiBuilder {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
+
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -206,9 +207,52 @@ public class GuiBuilder {
 			} else {
 				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
 			}
-			GlStateManager.pushMatrix();
+
+			if (layer == GuiBase.Layer.FOREGROUND) {
+				mouseX -= gui.getGuiLeft();
+				mouseY -= gui.getGuiTop();
+			}
+
 			gui.drawHoveringText(list, mouseX, mouseY);
-			GlStateManager.popMatrix();
+			GlStateManager.disableLighting();
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		}
+	}
+
+	/**
+	 * Draws a redstone mode button
+	 *
+	 * @param gui    GuiBase GUI to draw on
+	 * @param x      int Top left corner where to place button
+	 * @param y      int Top left corner where to place button
+	 * @param mouseX int Mouse cursor position to check for tooltip
+	 * @param mouseY int Mouse cursor position to check for tooltip
+	 * @param layer  Layer Layer to draw on
+	 * @param mode byte Indicates the current redstone mode
+	 */
+	public void drawEnergyStorageRedstoneModeButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, byte mode) {
+		if (GuiBase.slotConfigType == GuiBase.SlotConfigType.NONE) {
+			if (layer == GuiBase.Layer.BACKGROUND) {
+				x += gui.getGuiLeft();
+				y += gui.getGuiTop();
+			}
+
+			gui.mc.getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
+			gui.drawTexturedModalRect(x, y, 217, 107, 20, 20);
+			if (gui.isPointInRect(x, y, 20, 20, mouseX, mouseY)) {
+				List<String> list = new ArrayList();
+				list.add(StringUtils.t("reborncore.gui.tooltip.energy_storage_redstone_mode_" + mode));
+
+				if (layer == GuiBase.Layer.FOREGROUND) {
+					mouseX -= gui.getGuiLeft();
+					mouseY -= gui.getGuiTop();
+				}
+
+				gui.drawHoveringText(list, mouseX, mouseY);
+				GlStateManager.disableLighting();
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			}
+
 		}
 	}
 
