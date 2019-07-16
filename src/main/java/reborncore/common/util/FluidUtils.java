@@ -190,8 +190,7 @@ public class FluidUtils {
 	 * You can't fill or drain multiple items at once, if you do then liquid is multiplied or destroyed.
 	 *
 	 * @param stack the itemstack
-	 *
-	 * @return the IFluidHandler if it has one or null otherwise.
+	 * @return the IFluidHandler if it has one or null otherwise
 	 */
 	@Nullable
 	public static IFluidHandlerItem getFluidHandler(@Nonnull ItemStack stack) {
@@ -203,9 +202,8 @@ public class FluidUtils {
 	 * Helper method to get the fluid contained in an ItemStack
 	 * Deprecated in favor of {@link #getFluidContained(ItemStack)}
 	 *
-	 * 	 * @param container the container stack
-	 *
-	 * @return the fluid in the container.
+	 * @param container the container stack
+	 * @return the fluid in the container
 	 */
 	@Deprecated
 	@Nullable
@@ -225,8 +223,7 @@ public class FluidUtils {
 	 * Helper method to get the fluid contained in an ItemStack
 	 *
 	 * @param container the container stack
-	 *
-	 * @return the fluid in the container.
+	 * @return the fluid in the container
 	 */
 	@Nullable
 	public static FluidStack getFluidContained(@Nonnull ItemStack container) {

@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mark on 12/04/15.
+ * @author mark, estebes
  */
 public class ItemUtils {
 
@@ -142,18 +142,6 @@ public class ItemUtils {
 		}
 	}
 
-	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
-		if (stack.isEmpty() || stack.getCount() <= 0)
-			return;
-		if (stack.getCount() > 127)
-			stack.setCount(127);
-		stack.writeToNBT(data);
-	}
-
-	public static ItemStack readItemFromNBT(NBTTagCompound data) {
-		return new ItemStack(data);
-	}
-
 	public static List<ItemStack> getStackWithAllOre(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return new ArrayList<ItemStack>();
@@ -171,35 +159,56 @@ public class ItemUtils {
 		}
 		return list;
 	}
-	
-	public static double getPowerForDurabilityBar(ItemStack stack) {
-		if (isEmpty(stack)) {
-			return 0.0;
-		}
 
-		if (! (stack.getItem() instanceof IEnergyItemInfo) ) {
-			return 0.0;
-		}
+	/**
+	 * Write an {@link ItemStack} from {@link NBTTagCompound}
+	 *
+	 * @param data the NBT data
+	 * @return the {@link ItemStack} represented by the NBT data
+	 */
+	public static ItemStack readItemFromNBT(NBTTagCompound data) {
+		return new ItemStack(data);
+	}
+
+	/**
+	 * Write an {@link ItemStack} to {@link NBTTagCompound}
+	 *
+	 * @param stack the itemstack
+	 * @param data the {@link NBTTagCompound} representing the stack
+	 */
+	public static void writeItemToNBT(ItemStack stack, NBTTagCompound data) {
+		if (isEmpty(stack)) return;
+
+		if (stack.getCount() > 127) stack.setCount(127);
+
+		stack.writeToNBT(data);
+	}
+	/**
+	 * Get a value between 0 and 1 that represent the current power to be shown as durability.
+	 *
+	 * @param stack the itemstack
+	 * @return the current power to be shown as durability
+	 */
+	public static double getPowerForDurabilityBar(ItemStack stack) {
+		if (isEmpty(stack)) return 0.0;
+
+		if (!(stack.getItem() instanceof IEnergyItemInfo) ) return 0.0;
 
 		IEnergyStorage capEnergy = new ForgePowerItemManager(stack);
 
-		double energy = (double) capEnergy.getEnergyStored();
-		double maxEnergy = (double) capEnergy.getMaxEnergyStored();
-		return energy /  maxEnergy;
+		return (double) capEnergy.getEnergyStored() / (double) capEnergy.getMaxEnergyStored();
 	}
 
 	/**
 	 * Check if a stack is has the active modifier is active
 	 *
 	 * @param stack the itemstack
-	 *
 	 * @return the stack active modifier status
 	 */
 	public static boolean isActive(ItemStack stack) {
 		if (!isEmpty(stack)) {
 			NBTTagCompound nbt = getStackNbtData(stack);
-			if (nbt.hasKey("isActive"))
-				return nbt.getBoolean("isActive");
+			if (nbt.hasKey("isActive")) return nbt.getBoolean("isActive");
 		}
 
 		return false;
