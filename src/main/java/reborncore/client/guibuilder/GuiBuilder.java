@@ -239,7 +239,7 @@ public class GuiBuilder {
 
 			gui.mc.getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
 			gui.drawTexturedModalRect(x, y, 217, 107, 20, 20);
-			if (gui.isPointInRect(x, y, 20, 20, mouseX, mouseY)) {
+			if (gui.isPointInRect(x, y, 16, 15, mouseX, mouseY)) {
 				List<String> list = new ArrayList();
 				list.add(StringUtils.t("reborncore.gui.tooltip.energy_storage_redstone_mode_" + mode));
 

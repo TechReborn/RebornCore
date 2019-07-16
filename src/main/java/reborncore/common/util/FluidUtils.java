@@ -33,8 +33,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -171,13 +173,41 @@ public class FluidUtils {
 		return false;
 	}
 
-	@Nullable
-	public static IFluidHandlerItem getFluidHandler(ItemStack container) {
-		ItemStack copy = container.copy();
-		copy.setCount(1);
-		return FluidUtil.getFluidHandler(copy);
+
+	@Nonnull
+	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty) {
+		if (fluid == null || empty.isEmpty())
+			return ItemStack.EMPTY;
+		IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(empty);
+		fluidHandler.fill(new FluidStack(fluid, fluidHandler.getTankProperties()[0].getCapacity()), true);
+		return empty;
 	}
 
+	/**
+	 * Helper method to get an {@link IFluidHandlerItem} for an ItemStack.
+	 *
+	 * Note that the itemStack MUST have a stackSize of 1 if you want to fill or drain it.
+	 * You can't fill or drain multiple items at once, if you do then liquid is multiplied or destroyed.
+	 *
+	 * @param stack the itemstack
+	 *
+	 * @return the IFluidHandler if it has one or null otherwise.
+	 */
+	@Nullable
+	public static IFluidHandlerItem getFluidHandler(@Nonnull ItemStack stack) {
+		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null) ?
+		       stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null) : null;
+	}
+
+	/**
+	 * Helper method to get the fluid contained in an ItemStack
+	 * Deprecated in favor of {@link #getFluidContained(ItemStack)}
+	 *
+	 * 	 * @param container the container stack
+	 *
+	 * @return the fluid in the container.
+	 */
+	@Deprecated
 	@Nullable
 	public static FluidStack getFluidStackInContainer(@Nonnull ItemStack container) {
 		if (!container.isEmpty()) {
@@ -191,13 +221,22 @@ public class FluidUtils {
 		return null;
 	}
 
-	@Nonnull
-	public static ItemStack getFilledContainer(Fluid fluid, ItemStack empty) {
-		if (fluid == null || empty.isEmpty())
-			return ItemStack.EMPTY;
-		IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(empty);
-		fluidHandler.fill(new FluidStack(fluid, fluidHandler.getTankProperties()[0].getCapacity()), true);
-		return empty;
-	}
+	/**
+	 * Helper method to get the fluid contained in an ItemStack
+	 *
+	 * @param container the container stack
+	 *
+	 * @return the fluid in the container.
+	 */
+	@Nullable
+	public static FluidStack getFluidContained(@Nonnull ItemStack container) {
+		if (!container.isEmpty()) {
+			container = ItemHandlerHelper.copyStackWithSize(container, 1);
+			IFluidHandlerItem fluidHandler = getFluidHandler(container);
+			if (fluidHandler != null)
+				return fluidHandler.drain(Integer.MAX_VALUE, false);
+		}
 
+		return null;
+	}
 }
