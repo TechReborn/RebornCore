@@ -33,7 +33,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,15 +45,12 @@ import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.registration.RegistrationManager;
-import reborncore.common.registration.config.ConfigRegistryFactory;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
-import java.util.function.Function;
 
 public class RebornCore implements ModInitializer {
 
@@ -76,9 +72,7 @@ public class RebornCore implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Hello minecraft!");
-
-		RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
+		//RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
 
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");

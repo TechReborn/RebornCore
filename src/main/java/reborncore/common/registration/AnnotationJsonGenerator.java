@@ -6,15 +6,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
-import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -48,7 +45,7 @@ public class AnnotationJsonGenerator {
 		}
 
 		FileUtils.writeStringToFile(output, GSON.toJson(annotationModel), StandardCharsets.UTF_8);
-
+		jarFile.close();
 	}
 
 	private static void readClass(InputStream stream, AnnotationModel annotationModel) throws IOException {

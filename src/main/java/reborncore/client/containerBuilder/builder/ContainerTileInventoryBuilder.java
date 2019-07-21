@@ -167,8 +167,8 @@ public class ContainerTileInventoryBuilder {
 		if (this.tile instanceof TilePowerAcceptor) {
 			return this.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getEnergy(),
 				((TilePowerAcceptor) this.tile)::setEnergy)
-				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).extraPowerStoage,
-					((TilePowerAcceptor) this.tile)::setExtraPowerStoage)
+				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).extraPowerStorage,
+					((TilePowerAcceptor) this.tile)::setExtraPowerStorage)
 				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getPowerChange(),
 					((TilePowerAcceptor) this.tile)::setPowerChange);
 		}
