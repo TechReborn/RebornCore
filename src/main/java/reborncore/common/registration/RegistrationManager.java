@@ -32,7 +32,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import org.apache.commons.lang3.Validate;
 import reborncore.RebornCore;
-import reborncore.RebornRegistry;
 import reborncore.common.util.serialization.SerializationUtil;
 
 import java.io.IOException;
@@ -43,7 +42,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**

@@ -45,6 +45,7 @@ import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
+import reborncore.common.registration.RegistrationManager;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
@@ -72,7 +73,8 @@ public class RebornCore implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
+		// Load RC registries
+		RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
 
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");
