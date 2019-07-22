@@ -43,8 +43,8 @@ import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.NetworkPacket;
 import reborncore.common.network.ServerBoundPackets;
-import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.MachineFacing;
 
 import java.awt.*;
@@ -69,7 +69,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
-		TileMachineBase machine = ((TileMachineBase) gui.tile);
+		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.blockEntity);
 		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		BlockState state = world.getBlockState(pos);
@@ -93,7 +93,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onRelease(TileMachineBase provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onRelease(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
 		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.UP.getFacing(provider), gui);
 		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
@@ -123,7 +123,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.tile.getPos(), newConfig);
+		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -142,11 +142,11 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.tile.getPos(), id, input, output, filter);
+		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	private void drawSlotSateColor(TileMachineBase machineBase, Direction side, int slotID, int inx, int iny, GuiBase gui) {
+	private void drawSlotSateColor(MachineBaseBlockEntity machineBase, Direction side, int slotID, int inx, int iny, GuiBase gui) {
 		iny += 4;
 		int sx = inx + getX() + gui.getGuiLeft();
 		int sy = iny + getY() + gui.getGuiTop();

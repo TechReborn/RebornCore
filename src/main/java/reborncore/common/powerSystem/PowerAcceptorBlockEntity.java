@@ -37,17 +37,17 @@ import net.minecraft.util.Formatting;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.ExternalPowerHandler;
-import reborncore.api.power.IEnergyInterfaceTile;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.api.power.EnergyBlockEntity;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class TilePowerAcceptor extends TileMachineBase implements IEnergyInterfaceTile, IListInfoProvider // TechReborn
+public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity implements EnergyBlockEntity, IListInfoProvider // TechReborn
 {
-	private EnumPowerTier tilePowerTier;
+	private EnumPowerTier blockEntityPowerTier;
 	private double energy;
 
 	public double extraPowerStorage;
@@ -64,24 +64,24 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 
 	private List<ExternalPowerHandler> powerManagers;
 
-	public TilePowerAcceptor(BlockEntityType<?> tileEntityType) {
-		super(tileEntityType);
+	public PowerAcceptorBlockEntity(BlockEntityType<?> blockEntityType) {
+		super(blockEntityType);
 		checkTier();
 		setupManagers();
 	}
 
 	private void setupManagers() {
-		final TilePowerAcceptor tile = this;
+		final PowerAcceptorBlockEntity blockEntity = this;
 		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
-				.map(externalPowerManager -> externalPowerManager.createPowerHandler(tile)).filter(Objects::nonNull)
+				.map(externalPowerManager -> externalPowerManager.createPowerHandler(blockEntity)).filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
 
 	public void checkTier() {
 		if (this.getMaxInput() == 0) {
-			tilePowerTier = EnumPowerTier.getTier((int) this.getBaseMaxOutput());
+			blockEntityPowerTier = EnumPowerTier.getTier((int) this.getBaseMaxOutput());
 		} else {
-			tilePowerTier = EnumPowerTier.getTier((int) this.getBaseMaxInput());
+			blockEntityPowerTier = EnumPowerTier.getTier((int) this.getBaseMaxInput());
 		}
 
 	}
@@ -112,10 +112,10 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 		if (chargeEnergy <= 0.0) {
 			return;
 		}
-		if (!getInventoryForTile().isPresent()) {
+		if (!getOptionalInventory().isPresent()) {
 			return;
 		}
-		ItemStack batteryStack = getInventoryForTile().get().getInvStack(slot);
+		ItemStack batteryStack = getOptionalInventory().get().getInvStack(slot);
 		if (batteryStack.isEmpty()) {
 			return;
 		}
@@ -163,7 +163,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 	@Override
 	public void fromTag(CompoundTag tag) {
 		super.fromTag(tag);
-		CompoundTag data = tag.getCompound("TilePowerAcceptor");
+		CompoundTag data = tag.getCompound("PowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));
 		}
@@ -174,7 +174,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 		super.toTag(tag);
 		CompoundTag data = new CompoundTag();
 		data.putDouble("energy", getEnergy());
-		tag.put("TilePowerAcceptor", data);
+		tag.put("PowerAcceptor", data);
 		return tag;
 	}
 
@@ -216,7 +216,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 	}
 
 	// @Override
-	// TODO 1.13 tile patches are gone?
+	// TODO 1.13 blockEntity patches are gone?
 	public void onChunkUnload() {
 		// super.onChunkUnload();
 
@@ -312,24 +312,24 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 
 	@Override
 	public EnumPowerTier getTier() {
-		if (tilePowerTier == null) {
+		if (blockEntityPowerTier == null) {
 			checkTier();
 		}
 
 		if (extraTier > 0) {
 			for (EnumPowerTier enumTier : EnumPowerTier.values()) {
-				if (enumTier.ordinal() == tilePowerTier.ordinal() + extraTier) {
-					return tilePowerTier;
+				if (enumTier.ordinal() == blockEntityPowerTier.ordinal() + extraTier) {
+					return blockEntityPowerTier;
 				}
 			}
 			return EnumPowerTier.INFINITE;
 		}
-		return tilePowerTier;
+		return blockEntityPowerTier;
 	}
 
 	// IListInfoProvider
 	@Override
-	public void addInfo(List<Text> info, boolean isRealTile, boolean hasData) {
+	public void addInfo(List<Text> info, boolean isReal, boolean hasData) {
 		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
 				+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
 		if (getMaxInput() != 0) {
@@ -342,7 +342,7 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 		}
 		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
 				+ Formatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
-		if (isRealTile) {
+		if (isReal) {
 			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change") + ": "
 					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
 		}
@@ -352,6 +352,6 @@ public abstract class TilePowerAcceptor extends TileMachineBase implements IEner
 					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy)));
 		}
 
-		super.addInfo(info, isRealTile, hasData);
+		super.addInfo(info, isReal, hasData);
 	}
 }

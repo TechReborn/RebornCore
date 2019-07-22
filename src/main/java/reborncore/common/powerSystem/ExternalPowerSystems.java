@@ -52,20 +52,20 @@ public class ExternalPowerSystems implements IRegistryFactory {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
 	}
 
-	public static void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
+	public static void dischargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
 		externalPowerHandlerList.stream()
 			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-			.forEach(externalPowerManager -> externalPowerManager.dischargeItem(tilePowerAcceptor, stack));
+			.forEach(externalPowerManager -> externalPowerManager.dischargeItem(blockEntityPowerAcceptor, stack));
 	}
 
-	public static void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
+	public static void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
 		externalPowerHandlerList.stream()
 			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-			.forEach(externalPowerManager -> externalPowerManager.chargeItem(tilePowerAcceptor, stack));
+			.forEach(externalPowerManager -> externalPowerManager.chargeItem(blockEntityPowerAcceptor, stack));
 	}
 
-	public static boolean isPoweredTile(BlockEntity tileEntity, Direction facing) {
-		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredTile(tileEntity, facing));
+	public static boolean isPowered(BlockEntity blockEntity, Direction facing) {
+		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPowered(blockEntity, facing));
 	}
 
 	public static void requestEnergyFromArmor(ItemPowerManager capEnergy, LivingEntity entityLiving) {

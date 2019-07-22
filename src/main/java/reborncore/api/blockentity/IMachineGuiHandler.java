@@ -26,29 +26,14 @@
  * THE SOFTWARE.
  */
 
-package reborncore.api.tile;
+package reborncore.api.blockentity;
 
-import net.minecraft.item.ItemStack;
-import reborncore.common.recipes.IUpgradeHandler;
-import reborncore.common.tile.TileMachineBase;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+public interface IMachineGuiHandler {
 
-/**
- * Added to an item to say that it is a valid behavior
- */
-public interface IUpgrade {
+	void open(PlayerEntity player, BlockPos pos, World world);
 
-	public void process(
-		@Nonnull
-			TileMachineBase machineBase,
-		@Nullable
-			IUpgradeHandler handler,
-		@Nonnull
-			ItemStack stack);
-
-	public default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack){
-		return true;
-	}
 }

@@ -29,7 +29,7 @@
 package reborncore.common.util;
 
 import net.minecraft.util.math.Direction;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 public enum MachineFacing {
 	FRONT,
@@ -39,7 +39,7 @@ public enum MachineFacing {
 	LEFT,
 	RIGHT;
 
-	public Direction getFacing(TileMachineBase machineBase) {
+	public Direction getFacing(MachineBaseBlockEntity machineBase) {
 		if (this == FRONT) {
 			return machineBase.getFacing();
 		}

@@ -38,17 +38,17 @@ import java.util.Set;
 
 /**
  * Basic interface for a multiblock machine part. This is defined as an abstract
- * class as we need the basic functionality of a TileEntity as well. Preferably,
- * you should derive from MultiblockTileEntityBase, which does all the hard work
+ * class as we need the basic functionality of a BlockEntity as well. Preferably,
+ * you should derive from MultiblockBlockEntityBase, which does all the hard work
  * for you.
  * <p>
- * {@link MultiblockTileEntityBase}
+ * {@link MultiblockBlockEntityBase}
  */
 public abstract class IMultiblockPart extends BlockEntity {
 	public static final int INVALID_DISTANCE = Integer.MAX_VALUE;
 
-	public IMultiblockPart(BlockEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
+	public IMultiblockPart(BlockEntityType<?> blockEntityTypeIn) {
+		super(blockEntityTypeIn);
 	}
 
 	/**
@@ -58,16 +58,16 @@ public abstract class IMultiblockPart extends BlockEntity {
 	public abstract boolean isConnected();
 
 	/**
-	 * @return The attached multiblock controller for this tile entity.
+	 * @return The attached multiblock controller for this blockEntity entity.
 	 */
 	public abstract MultiblockControllerBase getMultiblockController();
 
 	/**
-	 * Returns the location of this tile entity in the world, in BlockPos
+	 * Returns the location of this blockEntity entity in the world, in BlockPos
 	 * form.
 	 *
 	 * @return A BlockPos with its x,y,z members set to the location of this
-	 * tile entity in the world.
+	 * blockEntity entity in the world.
 	 */
 	public abstract BlockPos getWorldLocation();
 
@@ -76,7 +76,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 	/**
 	 * Called after this block has been attached to a new multiblock controller.
 	 *
-	 * @param newController The new multiblock controller to which this tile entity is
+	 * @param newController The new multiblock controller to which this blockEntity entity is
 	 * attached.
 	 */
 	public abstract void onAttached(MultiblockControllerBase newController);
@@ -84,7 +84,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 	/**
 	 * Called after this block has been detached from a multiblock controller.
 	 *
-	 * @param multiblockController The multiblock controller that no longer controls this tile
+	 * @param multiblockController The multiblock controller that no longer controls this blockEntity
 	 * entity.
 	 */
 	public abstract void onDetached(MultiblockControllerBase multiblockController);
@@ -109,7 +109,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 
 	/**
 	 * Factory method. Creates a new multiblock controller and returns it. Does
-	 * not attach this tile entity to it. Override this in your game code!
+	 * not attach this blockEntity entity to it. Override this in your game code!
 	 *
 	 * @return A new Multiblock Controller, derived from
 	 * MultiblockControllerBase.
@@ -130,7 +130,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 	 * controller. A special case of attach/detach, done here for efficiency to
 	 * avoid triggering lots of recalculation logic.
 	 *
-	 * @param newController The new controller into which this tile entity is being
+	 * @param newController The new controller into which this blockEntity entity is being
 	 * merged.
 	 */
 	public abstract void onAssimilated(MultiblockControllerBase newController);
@@ -176,7 +176,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 
 	/**
 	 * Returns an array containing references to neighboring IMultiblockPart
-	 * tile entities. Primarily a utility method. Only works after tileentity
+	 * blockEntity entities. Primarily a utility method. Only works after blockentity
 	 * construction, so it cannot be used in
 	 * MultiblockControllerBase::attachBlock.
 	 * <p>
@@ -184,7 +184,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 	 * chunks that are unloaded. Note that no method is chunk-safe on the
 	 * client, because ChunkProviderClient is stupid.
 	 *
-	 * @return An array of references to neighboring IMultiblockPart tile
+	 * @return An array of references to neighboring IMultiblockPart blockEntity
 	 * entities.
 	 */
 	public abstract IMultiblockPart[] getNeighboringParts();
@@ -225,7 +225,7 @@ public abstract class IMultiblockPart extends BlockEntity {
 	/**
 	 * Called when this part should check its neighbors. This method MUST NOT
 	 * cause additional chunks to load. ALWAYS check to see if a chunk is loaded
-	 * before querying for its tile entity This part should inform the
+	 * before querying for its blockEntity entity This part should inform the
 	 * controller that it is attaching at this time.
 	 *
 	 * @return A Set of multiblock controllers to which this object would like

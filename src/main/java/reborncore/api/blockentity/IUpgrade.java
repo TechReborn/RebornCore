@@ -26,37 +26,28 @@
  * THE SOFTWARE.
  */
 
-package reborncore.api.tile;
+package reborncore.api.blockentity;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Direction;
+import net.minecraft.item.ItemStack;
+import reborncore.common.recipes.IUpgradeHandler;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
- * Created by modmuss50 on 12/04/2016.
+ * Added to an item to say that it is a valid behavior
  */
-public interface IContainerLayout<T extends BlockEntity> {
+public interface IUpgrade {
 
-	public void addInventorySlots();
+	public void process(
+		@Nonnull MachineBaseBlockEntity machineBase,
+		@Nullable
+			IUpgradeHandler handler,
+		@Nonnull
+			ItemStack stack);
 
-	public void addPlayerSlots();
-
-	public void setTile(T tile);
-
-	public
-	@Nullable
-	T getTile();
-
-	public void setPlayer(PlayerEntity player);
-
-	public
-	@Nullable
-	PlayerEntity getPlayer();
-
-	public
-	@Nullable
-	List<Integer> getSlotsForSide(Direction facing);
+	public default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack){
+		return true;
+	}
 }

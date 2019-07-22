@@ -32,19 +32,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 
 public interface ExternalPowerManager {
 
-	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor);
+	public ExternalPowerHandler createPowerHandler(PowerAcceptorBlockEntity acceptor);
 
 	public boolean isPoweredItem(ItemStack stack);
 
-	public boolean isPoweredTile(BlockEntity tileEntity, Direction side);
+	public boolean isPowered(BlockEntity blockEntity, Direction side);
 
-	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+	public void dischargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack);
 
-	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack);
+	public void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack);
 
 	public void chargeItem(ItemPowerManager powerAcceptor, ItemStack stack);
 

@@ -41,34 +41,34 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public abstract class BaseTileBlock extends Block implements BlockEntityProvider {
-	protected BaseTileBlock(Settings builder) {
+public abstract class BaseBlockEntityProvider extends Block implements BlockEntityProvider {
+	protected BaseBlockEntityProvider(Settings builder) {
 		super(builder);
 	}
 
 	public Optional<ItemStack> getDropWithContents(World world, BlockPos pos, ItemStack stack) {
-		BlockEntity tileEntity = world.getBlockEntity(pos);
-		if (tileEntity == null) {
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity == null) {
 			return Optional.empty();
 		}
 		ItemStack newStack = stack.copy();
-		CompoundTag tileData = tileEntity.toTag(new CompoundTag());
-		stripLocationData(tileData);
+		CompoundTag blockEntityData = blockEntity.toTag(new CompoundTag());
+		stripLocationData(blockEntityData);
 		if (!newStack.hasTag()) {
 			newStack.setTag(new CompoundTag());
 		}
-		newStack.getTag().put("tile_data", tileData);
+		newStack.getTag().put("blockEntity_data", blockEntityData);
 		return Optional.of(newStack);
 	}
 
 	@Override
 	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (stack.hasTag() && stack.getTag().containsKey("tile_data")) {
-			BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-			CompoundTag nbt = stack.getTag().getCompound("tile_data");
+		if (stack.hasTag() && stack.getTag().containsKey("blockEntity_data")) {
+			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+			CompoundTag nbt = stack.getTag().getCompound("blockEntity_data");
 			injectLocationData(nbt, pos);
-			tileEntity.fromTag(nbt);
-			tileEntity.markDirty();
+			blockEntity.fromTag(nbt);
+			blockEntity.markDirty();
 		}
 	}
 

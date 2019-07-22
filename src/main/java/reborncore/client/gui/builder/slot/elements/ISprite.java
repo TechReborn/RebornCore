@@ -28,8 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 public interface ISprite {
-	Sprite getSprite(TileMachineBase provider);
+	Sprite getSprite(MachineBaseBlockEntity provider);
 }

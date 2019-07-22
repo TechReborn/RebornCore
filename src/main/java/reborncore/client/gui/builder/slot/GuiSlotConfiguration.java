@@ -41,7 +41,7 @@ import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -67,10 +67,10 @@ public class GuiSlotConfiguration {
 
 		BuiltContainer container = guiBase.container;
 		for (Slot slot : container.slotList) {
-			if (guiBase.tile != slot.inventory) {
+			if (guiBase.blockEntity != slot.inventory) {
 				continue;
 			}
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getInventoryForTile().get(), slot.id, SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), slot.id, SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
 			slotElementMap.put(slot.id, slotElement);
 		}
 
@@ -79,7 +79,7 @@ public class GuiSlotConfiguration {
 	public static void draw(GuiBase guiBase, int mouseX, int mouseY) {
 		BuiltContainer container = guiBase.container;
 		for (Slot slot : container.slotList) {
-			if (guiBase.tile != slot.inventory) {
+			if (guiBase.blockEntity != slot.inventory) {
 				continue;
 			}
 			GlStateManager.color3f(255, 0, 0);
@@ -113,7 +113,7 @@ public class GuiSlotConfiguration {
 //	}
 
 	public static void copyToClipboard() {
-		TileMachineBase machine = getMachine();
+		MachineBaseBlockEntity machine = getMachine();
 		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
@@ -123,7 +123,7 @@ public class GuiSlotConfiguration {
 	}
 
 	public static void pasteFromClipboard() {
-		TileMachineBase machine = getMachine();
+		MachineBaseBlockEntity machine = getMachine();
 		if (machine == null || machine.slotConfiguration == null) {
 			return;
 		}
@@ -138,15 +138,15 @@ public class GuiSlotConfiguration {
 	}
 
 	@Nullable
-	private static TileMachineBase getMachine() {
+	private static MachineBaseBlockEntity getMachine() {
 		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
 		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
-		if (!(base.tile instanceof TileMachineBase)) {
+		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
 			return null;
 		}
-		TileMachineBase machineBase = (TileMachineBase) base.tile;
+		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.blockEntity;
 		return machineBase;
 	}
 
@@ -175,7 +175,7 @@ public class GuiSlotConfiguration {
 
 		if (getVisibleElements().isEmpty()) {
 			for (Slot slot : container.slotList) {
-				if (guiBase.tile != slot.inventory) {
+				if (guiBase.blockEntity != slot.inventory) {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {

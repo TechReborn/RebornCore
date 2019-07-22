@@ -32,16 +32,16 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import reborncore.common.multiblock.MultiblockControllerBase;
-import reborncore.common.multiblock.MultiblockTileEntityBase;
+import reborncore.common.multiblock.MultiblockBlockEntityBase;
 import reborncore.common.multiblock.MultiblockValidationException;
 
-public abstract class RectangularMultiblockTileEntityBase extends MultiblockTileEntityBase {
+public abstract class RectangularMultiblockBlockEntityBase extends MultiblockBlockEntityBase {
 
 	PartPosition position;
 	Direction outwards;
 
-	public RectangularMultiblockTileEntityBase(BlockEntityType<?> tileEntityType) {
-		super(tileEntityType);
+	public RectangularMultiblockBlockEntityBase(BlockEntityType<?> blockEntityType) {
+		super(blockEntityType);
 
 		position = PartPosition.Unknown;
 		outwards = null;
@@ -56,7 +56,7 @@ public abstract class RectangularMultiblockTileEntityBase extends MultiblockTile
 		return position;
 	}
 
-	// Handlers from MultiblockTileEntityBase
+	// Handlers from MultiblockBlockEntityBase
 	@Override
 	public void onAttached(MultiblockControllerBase newController) {
 		super.onAttached(newController);

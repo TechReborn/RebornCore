@@ -48,12 +48,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.loot.context.LootContext;
 import reborncore.api.ToolManager;
 import reborncore.api.items.InventoryUtils;
-import reborncore.api.tile.IMachineGuiHandler;
-import reborncore.api.tile.IUpgrade;
-import reborncore.api.tile.IUpgradeable;
-import reborncore.common.BaseTileBlock;
+import reborncore.api.blockentity.IMachineGuiHandler;
+import reborncore.api.blockentity.IUpgrade;
+import reborncore.api.blockentity.IUpgradeable;
+import reborncore.common.BaseBlockEntityProvider;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
@@ -62,7 +62,7 @@ import reborncore.fluid.FluidUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockMachineBase extends BaseTileBlock {
+public abstract class BlockMachineBase extends BaseBlockEntityProvider {
 
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
 	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
@@ -145,15 +145,15 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 	public boolean activate(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockHitResult hitResult) {
 
 		ItemStack stack = playerIn.getStackInHand(hand);
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 
-		// We extended BlockTileBase. Thus we should always have tile entity. I hope.
-		if (tileEntity == null) {
+		// We extended BlockTileBase. Thus we should always have blockEntity entity. I hope.
+		if (blockEntity == null) {
 			return false;
 		}
 
-		if (tileEntity instanceof TileMachineBase) {
-			Tank tank = ((TileMachineBase) tileEntity).getTank();
+		if (blockEntity instanceof MachineBaseBlockEntity) {
+			Tank tank = ((MachineBaseBlockEntity) blockEntity).getTank();
 			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
 				return true;
 			}
@@ -164,8 +164,8 @@ public abstract class BlockMachineBase extends BaseTileBlock {
 				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, hitResult.getSide())) {
 					return true;
 				}
-			} else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
-				IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
+			} else if (stack.getItem() instanceof IUpgrade && blockEntity instanceof IUpgradeable) {
+				IUpgradeable upgradeableEntity = (IUpgradeable) blockEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
 					if (InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
 					                                     true).getCount() > 0) {

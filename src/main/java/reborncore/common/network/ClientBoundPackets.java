@@ -33,8 +33,8 @@ import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.SlotConfiguration;
+import reborncore.common.blockentity.FluidConfiguration;
+import reborncore.common.blockentity.SlotConfiguration;
 
 public class ClientBoundPackets {
 
@@ -45,9 +45,9 @@ public class ClientBoundPackets {
 //			context.enqueueWork(() -> {
 //				World world = RebornCore.proxy.getClientWorld();
 //				if (world.isBlockLoaded(pos)) {
-//					TileEntity tileentity = world.getTileEntity(pos);
-//					if (tileentity != null && tagCompound != null) {
-//						tileentity.read(tagCompound);
+//					BlockEntity blockentity = world.getBlockEntity(pos);
+//					if (blockentity != null && tagCompound != null) {
+//						blockentity.read(tagCompound);
 //					}
 //				}
 //			});
@@ -60,7 +60,7 @@ public class ClientBoundPackets {
 //				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
 //					return;
 //				}
-//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getBlockEntity(pos);
 //				if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
 //					RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
 //				}
@@ -78,7 +78,7 @@ public class ClientBoundPackets {
 //				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
 //					return;
 //				}
-//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+//				TileMachineBase machineBase = (TileMachineBase) RebornCore.proxy.getClientWorld().getBlockEntity(pos);
 //				if (machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
 //					RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
 //				}
@@ -102,8 +102,8 @@ public class ClientBoundPackets {
 //		});
 	}
 
-	public static NetworkPacket createCustomDescriptionPacket(BlockEntity tileEntity) {
-		return createCustomDescriptionPacket(tileEntity.getPos(), tileEntity.toTag(new CompoundTag()));
+	public static NetworkPacket createCustomDescriptionPacket(BlockEntity blockEntity) {
+		return createCustomDescriptionPacket(blockEntity.getPos(), blockEntity.toTag(new CompoundTag()));
 	}
 
 	public static NetworkPacket createCustomDescriptionPacket(BlockPos blockPos, CompoundTag nbt) {

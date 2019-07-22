@@ -38,16 +38,16 @@ import reborncore.common.util.StringUtils;
 
 public class BaseGui extends AbstractContainerScreen {
 	Container container;
-	BlockEntity tileEntity;
+	BlockEntity blockEntity;
 	Identifier overlays;
 	Identifier guitexture;
 	PlayerEntity player;
 	String name;
 
-	public BaseGui(Container container, BlockEntity tileEntity, PlayerEntity player, Identifier overlays, Identifier guitexture, String name) {
+	public BaseGui(Container container, BlockEntity blockEntity, PlayerEntity player, Identifier overlays, Identifier guitexture, String name) {
 		super(container, player.inventory, new LiteralText(name));
 		this.container = container;
-		this.tileEntity = tileEntity;
+		this.blockEntity = blockEntity;
 		this.overlays = overlays;
 		this.guitexture = guitexture;
 		this.name = name;
@@ -56,7 +56,7 @@ public class BaseGui extends AbstractContainerScreen {
 
 	@Override
 	protected void drawForeground(int p_146979_1_, int p_146979_2_) {
-		String name = StringUtils.t("tile." + this.name + ".name");
+		String name = StringUtils.t("blockEntity." + this.name + ".name");
 		this.font.draw(name, this.containerWidth / 2 - 6 - this.font.getStringWidth(name) / 2, 6, 4210752);
 	}
 

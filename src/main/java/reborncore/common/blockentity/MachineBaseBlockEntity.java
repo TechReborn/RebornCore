@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.tile;
+package reborncore.common.blockentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -44,12 +44,10 @@ import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.tile.IContainerProvider;
-import reborncore.api.tile.IUpgrade;
-import reborncore.api.tile.IUpgradeable;
-import reborncore.api.tile.InventoryProvider;
+import reborncore.api.blockentity.IUpgrade;
+import reborncore.api.blockentity.IUpgradeable;
+import reborncore.api.blockentity.InventoryProvider;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.container.RebornContainer;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.recipes.IUpgradeHandler;
@@ -64,9 +62,9 @@ import java.util.Optional;
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory {
+public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory {
 
-	public RebornInventory<TileMachineBase> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, tile) -> true);
+	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
 	public SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 
@@ -86,8 +84,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	 */
 	double powerMultiplier = 1;
 
-	public TileMachineBase(BlockEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
+	public MachineBaseBlockEntity(BlockEntityType<?> blockEntityTypeIn) {
+		super(blockEntityTypeIn);
 	}
 
 	public void syncWithAll() {
@@ -98,8 +96,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 
 	public void onLoad() {
 		if (slotConfiguration == null) {
-			if (getInventoryForTile().isPresent()) {
-				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			if (getOptionalInventory().isPresent()) {
+				slotConfiguration = new SlotConfiguration(getOptionalInventory().get());
 			}
 		}
 		if (getTank() != null) {
@@ -130,8 +128,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		ticktime ++;
 		@Nullable
 		RecipeCrafter crafter = null;
-		if (getCrafterForTile().isPresent()) {
-			crafter = getCrafterForTile().get();
+		if (getOptionalCrafter().isPresent()) {
+			crafter = getOptionalCrafter().get();
 		}
 		if (canBeUpgraded()) {
 			resetUpgrades();
@@ -192,9 +190,9 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		return false;
 	}
 
-	// This stops the tile from getting cleared when the state is
+	// This stops the blockEntity from getting cleared when the state is
 	// updated(rotation and on/off)
-	//TODO 1.13 tile patches seem missing?
+	//TODO 1.13 blockEntity patches seem missing?
 	//	@Override
 	//	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 	//		if (oldState.getBlock() != newSate.getBlock()) {
@@ -203,7 +201,7 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	//		return false;
 	//	}
 
-	public Optional<RebornInventory> getInventoryForTile() {
+	public Optional<RebornInventory> getOptionalInventory() {
 		if (this instanceof InventoryProvider) {
 			InventoryProvider inventory = (InventoryProvider) this;
 			if (inventory.getInventory() == null) {
@@ -215,7 +213,7 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		}
 	}
 
-	protected Optional<RecipeCrafter> getCrafterForTile() {
+	protected Optional<RecipeCrafter> getOptionalCrafter() {
 		if (this instanceof IRecipeCrafterProvider) {
 			IRecipeCrafterProvider crafterProvider = (IRecipeCrafterProvider) this;
 			if (crafterProvider.getRecipeCrafter() == null) {
@@ -227,32 +225,20 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 		}
 	}
 
-	protected Optional<RebornContainer> getContainerForTile() {
-		if (this instanceof IContainerProvider) {
-			IContainerProvider containerProvider = (IContainerProvider) this;
-			if (containerProvider.getContainer() == null) {
-				return Optional.empty();
-			}
-			return Optional.of(containerProvider.getContainer());
-		} else {
-			return Optional.empty();
-		}
-	}
-
 	@Override
 	public void fromTag(CompoundTag tagCompound) {
 		super.fromTag(tagCompound);
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().read(tagCompound);
+		if (getOptionalInventory().isPresent()) {
+			getOptionalInventory().get().read(tagCompound);
 		}
-		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().read(tagCompound);
+		if (getOptionalCrafter().isPresent()) {
+			getOptionalCrafter().get().read(tagCompound);
 		}
 		if (tagCompound.containsKey("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
 		} else {
-			if (getInventoryForTile().isPresent()) {
-				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+			if (getOptionalInventory().isPresent()) {
+				slotConfiguration = new SlotConfiguration(getOptionalInventory().get());
 			}
 		}
 		if (tagCompound.containsKey("fluidConfig") && getTank() != null) {
@@ -266,11 +252,11 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	@Override
 	public CompoundTag toTag(CompoundTag tagCompound) {
 		super.toTag(tagCompound);
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().write(tagCompound);
+		if (getOptionalInventory().isPresent()) {
+			getOptionalInventory().get().write(tagCompound);
 		}
-		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().write(tagCompound);
+		if (getOptionalCrafter().isPresent()) {
+			getOptionalCrafter().get().write(tagCompound);
 		}
 		if (slotConfiguration != null) {
 			tagCompound.put("slotConfig", slotConfiguration.toTag());
@@ -287,8 +273,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 			return false;
 		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
-			RecipeCrafter crafter = getCrafterForTile().get();
+		if (slotConfigHolder.filter() && getOptionalCrafter().isPresent()) {
+			RecipeCrafter crafter = getOptionalCrafter().get();
 			if (!crafter.isStackValidInput(stack)) {
 				return false;
 			}
@@ -299,8 +285,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 
 //	@Override
 //	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-//		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getInventoryForTile().isPresent()) {
-//			return LazyOptional.of(() -> (T) getInventoryForTile().get().getExternal(facing));
+//		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getOptionalInventory().isPresent()) {
+//			return LazyOptional.of(() -> (T) getOptionalInventory().get().getExternal(facing));
 //		}
 //		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 //			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
@@ -397,10 +383,10 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 	}
 
 	@Override
-	public void addInfo(List<Text> info, boolean isRealTile, boolean hasData) {
+	public void addInfo(List<Text> info, boolean isReal, boolean hasData) {
 		if (hasData) {
-			if (getInventoryForTile().isPresent()) {
-				info.add(new LiteralText(Formatting.GOLD + "" + getInventoryForTile().get().getContents() + Formatting.GRAY + " items"));
+			if (getOptionalInventory().isPresent()) {
+				info.add(new LiteralText(Formatting.GOLD + "" + getOptionalInventory().get().getContents() + Formatting.GRAY + " items"));
 			}
 			if (!upgradeInventory.isInvEmpty()) {
 				info.add(new LiteralText(Formatting .GOLD + "" + upgradeInventory.getContents() + Formatting .GRAY + " upgrades"));
@@ -414,55 +400,55 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 
 	@Override
 	public int getInvSize() {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().getInvSize();
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().getInvSize();
 		}
 		return 0;
 	}
 
 	@Override
 	public boolean isInvEmpty() {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().isInvEmpty();
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().isInvEmpty();
 		}
 		return true;
 	}
 
 	@Override
 	public ItemStack getInvStack(int i) {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().getInvStack(i);
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().getInvStack(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack takeInvStack(int i, int i1) {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().takeInvStack(i, i1);
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().takeInvStack(i, i1);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeInvStack(int i) {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().removeInvStack(i);
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().removeInvStack(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public void setInvStack(int i, ItemStack itemStack) {
-		if(getInventoryForTile().isPresent()){
-			getInventoryForTile().get().setInvStack(i, itemStack);
+		if(getOptionalInventory().isPresent()){
+			getOptionalInventory().get().setInvStack(i, itemStack);
 		}
 	}
 
 	@Override
 	public boolean canPlayerUseInv(PlayerEntity playerEntity) {
-		if(getInventoryForTile().isPresent()){
-			return getInventoryForTile().get().canPlayerUseInv(playerEntity);
+		if(getOptionalInventory().isPresent()){
+			return getOptionalInventory().get().canPlayerUseInv(playerEntity);
 		}
 		return false;
 	}
@@ -474,8 +460,8 @@ public class TileMachineBase extends BlockEntity implements Tickable, IUpgradeab
 
 	@Override
 	public void clear() {
-		if(getInventoryForTile().isPresent()){
-			getInventoryForTile().get().clear();
+		if(getOptionalInventory().isPresent()){
+			getOptionalInventory().get().clear();
 		}
 	}
 }

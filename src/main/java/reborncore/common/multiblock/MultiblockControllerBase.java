@@ -138,7 +138,7 @@ public abstract class MultiblockControllerBase {
 	 * Check if a block is being tracked by this machine.
 	 *
 	 * @param blockCoord Coordinate to check.
-	 * @return True if the tile entity at blockCoord is being tracked by this
+	 * @return True if the blockEntity entity at blockCoord is being tracked by this
 	 * machine, false otherwise.
 	 */
 	public boolean hasBlock(BlockPos blockCoord) {
@@ -281,7 +281,7 @@ public abstract class MultiblockControllerBase {
 
 	/**
 	 * Call to detach a block from this machine. Generally, this should be
-	 * called when the tile entity is being released, e.g. on block destruction.
+	 * called when the blockEntity entity is being released, e.g. on block destruction.
 	 *
 	 * @param part The part to detach from this machine.
 	 * @param chunkUnloading Is this entity detaching due to the chunk unloading? If true,
@@ -570,7 +570,7 @@ public abstract class MultiblockControllerBase {
 	}
 
 	/**
-	 * The server-side update loop! Use this similarly to a TileEntity's update
+	 * The server-side update loop! Use this similarly to a BlockEntity's update
 	 * loop. You do not need to call your superclass' update() if you're
 	 * directly derived from MultiblockControllerBase. This is a callback. Note
 	 * that this will only be called when the machine is assembled.
@@ -745,7 +745,7 @@ public abstract class MultiblockControllerBase {
 	}
 
 	/**
-	 * Called when the save delegate's tile entity is being asked for its
+	 * Called when the save delegate's blockEntity entity is being asked for its
 	 * description packet
 	 *
 	 * @param data A fresh compound tag to write your multiblock data into
@@ -753,7 +753,7 @@ public abstract class MultiblockControllerBase {
 	public abstract void formatDescriptionPacket(CompoundTag data);
 
 	/**
-	 * Called when the save delegate's tile entity receiving a description
+	 * Called when the save delegate's blockEntity entity receiving a description
 	 * packet
 	 *
 	 * @param data A compound tag containing multiblock data to import
@@ -985,10 +985,10 @@ public abstract class MultiblockControllerBase {
 	}
 
 	/**
-	 * Detach all parts. Return a set of all parts which still have a valid tile
+	 * Detach all parts. Return a set of all parts which still have a valid blockEntity
 	 * entity. Chunk-safe.
 	 *
-	 * @return A set of all parts which still have a valid tile entity.
+	 * @return A set of all parts which still have a valid blockEntity entity.
 	 */
 	public Set<IMultiblockPart> detachAllBlocks() {
 		if (worldObj == null) {

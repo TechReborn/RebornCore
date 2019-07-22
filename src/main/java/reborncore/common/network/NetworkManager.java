@@ -97,8 +97,8 @@ public class NetworkManager {
 	//	sendToTracking(packet, world.getWorldChunk(pos));
 	}
 
-	public static void sendToTracking(NetworkPacket packet, BlockEntity tileEntity) {
-		sendToTracking(packet, tileEntity.getWorld(), tileEntity.getPos());
+	public static void sendToTracking(NetworkPacket packet, BlockEntity blockEntity) {
+		sendToTracking(packet, blockEntity.getWorld(), blockEntity.getPos());
 	}
 
 	private static class ForgeMessage extends NetworkPacket {

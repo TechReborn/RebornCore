@@ -35,7 +35,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class ContainerBuilder {
 	private Predicate<PlayerEntity> canInteract = player -> true;
 
 	final List<Slot> slots;
-	final List<Range<Integer>> playerInventoryRanges, tileInventoryRanges;
+	final List<Range<Integer>> playerInventoryRanges, blockEntityInventoryRanges;
 
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
@@ -62,7 +62,7 @@ public class ContainerBuilder {
 
 		this.slots = new ArrayList<>();
 		this.playerInventoryRanges = new ArrayList<>();
-		this.tileInventoryRanges = new ArrayList<>();
+		this.blockEntityInventoryRanges = new ArrayList<>();
 
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
@@ -80,27 +80,27 @@ public class ContainerBuilder {
 		return new ContainerPlayerInventoryBuilder(this, player);
 	}
 
-	public ContainerTileInventoryBuilder tile(final BlockEntity tile) {
-		return new ContainerTileInventoryBuilder(this, tile);
+	public ContainerBlockEntityInventoryBuilder blockEntity(final BlockEntity blockEntity) {
+		return new ContainerBlockEntityInventoryBuilder(this, blockEntity);
 	}
 
 	void addPlayerInventoryRange(final Range<Integer> range) {
 		this.playerInventoryRanges.add(range);
 	}
 
-	void addTileInventoryRange(final Range<Integer> range) {
-		this.tileInventoryRanges.add(range);
+	void addBlockEnityInventoryRange(final Range<Integer> range) {
+		this.blockEntityInventoryRanges.add(range);
 	}
 
 	@Deprecated
 	/**
-	 * The container have to know if the tile is still available (the block was not destroyed)
+	 * The container have to know if the blockEntity is still available (the block was not destroyed)
 	 * and if the player is not to far from him to close the GUI if necessary
 	 */
-	public BuiltContainer create() {
-		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
+	public BuiltContainer create(int syncID) {
+		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
-			this.tileInventoryRanges, null);
+			this.blockEntityInventoryRanges, null);
 		if (!this.shortValues.isEmpty()) {
 			built.addShortSync(this.shortValues);
 		}
@@ -120,10 +120,10 @@ public class ContainerBuilder {
 		return built;
 	}
 
-	public BuiltContainer create(final TileMachineBase tile) {
-		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
+	public BuiltContainer create(final MachineBaseBlockEntity blockEntity, int syncID) {
+		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
-			this.tileInventoryRanges, tile);
+			this.blockEntityInventoryRanges, blockEntity);
 		if (!this.shortValues.isEmpty()) {
 			built.addShortSync(this.shortValues);
 		}

@@ -31,8 +31,8 @@ package reborncore.common.util;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
-import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.FluidConfiguration;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.fluid.Fluid;
 import reborncore.fluid.FluidStack;
 
@@ -51,13 +51,13 @@ public class Tank  {
 
 	@Nullable
 	private Direction side = null;
-	TileMachineBase machine;
+	MachineBaseBlockEntity machine;
 
-	public Tank(String name, int capacity, TileMachineBase tile) {
+	public Tank(String name, int capacity, MachineBaseBlockEntity blockEntity) {
 		super();
 		this.name = name;
-		//this.tile = tile;
-		this.machine = tile;
+		//this.blockEntity = blockEntity;
+		this.machine = blockEntity;
 	}
 
 	public FluidStack getFluid(){
@@ -157,25 +157,25 @@ public class Tank  {
 
 	//TODO optimise
 	public void compareAndUpdate() {
-//		if (tile == null || tile.getWorld().isRemote) {
+//		if (blockEntity == null || blockEntity.getWorld().isRemote) {
 //			return;
 //		}
 //		FluidStack current = this.getFluid();
 //		if (current != null) {
 //			if (lastBeforeUpdate != null) {
 //				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
-//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
 //					lastBeforeUpdate = current.copy();
 //				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
-//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
 //					lastBeforeUpdate = current.copy();
 //				}
 //			} else {
-//				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
 //				lastBeforeUpdate = current.copy();
 //			}
 //		} else if (lastBeforeUpdate != null) {
-//			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(tile), tile.getWorld(), tile.getPos());
+//			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
 //			lastBeforeUpdate = null;
 //		}
 	}
@@ -193,7 +193,7 @@ public class Tank  {
 	}
 
 
-	public void setTileEntity(BlockEntity tileBaseFluidGenerator) {
+	public void setBlockEntity(BlockEntity blockEntityBaseFluidGenerator) {
 
 	}
 }

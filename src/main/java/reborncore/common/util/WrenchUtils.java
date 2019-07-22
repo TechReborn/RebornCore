@@ -40,7 +40,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
-import reborncore.common.BaseTileBlock;
+import reborncore.common.BaseBlockEntityProvider;
 import reborncore.common.misc.ModSounds;
 
 /**
@@ -49,26 +49,26 @@ import reborncore.common.misc.ModSounds;
 public class WrenchUtils {
 
 	public static boolean handleWrench(ItemStack stack, World worldIn, BlockPos pos, PlayerEntity playerIn, Direction side) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		if (tileEntity == null) {
+		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+		if (blockEntity == null) {
 			return false;
 		}
 
 		if (ToolManager.INSTANCE.handleTool(stack, pos, worldIn, playerIn, side, true)) {
 			if (playerIn.isSneaking()) {
-				if (tileEntity instanceof IToolDrop) {
-					ItemStack drop = ((IToolDrop) tileEntity).getToolDrop(playerIn);
+				if (blockEntity instanceof IToolDrop) {
+					ItemStack drop = ((IToolDrop) blockEntity).getToolDrop(playerIn);
 					if (drop == null) {
 						return false;
 					}
 
 					boolean dropContents = true;
-					Block block = tileEntity.getCachedState().getBlock();
-					if (block instanceof BaseTileBlock) {
-						ItemStack tileDrop = ((BaseTileBlock) block).getDropWithContents(worldIn, pos, drop).orElse(ItemStack.EMPTY);
-						if (!tileDrop.isEmpty()) {
+					Block block = blockEntity.getCachedState().getBlock();
+					if (block instanceof BaseBlockEntityProvider) {
+						ItemStack blockEntityDrop = ((BaseBlockEntityProvider) block).getDropWithContents(worldIn, pos, drop).orElse(ItemStack.EMPTY);
+						if (!blockEntityDrop.isEmpty()) {
 							dropContents = false;
-							drop = tileDrop;
+							drop = blockEntityDrop;
 						}
 					}
 

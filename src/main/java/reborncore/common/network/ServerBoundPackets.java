@@ -30,8 +30,8 @@ package reborncore.common.network;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.SlotConfiguration;
+import reborncore.common.blockentity.FluidConfiguration;
+import reborncore.common.blockentity.SlotConfiguration;
 
 public class ServerBoundPackets {
 
@@ -40,7 +40,7 @@ public class ServerBoundPackets {
 //			BlockPos pos = packetBuffer.readBlockPos();
 //			FluidConfiguration.FluidConfig fluidConfiguration = new FluidConfiguration.FluidConfig(packetBuffer.readCompoundTag());
 //			context.enqueueWork(() -> {
-//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getBlockEntity(pos);
 //				legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
 //				legacyMachineBase.markDirty();
 //
@@ -58,7 +58,7 @@ public class ServerBoundPackets {
 //			BlockPos pos = packetBuffer.readBlockPos();
 //			CompoundTag tagCompound = packetBuffer.readCompoundTag();
 //			context.enqueueWork(() -> {
-//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getBlockEntity(pos);
 //				legacyMachineBase.slotConfiguration.fromTag(tagCompound);
 //				legacyMachineBase.markDirty();
 //
@@ -72,7 +72,7 @@ public class ServerBoundPackets {
 //			boolean input = packetBuffer.readBoolean();
 //			boolean output = packetBuffer.readBoolean();
 //			context.enqueueWork(() -> {
-//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getBlockEntity(pos);
 //				FluidConfiguration config = legacyMachineBase.fluidConfiguration;
 //				if (config == null) {
 //					return;
@@ -93,7 +93,7 @@ public class ServerBoundPackets {
 //			boolean output = packetBuffer.readBoolean();
 //			boolean filter = packetBuffer.readBoolean();
 //
-//			TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//			TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getBlockEntity(pos);
 //			SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
 //			if (holder == null) {
 //				return;
@@ -114,7 +114,7 @@ public class ServerBoundPackets {
 //			BlockPos pos = packetBuffer.readBlockPos();
 //			SlotConfiguration.SlotConfig slotConfig = new SlotConfiguration.SlotConfig(packetBuffer.readCompoundTag());
 //			context.enqueueWork(() -> {
-//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getTileEntity(pos);
+//				TileMachineBase legacyMachineBase = (TileMachineBase) context.getSender().world.getBlockEntity(pos);
 //				legacyMachineBase.slotConfiguration.getSlotDetails(slotConfig.getSlotID()).updateSlotConfig(slotConfig);
 //				legacyMachineBase.markDirty();
 //

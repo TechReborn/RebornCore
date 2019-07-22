@@ -26,11 +26,10 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.tile;
+package reborncore.common.blockentity;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -39,8 +38,6 @@ import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
 import reborncore.RebornCore;
 import reborncore.api.items.InventoryUtils;
-import reborncore.client.gui.slots.BaseSlot;
-import reborncore.common.container.RebornContainer;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.RebornInventory;
 import reborncore.common.util.ItemUtils;
@@ -68,9 +65,9 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 	}
 
-	public void update(TileMachineBase machineBase) {
-		if (inventory == null && machineBase.getInventoryForTile().isPresent()) {
-			inventory = machineBase.getInventoryForTile().get();
+	public void update(MachineBaseBlockEntity machineBase) {
+		if (inventory == null && machineBase.getOptionalInventory().isPresent()) {
+			inventory = machineBase.getOptionalInventory().get();
 		}
 		if (inventory != null && slotDetails.size() != inventory.getInvSize()) {
 			for (int i = 0; i < inventory.getInvSize(); i++) {
@@ -182,7 +179,7 @@ public class SlotConfiguration implements NBTSerializable {
 			toEdit.slotIO = config.slotIO;
 		}
 
-		private void handleItemIO(TileMachineBase machineBase) {
+		private void handleItemIO(MachineBaseBlockEntity machineBase) {
 			if (!input && !output) {
 				return;
 			}
@@ -291,14 +288,14 @@ public class SlotConfiguration implements NBTSerializable {
 			return slotID;
 		}
 
-		private void handleItemInput(TileMachineBase machineBase) {
-			RebornInventory inventory = machineBase.getInventoryForTile().get();
+		private void handleItemInput(MachineBaseBlockEntity machineBase) {
+			RebornInventory inventory = machineBase.getOptionalInventory().get();
 			ItemStack targetStack = inventory.getInvStack(slotID);
 			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
 			}
-			BlockEntity tileEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
-			if (!(tileEntity instanceof net.minecraft.inventory.Inventory)) {
+			BlockEntity blockEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
+			if (!(blockEntity instanceof net.minecraft.inventory.Inventory)) {
 				return;
 			}
 			RebornInventory sourceInv = null; //TODO
@@ -328,17 +325,17 @@ public class SlotConfiguration implements NBTSerializable {
 			}
 		}
 
-		private void handleItemOutput(TileMachineBase machineBase) {
-			RebornInventory inventory = machineBase.getInventoryForTile().get();
+		private void handleItemOutput(MachineBaseBlockEntity machineBase) {
+			RebornInventory inventory = machineBase.getOptionalInventory().get();
 			ItemStack sourceStack = inventory.getInvStack(slotID);
 			if (sourceStack.isEmpty()) {
 				return;
 			}
-			BlockEntity tileEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
-			if (!(tileEntity instanceof net.minecraft.inventory.Inventory)) {
+			BlockEntity blockEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
+			if (!(blockEntity instanceof net.minecraft.inventory.Inventory)) {
 				return;
 			}
-			net.minecraft.inventory.Inventory destHandler = (net.minecraft.inventory.Inventory)tileEntity;
+			net.minecraft.inventory.Inventory destHandler = (net.minecraft.inventory.Inventory)blockEntity;
 			ItemStack stack = InventoryUtils.insertItemStacked(destHandler, sourceStack, false);
 			inventory.setInvStack(slotID, stack);
 		}
@@ -439,43 +436,27 @@ public class SlotConfiguration implements NBTSerializable {
 	}
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
-	public static boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction, TileMachineBase tile) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
+	public static boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction, MachineBaseBlockEntity blockEntity) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.getSlotIO().getIoConfig().isInsert()) {
-			if (slotConfigHolder.filter() && tile.getCrafterForTile().isPresent()) {
-				RecipeCrafter crafter = tile.getCrafterForTile().get();
+			if (slotConfigHolder.filter() && blockEntity.getOptionalCrafter().isPresent()) {
+				RecipeCrafter crafter = blockEntity.getOptionalCrafter().get();
 				if (!crafter.isStackValidInput(itemStackIn)) {
 					return false;
 				}
 			}
-			if (tile.getContainerForTile().isPresent()) {
-				RebornContainer container = tile.getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					Slot slot = container.slotMap.get(index);
-					return slot.canInsert(itemStackIn);
-				}
-			} else {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
-	public static boolean canExtractItem(int index, ItemStack stack, Direction direction, TileMachineBase tile) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = tile.slotConfiguration.getSlotDetails(index);
+	public static boolean canExtractItem(int index, ItemStack stack, Direction direction, MachineBaseBlockEntity blockEntity) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.getSlotIO().getIoConfig().isExtact()) {
-			if (tile.getContainerForTile().isPresent()) {
-				RebornContainer container = tile.getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					BaseSlot slot = container.slotMap.get(index);
-					return slot.canWorldBlockRemove();
-				}
-			} else {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}

@@ -36,21 +36,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import reborncore.api.tile.IUpgradeable;
+import reborncore.api.blockentity.IUpgradeable;
 
 public class ItemHandlerUtils {
 
 	public static void dropContainedItems(World world, BlockPos pos) {
-		BlockEntity tileEntity = world.getBlockEntity(pos);
-		if (tileEntity == null) {
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity == null) {
 			return;
 		}
-		if (tileEntity instanceof Inventory) {
-			Inventory inventory = (Inventory) tileEntity;
+		if (blockEntity instanceof Inventory) {
+			Inventory inventory = (Inventory) blockEntity;
 			dropItemHandler(world, pos, inventory);
 		}
-		if (tileEntity instanceof IUpgradeable) {
-			dropItemHandler(world, pos, ((IUpgradeable) tileEntity).getUpgradeInvetory());
+		if (blockEntity instanceof IUpgradeable) {
+			dropItemHandler(world, pos, ((IUpgradeable) blockEntity).getUpgradeInvetory());
 		}
 	}
 

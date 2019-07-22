@@ -137,18 +137,18 @@ public class RebornRecipe implements Recipe {
 	}
 
 	/**
-	 * @param tile the tile that is doing the crafting
+	 * @param blockEntity the blockEntity that is doing the crafting
 	 * @return if true the recipe will craft, if false it will not
 	 */
-	public boolean canCraft(BlockEntity tile){
+	public boolean canCraft(BlockEntity blockEntity){
 		return true;
 	}
 
 	/**
-	 * @param tile the tile that is doing the crafting
+	 * @param blockEntity the blockEntity that is doing the crafting
 	 * @return return true if fluid was taken and should craft
 	 */
-	public boolean onCraft(BlockEntity tile){
+	public boolean onCraft(BlockEntity blockEntity){
 		return true; //TODO look into this being a boolean, seems a little odd, not sure what usees it for now
 	}
 

@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.tile;
+package reborncore.common.blockentity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
@@ -68,7 +68,7 @@ public class FluidConfiguration implements NBTSerializable {
 		toEdit.ioConfig = config.ioConfig;
 	}
 
-	public void update(TileMachineBase machineBase) {
+	public void update(MachineBaseBlockEntity machineBase) {
 		if (!input && !output) {
 			return;
 		}
@@ -96,11 +96,11 @@ public class FluidConfiguration implements NBTSerializable {
 
 //	private IFluidHandler getFluidHandler(TileMachineBase machine, Direction facing) {
 //		BlockPos pos = machine.getPos().offset(facing);
-//		BlockEntity tileEntity = machine.getWorld().getBlockEntity(pos);
-//		if (tileEntity == null) {
+//		BlockEntity blockEntity = machine.getWorld().getBlockEntity(pos);
+//		if (blockEntity == null) {
 //			return null;
 //		}
-//		return tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
+//		return blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
 //	}
 
 	public boolean autoInput() {

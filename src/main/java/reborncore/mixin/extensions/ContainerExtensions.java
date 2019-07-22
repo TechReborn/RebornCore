@@ -13,6 +13,4 @@ public interface ContainerExtensions {
 
 	List<ContainerListener> getListeners();
 
-	void setSyncID(int id);
-
 }

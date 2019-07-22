@@ -93,7 +93,7 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 		// Now we run a simple check on each block within that volume.
 		// Any block deviating = NO DEAL SIR
 		BlockEntity te;
-		RectangularMultiblockTileEntityBase part;
+		RectangularMultiblockBlockEntityBase part;
 		Class<? extends RectangularMultiblockControllerBase> myClass = this.getClass();
 
 		for (int x = minimumCoord.getX(); x <= maximumCoord.getX(); x++) {
@@ -102,8 +102,8 @@ public abstract class RectangularMultiblockControllerBase extends MultiblockCont
 					// Okay, figure out what sort of block this should be.
 
 					te = this.worldObj.getBlockEntity(new BlockPos(x, y, z));
-					if (te instanceof RectangularMultiblockTileEntityBase) {
-						part = (RectangularMultiblockTileEntityBase) te;
+					if (te instanceof RectangularMultiblockBlockEntityBase) {
+						part = (RectangularMultiblockBlockEntityBase) te;
 
 						// Ensure this part should actually be allowed within a
 						// cube of this controller's type

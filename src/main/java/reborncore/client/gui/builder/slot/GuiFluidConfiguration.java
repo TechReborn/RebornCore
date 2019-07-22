@@ -34,7 +34,7 @@ import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -142,15 +142,15 @@ public class GuiFluidConfiguration {
 	}
 
 	@Nullable
-	private static TileMachineBase getMachine() {
+	private static MachineBaseBlockEntity getMachine() {
 		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
 		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
-		if (!(base.tile instanceof TileMachineBase)) {
+		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
 			return null;
 		}
-		TileMachineBase machineBase = (TileMachineBase) base.tile;
+		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.blockEntity;
 		return machineBase;
 	}
 

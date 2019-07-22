@@ -30,11 +30,11 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
-public interface IInventoryAccess<T extends TileMachineBase> {
+public interface IInventoryAccess<T extends MachineBaseBlockEntity> {
 
-	public boolean canHandleIO(int slotID, ItemStack stack, Direction face, AccessDirection direction, T tile);
+	public boolean canHandleIO(int slotID, ItemStack stack, Direction face, AccessDirection direction, T blockEntity);
 
 	public enum AccessDirection {
 		INSERT,

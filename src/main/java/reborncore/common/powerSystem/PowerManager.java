@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
-import reborncore.api.power.IEnergyInterfaceTile;
+import reborncore.api.power.EnergyBlockEntity;
 import reborncore.api.power.ItemPowerManager;
 import reborncore.common.registration.RebornRegister;
 
@@ -13,7 +13,7 @@ import reborncore.common.registration.RebornRegister;
 public class PowerManager implements ExternalPowerManager {
 
 	@Override
-	public ExternalPowerHandler createPowerHandler(TilePowerAcceptor acceptor) {
+	public ExternalPowerHandler createPowerHandler(PowerAcceptorBlockEntity acceptor) {
 		return new PowerHandler(acceptor);
 	}
 
@@ -23,17 +23,17 @@ public class PowerManager implements ExternalPowerManager {
 	}
 
 	@Override
-	public boolean isPoweredTile(BlockEntity tileEntity, Direction side) {
-		return tileEntity instanceof IEnergyInterfaceTile;
+	public boolean isPowered(BlockEntity blockEntity, Direction side) {
+		return blockEntity instanceof EnergyBlockEntity;
 	}
 
 	@Override
-	public void dischargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
+	public void dischargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
 
 	}
 
 	@Override
-	public void chargeItem(TilePowerAcceptor tilePowerAcceptor, ItemStack stack) {
+	public void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
 
 	}
 

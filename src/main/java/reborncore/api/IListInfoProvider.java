@@ -34,6 +34,6 @@ import java.util.List;
 
 public interface IListInfoProvider {
 
-	void addInfo(List<Text> info, boolean isRealTile, boolean hasData);
+	void addInfo(List<Text> info, boolean isReal, boolean hasData);
 
 }

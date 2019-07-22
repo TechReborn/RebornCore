@@ -28,21 +28,20 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import org.apache.commons.lang3.Validate;
 import reborncore.client.gui.builder.GuiBase;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import java.util.function.Predicate;
 
 public class CheckBoxElement extends ElementBase {
 	public String label, type;
 	public int labelColor, slotID;
-	public TileMachineBase machineBase;
+	public MachineBaseBlockEntity machineBase;
 	Predicate<CheckBoxElement> ticked;
 
 	private Sprite.CheckBox checkBoxSprite;
 
-	public CheckBoxElement(String label, int labelColor, int x, int y, String type, int slotID, Sprite.CheckBox checkBoxSprite, TileMachineBase machineBase, Predicate<CheckBoxElement> ticked) {
+	public CheckBoxElement(String label, int labelColor, int x, int y, String type, int slotID, Sprite.CheckBox checkBoxSprite, MachineBaseBlockEntity machineBase, Predicate<CheckBoxElement> ticked) {
 		super(x, y, checkBoxSprite.getNormal());
 		this.checkBoxSprite = checkBoxSprite;
 		this.type = type;

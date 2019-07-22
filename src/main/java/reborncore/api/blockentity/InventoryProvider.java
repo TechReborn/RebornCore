@@ -26,15 +26,12 @@
  * THE SOFTWARE.
  */
 
-package reborncore.api.tile;
+package reborncore.api.blockentity;
 
-import reborncore.common.container.RebornContainer;
+import net.minecraft.inventory.Inventory;
 
-/**
- * Created by modmuss50 on 11/04/2016.
- */
-public interface IContainerProvider extends InventoryProvider {
+public interface InventoryProvider {
 
-	RebornContainer getContainer();
+	Inventory getInventory();
 
 }

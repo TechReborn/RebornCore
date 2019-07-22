@@ -26,12 +26,23 @@
  * THE SOFTWARE.
  */
 
-package reborncore.api.tile;
+package reborncore.api.blockentity;
 
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 
-public interface InventoryProvider {
+public interface IUpgradeable {
 
-	Inventory getInventory();
+	public default boolean canBeUpgraded() {
+		return true;
+	}
+
+	public Inventory getUpgradeInvetory();
+
+	public int getUpgradeSlotCount();
+
+	public default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack){
+		return true;
+	}
 
 }

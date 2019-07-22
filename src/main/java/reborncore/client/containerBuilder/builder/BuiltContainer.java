@@ -42,7 +42,7 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.client.containerBuilder.IRightClickHandler;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemUtils;
 import reborncore.mixin.extensions.ContainerExtensions;
 
@@ -56,7 +56,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 	private final Predicate<PlayerEntity> canInteract;
 	private final List<Range<Integer>> playerSlotRanges;
-	private final List<Range<Integer>> tileSlotRanges;
+	private final List<Range<Integer>> blockEntitySlotRanges;
 
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
 	private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
@@ -64,24 +64,24 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	private List<Consumer<CraftingInventory>> craftEvents;
 	private Integer[] integerParts;
 
-	private final TileMachineBase tile;
+	private final MachineBaseBlockEntity blockEntity;
 
-	public BuiltContainer(final String name, final Predicate<PlayerEntity> canInteract,
+	public BuiltContainer(int syncID, final String name, final Predicate<PlayerEntity> canInteract,
 	                      final List<Range<Integer>> playerSlotRange,
-	                      final List<Range<Integer>> tileSlotRange, TileMachineBase tile) {
-		super(null, 0);
+	                      final List<Range<Integer>> blockEntitySlotRange, MachineBaseBlockEntity blockEntity) {
+		super(null, syncID);
 		this.name = name;
 
 		this.canInteract = canInteract;
 
 		this.playerSlotRanges = playerSlotRange;
-		this.tileSlotRanges = tileSlotRange;
+		this.blockEntitySlotRanges = blockEntitySlotRange;
 
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
 		this.objectValues = new ArrayList<>();
 
-		this.tile = tile;
+		this.blockEntity = blockEntity;
 	}
 
 	public void addShortSync(final List<Pair<IntSupplier, IntConsumer>> syncables) {
@@ -262,7 +262,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			for (final Range<Integer> range : this.playerSlotRanges) {
 				if (range.contains(index)) {
 
-					if (this.shiftToTile(stackInSlot)) {
+					if (this.shiftToBlockEntity(stackInSlot)) {
 						shifted = true;
 					}
 					break;
@@ -270,7 +270,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			}
 
 			if (!shifted) {
-				for (final Range<Integer> range : this.tileSlotRanges) {
+				for (final Range<Integer> range : this.blockEntitySlotRanges) {
 					if (range.contains(index)) {
 						if (this.shiftToPlayer(stackInSlot)) {
 							shifted = true;
@@ -337,11 +337,11 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		return changed;
 	}
 
-	private boolean shiftToTile(final ItemStack stackToShift) {
-		if(!tile.getInventoryForTile().isPresent()){
+	private boolean shiftToBlockEntity(final ItemStack stackToShift) {
+		if(!blockEntity.getOptionalInventory().isPresent()){
 			return false;
 		}
-		for (final Range<Integer> range : this.tileSlotRanges) {
+		for (final Range<Integer> range : this.blockEntitySlotRanges) {
 			if (this.shiftItemStack(stackToShift, range.getMinimum(), range.getMaximum() + 1)) {
 				return true;
 			}

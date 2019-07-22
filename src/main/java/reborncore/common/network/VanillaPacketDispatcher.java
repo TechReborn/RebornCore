@@ -42,10 +42,10 @@ import net.minecraft.world.World;
  * Created by Gigabit101 on 21/01/2017.
  */
 public final class VanillaPacketDispatcher {
-	public static void dispatchTEToNearbyPlayers(BlockEntity tile) {
-		if (tile.getWorld() instanceof ServerWorld) {
-			ServerWorld ws = ((ServerWorld) tile.getWorld());
-			BlockEntityUpdateS2CPacket packet = tile.toUpdatePacket();
+	public static void dispatchTEToNearbyPlayers(BlockEntity blockEntity) {
+		if (blockEntity.getWorld() instanceof ServerWorld) {
+			ServerWorld ws = ((ServerWorld) blockEntity.getWorld());
+			BlockEntityUpdateS2CPacket packet = blockEntity.toUpdatePacket();
 
 			if (packet == null) {
 				return;
@@ -54,7 +54,7 @@ public final class VanillaPacketDispatcher {
 			for (PlayerEntity player : ws.getPlayers()) {
 				ServerPlayerEntity playerMP = ((ServerPlayerEntity) player);
 
-				if (playerMP.squaredDistanceTo(new Vec3d(tile.getPos())) < 64 * 64 && PlayerStream.watching(tile.getWorld(), tile.getPos()).anyMatch(playerEntity -> playerEntity.getUuid().equals(playerMP.getUuid()))) {
+				if (playerMP.squaredDistanceTo(new Vec3d(blockEntity.getPos())) < 64 * 64 && PlayerStream.watching(blockEntity.getWorld(), blockEntity.getPos()).anyMatch(playerEntity -> playerEntity.getUuid().equals(playerMP.getUuid()))) {
 					playerMP.networkHandler.sendPacket(packet);
 				}
 			}
@@ -62,9 +62,9 @@ public final class VanillaPacketDispatcher {
 	}
 
 	public static void dispatchTEToNearbyPlayers(World world, BlockPos pos) {
-		BlockEntity tile = world.getBlockEntity(pos);
-		if (tile != null) {
-			dispatchTEToNearbyPlayers(tile);
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity != null) {
+			dispatchTEToNearbyPlayers(blockEntity);
 		}
 	}
 

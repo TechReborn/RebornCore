@@ -89,7 +89,7 @@ public final class ContainerPlayerInventoryBuilder {
 			this.parent.addPlayerInventoryRange(this.main);
 		}
 		if (this.armor != null) {
-			this.parent.addTileInventoryRange(this.armor);
+			this.parent.addBlockEnityInventoryRange(this.armor);
 		}
 
 		return this.parent;

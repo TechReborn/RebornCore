@@ -88,7 +88,7 @@ public abstract class GuiWidget<T extends Container> extends AbstractContainerSc
 	protected void drawForeground(int mouseX, int mouseY) {
 		int x = (this.width - this.containerWidth) / 2;
 		int y = (this.height - this.containerHeight) / 2;
-		String name = translate.translate("tile.techreborn.industrialgrinder.name");
+		String name = translate.translate("blockEntity.techreborn.industrialgrinder.name");
 
 		font.draw(name, containerWidth / 2 - font.getStringWidth(name) / 2, 6, 4210752);
 		font.draw(translate.translate("container.inventory"), 8, containerHeight - 94, 4210752);

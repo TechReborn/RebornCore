@@ -29,13 +29,13 @@
 package reborncore.common.multiblock;
 
 import net.minecraft.block.Block;
-import reborncore.common.BaseTileBlock;
+import reborncore.common.BaseBlockEntityProvider;
 
 /*
  * Base class for multiblock-capable blocks. This is only a reference implementation
  * and can be safely ignored.
  */
-public abstract class BlockMultiblockBase extends BaseTileBlock {
+public abstract class BlockMultiblockBase extends BaseBlockEntityProvider {
 
 	protected BlockMultiblockBase(Block.Settings builder) {
 		super(builder);

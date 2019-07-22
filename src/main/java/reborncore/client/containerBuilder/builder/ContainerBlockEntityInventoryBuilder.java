@@ -37,32 +37,32 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.api.tile.IUpgrade;
-import reborncore.api.tile.IUpgradeable;
+import reborncore.api.blockentity.IUpgrade;
+import reborncore.api.blockentity.IUpgradeable;
 import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
 import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.powerSystem.ExternalPowerSystems;
-import reborncore.common.powerSystem.TilePowerAcceptor;
+import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 
 import java.util.function.*;
 
-public class ContainerTileInventoryBuilder {
+public class ContainerBlockEntityInventoryBuilder {
 
 	private final Inventory inventory;
-	private final BlockEntity tile;
+	private final BlockEntity blockEntity;
 	private final ContainerBuilder parent;
 	private final int rangeStart;
 
-	ContainerTileInventoryBuilder(final ContainerBuilder parent, final BlockEntity tile) {
-		if(tile instanceof Inventory){
-			this.inventory = (Inventory) tile;
+	ContainerBlockEntityInventoryBuilder(final ContainerBuilder parent, final BlockEntity blockEntity) {
+		if(blockEntity instanceof Inventory){
+			this.inventory = (Inventory) blockEntity;
 		} else {
-			throw new RuntimeException(tile.getClass().getName() + " is not an inventory");
+			throw new RuntimeException(blockEntity.getClass().getName() + " is not an inventory");
 		}
-		this.tile = tile;
+		this.blockEntity = blockEntity;
 		this.parent = parent;
 		this.rangeStart = parent.slots.size();
 		if (inventory instanceof IUpgradeable) {
@@ -70,58 +70,58 @@ public class ContainerTileInventoryBuilder {
 		}
 	}
 
-	public ContainerTileInventoryBuilder slot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder slot(final int index, final int x, final int y) {
 		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
+	public ContainerBlockEntityInventoryBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
 		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y, filter));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder outputSlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder outputSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotOutput(this.inventory, index, x, y));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder fakeSlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder fakeSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotFake(this.inventory, index, x, y, false, false, Integer.MAX_VALUE));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder filterSlot(final int index, final int x, final int y,
-	                                                final Predicate<ItemStack> filter) {
+	public ContainerBlockEntityInventoryBuilder filterSlot(final int index, final int x, final int y,
+	                                                       final Predicate<ItemStack> filter) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(filter));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder energySlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder energySlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(ExternalPowerSystems::isPoweredItem));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder fluidSlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder fluidSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
 			stack -> true /* TODO fluid item stack  */));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder fuelSlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder fuelSlot(final int index, final int x, final int y) {
 		throw new NotImplementedException("add a item handler version of furnace slots");
 		//this.parent.slots.add(new SlotFurnaceFuel(this.inventory, index, x, y));
 		//return this;
 	}
 
 	@Deprecated
-	public ContainerTileInventoryBuilder upgradeSlot(final int index, final int x, final int y) {
+	public ContainerBlockEntityInventoryBuilder upgradeSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(stack -> stack.getItem() instanceof IUpgrade));
 		return this;
 	}
 
-	private ContainerTileInventoryBuilder upgradeSlots(IUpgradeable upgradeable) {
+	private ContainerBlockEntityInventoryBuilder upgradeSlots(IUpgradeable upgradeable) {
 		if (upgradeable.canBeUpgraded()) {
 			for (int i = 0; i < upgradeable.getUpgradeSlotCount(); i++) {
 				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -18, i * 18 + 12));
@@ -136,7 +136,7 @@ public class ContainerTileInventoryBuilder {
 	 * @param setter The setter to call when the variable has been updated.
 	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
 	 */
-	public ContainerTileInventoryBuilder syncShortValue(final IntSupplier supplier, final IntConsumer setter) {
+	public ContainerBlockEntityInventoryBuilder syncShortValue(final IntSupplier supplier, final IntConsumer setter) {
 		this.parent.shortValues.add(Pair.of(supplier, setter));
 		return this;
 	}
@@ -147,7 +147,7 @@ public class ContainerTileInventoryBuilder {
 	 * @param setter The setter to call when the variable has been updated.
 	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
 	 */
-	public ContainerTileInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter) {
+	public ContainerBlockEntityInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter) {
 		this.parent.integerValues.add(Pair.of(supplier, setter));
 		return this;
 	}
@@ -158,32 +158,32 @@ public class ContainerTileInventoryBuilder {
 	 * @param setter The setter to call when the variable has been updated.
 	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
 	 */
-	public <T> ContainerTileInventoryBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
+	public <T> ContainerBlockEntityInventoryBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
 		this.parent.objectValues.add(Pair.of(supplier, setter));
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder syncEnergyValue() {
-		if (this.tile instanceof TilePowerAcceptor) {
-			return this.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getEnergy(),
-				((TilePowerAcceptor) this.tile)::setEnergy)
-				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).extraPowerStorage,
-					((TilePowerAcceptor) this.tile)::setExtraPowerStorage)
-				.syncIntegerValue(() -> (int) ((TilePowerAcceptor) this.tile).getPowerChange(),
-					((TilePowerAcceptor) this.tile)::setPowerChange);
+	public ContainerBlockEntityInventoryBuilder syncEnergyValue() {
+		if (this.blockEntity instanceof PowerAcceptorBlockEntity) {
+			return this.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).getEnergy(),
+				((PowerAcceptorBlockEntity) this.blockEntity)::setEnergy)
+				.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).extraPowerStorage,
+					((PowerAcceptorBlockEntity) this.blockEntity)::setExtraPowerStorage)
+				.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).getPowerChange(),
+					((PowerAcceptorBlockEntity) this.blockEntity)::setPowerChange);
 		}
 		RebornCore.LOGGER.error(this.inventory + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder syncCrafterValue() {
-		if (this.tile instanceof IRecipeCrafterProvider) {
+	public ContainerBlockEntityInventoryBuilder syncCrafterValue() {
+		if (this.blockEntity instanceof IRecipeCrafterProvider) {
 			return this
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.tile).getRecipeCrafter().currentTickTime,
-					(currentTickTime) -> ((IRecipeCrafterProvider) this.tile)
+				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.blockEntity).getRecipeCrafter().currentTickTime,
+					(currentTickTime) -> ((IRecipeCrafterProvider) this.blockEntity)
 						.getRecipeCrafter().currentTickTime = currentTickTime)
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.tile).getRecipeCrafter().currentNeededTicks,
-					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.tile)
+				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.blockEntity).getRecipeCrafter().currentNeededTicks,
+					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.blockEntity)
 						.getRecipeCrafter().currentNeededTicks = currentNeededTicks);
 		}
 		RebornCore.LOGGER
@@ -191,13 +191,13 @@ public class ContainerTileInventoryBuilder {
 		return this;
 	}
 
-	public ContainerTileInventoryBuilder onCraft(final Consumer<CraftingInventory> onCraft) {
+	public ContainerBlockEntityInventoryBuilder onCraft(final Consumer<CraftingInventory> onCraft) {
 		this.parent.craftEvents.add(onCraft);
 		return this;
 	}
 
 	public ContainerBuilder addInventory() {
-		this.parent.tileInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
+		this.parent.blockEntityInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
 		return this.parent;
 	}
 }

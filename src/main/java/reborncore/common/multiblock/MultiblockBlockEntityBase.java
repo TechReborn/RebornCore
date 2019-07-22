@@ -44,11 +44,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Base logic class for Multiblock-connected tile entities. Most multiblock
+ * Base logic class for Multiblock-connected blockEntity entities. Most multiblock
  * machines should derive from this and implement their game logic in certain
  * abstract methods.
  */
-public abstract class MultiblockTileEntityBase extends IMultiblockPart implements Tickable {
+public abstract class MultiblockBlockEntityBase extends IMultiblockPart implements Tickable {
 	private MultiblockControllerBase controller;
 	private boolean visited;
 
@@ -56,8 +56,8 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	private CompoundTag cachedMultiblockData;
 	//private boolean paused;
 
-	public MultiblockTileEntityBase(BlockEntityType<?> tTileEntityType) {
-		super(tTileEntityType);
+	public MultiblockBlockEntityBase(BlockEntityType<?> tBlockEntityType) {
+		super(tBlockEntityType);
 		controller = null;
 		visited = false;
 		saveMultiblockData = false;
@@ -112,7 +112,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		}
 	}
 
-	// /// Overrides from base TileEntity methods
+	// /// Overrides from base BlockEntity methods
 
 	@Override
 	public void fromTag(CompoundTag data) {
@@ -151,8 +151,8 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	/**
-	 * Called from Minecraft's tile entity loop, after all tile entities have
-	 * been ticked, as the chunk in which this tile entity is contained is
+	 * Called from Minecraft's blockEntity entity loop, after all blockEntity entities have
+	 * been ticked, as the chunk in which this blockEntity entity is contained is
 	 * unloading. Happens before the Forge TickEnd event.
 	 *
 	 */
@@ -164,10 +164,10 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 
 	/**
 	 * This is called when a block is being marked as valid by the chunk, but
-	 * has not yet fully been placed into the world's TileEntity cache.
+	 * has not yet fully been placed into the world's BlockEntity cache.
 	 * this.worldObj, xCoord, yCoord and zCoord have been initialized, but any
 	 * attempts to read data about the world can cause infinite loops - if you
-	 * call getTileEntity on this TileEntity's coordinate from within
+	 * call getBlockEntity on this BlockEntity's coordinate from within
 	 * validate(), you will blow your call stack.
 	 * <p>
 	 * TL;DR: Here there be dragons.
@@ -206,10 +206,10 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 	}
 
 	/**
-	 * Override this to easily read in data from a TileEntity's description
+	 * Override this to easily read in data from a BlockEntity's description
 	 * packet. Encoded in encodeDescriptionPacket.
 	 *
-	 * @param packetData The NBT data from the tile entity's description packet.
+	 * @param packetData The NBT data from the blockEntity entity's description packet.
 	 */
 	protected void decodeDescriptionPacket(CompoundTag packetData) {
 		if (packetData.containsKey("multiblockData")) {
@@ -349,7 +349,7 @@ public abstract class MultiblockTileEntityBase extends IMultiblockPart implement
 		world.updateNeighborsAlways(getPos(), getCachedState().getBlock());
 	}
 
-	protected void notifyNeighborsOfTileChange() {
+	protected void notifyNeighborsOfBlockEntityChange() {
 		world.updateNeighborsAlways(getPos(), getCachedState().getBlock());
 	}
 

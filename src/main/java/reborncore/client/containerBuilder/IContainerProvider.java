@@ -32,5 +32,5 @@ import net.minecraft.entity.player.PlayerEntity;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 
 public interface IContainerProvider {
-	BuiltContainer createContainer(PlayerEntity player);
+	BuiltContainer createContainer(int syncID, PlayerEntity player);
 }

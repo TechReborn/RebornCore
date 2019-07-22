@@ -32,7 +32,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 public class Sprite implements ISprite {
 	public static final Sprite EMPTY = new Sprite(ElementBase.MECH_ELEMENTS, 0, 0, 0, 0);
@@ -107,7 +107,7 @@ public class Sprite implements ISprite {
 	}
 
 	@Override
-	public Sprite getSprite(TileMachineBase provider) {
+	public Sprite getSprite(MachineBaseBlockEntity provider) {
 		return this;
 	}
 

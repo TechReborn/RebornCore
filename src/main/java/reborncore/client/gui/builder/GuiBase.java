@@ -41,15 +41,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
-import reborncore.api.tile.IUpgradeable;
+import reborncore.api.blockentity.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
 import reborncore.client.gui.guibuilder.GuiBuilder;
-import reborncore.common.container.RebornContainer;
-import reborncore.common.tile.TileMachineBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
 import reborncore.fluid.Fluid;
 
@@ -65,7 +64,7 @@ public class GuiBase extends AbstractContainerScreen {
 	public int xSize = 176;
 	public int ySize = 176;
 	public GuiBuilder builder = new GuiBuilder();
-	public BlockEntity tile;
+	public BlockEntity blockEntity;
 	@Nullable
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
@@ -74,17 +73,10 @@ public class GuiBase extends AbstractContainerScreen {
 
 	public boolean upgrades;
 
-	public GuiBase(PlayerEntity player, BlockEntity tile, BuiltContainer container) {
+	public GuiBase(PlayerEntity player, BlockEntity blockEntity, BuiltContainer container) {
 		super(container, player.inventory, new LiteralText(container.getName()));
-		this.tile = tile;
+		this.blockEntity = blockEntity;
 		this.container = container;
-		slotConfigType = SlotConfigType.NONE;
-	}
-
-	public GuiBase(PlayerEntity player, BlockEntity tile, RebornContainer container) {
-		super(container, player.inventory, container.getTitle());
-		this.tile = tile;
-		this.container = null;
 		slotConfigType = SlotConfigType.NONE;
 	}
 
@@ -137,12 +129,12 @@ public class GuiBase extends AbstractContainerScreen {
 	@Override
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		builder.drawDefaultBackground(this, left, top, containerWidth, containerHeight);
+		builder.drawDefaultBackground(this, left, top + 10, containerWidth, containerHeight);
 		if (drawPlayerSlots()) {
 			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
 		}
-		if (tryAddUpgrades() && tile instanceof IUpgradeable) {
-			IUpgradeable upgradeable = (IUpgradeable) tile;
+		if (tryAddUpgrades() && blockEntity instanceof IUpgradeable) {
+			IUpgradeable upgradeable = (IUpgradeable) blockEntity;
 			if (upgradeable.canBeUpgraded()) {
 				builder.drawUpgrades(this, left - 24, top + 6);
 				upgrades = true;
@@ -215,7 +207,7 @@ public class GuiBase extends AbstractContainerScreen {
 	}
 
 	protected void drawTitle() {
-		drawCentredString(I18n.translate(tile.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
+		drawCentredString(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey()), 16, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
@@ -352,8 +344,8 @@ public class GuiBase extends AbstractContainerScreen {
 	}
 
 	@Nullable
-	public TileMachineBase getMachine() {
-		return (TileMachineBase) tile;
+	public MachineBaseBlockEntity getMachine() {
+		return (MachineBaseBlockEntity) blockEntity;
 	}
 
 	/**
@@ -387,7 +379,7 @@ public class GuiBase extends AbstractContainerScreen {
 		if(true){ //TODO fix this
 			return false;
 		}
-		return tile instanceof TileMachineBase && container != null;
+		return blockEntity instanceof MachineBaseBlockEntity && container != null;
 	}
 
 	public int getGuiLeft(){
