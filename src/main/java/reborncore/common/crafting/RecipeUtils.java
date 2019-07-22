@@ -59,7 +59,7 @@ public class RecipeUtils {
 		if(jsonObject.isJsonArray()){
 			return SerializationUtil.stream(jsonObject.getAsJsonArray()).map(entry -> deserializeItem(entry.getAsJsonObject())).collect(NonNullListCollector.toList());
 		} else {
-			return DefaultedList.create(deserializeItem(jsonObject.getAsJsonObject()));
+			return DefaultedList.copyOf(deserializeItem(jsonObject.getAsJsonObject()));
 		}
 	}
 

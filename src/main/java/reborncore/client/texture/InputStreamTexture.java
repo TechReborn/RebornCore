@@ -88,7 +88,7 @@ public class InputStreamTexture extends AbstractTexture {
 
 					}
 				};
-				image = NativeImage.fromInputStream(iresource.getInputStream());
+				image = NativeImage.read(iresource.getInputStream());
 			} finally {
 				IOUtils.closeQuietly(iresource);
 			}

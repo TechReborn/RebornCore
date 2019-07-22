@@ -15,7 +15,7 @@ public abstract class InventoryBase implements Inventory {
 
 	public InventoryBase(int size) {
 		this.size = size;
-		stacks = DefaultedList.create(size, ItemStack.EMPTY);
+		stacks = DefaultedList.ofSize(size, ItemStack.EMPTY);
 	}
 
 	public Tag serializeNBT() {
@@ -25,7 +25,7 @@ public abstract class InventoryBase implements Inventory {
 	}
 
 	public void deserializeNBT(CompoundTag tag) {
-		stacks = DefaultedList.create(size, ItemStack.EMPTY);
+		stacks = DefaultedList.ofSize(size, ItemStack.EMPTY);
 		Inventories.fromTag(tag, stacks);
 	}
 

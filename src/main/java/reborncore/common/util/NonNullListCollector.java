@@ -50,7 +50,7 @@ public class NonNullListCollector<T> implements Collector<T, DefaultedList<T>, D
 
 	@Override
 	public Supplier<DefaultedList<T>> supplier() {
-		return DefaultedList::create;
+		return DefaultedList::of;
 	}
 
 	@Override

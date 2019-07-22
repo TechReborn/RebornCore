@@ -39,7 +39,7 @@ public class OreDropSet {
 	}
 
 	public DefaultedList<ItemStack> drop(int fortune, Random random) {
-		DefaultedList<ItemStack> drops = DefaultedList.create();
+		DefaultedList<ItemStack> drops = DefaultedList.of();
 
 		for (OreDrop drop : dropSet) {
 			drops.add(drop.getDrops(fortune, random));
