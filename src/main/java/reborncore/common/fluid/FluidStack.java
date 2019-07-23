@@ -1,5 +1,6 @@
-package reborncore.fluid;
+package reborncore.common.fluid;
 
+@Deprecated
 public class FluidStack {
 
 	Fluid fluid;

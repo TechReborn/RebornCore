@@ -33,8 +33,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
-import reborncore.fluid.Fluid;
-import reborncore.fluid.FluidStack;
+import reborncore.common.fluid.Fluid;
+import reborncore.common.fluid.FluidStack;
 
 import javax.annotation.Nullable;
 

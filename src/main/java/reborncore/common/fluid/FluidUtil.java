@@ -1,10 +1,11 @@
-package reborncore.fluid;
+package reborncore.common.fluid;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import reborncore.common.util.Tank;
 
+@Deprecated
 public class FluidUtil {
 
 	public static FluidStack getFluidHandler(ItemStack stack) {

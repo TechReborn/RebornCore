@@ -57,7 +57,7 @@ import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
-import reborncore.fluid.FluidUtil;
+import reborncore.common.fluid.FluidUtil;
 
 import java.util.ArrayList;
 import java.util.List;

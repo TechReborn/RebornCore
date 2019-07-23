@@ -1,7 +1,8 @@
-package reborncore.fluid;
+package reborncore.common.fluid;
 
 import net.minecraft.util.Identifier;
 
+@Deprecated
 public class Fluid {
 
 	public int amount;

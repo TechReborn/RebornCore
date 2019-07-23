@@ -40,6 +40,7 @@ import reborncore.api.ToolManager;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.fluid.RebornFluidRenderManager;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ClientBoundPackets;
@@ -81,8 +82,7 @@ public class RebornCore implements ModInitializer {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
-		//MinecraftForge.EVENT_BUS.register(ConfigRegistryFactory.class);
-		//ConfigRegistryFactory.setConfigDir(configDir);
+		RebornFluidRenderManager.setupClient();
 
 		//ConfigRegistryFactory.saveAll();
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));

@@ -48,7 +48,7 @@ import reborncore.client.gui.builder.widget.GuiButtonSimple;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
-import reborncore.fluid.FluidStack;
+import reborncore.common.fluid.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;

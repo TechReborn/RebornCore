@@ -39,8 +39,8 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 import reborncore.common.util.Tank;
-import reborncore.fluid.Fluid;
-import reborncore.fluid.FluidStack;
+import reborncore.common.fluid.Fluid;
+import reborncore.common.fluid.FluidStack;
 
 /**
  * Created by Gigabit101 on 08/08/2016.

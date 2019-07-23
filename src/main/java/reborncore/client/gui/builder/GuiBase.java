@@ -50,7 +50,7 @@ import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
-import reborncore.fluid.Fluid;
+import reborncore.common.fluid.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
