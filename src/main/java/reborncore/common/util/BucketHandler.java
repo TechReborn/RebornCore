@@ -32,7 +32,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import reborncore.common.fluid.Fluid;
+import net.minecraft.fluid.Fluid;
 
 import java.util.HashMap;
 import java.util.Map;

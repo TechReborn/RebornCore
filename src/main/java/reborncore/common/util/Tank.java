@@ -28,13 +28,13 @@
 
 package reborncore.common.util;
 
+import io.github.prospector.silk.fluid.FluidInstance;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
-import reborncore.common.fluid.Fluid;
-import reborncore.common.fluid.FluidStack;
+import net.minecraft.fluid.Fluid;
 
 import javax.annotation.Nullable;
 
@@ -42,12 +42,10 @@ public class Tank  {
 
 	private final String name;
 
-	private FluidStack lastBeforeUpdate = null;
+	private int amount;
+	private Fluid fluid;
 
-	Fluid fluid;
 
-	Fluid lastFluid;
-	int lastAmmount;
 
 	@Nullable
 	private Direction side = null;
@@ -60,8 +58,8 @@ public class Tank  {
 		this.machine = blockEntity;
 	}
 
-	public FluidStack getFluid(){
-		return new FluidStack();
+	public FluidInstance getFluid(){
+		return new FluidInstance();
 	}
 
 	public int getCapacity(){
@@ -69,11 +67,11 @@ public class Tank  {
 	}
 
 	public boolean isEmpty() {
-		return getFluid() == null || getFluid().amount <= 0;
+		return getFluid() == null || getFluid().getAmount() <= 0;
 	}
 
 	public boolean isFull() {
-		return getFluid() != null && getFluid().amount >= getCapacity();
+		return getFluid() != null && getFluid().getAmount() >= getCapacity();
 	}
 
 	public Fluid getFluidType() {
@@ -88,7 +86,7 @@ public class Tank  {
 
 	public void setFluidAmount(int amount) {
 		if (fluid != null) {
-			fluid.amount = amount;
+			this.amount = amount;
 		}
 	}
 
@@ -188,7 +186,7 @@ public class Tank  {
 
 	}
 
-	public int fill(FluidStack stack, boolean bool){
+	public int fill(FluidInstance stack, boolean bool){
 		return 0;
 	}
 

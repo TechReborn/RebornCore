@@ -29,6 +29,8 @@
 package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -37,10 +39,11 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 import reborncore.common.util.Tank;
-import reborncore.common.fluid.Fluid;
-import reborncore.common.fluid.FluidStack;
+import net.minecraft.fluid.Fluid;
+import io.github.prospector.silk.fluid.FluidInstance;
 
 /**
  * Created by Gigabit101 on 08/08/2016.
@@ -56,7 +59,7 @@ public class RenderUtil {
 		engine().bindTexture(BLOCK_TEX);
 	}
 
-	public static Sprite getStillTexture(FluidStack fluid) {
+	public static Sprite getStillTexture(FluidInstance fluid) {
 		if (fluid == null || fluid.getFluid() == null) {
 			return null;
 		}
@@ -64,20 +67,20 @@ public class RenderUtil {
 	}
 
 	public static Sprite getStillTexture(Fluid fluid) {
-		Identifier iconKey = fluid.getStill();
-		if (iconKey == null) {
-			return null;
+		FluidRenderHandler fluidRenderHandler =  FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+		if(fluidRenderHandler != null){
+			return fluidRenderHandler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN , fluid.getDefaultState())[0];
 		}
-		return MinecraftClient.getInstance().getSpriteAtlas().getSprite(iconKey.toString());
+		return null;
 	}
 
 	public static void renderGuiTank(Tank tank, double x, double y, double zLevel, double width, double height) {
 		renderGuiTank(tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, zLevel, width, height);
 	}
 
-	public static void renderGuiTank(FluidStack fluid, int capacity, int amount, double x, double y, double zLevel,
+	public static void renderGuiTank(FluidInstance fluid, int capacity, int amount, double x, double y, double zLevel,
 	                                 double width, double height) {
-		if (fluid == null || fluid.getFluid() == null || fluid.amount <= 0) {
+		if (fluid == null || fluid.getFluid() == null || fluid.getAmount() <= 0) {
 			return;
 		}
 
@@ -90,7 +93,7 @@ public class RenderUtil {
 		int posY = (int) (y + height - renderAmount);
 
 		RenderUtil.bindBlockTexture();
-		int color = fluid.getFluid().getColor(fluid);
+		int color = 0;
 		GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
 
 		GlStateManager.enableBlend();
