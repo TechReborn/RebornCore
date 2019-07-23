@@ -35,7 +35,7 @@
         {
           "access": 10,
           "name": "getMachine",
-          "desc": "()Lreborncore/common/tile/TileMachineBase;",
+          "desc": "()Lreborncore/common/blockentity/MachineBaseBlockEntity;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -213,22 +213,6 @@
         }
       ]
     },
-    "reborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder": {
-      "className": "reborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder",
-      "methods": [
-        {
-          "access": 131073,
-          "name": "upgradeSlot",
-          "desc": "(III)Lreborncore/client/containerBuilder/builder/ContainerTileInventoryBuilder;",
-          "annotations": [
-            {
-              "desc": "Ljava/lang/Deprecated;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
     "reborncore/common/crafting/RebornRecipe": {
       "className": "reborncore/common/crafting/RebornRecipe",
       "methods": [
@@ -318,33 +302,6 @@
         }
       ]
     },
-    "reborncore/common/registration/config/RebornConfig": {
-      "className": "reborncore/common/registration/config/RebornConfig",
-      "fields": [
-        {
-          "access": 0,
-          "name": "modid",
-          "desc": "Ljava/lang/String;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 0,
-          "name": "configName",
-          "desc": "Ljava/lang/String;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
     "reborncore/common/util/InventoryItem": {
       "className": "reborncore/common/util/InventoryItem",
       "methods": [
@@ -368,6 +325,33 @@
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/blockentity/MachineBaseBlockEntity": {
+      "className": "reborncore/common/blockentity/MachineBaseBlockEntity",
+      "methods": [
+        {
+          "access": 1,
+          "name": "method_16886",
+          "desc": "()Lnet/minecraft/class_2622;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 1,
+          "name": "getTank",
+          "desc": "()Lreborncore/common/util/Tank;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
               "api": 458752
             }
           ]
@@ -453,22 +437,54 @@
               "api": 458752
             }
           ]
+        }
+      ]
+    },
+    "reborncore/common/blockentity/SlotConfiguration$SlotConfig": {
+      "className": "reborncore/common/blockentity/SlotConfiguration$SlotConfig",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getSide",
+          "desc": "()Lnet/minecraft/class_2350;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
         },
         {
           "access": 1,
-          "name": "field_7763",
-          "desc": "I",
+          "name": "getSlotIO",
+          "desc": "()Lreborncore/common/blockentity/SlotConfiguration$SlotIO;",
           "annotations": [
             {
-              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "desc": "Ljavax/annotation/Nonnull;",
               "api": 458752
-            },
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 2,
+          "name": "side",
+          "desc": "Lnet/minecraft/class_2350;",
+          "annotations": [
             {
-              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "desc": "Ljavax/annotation/Nonnull;",
               "api": 458752
-            },
+            }
+          ]
+        },
+        {
+          "access": 2,
+          "name": "slotIO",
+          "desc": "Lreborncore/common/blockentity/SlotConfiguration$SlotIO;",
+          "annotations": [
             {
-              "desc": "Lorg/spongepowered/asm/mixin/Mutable;",
+              "desc": "Ljavax/annotation/Nonnull;",
               "api": 458752
             }
           ]
@@ -739,29 +755,13 @@
         }
       ]
     },
-    "reborncore/common/container/RebornContainer": {
-      "className": "reborncore/common/container/RebornContainer",
-      "methods": [
-        {
-          "access": 9,
-          "name": "getContainerFromClass",
-          "desc": "(Ljava/lang/Class;Lnet/minecraft/class_2586;)Lreborncore/common/container/RebornContainer;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
     "reborncore/client/gui/builder/GuiBase": {
       "className": "reborncore/client/gui/builder/GuiBase",
       "methods": [
         {
           "access": 1,
           "name": "getMachine",
-          "desc": "()Lreborncore/common/tile/TileMachineBase;",
+          "desc": "()Lreborncore/common/blockentity/MachineBaseBlockEntity;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -775,33 +775,6 @@
           "access": 1,
           "name": "container",
           "desc": "Lreborncore/client/containerBuilder/builder/BuiltContainer;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/common/tile/TileMachineBase": {
-      "className": "reborncore/common/tile/TileMachineBase",
-      "methods": [
-        {
-          "access": 1,
-          "name": "method_16886",
-          "desc": "()Lnet/minecraft/class_2622;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 1,
-          "name": "getTank",
-          "desc": "()Lreborncore/common/util/Tank;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -833,7 +806,7 @@
         {
           "access": 131073,
           "name": "create",
-          "desc": "()Lreborncore/client/containerBuilder/builder/BuiltContainer;",
+          "desc": "(I)Lreborncore/client/containerBuilder/builder/BuiltContainer;",
           "annotations": [
             {
               "desc": "Ljava/lang/Deprecated;",
@@ -849,45 +822,7 @@
         {
           "access": 10,
           "name": "getMachine",
-          "desc": "()Lreborncore/common/tile/TileMachineBase;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/api/tile/IContainerLayout": {
-      "className": "reborncore/api/tile/IContainerLayout",
-      "methods": [
-        {
-          "access": 1025,
-          "name": "getTile",
-          "desc": "()Lnet/minecraft/class_2586;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 1025,
-          "name": "getPlayer",
-          "desc": "()Lnet/minecraft/class_1657;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 1025,
-          "name": "getSlotsForSide",
-          "desc": "(Lnet/minecraft/class_2350;)Ljava/util/List;",
+          "desc": "()Lreborncore/common/blockentity/MachineBaseBlockEntity;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -1011,102 +946,13 @@
         }
       ]
     },
-    "reborncore/common/tile/SlotConfiguration$SlotConfig": {
-      "className": "reborncore/common/tile/SlotConfiguration$SlotConfig",
-      "methods": [
-        {
-          "access": 1,
-          "name": "getSide",
-          "desc": "()Lnet/minecraft/class_2350;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 1,
-          "name": "getSlotIO",
-          "desc": "()Lreborncore/common/tile/SlotConfiguration$SlotIO;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "access": 2,
-          "name": "side",
-          "desc": "Lnet/minecraft/class_2350;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 2,
-          "name": "slotIO",
-          "desc": "Lreborncore/common/tile/SlotConfiguration$SlotIO;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nonnull;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/client/gui/guibuilder/IGuiTile": {
-      "className": "reborncore/client/gui/guibuilder/IGuiTile",
-      "methods": [
-        {
-          "access": 1025,
-          "name": "getSlots",
-          "desc": "()Ljava/util/List;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/common/powerSystem/TilePowerAcceptor": {
-      "className": "reborncore/common/powerSystem/TilePowerAcceptor",
+    "reborncore/client/containerBuilder/builder/ContainerBlockEntityInventoryBuilder": {
+      "className": "reborncore/client/containerBuilder/builder/ContainerBlockEntityInventoryBuilder",
       "methods": [
         {
           "access": 131073,
-          "name": "\u003cinit\u003e",
-          "desc": "(Lnet/minecraft/class_2591;Lreborncore/api/power/EnumPowerTier;)V",
-          "annotations": [
-            {
-              "desc": "Ljava/lang/Deprecated;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 131073,
-          "name": "getBaseTier",
-          "desc": "()Lreborncore/api/power/EnumPowerTier;",
-          "annotations": [
-            {
-              "desc": "Ljava/lang/Deprecated;",
-              "api": 458752
-            }
-          ]
-        },
-        {
-          "access": 131073,
-          "name": "canConnectEnergy",
-          "desc": "(Lnet/minecraft/class_2350;)Z",
+          "name": "upgradeSlot",
+          "desc": "(III)Lreborncore/client/containerBuilder/builder/ContainerBlockEntityInventoryBuilder;",
           "annotations": [
             {
               "desc": "Ljava/lang/Deprecated;",
@@ -1164,6 +1010,35 @@
             "reborncore"
           ],
           "api": 458752
+        }
+      ]
+    },
+    "reborncore/common/blockentity/SlotConfiguration": {
+      "className": "reborncore/common/blockentity/SlotConfiguration",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getSlotDetails",
+          "desc": "(I)Lreborncore/common/blockentity/SlotConfiguration$SlotConfigHolder;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 0,
+          "name": "inventory",
+          "desc": "Lnet/minecraft/class_1263;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
         }
       ]
     },
@@ -1261,35 +1136,6 @@
             },
             {
               "desc": "Lorg/spongepowered/asm/mixin/Final;",
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/common/tile/SlotConfiguration": {
-      "className": "reborncore/common/tile/SlotConfiguration",
-      "methods": [
-        {
-          "access": 1,
-          "name": "getSlotDetails",
-          "desc": "(I)Lreborncore/common/tile/SlotConfiguration$SlotConfigHolder;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "access": 0,
-          "name": "inventory",
-          "desc": "Lnet/minecraft/class_1263;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
               "api": 458752
             }
           ]
