@@ -82,7 +82,6 @@ public class RebornCore implements ModInitializer {
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
-		RebornFluidRenderManager.setupClient();
 
 		//ConfigRegistryFactory.saveAll();
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));

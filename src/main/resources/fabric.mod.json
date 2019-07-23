@@ -8,6 +8,9 @@
   "entrypoints": {
     "main": [
       "reborncore.RebornCore"
+    ],
+    "client": [
+      "reborncore.RebornCoreClient"
     ]
   },
   "mixins": [
