@@ -163,6 +163,11 @@ public class ContainerBlockEntityInventoryBuilder {
 		return this;
 	}
 
+	public ContainerBlockEntityInventoryBuilder sync(Syncable syncable){
+		syncable.getSyncPair(this.parent.objectValues);
+		return this;
+	}
+
 	public ContainerBlockEntityInventoryBuilder syncEnergyValue() {
 		if (this.blockEntity instanceof PowerAcceptorBlockEntity) {
 			return this.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).getEnergy(),

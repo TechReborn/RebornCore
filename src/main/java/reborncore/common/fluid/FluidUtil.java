@@ -5,6 +5,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.registry.Registry;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.util.Tank;
 
 
@@ -25,11 +27,11 @@ public class FluidUtil {
 		return null;
 	}
 
-	public static String getFluidName(FluidInstance fluidInstance){
+	public static String getFluidName(@NonNull FluidInstance fluidInstance){
 		return getFluidName(fluidInstance.getFluid());
 	}
 
-	public static String getFluidName(Fluid fluid){
-		return "";
+	public static String getFluidName(@NonNull Fluid fluid){
+		return Registry.FLUID.getId(fluid).getPath();
 	}
 }

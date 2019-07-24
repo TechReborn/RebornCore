@@ -75,7 +75,7 @@ public class RenderUtil {
 	}
 
 	public static void renderGuiTank(Tank tank, double x, double y, double zLevel, double width, double height) {
-		renderGuiTank(tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, zLevel, width, height);
+		renderGuiTank(tank.getFluidInstance(), tank.getCapacity(), tank.getFluidAmount(), x, y, zLevel, width, height);
 	}
 
 	public static void renderGuiTank(FluidInstance fluid, int capacity, int amount, double x, double y, double zLevel,

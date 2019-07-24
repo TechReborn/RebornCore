@@ -51,7 +51,7 @@ public class BucketHandler {
 		//		if (pos != null && pos.getBlockPos() != null && world.getBlockState(pos.getBlockPos()) != null) {
 		//			Block block = world.getBlockState(pos.getBlockPos()).getBlock();
 		//			if (block instanceof IBucketPickupHandler) {
-		//				Fluid fluid = ((IBucketPickupHandler) block).getFluid();
+		//				Fluid fluid = ((IBucketPickupHandler) block).getFluidInstance();
 		//				if (buckets.containsKey(fluid)) {
 		//					Item bucket = buckets.get(fluid);
 		//					if (bucket != null) {

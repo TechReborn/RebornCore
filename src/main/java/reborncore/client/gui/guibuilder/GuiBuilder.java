@@ -693,7 +693,7 @@ public class GuiBuilder {
 		//TODO fluids
 //		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 //		y += height;
-//		final Identifier still = fluid.getFluid().getStill(fluid);
+//		final Identifier still = fluid.getFluidInstance().getStill(fluid);
 //		final Sprite sprite = gui.getMinecraft().getTextureMap().getAtlasSprite(still.toString());
 //
 //		final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
