@@ -42,6 +42,7 @@ import reborncore.client.gui.builder.slot.elements.SlotType;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.mixin.extensions.SlotExtensions;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -70,8 +71,9 @@ public class GuiSlotConfiguration {
 			if (guiBase.blockEntity != slot.inventory) {
 				continue;
 			}
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), slot.id, SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(slot.id, slotElement);
+			SlotExtensions slotExtensions = (SlotExtensions) slot;
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), slotExtensions.getInvSlot(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(slotExtensions.getInvSlot(), slotElement);
 		}
 
 	}
@@ -89,6 +91,7 @@ public class GuiSlotConfiguration {
 		}
 
 		if (selectedSlot != -1) {
+
 			slotElementMap.get(selectedSlot).draw(guiBase);
 		}
 	}
@@ -114,23 +117,23 @@ public class GuiSlotConfiguration {
 
 	public static void copyToClipboard() {
 		MachineBaseBlockEntity machine = getMachine();
-		if (machine == null || machine.slotConfiguration == null) {
+		if (machine == null || machine.getSlotConfiguration() == null) {
 			return;
 		}
-		String json = machine.slotConfiguration.toJson(machine.getClass().getCanonicalName());
+		String json = machine.getSlotConfiguration().toJson(machine.getClass().getCanonicalName());
 		MinecraftClient.getInstance().keyboard.setClipboard(json);
 		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration copyied to clipboard"));
 	}
 
 	public static void pasteFromClipboard() {
 		MachineBaseBlockEntity machine = getMachine();
-		if (machine == null || machine.slotConfiguration == null) {
+		if (machine == null || machine.getSlotConfiguration() == null) {
 			return;
 		}
 		String json = MinecraftClient.getInstance().keyboard.getClipboard();
 		try {
-			machine.slotConfiguration.readJson(json, machine.getClass().getCanonicalName());
-			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.slotConfiguration));
+			machine.getSlotConfiguration().readJson(json, machine.getClass().getCanonicalName());
+			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.getSlotConfiguration()));
 			MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
 			MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.getMessage()));
@@ -179,7 +182,8 @@ public class GuiSlotConfiguration {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
-					selectedSlot = slot.id;
+					SlotExtensions slotExtensions = (SlotExtensions) slot;
+					selectedSlot = slotExtensions.getInvSlot();
 					return true;
 				}
 			}

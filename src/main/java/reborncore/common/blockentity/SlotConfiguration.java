@@ -298,7 +298,7 @@ public class SlotConfiguration implements NBTSerializable {
 			if (!(blockEntity instanceof net.minecraft.inventory.Inventory)) {
 				return;
 			}
-			RebornInventory sourceInv = null; //TODO
+			Inventory sourceInv = (Inventory) blockEntity;
 			for (int i = 0; i < sourceInv.getInvSize(); i++) {
 				ItemStack sourceStack = sourceInv.getInvStack(i);
 				if (sourceStack.isEmpty()) {
@@ -437,7 +437,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
 	public static boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction, MachineBaseBlockEntity blockEntity) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.getSlotConfiguration().getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.getSlotIO().getIoConfig().isInsert()) {
 			if (slotConfigHolder.filter() && blockEntity.getOptionalCrafter().isPresent()) {
@@ -453,7 +453,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
 	public static boolean canExtractItem(int index, ItemStack stack, Direction direction, MachineBaseBlockEntity blockEntity) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.getSlotConfiguration().getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.getSlotIO().getIoConfig().isExtact()) {
 			return true;

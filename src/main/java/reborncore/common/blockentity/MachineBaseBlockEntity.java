@@ -42,6 +42,8 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import org.apache.commons.lang3.Validate;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.blockentity.IUpgrade;
@@ -65,7 +67,7 @@ import java.util.Optional;
 public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory {
 
 	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
-	public SlotConfiguration slotConfiguration;
+	private SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
 
 	private int ticktime = 0;
@@ -463,5 +465,11 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		if(getOptionalInventory().isPresent()){
 			getOptionalInventory().get().clear();
 		}
+	}
+
+	@NonNull
+	public SlotConfiguration getSlotConfiguration() {
+		Validate.notNull(slotConfiguration, "slotConfiguration cannot be null");
+		return slotConfiguration;
 	}
 }

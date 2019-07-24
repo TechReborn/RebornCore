@@ -34,6 +34,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
@@ -41,7 +42,6 @@ import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.NetworkPacket;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -113,7 +113,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	public void cyleSlotConfig(Direction side, GuiBase guiBase) {
-		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().slotConfiguration.getSlotDetails(id).getSideDetail(side);
+		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().getSlotConfiguration().getSlotDetails(id).getSideDetail(side);
 
 		//Bit of a mess, in the future have a way to remove config options from this list
 		SlotConfiguration.ExtractConfig nextConfig = currentSlot.getSlotIO().getIoConfig().getNext();
@@ -123,12 +123,12 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
+		Packet packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
 	public void updateCheckBox(CheckBoxElement checkBoxElement, String type, GuiBase guiBase) {
-		SlotConfiguration.SlotConfigHolder configHolder = guiBase.getMachine().slotConfiguration.getSlotDetails(id);
+		SlotConfiguration.SlotConfigHolder configHolder = guiBase.getMachine().getSlotConfiguration().getSlotDetails(id);
 		boolean input = configHolder.autoInput();
 		boolean output = configHolder.autoOutput();
 		boolean filter = configHolder.filter();
@@ -142,7 +142,7 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		NetworkPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
+		Packet packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -150,7 +150,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		iny += 4;
 		int sx = inx + getX() + gui.getGuiLeft();
 		int sy = iny + getY() + gui.getGuiTop();
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = machineBase.slotConfiguration.getSlotDetails(slotID);
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = machineBase.getSlotConfiguration().getSlotDetails(slotID);
 		if (slotConfigHolder == null) {
 			RebornCore.LOGGER.debug("Humm, this isnt suppoed to happen");
 			return;
