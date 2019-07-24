@@ -32,7 +32,7 @@
 // Keep in mind that you still need to fill in some blanks
 // - ZeuX
 
-package reborncore.client.models;
+package reborncore.client;
 
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.client.render.entity.model.EntityModel;

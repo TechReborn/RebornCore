@@ -35,7 +35,6 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.util.Identifier;
-import reborncore.client.models.ModelSantaHat;
 
 /**
  * Created by Mark on 27/11/2016.

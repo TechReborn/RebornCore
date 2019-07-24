@@ -71,7 +71,7 @@ public abstract class RebornFluid extends BaseFluid {
 
 	@Override
 	protected int getLevelDecreasePerBlock(ViewableWorld viewableWorld) {
-		return 8;
+		return 1;
 	}
 
 	@Override
@@ -88,6 +88,11 @@ public abstract class RebornFluid extends BaseFluid {
 	protected boolean method_15777(FluidState fluidState, BlockView blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
 		//TODO wat is this?
 		return false;
+	}
+
+	@Override
+	public boolean matchesType(Fluid fluid) {
+		return getFlowing() == fluid || getStill() == fluid;
 	}
 
 	@Override
