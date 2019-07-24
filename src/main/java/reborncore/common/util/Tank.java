@@ -29,64 +29,71 @@
 package reborncore.common.util;
 
 import io.github.prospector.silk.fluid.FluidInstance;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
-import reborncore.common.blockentity.FluidConfiguration;
+import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import reborncore.client.containerBuilder.builder.Syncable;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import net.minecraft.fluid.Fluid;
+import reborncore.common.fluid.container.GenericFluidContainer;
 
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class Tank  {
+public class Tank implements GenericFluidContainer<Direction>, Syncable {
 
 	private final String name;
-
-	private int amount;
-	private Fluid fluid;
-
-
+	@NonNull
+	private FluidInstance fluidInstance = new FluidInstance();
+	private final int capacity;
 
 	@Nullable
 	private Direction side = null;
-	MachineBaseBlockEntity machine;
+
+	private final MachineBaseBlockEntity blockEntity;
 
 	public Tank(String name, int capacity, MachineBaseBlockEntity blockEntity) {
 		super();
 		this.name = name;
-		//this.blockEntity = blockEntity;
-		this.machine = blockEntity;
+		this.capacity = capacity;
+		this.blockEntity = blockEntity;
 	}
 
-	public FluidInstance getFluid(){
-		return new FluidInstance();
+	@NonNull
+	public FluidInstance getFluidInstance(){
+		return getFluidInstance(side);
+	}
+
+	@NonNull
+	public Fluid getFluid(){
+		return getFluidInstance().getFluid();
 	}
 
 	public int getCapacity(){
-		return 1;
+		return capacity;
 	}
 
 	public boolean isEmpty() {
-		return getFluid() == null || getFluid().getAmount() <= 0;
+		return getFluidInstance().isEmpty();
 	}
 
 	public boolean isFull() {
-		return getFluid() != null && getFluid().getAmount() >= getCapacity();
-	}
-
-	public Fluid getFluidType() {
-		return getFluid() != null ? getFluid().getFluid() : null;
+		return !getFluidInstance().isEmpty() && getFluidInstance().getAmount() >= getCapacity();
 	}
 
 	public final CompoundTag write(CompoundTag nbt) {
 		CompoundTag tankData = new CompoundTag();
+		fluidInstance.toTag(tankData);
 		nbt.put(name, tankData);
 		return nbt;
 	}
 
 	public void setFluidAmount(int amount) {
-		if (fluid != null) {
-			this.amount = amount;
+		if (!fluidInstance.isEmpty()) {
+			fluidInstance.setAmount(amount);
 		}
 	}
 
@@ -96,22 +103,13 @@ public class Tank  {
 			setFluid(null);
 
 			CompoundTag tankData = nbt.getCompound(name);
+			fluidInstance = new FluidInstance(tankData);
 		}
 		return this;
 	}
 
 	public void setFluid(Fluid o) {
 
-	}
-
-	//@Override
-	public Tank readFromNBT(CompoundTag nbt) {
-		return read(nbt);
-	}
-
-	//@Override
-	public CompoundTag writeToNBT(CompoundTag nbt) {
-		return write(nbt);
 	}
 
 	@Nullable
@@ -125,61 +123,13 @@ public class Tank  {
 		this.side = side;
 	}
 
-	//@Override
-	public boolean canFill() {
-		if (side != null) {
-			if (machine.fluidConfiguration != null) {
-				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
-				if (fluidConfig == null) {
-					return true;
-				}
-				return fluidConfig.getIoConfig().isInsert();
-			}
-		}
-		return true;
-	}
-
-	//@Override
-	public boolean canDrain() {
-		if (side != null) {
-			if (machine.fluidConfiguration != null) {
-				FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
-				if (fluidConfig == null) {
-					return true;
-				}
-				return fluidConfig.getIoConfig().isExtact();
-			}
-		}
-		return true;
-	}
-
-	//TODO optimise
-	public void compareAndUpdate() {
-//		if (blockEntity == null || blockEntity.getWorld().isRemote) {
-//			return;
-//		}
-//		FluidStack current = this.getFluid();
-//		if (current != null) {
-//			if (lastBeforeUpdate != null) {
-//				if (Math.abs(current.amount - lastBeforeUpdate.amount) >= 500) {
-//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
-//					lastBeforeUpdate = current.copy();
-//				} else if (lastBeforeUpdate.amount < this.getCapacity() && current.amount == this.getCapacity() || lastBeforeUpdate.amount == this.getCapacity() && current.amount < this.getCapacity()) {
-//					NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
-//					lastBeforeUpdate = current.copy();
-//				}
-//			} else {
-//				NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
-//				lastBeforeUpdate = current.copy();
-//			}
-//		} else if (lastBeforeUpdate != null) {
-//			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(blockEntity), blockEntity.getWorld(), blockEntity.getPos());
-//			lastBeforeUpdate = null;
-//		}
+	@Override
+	public void getSyncPair(List<Pair<Supplier, Consumer>> pairList) {
+		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((Integer) o)));
 	}
 
 	public int getFluidAmount() {
-		return 0;
+		return getFluidInstance().getAmount();
 	}
 
 	public void drain(int currentWithdraw, boolean b) {
@@ -191,7 +141,21 @@ public class Tank  {
 	}
 
 
-	public void setBlockEntity(BlockEntity blockEntityBaseFluidGenerator) {
-
+	@Override
+	public void setFluid(@Nullable Direction type, @NonNull FluidInstance instance) {
+		fluidInstance = instance;
 	}
+
+	@NonNull
+	@Override
+	public FluidInstance getFluidInstance(@Nullable Direction type) {
+		return fluidInstance;
+	}
+
+	@Override
+	public int getCapacity(@Nullable Direction type) {
+		return capacity;
+	}
+
+
 }
