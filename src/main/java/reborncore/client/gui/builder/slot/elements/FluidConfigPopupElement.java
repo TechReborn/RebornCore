@@ -34,6 +34,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
@@ -41,7 +42,6 @@ import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.NetworkManager;
-import reborncore.common.network.NetworkPacket;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -114,7 +114,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		FluidConfiguration.ExtractConfig fluidIO = config.getIoConfig().getNext();
 		FluidConfiguration.FluidConfig newConfig = new FluidConfiguration.FluidConfig(side, fluidIO);
 
-		NetworkPacket packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.blockEntity.getPos(), newConfig);
+		Packet packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.blockEntity.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSave);
 	}
 
@@ -129,7 +129,7 @@ public class FluidConfigPopupElement extends ElementBase {
 			output = !configHolder.autoOutput();
 		}
 
-		NetworkPacket packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.blockEntity.getPos(), input, output);
+		Packet packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.blockEntity.getPos(), input, output);
 		NetworkManager.sendToServer(packetFluidIOSave);
 	}
 

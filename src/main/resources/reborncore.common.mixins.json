@@ -8,7 +8,8 @@
     "MixinCraftingResultSlot",
     "MixinContainer",
     "MixinRecipeManager",
-    "MixinFluidBlock"
+    "MixinFluidBlock",
+    "MixinSlot"
   ],
   "injectors": {
     "defaultRequire": 1
