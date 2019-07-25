@@ -55,7 +55,9 @@ dependencies {
 	modCompile "io.github.prospector.modmenu:ModMenu:1.5.4-85"
 
 	compile 'org.spongepowered:configurate-hocon:3.6'
+
 	include 'org.spongepowered:configurate-hocon:3.6'
+	include 'org.spongepowered:configurate-core:3.6'
 
 	modCompile "io.github.prospector.silk:SilkAPI:1.2.4-43"
 	include "io.github.prospector.silk:SilkAPI:1.2.4-43"
