@@ -4,18 +4,15 @@ import io.github.prospector.silk.fluid.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import reborncore.api.events.ItemTooltipCallback;
 import reborncore.common.fluid.container.GenericFluidContainer;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {

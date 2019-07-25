@@ -32,7 +32,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -43,9 +42,7 @@ import reborncore.common.util.serialization.SerializationUtil;
 import reborncore.mixin.extensions.RecipeManagerExtensions;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RecipeUtils {
 

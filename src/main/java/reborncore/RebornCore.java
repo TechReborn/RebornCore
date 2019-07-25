@@ -40,7 +40,6 @@ import reborncore.api.ToolManager;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
-import reborncore.common.fluid.RebornFluidRenderManager;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ClientBoundPackets;
@@ -75,6 +74,7 @@ public class RebornCore implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Load RC registries
+		@SuppressWarnings("unused")
 		RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
 
 		//TODO this may explode, find a better way to get config dir :D
