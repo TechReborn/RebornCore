@@ -28,17 +28,17 @@
 
 package reborncore.client.containerBuilder.builder;
 
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
-import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
+import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
 import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
@@ -109,9 +109,8 @@ public class ContainerBlockEntityInventoryBuilder {
 	}
 
 	public ContainerBlockEntityInventoryBuilder fuelSlot(final int index, final int x, final int y) {
-		throw new NotImplementedException("add a item handler version of furnace slots");
-		//this.parent.slots.add(new SlotFurnaceFuel(this.inventory, index, x, y));
-		//return this;
+		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(AbstractFurnaceBlockEntity::canUseAsFuel));
+		return this;
 	}
 
 	@Deprecated

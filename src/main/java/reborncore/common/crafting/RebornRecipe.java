@@ -113,6 +113,10 @@ public class RebornRecipe implements Recipe {
 		return type;
 	}
 
+	public RebornRecipeType getRebornRecipeType(){
+		return type;
+	}
+
 	// use the RebornIngredient version to ensure stack sizes are checked
 	@Deprecated
 	@Override

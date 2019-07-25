@@ -33,7 +33,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class RecipeManager {
 
@@ -56,6 +59,10 @@ public class RecipeManager {
 			throw new RuntimeException("RebornRecipe type " + name + " not found");
 		}
 		return recipeTypes.get(name);
+	}
+
+	public static List<RebornRecipeType> getRecipeTypes(String namespace){
+		return recipeTypes.values().stream().filter(rebornRecipeType -> rebornRecipeType.getName().getNamespace().equals(namespace)).collect(Collectors.toList());
 	}
 
 }

@@ -35,7 +35,12 @@ import net.minecraft.util.JsonHelper;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 //Mainly a stack size aware wrapper for Ingredient
 public class RebornIngredient implements Predicate<ItemStack> {
@@ -91,6 +96,10 @@ public class RebornIngredient implements Predicate<ItemStack> {
 			//TODO not really supported? might be best to ensure all sizes are the same? or find a nice way to allow mutli sizes, could be possible if required
 		}
 		return new RebornIngredient(base, size);
+	}
+
+	public List<ItemStack> getStacks() {
+		return Arrays.stream(base.getStackArray()).map(ItemStack::copy).peek(itemStack -> itemStack.setCount(getSize())).collect(Collectors.toList());
 	}
 
 }
