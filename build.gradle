@@ -142,7 +142,7 @@ task curseTools {
 
 	logger.lifecycle(":launching CurseTools")
 	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
-		arg(value: jar.archivePath.getAbsolutePath())
+		arg(value: remapJar.archivePath.getAbsolutePath())
 	}
 	}
 }
