@@ -335,7 +335,7 @@ public class ItemUtils {
 	 * @param itemStack the ItemStack to be represent
 	 * @return a formatted string representing the ItemStack
 	 */
-	public static String toStringSafe(ItemStack itemStack) {
+	public static String toFormattedString(ItemStack itemStack) {
 		return (itemStack == null) ? "(null)" : (itemStack.getItem() == null) ?
 		                                    getSize(itemStack)+"x(null)@(unknown)" : itemStack.toString();
 	}
