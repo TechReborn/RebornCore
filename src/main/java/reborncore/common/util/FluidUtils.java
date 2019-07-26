@@ -76,9 +76,9 @@ public class FluidUtils {
 
 		int targetCapacity = target.getTankProperties()[0].getCapacity();
 
-		//Making a simulation to check if the container can be filled from the source.
+		// Making a simulation to check if the container can be filled from the source.
 		FluidStack simulated = FluidUtil.tryFluidTransfer(target, source, targetCapacity, false);
-		if (simulated == null) return false;
+		if (simulated == null || simulated.amount < targetCapacity) return false;
 
 		if (!outputStack.isEmpty() && !ItemUtils.isItemEqual(FluidUtils.getFilledContainer(fluidToFill, inputStack.copy()),
 			outputStack, true, true))
@@ -113,9 +113,9 @@ public class FluidUtils {
 
 		int sourceCapacity = source.getTankProperties()[0].getCapacity();
 
-		//Making a simulation to check if the container can be drained into the target.
+		// Making a simulation to check if the container can be drained into the target.
 		FluidStack simulated = FluidUtil.tryFluidTransfer(target, source, sourceCapacity, false);
-		if (simulated == null) return false;
+		if (simulated == null || simulated.amount < sourceCapacity) return false;
 
 		if (!outputStack.isEmpty() && !ItemUtils.isItemEqual(getEmptyContainer(inputStack.copy()),
 			outputStack, true, true))
