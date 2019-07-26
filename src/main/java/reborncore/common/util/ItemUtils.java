@@ -37,6 +37,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;
@@ -326,5 +327,16 @@ public class ItemUtils {
 		EntityItem entityItem = new EntityItem(world, pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz, stack.copy());
 		entityItem.setDefaultPickupDelay();
 		world.spawnEntity(entityItem);
+	}
+
+	/**
+	 * Simple util to decently represent an ItemStack with a string
+	 *
+	 * @param itemStack the ItemStack to be represent
+	 * @return a formatted string representing the ItemStack
+	 */
+	public static String toStringSafe(ItemStack itemStack) {
+		return (itemStack == null) ? "(null)" : (itemStack.getItem() == null) ?
+		                                    getSize(itemStack)+"x(null)@(unknown)" : itemStack.toString();
 	}
 }
