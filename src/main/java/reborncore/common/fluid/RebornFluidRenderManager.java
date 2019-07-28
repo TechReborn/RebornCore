@@ -5,11 +5,7 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
-import reborncore.api.events.ItemTooltipCallback;
-import reborncore.common.fluid.container.ItemFluidInfo;
 
 import java.util.stream.Stream;
 
@@ -19,13 +15,6 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {
 		RebornFluidRenderManager rebornFluidRenderManager = new RebornFluidRenderManager();
 		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(rebornFluidRenderManager);
 		RebornFluidManager.getFluidStream().forEach(RebornFluidRenderManager::setupFluidRenderer);
-
-		ItemTooltipCallback.EVENT.register((stack, tooltipContext, components) -> {
-			if(stack.getItem() instanceof ItemFluidInfo){
-				ItemFluidInfo fluidInfo = (ItemFluidInfo) stack.getItem();
-				components.add(new LiteralText(Formatting.GOLD + FluidUtil.getFluidName(fluidInfo.getFluid(stack))));
-			}
-		});
 	}
 
 	private static void setupFluidRenderer(RebornFluid fluid){
