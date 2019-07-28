@@ -12,11 +12,14 @@ import java.util.function.Function;
 
 public class IngredientManager {
 
-	private static final Identifier DEFAULT_RECIPE_TYPE = new Identifier("reborncore", "stack");
+	private static final Identifier STACK_RECIPE_TYPE = new Identifier("reborncore", "stack");
+	private static final Identifier FLUID_RECIPE_TYPE = new Identifier("reborncore", "fluid");
+
 	private static final HashMap<Identifier, Function<JsonObject, RebornIngredient>> recipeTypes = new HashMap<>();
 
 	public static void setup(){
-		recipeTypes.put(DEFAULT_RECIPE_TYPE, StackIngredient::deserialize);
+		recipeTypes.put(STACK_RECIPE_TYPE, StackIngredient::deserialize);
+		recipeTypes.put(FLUID_RECIPE_TYPE, FluidIngredient::deserialize);
 	}
 
 	public static RebornIngredient deserialize(@Nullable JsonElement jsonElement) {
@@ -26,7 +29,11 @@ public class IngredientManager {
 
 		JsonObject json = jsonElement.getAsJsonObject();
 
-		Identifier recipeTypeIdent = DEFAULT_RECIPE_TYPE;
+		Identifier recipeTypeIdent = STACK_RECIPE_TYPE;
+		if (json.has("fluid")) {
+			recipeTypeIdent = FLUID_RECIPE_TYPE;
+		}
+
 		if(json.has("type")){
 			recipeTypeIdent = new Identifier(JsonHelper.getString(json, "type"));
 		}

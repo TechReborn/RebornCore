@@ -1,17 +1,15 @@
 package reborncore.common.fluid;
 
-import io.github.prospector.silk.fluid.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import reborncore.api.events.ItemTooltipCallback;
-import reborncore.common.fluid.container.GenericFluidContainer;
+import reborncore.common.fluid.container.ItemFluidInfo;
 
 import java.util.stream.Stream;
 
@@ -23,16 +21,9 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {
 		RebornFluidManager.getFluidStream().forEach(RebornFluidRenderManager::setupFluidRenderer);
 
 		ItemTooltipCallback.EVENT.register((stack, tooltipContext, components) -> {
-			GenericFluidContainer<ItemStack> fluidContainer = GenericFluidContainer.fromStack(stack);
-			if(fluidContainer != null){
-				FluidInstance fluidInstance = fluidContainer.getFluidInstance(stack);
-				if(fluidInstance.isEmpty()){
-					components.add(new LiteralText(Formatting.GOLD + "Empty"));
-				} else {
-					components.add(new LiteralText(Formatting.GOLD + FluidUtil.getFluidName(fluidInstance.getFluid())));
-					components.add(new LiteralText(Formatting.BLUE + (fluidInstance.getAmount() + "/" + fluidContainer.getCapacity(stack))));
-
-				}
+			if(stack.getItem() instanceof ItemFluidInfo){
+				ItemFluidInfo fluidInfo = (ItemFluidInfo) stack.getItem();
+				components.add(new LiteralText(Formatting.GOLD + FluidUtil.getFluidName(fluidInfo.getFluid(stack))));
 			}
 		});
 	}

@@ -9,7 +9,8 @@
     "MixinContainer",
     "MixinRecipeManager",
     "MixinFluidBlock",
-    "MixinSlot"
+    "MixinSlot",
+    "MixinBucketItem"
   ],
   "injectors": {
     "defaultRequire": 1
