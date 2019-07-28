@@ -40,6 +40,7 @@ import reborncore.api.ToolManager;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ClientBoundPackets;
@@ -125,6 +126,9 @@ public class RebornCore implements ModInitializer {
 		// packets
 		ServerBoundPackets.init();
 		ClientBoundPackets.init();
+
+		IngredientManager.setup();
+
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;
 	}

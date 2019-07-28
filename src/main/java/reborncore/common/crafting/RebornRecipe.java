@@ -42,6 +42,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
+import reborncore.common.crafting.ingredient.IngredientManager;
+import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.util.NonNullListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
 
@@ -82,21 +84,12 @@ public class RebornRecipe implements Recipe {
 		time = JsonHelper.getInt(jsonObject, "time");
 
 		ingredients = SerializationUtil.stream(JsonHelper.getArray(jsonObject, "ingredients"))
-			.map(RebornIngredient::deserialize)
+			.map(IngredientManager::deserialize)
 			.collect(NonNullListCollector.toList());
 
 		JsonArray resultsJson = JsonHelper.getArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
 	}
-
-	public void serialize(JsonObject jsonObject){
-		jsonObject.addProperty("power", power);
-		jsonObject.addProperty("time", time);
-
-		List<JsonElement> elements = ingredients.stream().map(RebornIngredient::serialize).collect(Collectors.toList());
-		jsonObject.add("ingredients", SerializationUtil.asArray(elements));
-	}
-
 
 	@Override
 	public Identifier getId() {
@@ -121,7 +114,7 @@ public class RebornRecipe implements Recipe {
 	@Deprecated
 	@Override
 	public DefaultedList<Ingredient> getPreviewInputs() {
-		return ingredients.stream().map(RebornIngredient::getBase).collect(NonNullListCollector.toList());
+		return ingredients.stream().map(RebornIngredient::getPreview).collect(NonNullListCollector.toList());
 	}
 
 	public DefaultedList<RebornIngredient> getRebornIngredients() {

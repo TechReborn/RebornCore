@@ -35,15 +35,18 @@ import reborncore.RebornCore;
 import reborncore.api.power.EnergyBlockEntity;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
-import reborncore.common.crafting.RebornIngredient;
+import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.crafting.RebornRecipeType;
+import reborncore.common.crafting.ingredient.StackIngredient;
 import reborncore.common.util.RebornInventory;
 import reborncore.common.util.ItemUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * Use this in your blockEntity entity to craft things
@@ -246,7 +249,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 		for (RebornIngredient ingredient : currentRecipe.getRebornIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
 				if (ingredient.test(inventory.getInvStack(inputSlot))) {
-					inventory.shrinkSlot(inputSlot, ingredient.getSize());
+					AtomicInteger count = new AtomicInteger(1);
+					ingredient.ifType(StackIngredient.class, stackIngredient -> count.set(stackIngredient.getCount()));
+					inventory.shrinkSlot(inputSlot, count.get());
 					break;
 				}
 			}
