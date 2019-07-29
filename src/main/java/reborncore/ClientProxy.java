@@ -36,12 +36,9 @@ import reborncore.client.shields.ShieldTextureStore;
 
 public class ClientProxy extends CommonProxy {
 
-	public static MultiblockRenderEvent multiblockRenderEvent;
-
 	@Override
 	public void setup() {
 		super.setup();
-		multiblockRenderEvent = new MultiblockRenderEvent();
 		//ItemDynamicRenderer.INSTANCE = new RebornItemStackRenderer(ItemDynamicRenderer.INSTANCE);
 	}
 

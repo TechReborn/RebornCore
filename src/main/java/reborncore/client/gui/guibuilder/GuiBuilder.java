@@ -42,6 +42,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import reborncore.ClientProxy;
+import reborncore.RebornCoreClient;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -237,7 +238,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		if (ClientProxy.multiblockRenderEvent.currentMultiblock == null) {
+		if (RebornCoreClient.multiblockRenderEvent.currentMultiblock == null) {
 			gui.blit(x, y, 174, 50, 20, 12);
 		} else {
 			gui.blit(x, y, 174, 62, 20, 12);

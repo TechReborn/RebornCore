@@ -236,7 +236,7 @@ public class GuiBase extends AbstractContainerScreen {
 			factorX = left;
 			factorY = top;
 		}
-		buttons.add(new GuiButtonPowerBar(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
+		addButton(new GuiButtonPowerBar(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
 			@Override
 			public void onPress(ButtonWidget var1) {
 
@@ -251,13 +251,8 @@ public class GuiBase extends AbstractContainerScreen {
 			factorX = left;
 			factorY = top;
 		}
-		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
-			@Override
-			public void onPress(ButtonWidget var1) {
-
-			}
-		});
-		buttons.add(buttonHologram);
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + factorX, y + factorY, this, layer, var1 -> {});
+		addButton(buttonHologram);
 		return buttonHologram;
 	}
 
