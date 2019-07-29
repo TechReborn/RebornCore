@@ -4,15 +4,15 @@ import net.minecraft.item.ItemStack;
 
 public interface ItemDurabilityExtensions {
 
-	default double getDurabilityForDisplay(ItemStack stack) {
+	default double getDurability(ItemStack stack) {
 		return 0;
 	}
 
-	default boolean showDurabilityBar(ItemStack stack) {
+	default boolean showDurability(ItemStack stack) {
 		return false;
 	}
 
-	default int getRGBDurabilityForDisplay(ItemStack stack) {
+	default int getDurabilityColor(ItemStack stack) {
 		return 0;
 	}
 
