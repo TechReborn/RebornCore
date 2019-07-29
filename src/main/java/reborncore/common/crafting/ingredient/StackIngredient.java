@@ -37,8 +37,8 @@ public class StackIngredient extends RebornIngredient {
 		Item item = Registry.ITEM.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + identifier + "'"));
 
 		Optional<Integer> stackSize = Optional.empty();
-		if(json.has("size")){
-			stackSize = Optional.of(JsonHelper.getInt(json, "size"));
+		if(json.has("count")){
+			stackSize = Optional.of(JsonHelper.getInt(json, "count"));
 		}
 
 		Optional<CompoundTag> tag = Optional.empty();
