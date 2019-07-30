@@ -32,7 +32,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +42,7 @@ import reborncore.api.ToolManager;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.crafting.RecipeManager;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.fluid.RebornFluidManager;
 import reborncore.common.misc.ModSounds;
@@ -130,6 +133,15 @@ public class RebornCore implements ModInitializer {
 
 		IngredientManager.setup();
 		RebornFluidManager.setupBucketMap();
+
+		CommandRegistry.INSTANCE.register(false, dispatcher -> dispatcher.register(CommandManager.literal("rc_validate_recipes").executes(context -> {
+			try {
+				RecipeManager.validateRecipes(context.getSource().getWorld());
+			} catch (Exception e){
+				e.printStackTrace();
+			}
+			return 0;
+		})));
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;
