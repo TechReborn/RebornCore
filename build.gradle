@@ -62,6 +62,9 @@ minecraft {
 
 group = 'RebornCore'
 
+dependencies {
+	compile "com.github.ben-manes.caffeine:caffeine:${project.caffeine_version}"
+}
 
 processResources
 	{
