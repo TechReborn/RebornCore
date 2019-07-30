@@ -25,18 +25,21 @@ public class FluidIngredient extends RebornIngredient {
 
 	private final Fluid fluid;
 	private final Optional<List<Item>> holders;
+	private final Optional<Integer> count;
 
 	private final Lazy<List<ItemStack>> previewStacks;
 	private final Lazy<Ingredient> previewIngredient;
 
-	private FluidIngredient(Fluid fluid, Optional<List<Item>> holders) {
+	private FluidIngredient(Fluid fluid, Optional<List<Item>> holders, Optional<Integer> count) {
 		this.fluid = fluid;
 		this.holders = holders;
+		this.count = count;
 
 		previewStacks = new Lazy<>(() -> Registry.ITEM.stream()
 			.filter(item -> item instanceof ItemFluidInfo)
 			.filter(item -> !holders.isPresent() || holders.get().stream().anyMatch(i -> i == item))
 			.map(item -> ((ItemFluidInfo)item).getFull(fluid))
+			.peek(stack -> stack.setCount(count.orElse(1)))
 			.collect(Collectors.toList()));
 
 		previewIngredient = new Lazy<>(() -> Ingredient.ofStacks(previewStacks.get().toArray(new ItemStack[0])));
@@ -74,12 +77,21 @@ public class FluidIngredient extends RebornIngredient {
 			}
 		}
 
-		return new FluidIngredient(fluid, holders);
+		Optional<Integer> count = Optional.empty();
+
+		if(json.has("count")){
+			count = Optional.of(json.get("count").getAsInt());
+		}
+
+		return new FluidIngredient(fluid, holders, count);
 	}
 
 	@Override
 	public boolean test(ItemStack itemStack) {
 		if(holders.isPresent() && holders.get().stream().noneMatch(item -> itemStack.getItem() == item)){
+			return false;
+		}
+		if(count.isPresent() && itemStack.getCount() < count.get()){
 			return false;
 		}
 		if(itemStack.getItem() instanceof ItemFluidInfo){

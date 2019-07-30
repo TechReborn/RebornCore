@@ -25,11 +25,13 @@ public class StackIngredient extends RebornIngredient {
 
 	private final Optional<Integer> count;
 	private final Optional<CompoundTag> tag;
+	private final boolean requireEmptyTag;
 
-	private StackIngredient(List<ItemStack> stacks, Optional<Integer> count, Optional<CompoundTag> tag) {
+	private StackIngredient(List<ItemStack> stacks, Optional<Integer> count, Optional<CompoundTag> tag, boolean requireEmptyTag) {
 		this.stacks = stacks;
 		this.count = count;
 		this.tag = tag;
+		this.requireEmptyTag = requireEmptyTag;
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
@@ -42,11 +44,19 @@ public class StackIngredient extends RebornIngredient {
 		}
 
 		Optional<CompoundTag> tag = Optional.empty();
+		boolean requireEmptyTag = false;
+
 		if(json.has("tag")){
-			tag = Optional.of((CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, json.get("tag")));
+			if(!json.get("tag").isJsonObject()){
+				if(json.get("tag").getAsString().equals("empty")){
+					requireEmptyTag = true;
+				}
+			} else {
+				tag = Optional.of((CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, json.get("tag")));
+			}
 		}
 
-		return new StackIngredient(Collections.singletonList(new ItemStack(item)), stackSize, tag);
+		return new StackIngredient(Collections.singletonList(new ItemStack(item)), stackSize, tag, requireEmptyTag);
 	}
 
 
@@ -76,6 +86,9 @@ public class StackIngredient extends RebornIngredient {
 			if(!tag.get().equals(compoundTag)){
 				return false;
 			}
+		}
+		if(requireEmptyTag && itemStack.hasTag()){
+			return false;
 		}
 		return true;
 	}
