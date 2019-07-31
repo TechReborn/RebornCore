@@ -245,13 +245,7 @@ public class GuiBase extends AbstractContainerScreen {
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
-		int factorX = 0;
-		int factorY = 0;
-		if (layer == Layer.BACKGROUND) {
-			factorX = left;
-			factorY = top;
-		}
-		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + factorX, y + factorY, this, layer, var1 -> {});
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + left, y + top, this, layer, var1 -> {});
 		addButton(buttonHologram);
 		return buttonHologram;
 	}

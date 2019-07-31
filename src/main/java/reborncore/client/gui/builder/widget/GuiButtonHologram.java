@@ -28,11 +28,8 @@
 
 package reborncore.client.gui.builder.widget;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.util.math.BlockPos;
 import reborncore.client.gui.builder.GuiBase;
-import reborncore.client.multiblock.Multiblock;
 
 /**
  * Created by Prospector
@@ -47,26 +44,6 @@ public class GuiButtonHologram extends GuiButtonExtended {
 		this.layer = layer;
 		this.gui = gui;
 	}
-
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-
-		if (layer == GuiBase.Layer.FOREGROUND) {
-			mouseX -= gui.getGuiLeft();
-			mouseY -= gui.getGuiTop();
-		}
-
-		if (this.active && this.visible && mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
-			return true;
-		}
-		return false;
-	}
-
-	public void addComponent(final int x, final int y, final int z, final BlockState blockState, final Multiblock multiblock) {
-		multiblock.addComponent(new BlockPos(x, y, z), blockState);
-	}
-
-
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
