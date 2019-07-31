@@ -41,7 +41,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import reborncore.ClientProxy;
 import reborncore.RebornCoreClient;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.RenderUtil;

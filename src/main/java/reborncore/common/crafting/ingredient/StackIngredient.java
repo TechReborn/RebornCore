@@ -13,10 +13,12 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class StackIngredient extends RebornIngredient {
@@ -32,6 +34,8 @@ public class StackIngredient extends RebornIngredient {
 		this.count = count;
 		this.tag = tag;
 		this.requireEmptyTag = requireEmptyTag;
+		//TODO remove this limitation
+		Validate.isTrue(stacks.size() == 1, "stack size must 1");
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
@@ -106,6 +110,22 @@ public class StackIngredient extends RebornIngredient {
 				.peek(itemStack -> itemStack.setCount(count.orElse(1)))
 				.peek(itemStack -> itemStack.setTag(tag.orElse(null)))
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public JsonObject toJson() {
+		JsonObject jsonObject = new JsonObject();
+
+		jsonObject.addProperty("item", Registry.ITEM.getId(stacks.get(0).getItem()).toString());
+		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
+
+		if(requireEmptyTag){
+			jsonObject.addProperty("tag", "empty");
+		} else {
+			tag.ifPresent(compoundTag -> jsonObject.add("tag", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, compoundTag)));
+		}
+
+		return jsonObject;
 	}
 
 	public int getCount(){

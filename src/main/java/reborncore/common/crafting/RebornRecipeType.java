@@ -69,9 +69,9 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("type", typeId.toString());
 
-		throw new UnsupportedOperationException("TOOD code this");
-		//recipe.serialize(jsonObject);
-		//return jsonObject;
+		recipe.serialize(jsonObject);
+
+		return jsonObject;
 	}
 
 	public R fromJson(Identifier recipeType, JsonObject json) {
@@ -89,7 +89,7 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 	@Override
 	public R read(Identifier recipeId, PacketByteBuf buffer) {
 		String input = buffer.readString(buffer.readInt());
-		return (R) read(recipeId, SerializationUtil.GSON_FLAT.fromJson(input, JsonObject.class));
+		return read(recipeId, SerializationUtil.GSON_FLAT.fromJson(input, JsonObject.class));
 	}
 
 	@Override

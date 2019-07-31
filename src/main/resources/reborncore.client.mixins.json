@@ -2,8 +2,6 @@
   "required": true,
   "package": "reborncore.mixin.client",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "client": [
     "MixinPlayerEntityRenderer",
     "MixinItemDynamicRenderer",

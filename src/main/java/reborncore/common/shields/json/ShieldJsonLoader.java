@@ -33,6 +33,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import reborncore.RebornCore;
+import reborncore.client.shields.ShieldTextureStore;
 import reborncore.common.shields.FaceShield;
 import reborncore.common.shields.ShieldRegistry;
 
@@ -108,7 +109,7 @@ public class ShieldJsonLoader {
 							customTextureNameList.put(user.username, user.textureName);
 						}
 					}
-					RebornCore.proxy.loadShieldTextures();
+					RebornCore.clientOnly(() -> ShieldTextureStore::load);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

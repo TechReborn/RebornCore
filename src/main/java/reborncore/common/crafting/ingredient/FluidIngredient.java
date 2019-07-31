@@ -3,6 +3,7 @@ package reborncore.common.crafting.ingredient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FluidIngredient extends RebornIngredient {
@@ -108,5 +110,23 @@ public class FluidIngredient extends RebornIngredient {
 	@Override
 	public List<ItemStack> getPreviewStacks() {
 		return previewStacks.get();
+	}
+
+	@Override
+	public JsonObject toJson() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("fluid", Registry.FLUID.getId(fluid).toString());
+		if(holders.isPresent()){
+			List<Item> holderList = holders.get();
+			if(holderList.size() == 1){
+				jsonObject.addProperty("holder", Registry.ITEM.getId(holderList.get(0)).toString());
+			} else {
+				JsonArray holderArray = new JsonArray();
+				holderList.forEach(item -> holderArray.add(new JsonPrimitive(Registry.ITEM.getId(item).toString())));
+				jsonObject.add("holder", holderArray);
+			}
+		}
+		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
+		return jsonObject;
 	}
 }

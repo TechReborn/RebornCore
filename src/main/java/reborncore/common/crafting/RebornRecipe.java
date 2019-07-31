@@ -31,7 +31,10 @@ package reborncore.common.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.JsonOps;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.datafixers.NbtOps;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -40,6 +43,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.crafting.ingredient.IngredientManager;
@@ -49,6 +53,8 @@ import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RebornRecipe implements Recipe {
@@ -89,6 +95,28 @@ public class RebornRecipe implements Recipe {
 
 		JsonArray resultsJson = JsonHelper.getArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
+	}
+
+	public void serialize(JsonObject jsonObject) {
+		jsonObject.addProperty("power", power);
+		jsonObject.addProperty("time", time);
+
+		JsonArray ingredientsArray = new JsonArray();
+		getRebornIngredients().stream().map(RebornIngredient::toJson).forEach(ingredientsArray::add);
+		jsonObject.add("ingredients", ingredientsArray);
+
+		JsonArray resultsArray = new JsonArray();
+		for(ItemStack stack : outputs){
+			JsonObject stackObject = new JsonObject();
+			stackObject.addProperty("item", Registry.ITEM.getId(stack.getItem()).toString());
+			if(stack.getCount() > 1){
+				stackObject.addProperty("count", stack.getCount());
+			}
+			if(stack.hasTag()){
+				jsonObject.add("tag", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, stack.getTag()));
+			}
+		}
+		jsonObject.add("results", resultsArray);
 	}
 
 	@Override

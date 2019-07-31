@@ -52,7 +52,7 @@ public class ClientBoundPackets {
 			BlockPos pos = extendedPacketBuffer.readBlockPos();
 			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
 			context.getTaskQueue().execute(() -> {
-				World world = RebornCore.proxy.getClientWorld();
+				World world = MinecraftClient.getInstance().world;
 				if (world.isBlockLoaded(pos)) {
 					BlockEntity blockentity = world.getBlockEntity(pos);
 					if (blockentity != null && tagCompound != null) {
@@ -68,10 +68,10 @@ public class ClientBoundPackets {
 
 			context.getTaskQueue().execute(() -> {
 				FluidConfiguration fluidConfiguration = new FluidConfiguration(compoundTag);
-				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos)) {
+				if (!MinecraftClient.getInstance().world.isBlockLoaded(pos)) {
 					return;
 				}
-				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) RebornCore.proxy.getClientWorld().getBlockEntity(pos);
+				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
 				if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
 					RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
 				}
@@ -88,10 +88,10 @@ public class ClientBoundPackets {
 
 			context.getTaskQueue().execute(() -> {
 				SlotConfiguration slotConfig = new SlotConfiguration(compoundTag);
-				if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos)) {
+				if (!MinecraftClient.getInstance().world.isBlockLoaded(pos)) {
 					return;
 				}
-				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) RebornCore.proxy.getClientWorld().getBlockEntity(pos);
+				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
 				if (machineBase == null || machineBase.getSlotConfiguration() == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
 					RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
 				}

@@ -30,7 +30,6 @@ package reborncore;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -39,7 +38,6 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
-import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.crafting.RecipeManager;
@@ -57,6 +55,7 @@ import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 public class RebornCore implements ModInitializer {
 
@@ -66,7 +65,6 @@ public class RebornCore implements ModInitializer {
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	public static CommonProxy proxy = new ClientProxy();
 	public static File configDir;
 
 	public static boolean LOADED = false;
@@ -92,7 +90,6 @@ public class RebornCore implements ModInitializer {
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
-		proxy.setup();
 		ShieldJsonLoader.load();
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("ic2:wrench"), true));
@@ -110,12 +107,11 @@ public class RebornCore implements ModInitializer {
 		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
 
 		RebornCoreShields.init();
-		RebornItemStackRenderer.setup();
+
 
 		ModSounds.setup();
 
 		BlockWrenchEventHandler.setup();
-		ClientTickCallback.EVENT.register(minecraftClient -> MultiblockRegistry.tickStart(minecraftClient.world));
 
 		/**
 		 * This is a generic multiblock tick handler. If you are using this code on your
@@ -129,7 +125,7 @@ public class RebornCore implements ModInitializer {
 
 		// packets
 		ServerBoundPackets.init();
-		ClientBoundPackets.init();
+		RebornCore.clientOnly(() -> ClientBoundPackets::init);
 
 		IngredientManager.setup();
 		RebornFluidManager.setupBucketMap();
@@ -149,5 +145,11 @@ public class RebornCore implements ModInitializer {
 
 	public static EnvType getSide() {
 		return FabricLoader.getInstance().getEnvironmentType();
+	}
+
+	public static void clientOnly(Supplier<Runnable> runnable){
+		if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT){
+			runnable.get().run();
+		}
 	}
 }

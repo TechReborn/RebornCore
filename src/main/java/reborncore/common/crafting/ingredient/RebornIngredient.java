@@ -28,6 +28,7 @@
 
 package reborncore.common.crafting.ingredient;
 
+import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 
@@ -43,6 +44,8 @@ public abstract class RebornIngredient implements Predicate<ItemStack> {
 	public abstract Ingredient getPreview();
 
 	public abstract List<ItemStack> getPreviewStacks();
+
+	public abstract JsonObject toJson();
 
 	public <T extends RebornIngredient> void ifType(Class<T> clazz, Consumer<T> consumer){
 		if(this.getClass().isAssignableFrom(clazz)){
