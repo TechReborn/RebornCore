@@ -38,6 +38,7 @@ import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
@@ -129,6 +130,7 @@ public class GuiBase extends AbstractContainerScreen {
 	@Override
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		renderBackground();
 		builder.drawDefaultBackground(this, left, top + 10, containerWidth, containerHeight);
 		if (drawPlayerSlots()) {
 			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
@@ -145,7 +147,7 @@ public class GuiBase extends AbstractContainerScreen {
 			builder.drawSlotTab(this, left - 24, top + offset, wrenchStack);
 		}
 		if (isConfigEnabled() && getMachine().showTankConfig()) {
-			builder.drawSlotTab(this, left - 24, top + 24 + offset, fluidCellProvider.provide(null));//TODO 1.13 fluids FluidRegistry.LAVA));
+			builder.drawSlotTab(this, left - 24, top + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
 		}
 	}
 
@@ -174,7 +176,6 @@ public class GuiBase extends AbstractContainerScreen {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		this.drawBackground(partialTicks, mouseX, mouseY);
 		super.render(mouseX, mouseY, partialTicks);
 		this.drawMouseoverTooltip(mouseX, mouseY);
 	}
