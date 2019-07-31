@@ -29,8 +29,12 @@
 package reborncore.common.util;
 
 import io.github.prospector.silk.fluid.FluidInstance;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -76,6 +80,14 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return capacity;
 	}
 
+	public int getFreeSpace(){
+		return getCapacity() - getFluidAmount();
+	}
+
+	public boolean canFit(Fluid fluid, int amount) {
+		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace() > amount;
+	}
+
 	public boolean isEmpty() {
 		return getFluidInstance().isEmpty();
 	}
@@ -100,7 +112,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	public final Tank read(CompoundTag nbt) {
 		if (nbt.containsKey(name)) {
 			// allow to read empty tanks
-			setFluid(null);
+			setFluid(Fluids.EMPTY);
 
 			CompoundTag tankData = nbt.getCompound(name);
 			fluidInstance = new FluidInstance(tankData);
@@ -108,8 +120,9 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return this;
 	}
 
-	public void setFluid(Fluid o) {
-
+	public void setFluid(@NonNull Fluid f) {
+		Validate.notNull(f);
+		fluidInstance.setFluid(f);
 	}
 
 	@Nullable
@@ -126,20 +139,12 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	@Override
 	public void getSyncPair(List<Pair<Supplier, Consumer>> pairList) {
 		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((Integer) o)));
+		pairList.add(Pair.of(() -> Registry.FLUID.getId(fluidInstance.getFluid()).toString(), (Consumer<String>) o -> fluidInstance.setFluid(Registry.FLUID.get(new Identifier(o)))));
 	}
 
 	public int getFluidAmount() {
 		return getFluidInstance().getAmount();
 	}
-
-	public void drain(int currentWithdraw, boolean b) {
-
-	}
-
-	public int fill(FluidInstance stack, boolean bool){
-		return 0;
-	}
-
 
 	@Override
 	public void setFluid(@Nullable Direction type, @NonNull FluidInstance instance) {

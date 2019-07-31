@@ -72,16 +72,6 @@ public class RebornRecipe implements Recipe {
 		this.name = name;
 	}
 
-	//Only really used for code recipes, try to use json
-	public RebornRecipe(RebornRecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
-		this.type = type;
-		this.name = name;
-		this.ingredients = ingredients;
-		this.outputs = outputs;
-		this.power = power;
-		this.time = time;
-	}
-
 	public void deserialize(JsonObject jsonObject){
 		//Crash if the recipe has all ready been deserialized
 		Validate.isTrue(ingredients == null);

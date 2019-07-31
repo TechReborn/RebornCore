@@ -31,11 +31,15 @@ package reborncore.client.gui.guibuilder;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.github.prospector.silk.fluid.FluidInstance;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -690,27 +694,34 @@ public class GuiBuilder {
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
 	public void drawFluid(GuiBase gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
-		//TODO fluids
-//		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-//		y += height;
-//		final Identifier still = fluid.getFluidInstance().getStill(fluid);
-//		final Sprite sprite = gui.getMinecraft().getTextureMap().getAtlasSprite(still.toString());
-//
-//		final int drawHeight = (int) (fluid.amount / (maxCapacity * 1F) * height);
-//		final int iconHeight = sprite.getHeight();
-//		int offsetHeight = drawHeight;
-//
-//		int iteration = 0;
-//		while (offsetHeight != 0) {
-//			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
-//			gui.blit(x, y - offsetHeight, sprite, width, curHeight);
-//			offsetHeight -= curHeight;
-//			iteration++;
-//			if (iteration > 50) {
-//				break;
-//			}
-//		}
-//		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+		if(fluid.getFluid() == Fluids.EMPTY){
+			return;
+		}
+		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		y += height;
+		final Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidSprites(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState())[0];
+		int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidColor(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState());
+
+		final int drawHeight = (int) (fluid.getAmount() / (maxCapacity * 1F) * height);
+		final int iconHeight = sprite.getHeight();
+		int offsetHeight = drawHeight;
+
+		GlStateManager.color3f((color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F);
+
+		int iteration = 0;
+		while (offsetHeight != 0) {
+			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
+
+			gui.blit(x, y - offsetHeight, 0,  width, curHeight, sprite);
+			offsetHeight -= curHeight;
+			iteration++;
+			if (iteration > 50) {
+				break;
+			}
+		}
+		GlStateManager.color3f(1F, 1F, 1F);
+
+		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 	}
 
 	/**
