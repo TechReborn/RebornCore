@@ -12,16 +12,23 @@ buildscript {
 		maven {
 			url "https://plugins.gradle.org/m2/"
 		}
+		maven {
+			name = "CB Repo"
+			url = "http://chickenbones.net/maven"
+		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
+		classpath 'net.covers1624:GradleStuff:1.0-SNAPSHOT'
 	}
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: net.minecrell.gradle.licenser.Licenser
+apply plugin: 'net.covers1624.contained-deps'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -45,7 +52,7 @@ configurations {
 	compile.extendsFrom shade
 }
 
-version = "3.15.0"
+version = "3.15.1"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -63,7 +70,9 @@ minecraft {
 group = 'RebornCore'
 
 dependencies {
-	compile "com.github.ben-manes.caffeine:caffeine:${project.caffeine_version}"
+	shade ("com.github.ben-manes.caffeine:caffeine:${project.caffeine_version}") {
+		transitive = false
+	}
 }
 
 processResources
@@ -97,6 +106,11 @@ task deobfJar(type: Jar) {
 	manifest {
 		attributes 'FMLAT': 'reborncore_at.cfg'
 	}
+}
+
+containedDeps {
+	configuration = "shade"
+	tasks = "jar"
 }
 
 jar {
