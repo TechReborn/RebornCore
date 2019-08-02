@@ -50,13 +50,13 @@ public class StackIngredient extends RebornIngredient {
 		Optional<CompoundTag> tag = Optional.empty();
 		boolean requireEmptyTag = false;
 
-		if(json.has("tag")){
-			if(!json.get("tag").isJsonObject()){
-				if(json.get("tag").getAsString().equals("empty")){
+		if(json.has("nbt")){
+			if(!json.get("nbt").isJsonObject()){
+				if(json.get("nbt").getAsString().equals("empty")){
 					requireEmptyTag = true;
 				}
 			} else {
-				tag = Optional.of((CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, json.get("tag")));
+				tag = Optional.of((CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, json.get("nbt")));
 			}
 		}
 
@@ -120,9 +120,9 @@ public class StackIngredient extends RebornIngredient {
 		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
 
 		if(requireEmptyTag){
-			jsonObject.addProperty("tag", "empty");
+			jsonObject.addProperty("nbt", "empty");
 		} else {
-			tag.ifPresent(compoundTag -> jsonObject.add("tag", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, compoundTag)));
+			tag.ifPresent(compoundTag -> jsonObject.add("nbt", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, compoundTag)));
 		}
 
 		return jsonObject;

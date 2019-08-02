@@ -14,12 +14,14 @@ public class IngredientManager {
 
 	private static final Identifier STACK_RECIPE_TYPE = new Identifier("reborncore", "stack");
 	private static final Identifier FLUID_RECIPE_TYPE = new Identifier("reborncore", "fluid");
+	private static final Identifier TAG_RECIPE_TYPE = new Identifier("reborncore", "tag");
 
 	private static final HashMap<Identifier, Function<JsonObject, RebornIngredient>> recipeTypes = new HashMap<>();
 
 	public static void setup(){
 		recipeTypes.put(STACK_RECIPE_TYPE, StackIngredient::deserialize);
 		recipeTypes.put(FLUID_RECIPE_TYPE, FluidIngredient::deserialize);
+		recipeTypes.put(TAG_RECIPE_TYPE, TagIngredient::deserialize);
 	}
 
 	public static RebornIngredient deserialize(@Nullable JsonElement jsonElement) {
@@ -30,8 +32,11 @@ public class IngredientManager {
 		JsonObject json = jsonElement.getAsJsonObject();
 
 		Identifier recipeTypeIdent = STACK_RECIPE_TYPE;
+		//TODO find a better way to do this.
 		if (json.has("fluid")) {
 			recipeTypeIdent = FLUID_RECIPE_TYPE;
+		} else if (json.has("tag")){
+			recipeTypeIdent = TAG_RECIPE_TYPE;
 		}
 
 		if(json.has("type")){

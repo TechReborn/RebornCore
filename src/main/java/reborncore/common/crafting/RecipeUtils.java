@@ -76,8 +76,8 @@ public class RecipeUtils {
 			count = JsonHelper.getInt(jsonObject, "count");
 		}
 		ItemStack stack = new ItemStack(item, count);
-		if(jsonObject.has("tag")){
-			CompoundTag tag = (CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, jsonObject.get("tag"));
+		if(jsonObject.has("nbt")){
+			CompoundTag tag = (CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, jsonObject.get("nbt"));
 			stack.setTag(tag);
 		}
 		return stack;
