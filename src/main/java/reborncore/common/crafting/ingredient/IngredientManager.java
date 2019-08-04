@@ -12,9 +12,9 @@ import java.util.function.Function;
 
 public class IngredientManager {
 
-	private static final Identifier STACK_RECIPE_TYPE = new Identifier("reborncore", "stack");
-	private static final Identifier FLUID_RECIPE_TYPE = new Identifier("reborncore", "fluid");
-	private static final Identifier TAG_RECIPE_TYPE = new Identifier("reborncore", "tag");
+	public static final Identifier STACK_RECIPE_TYPE = new Identifier("reborncore", "stack");
+	public static final Identifier FLUID_RECIPE_TYPE = new Identifier("reborncore", "fluid");
+	public static final Identifier TAG_RECIPE_TYPE = new Identifier("reborncore", "tag");
 
 	private static final HashMap<Identifier, Function<JsonObject, RebornIngredient>> recipeTypes = new HashMap<>();
 

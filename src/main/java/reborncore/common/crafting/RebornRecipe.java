@@ -88,7 +88,7 @@ public class RebornRecipe implements Recipe {
 		jsonObject.addProperty("time", time);
 
 		JsonArray ingredientsArray = new JsonArray();
-		getRebornIngredients().stream().map(RebornIngredient::toJson).forEach(ingredientsArray::add);
+		getRebornIngredients().stream().map(RebornIngredient::witeToJson).forEach(ingredientsArray::add);
 		jsonObject.add("ingredients", ingredientsArray);
 
 		JsonArray resultsArray = new JsonArray();

@@ -31,12 +31,19 @@ package reborncore.common.crafting.ingredient;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class RebornIngredient implements Predicate<ItemStack> {
+
+	private final Identifier ingredientType;
+
+	public RebornIngredient(Identifier ingredientType) {
+		this.ingredientType = ingredientType;
+	}
 
 	@Override
 	public abstract boolean test(ItemStack itemStack);
@@ -45,7 +52,14 @@ public abstract class RebornIngredient implements Predicate<ItemStack> {
 
 	public abstract List<ItemStack> getPreviewStacks();
 
-	public abstract JsonObject toJson();
+	protected abstract JsonObject toJson();
+
+	//Same as above but adds the type
+	public final JsonObject witeToJson(){
+		JsonObject jsonObject = toJson();
+		jsonObject.addProperty("type", ingredientType.toString());
+		return jsonObject;
+	}
 
 	public <T extends RebornIngredient> void ifType(Class<T> clazz, Consumer<T> consumer){
 		if(this.getClass().isAssignableFrom(clazz)){

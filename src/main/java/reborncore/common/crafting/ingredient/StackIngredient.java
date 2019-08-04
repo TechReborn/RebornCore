@@ -29,6 +29,7 @@ public class StackIngredient extends RebornIngredient {
 	private final boolean requireEmptyTag;
 
 	private StackIngredient(List<ItemStack> stacks, Optional<Integer> count, Optional<CompoundTag> tag, boolean requireEmptyTag) {
+		super(IngredientManager.STACK_RECIPE_TYPE);
 		this.stacks = stacks;
 		this.count = count;
 		this.tag = tag;
@@ -38,6 +39,9 @@ public class StackIngredient extends RebornIngredient {
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
+		if(!json.has("item")){
+			System.out.println("nope");
+		}
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "item"));
 		Item item = Registry.ITEM.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + identifier + "'"));
 

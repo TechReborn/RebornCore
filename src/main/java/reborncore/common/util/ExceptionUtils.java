@@ -6,6 +6,7 @@ public class ExceptionUtils {
 		try {
 			runnable.run();
 		} catch (Throwable t){
+			t.printStackTrace();
 			throw new RuntimeException(message, t);
 		}
 	}
