@@ -2,7 +2,6 @@ package reborncore.common.fluid;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
@@ -11,9 +10,6 @@ import reborncore.common.fluid.container.ItemFluidInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class RebornFluidManager {

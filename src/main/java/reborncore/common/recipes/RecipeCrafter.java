@@ -46,7 +46,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * Use this in your blockEntity entity to craft things
@@ -83,7 +82,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	/**
 	 * This is the inventory to use for the crafting
 	 */
-	public RebornInventory inventory;
+	public RebornInventory<?> inventory;
 
 	/**
 	 * This is the list of the slots that the crafting logic should look for the
@@ -106,7 +105,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	@Nullable
 	public static ICrafterSoundHanlder soundHanlder = (firstRun, blockEntity) -> {};
 
-	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity blockEntity, int inputs, int outputs, RebornInventory inventory,
+	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity blockEntity, int inputs, int outputs, RebornInventory<?> inventory,
 	                     int[] inputSlots, int[] outputSlots) {
 		this.recipeType = recipeType;
 		this.blockEntity = blockEntity;
