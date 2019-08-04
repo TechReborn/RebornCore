@@ -29,7 +29,6 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
@@ -53,9 +52,6 @@ import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class RebornRecipe implements Recipe {
 

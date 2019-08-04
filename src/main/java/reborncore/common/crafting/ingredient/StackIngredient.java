@@ -18,7 +18,6 @@ import org.apache.commons.lang3.Validate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class StackIngredient extends RebornIngredient {
