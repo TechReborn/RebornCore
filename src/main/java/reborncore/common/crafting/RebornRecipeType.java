@@ -36,10 +36,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.world.World;
+import reborncore.common.util.ExceptionUtils;
 import reborncore.common.util.serialization.SerializationUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, RecipeSerializer {
 
@@ -60,7 +62,7 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		}
 
 		R recipe = newRecipe(recipeId);
-		recipe.deserialize(json);
+		ExceptionUtils.tryAndThrow(() -> recipe.deserialize(json),"Failed to read " + recipeId);
 		return recipe;
 
 	}
