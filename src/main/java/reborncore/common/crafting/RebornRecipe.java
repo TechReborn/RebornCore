@@ -58,8 +58,8 @@ public class RebornRecipe implements Recipe {
 	private final RebornRecipeType<?> type;
 	private final Identifier name;
 
-	private DefaultedList<RebornIngredient> ingredients;
-	private DefaultedList<ItemStack> outputs;
+	private DefaultedList<RebornIngredient> ingredients = DefaultedList.of();
+	private DefaultedList<ItemStack> outputs = DefaultedList.of();
 	private int power;
 	private int time;
 
