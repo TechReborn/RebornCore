@@ -104,8 +104,6 @@ public class RebornCore implements ModInitializer {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("redstonearsenal:tool.wrench_flux"), false));
 
-		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
-
 		RebornCoreShields.init();
 
 
