@@ -42,6 +42,9 @@ if (ENV.BUILD_NUMBER) {
 	version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
+configurations {
+	ctRuntime {}
+}
 
 dependencies {
 	minecraft "com.mojang:minecraft:1.14.4"
@@ -55,7 +58,7 @@ dependencies {
 	modCompile "io.github.prospector.modmenu:ModMenu:1.5.4-85"
 
 	compile 'org.checkerframework:checker-qual:2.10.0'
-	
+
 	compile 'org.spongepowered:configurate-hocon:3.6'
 
 	include 'org.spongepowered:configurate-hocon:3.6'
@@ -64,6 +67,8 @@ dependencies {
 
 	modCompile "io.github.prospector.silk:SilkAPI:1.2.4-43"
 	include "io.github.prospector.silk:SilkAPI:1.2.4-43"
+
+	ctRuntime "CurseTools:CurseTools:+"
 }
 
 processResources{
@@ -81,13 +86,6 @@ processResources{
 
 	rename '(.+_at.cfg)', 'META-INF/$1'
 }
-
-//license {
-//	header file('LICENSE.md')
-//	include '**/*.java'
-//	ignoreFailures = true //Stops the build from failing if a file does not have a license header
-//}
-
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
@@ -120,33 +118,11 @@ publishing {
 	}
 }
 
-//apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
-
-import groovy.util.XmlSlurper
-import org.apache.commons.io.FileUtils
-
 task curseTools {
 	doLast {
-		def cacheFiles = new File(".gradle/curseTools")
-		if (!cacheFiles.exists()) {
-			cacheFiles.mkdirs()
-		}
-
-		def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
-
-		logger.lifecycle(":downloading curseTools metadata")
-		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/maven-metadata.xml"), mavenMetadata)
-
-		def metadata = new XmlSlurper().parseText(FileUtils.readFileToString(mavenMetadata))
-		def curseToolsVersion = metadata.versioning.release
-
-		def curseTools = new File(cacheFiles, "${curseToolsVersion}.jar")
-
-		logger.lifecycle(":downloading CurseTools")
-		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
-
 		logger.lifecycle(":launching CurseTools")
-		ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
+		ant.setLifecycleLogLevel "INFO"
+		ant.java(classname: 'me.modmuss50.cursetools.Main', classpath: configurations.ctRuntime.asPath, fork: true, spawn: false) {
 			arg(value: remapJar.archivePath.getAbsolutePath())
 		}
 	}
