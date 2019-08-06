@@ -54,6 +54,8 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:+"
 	modCompile "io.github.prospector.modmenu:ModMenu:1.5.4-85"
 
+	compile 'org.checkerframework:checker-qual:2.10.0'
+	
 	compile 'org.spongepowered:configurate-hocon:3.6'
 
 	include 'org.spongepowered:configurate-hocon:3.6'
@@ -124,31 +126,32 @@ import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
 
 task curseTools {
-	doLast{
-	def cacheFiles = new File(".gradle/curseTools")
-	if (!cacheFiles.exists()) {
-		cacheFiles.mkdirs()
-	}
+	doLast {
+		def cacheFiles = new File(".gradle/curseTools")
+		if (!cacheFiles.exists()) {
+			cacheFiles.mkdirs()
+		}
 
-	def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
+		def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
 
-	logger.lifecycle(":downloading curseTools metadata")
-	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/maven-metadata.xml"), mavenMetadata)
+		logger.lifecycle(":downloading curseTools metadata")
+		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/maven-metadata.xml"), mavenMetadata)
 
-	def metadata = new XmlSlurper().parseText(FileUtils.readFileToString(mavenMetadata))
-	def curseToolsVersion = metadata.versioning.release
+		def metadata = new XmlSlurper().parseText(FileUtils.readFileToString(mavenMetadata))
+		def curseToolsVersion = metadata.versioning.release
 
-	def curseTools = new File(cacheFiles, "${curseToolsVersion}.jar")
+		def curseTools = new File(cacheFiles, "${curseToolsVersion}.jar")
 
-	logger.lifecycle(":downloading CurseTools")
-	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
+		logger.lifecycle(":downloading CurseTools")
+		FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
 
-	logger.lifecycle(":launching CurseTools")
-	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
-		arg(value: remapJar.archivePath.getAbsolutePath())
-	}
+		logger.lifecycle(":launching CurseTools")
+		ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
+			arg(value: remapJar.archivePath.getAbsolutePath())
+		}
 	}
 }
+
 
 task copyToLib(type: Copy) {
     into "$buildDir/output/lib"
