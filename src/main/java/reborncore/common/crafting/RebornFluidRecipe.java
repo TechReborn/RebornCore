@@ -77,4 +77,8 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 		return false;
 	}
 
+	@Nonnull
+	public FluidInstance getFluidInstance() {
+		return fluidInstance;
+	}
 }

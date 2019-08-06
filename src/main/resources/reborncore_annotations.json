@@ -1,5 +1,25 @@
 {
   "classes": {
+    "reborncore/mixin/common/MixinSlot": {
+      "className": "reborncore/mixin/common/MixinSlot",
+      "fields": [
+        {
+          "access": 2,
+          "name": "field_7875",
+          "desc": "I",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
     "reborncore/client/shields/ShieldTexture": {
       "className": "reborncore/client/shields/ShieldTexture",
       "methods": [
@@ -70,13 +90,13 @@
         }
       ]
     },
-    "reborncore/client/containerBuilder/builder/slot/SpriteSlot": {
-      "className": "reborncore/client/containerBuilder/builder/slot/SpriteSlot",
-      "methods": [
+    "reborncore/common/shields/json/ShieldUser": {
+      "className": "reborncore/common/shields/json/ShieldUser",
+      "fields": [
         {
           "access": 1,
-          "name": "method_7679",
-          "desc": "()Ljava/lang/String;",
+          "name": "textureName",
+          "desc": "Ljava/lang/String;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -86,13 +106,13 @@
         }
       ]
     },
-    "reborncore/common/shields/json/ShieldUser": {
-      "className": "reborncore/common/shields/json/ShieldUser",
-      "fields": [
+    "reborncore/client/containerBuilder/builder/slot/SpriteSlot": {
+      "className": "reborncore/client/containerBuilder/builder/slot/SpriteSlot",
+      "methods": [
         {
           "access": 1,
-          "name": "textureName",
-          "desc": "Ljava/lang/String;",
+          "name": "method_7679",
+          "desc": "()Ljava/lang/String;",
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
@@ -207,6 +227,50 @@
             },
             {
               "desc": "Lorg/spongepowered/asm/mixin/Mutable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/client/MixinItemRenderer": {
+      "className": "reborncore/mixin/client/MixinItemRenderer",
+      "methods": [
+        {
+          "access": 1028,
+          "name": "method_4004",
+          "desc": "(Lnet/minecraft/class_287;IIIIIIII)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 2,
+          "name": "renderGuiItemOverlay",
+          "desc": "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;Lorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/Inject;",
+              "values": [
+                "method",
+                [
+                  "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V"
+                ],
+                "at",
+                [
+                  {
+                    "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                    "values": [
+                      "value",
+                      "HEAD"
+                    ],
+                    "api": 458752
+                  }
+                ]
+              ],
               "api": 458752
             }
           ]
@@ -358,6 +422,43 @@
         }
       ]
     },
+    "reborncore/mixin/client/MixinGameRenderer": {
+      "className": "reborncore/mixin/client/MixinGameRenderer",
+      "methods": [
+        {
+          "access": 2,
+          "name": "renderCenter",
+          "desc": "(FJLorg/spongepowered/asm/mixin/injection/callback/CallbackInfo;)V",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/injection/Inject;",
+              "values": [
+                "method",
+                [
+                  "renderCenter"
+                ],
+                "at",
+                [
+                  {
+                    "desc": "Lorg/spongepowered/asm/mixin/injection/At;",
+                    "values": [
+                      "value",
+                      "INVOKE",
+                      "target",
+                      "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V",
+                      "ordinal",
+                      15
+                    ],
+                    "api": 458752
+                  }
+                ]
+              ],
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
     "reborncore/mixin/client/MixinPlayerEntityRenderer": {
       "className": "reborncore/mixin/client/MixinPlayerEntityRenderer",
       "methods": [
@@ -385,35 +486,6 @@
                   }
                 ]
               ],
-              "api": 458752
-            }
-          ]
-        }
-      ]
-    },
-    "reborncore/common/util/Tank": {
-      "className": "reborncore/common/util/Tank",
-      "methods": [
-        {
-          "access": 1,
-          "name": "getSide",
-          "desc": "()Lnet/minecraft/class_2350;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
-              "api": 458752
-            }
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "access": 2,
-          "name": "side",
-          "desc": "Lnet/minecraft/class_2350;",
-          "annotations": [
-            {
-              "desc": "Ljavax/annotation/Nullable;",
               "api": 458752
             }
           ]
@@ -832,6 +904,35 @@
         }
       ]
     },
+    "reborncore/common/crafting/RebornFluidRecipe": {
+      "className": "reborncore/common/crafting/RebornFluidRecipe",
+      "methods": [
+        {
+          "access": 1,
+          "name": "getFluidInstance",
+          "desc": "()Lio/github/prospector/silk/fluid/FluidInstance;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "access": 2,
+          "name": "fluidInstance",
+          "desc": "Lio/github/prospector/silk/fluid/FluidInstance;",
+          "annotations": [
+            {
+              "desc": "Ljavax/annotation/Nonnull;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
     "reborncore/common/explosion/RebornExplosion": {
       "className": "reborncore/common/explosion/RebornExplosion",
       "methods": [
@@ -930,6 +1031,26 @@
         }
       ]
     },
+    "reborncore/mixin/common/MixinFluidBlock": {
+      "className": "reborncore/mixin/common/MixinFluidBlock",
+      "fields": [
+        {
+          "access": 4,
+          "name": "field_11279",
+          "desc": "Lnet/minecraft/class_3609;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
     "reborncore/common/recipes/RecipeCrafter": {
       "className": "reborncore/common/recipes/RecipeCrafter",
       "fields": [
@@ -953,6 +1074,44 @@
           "access": 131073,
           "name": "upgradeSlot",
           "desc": "(III)Lreborncore/client/containerBuilder/builder/ContainerBlockEntityInventoryBuilder;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/common/fluid/FluidUtil": {
+      "className": "reborncore/common/fluid/FluidUtil",
+      "methods": [
+        {
+          "access": 131081,
+          "name": "getFluidHandler",
+          "desc": "(Lnet/minecraft/class_1799;)Lio/github/prospector/silk/fluid/FluidInstance;",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131081,
+          "name": "interactWithFluidHandler",
+          "desc": "(Lnet/minecraft/class_1657;Lnet/minecraft/class_1268;Lreborncore/common/util/Tank;)Z",
+          "annotations": [
+            {
+              "desc": "Ljava/lang/Deprecated;",
+              "api": 458752
+            }
+          ]
+        },
+        {
+          "access": 131081,
+          "name": "getFilledBucket",
+          "desc": "(Lio/github/prospector/silk/fluid/FluidInstance;)Lnet/minecraft/class_1799;",
           "annotations": [
             {
               "desc": "Ljava/lang/Deprecated;",
@@ -1036,6 +1195,26 @@
           "annotations": [
             {
               "desc": "Ljavax/annotation/Nullable;",
+              "api": 458752
+            }
+          ]
+        }
+      ]
+    },
+    "reborncore/mixin/common/MixinBucketItem": {
+      "className": "reborncore/mixin/common/MixinBucketItem",
+      "fields": [
+        {
+          "access": 2,
+          "name": "field_7905",
+          "desc": "Lnet/minecraft/class_3611;",
+          "annotations": [
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Shadow;",
+              "api": 458752
+            },
+            {
+              "desc": "Lorg/spongepowered/asm/mixin/Final;",
               "api": 458752
             }
           ]
