@@ -70,7 +70,7 @@ public class RebornRecipe implements Recipe {
 
 	public void deserialize(JsonObject jsonObject){
 		//Crash if the recipe has all ready been deserialized
-		Validate.isTrue(ingredients == null);
+		Validate.isTrue(ingredients.isEmpty());
 
 		power = JsonHelper.getInt(jsonObject, "power");
 		time = JsonHelper.getInt(jsonObject, "time");
