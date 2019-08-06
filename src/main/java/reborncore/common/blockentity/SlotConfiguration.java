@@ -57,8 +57,6 @@ public class SlotConfiguration implements NBTSerializable {
 
 	public SlotConfiguration(RebornInventory inventory) {
 		this.inventory = inventory;
-		//This is done to ensure that the inventory is set to use configured access,
-		Validate.isTrue(inventory.configuredAccess);
 
 		for (int i = 0; i < inventory.getInvSize(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));

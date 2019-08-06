@@ -44,7 +44,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	private final int stackLimit;
 	private T blockEntity;
 	private boolean hasChanged = false;
-	private IInventoryAccess<T> inventoryAccess;
+	private final IInventoryAccess<T> inventoryAccess;
 
 	public RebornInventory(int size, String invName, int invStackLimit, T blockEntity, IInventoryAccess<T> access) {
 		super(size);
@@ -56,7 +56,18 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
 	public RebornInventory(int size, String invName, int invStackLimit, T blockEntity) {
-		this(size, invName, invStackLimit, blockEntity, (slotID, stack, facing, direction, be) -> true);
+		this(size, invName, invStackLimit, blockEntity, (slotID, stack, facing, direction, be) -> {
+			if(facing == null){
+				return true;
+			}
+			switch (direction) {
+				case INSERT:
+					return SlotConfiguration.canInsertItem(slotID, stack, facing, be);
+				case EXTRACT:
+					return SlotConfiguration.canExtractItem(slotID, stack, facing, be);
+			}
+			return false;
+		});
 	}
 	
 	public String getName() {
@@ -82,28 +93,6 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	public RebornInventory getExternal(Direction facing) {
 		throw new UnsupportedOperationException("needs fixing");
 		//return externalInventory.withFacing(facing);
-	}
-
-	public boolean configuredAccess;
-
-	/**
-	 * This enables the default IO access that is setup to use the SlotConfiguration of the blockEntity
-	 */
-	public RebornInventory<T> withConfiguredAccess() {
-		configuredAccess = true;
-		this.inventoryAccess = (slotID, stack, facing, direction, blockEntity) -> {
-			if(facing == null){
-				return true;
-			}
-			switch (direction) {
-				case INSERT:
-					return SlotConfiguration.canInsertItem(slotID, stack, facing, blockEntity);
-				case EXTRACT:
-					return SlotConfiguration.canExtractItem(slotID, stack, facing, blockEntity);
-			}
-			return false;
-		};
-		return this;
 	}
 
 	public void read(CompoundTag data) {
