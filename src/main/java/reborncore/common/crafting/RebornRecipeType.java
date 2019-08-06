@@ -36,6 +36,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.world.World;
+import reborncore.RebornCore;
 import reborncore.common.util.ExceptionUtils;
 import reborncore.common.util.serialization.SerializationUtil;
 
@@ -62,7 +63,12 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		}
 
 		R recipe = newRecipe(recipeId);
-		ExceptionUtils.tryAndThrow(() -> recipe.deserialize(json),"Failed to read " + recipeId);
+		try{
+			recipe.deserialize(json);
+		} catch (Throwable t){
+			t.printStackTrace();
+			RebornCore.LOGGER.error("Failed to read recipe" + recipeId);
+		}
 		return recipe;
 
 	}
