@@ -101,6 +101,7 @@ public class RebornRecipe implements Recipe<Inventory> {
 			if(stack.hasTag()){
 				jsonObject.add("tag", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, stack.getTag()));
 			}
+			resultsArray.add(stackObject);
 		}
 		jsonObject.add("results", resultsArray);
 	}
