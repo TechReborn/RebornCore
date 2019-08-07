@@ -384,4 +384,12 @@ public class GuiBase extends AbstractContainerScreen {
 	public TextRenderer getTextRenderer(){
 		return this.font;
 	}
+
+	@Override
+	protected boolean isClickOutsideBounds(double double_1, double double_2, int int_1, int int_2, int int_3) {
+		if(isConfigEnabled()){
+			int_1 = 20;
+		}
+		return super.isClickOutsideBounds(double_1, double_2, int_1, int_2, int_3);
+	}
 }

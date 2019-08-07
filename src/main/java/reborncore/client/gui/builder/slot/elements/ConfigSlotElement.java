@@ -65,7 +65,7 @@ public class ConfigSlotElement extends ElementBase {
 			.filter(slot -> slot.inventory == inventory)
 			.filter(slot -> slot instanceof BaseSlot)
 			.map(slot -> (BaseSlot) slot)
-			.filter(baseSlot -> baseSlot.getInvSlot() == slotId)
+			.filter(baseSlot -> baseSlot.getSlotID() == slotId)
 			.allMatch(BaseSlot::canWorldBlockInsert);
 
 

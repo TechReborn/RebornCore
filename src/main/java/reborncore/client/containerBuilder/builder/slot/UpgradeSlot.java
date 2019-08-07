@@ -29,16 +29,13 @@
 package reborncore.client.containerBuilder.builder.slot;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
-import reborncore.client.containerBuilder.IRightClickHandler;
-import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.util.RebornInventory;
 
-public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
+public class UpgradeSlot extends BaseSlot {
 
 	public UpgradeSlot(final net.minecraft.inventory.Inventory inventory, final int index, final int xPosition, final int yPosition) {
 		super(inventory, index, xPosition, yPosition);
@@ -64,24 +61,4 @@ public class UpgradeSlot extends BaseSlot implements IRightClickHandler {
 		return 1;
 	}
 
-	@Override
-	public boolean handleRightClick(int slotID, PlayerEntity player, BuiltContainer container) {
-		if (inventory instanceof RebornInventory) {
-			RebornInventory inv = (RebornInventory) inventory;
-			BlockEntity blockEntity = inv.getBlockEntity();
-			if (blockEntity instanceof IUpgradeable) {
-				IUpgradeable upgradeable = (IUpgradeable) blockEntity;
-				if (upgradeable.canBeUpgraded()) {
-					ItemStack stack = upgradeable.getUpgradeInvetory().getInvStack(slotID);
-					if (!stack.isEmpty() && stack.getItem() instanceof IRightClickHandler) {
-						if (player.world.isClient) {
-							((IRightClickHandler) stack.getItem()).handleRightClick(slotID, player, container);
-						}
-					}
-				}
-			}
-		}
-
-		return true;
-	}
 }
