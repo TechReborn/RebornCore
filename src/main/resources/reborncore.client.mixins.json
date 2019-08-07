@@ -7,7 +7,8 @@
     "MixinItemDynamicRenderer",
     "MixinItemStack",
     "MixinGameRenderer",
-    "MixinItemRenderer"
+    "MixinItemRenderer",
+    "MixinCamera"
   ],
   "injectors": {
     "defaultRequire": 1

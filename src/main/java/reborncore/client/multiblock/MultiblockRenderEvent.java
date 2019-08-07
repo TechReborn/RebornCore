@@ -54,6 +54,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import reborncore.client.multiblock.component.MultiblockComponent;
+import reborncore.mixin.extensions.CameraExtensions;
 
 import java.util.Random;
 
@@ -73,8 +74,12 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 
 	public void onWorldRenderLast(float partialTicks) {
 		MinecraftClient mc = MinecraftClient.getInstance();
-		if (mc.player != null && anchor != null && !mc.player.isSneaking()) {
-			if (currentMultiblock != null) {
+
+		CameraExtensions cameraExtensions = (CameraExtensions) MinecraftClient.getInstance().gameRenderer.getCamera();
+		float sneak = cameraExtensions.getCameraY();
+
+		if (mc.player != null && anchor != null) {
+			if (currentMultiblock != null && sneak > 1.618F) {
 				Multiblock mb = currentMultiblock.getForIndex(0);
 				for (MultiblockComponent comp : mb.getComponents()) {
 					renderComponent(comp, anchor.up(), partialTicks, mc.player);
@@ -84,6 +89,7 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 	}
 
 	private void renderComponent(MultiblockComponent comp, BlockPos anchor, float partialTicks, ClientPlayerEntity player) {
+
 		double dx = player.prevRenderX + (player.x - player.prevRenderX) * partialTicks;
 		double dy = player.prevRenderY + (player.y - player.prevRenderY) * partialTicks;
 		double dz = player.prevRenderZ + (player.z - player.prevRenderZ) * partialTicks;
