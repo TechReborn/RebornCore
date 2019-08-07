@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
 import reborncore.api.power.ExternalPowerManager;
+import reborncore.api.power.ItemPowerManager;
 import reborncore.common.registration.IRegistryFactory;
 import reborncore.common.registration.RebornRegister;
 import reborncore.common.registration.RegistryTarget;

@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
+import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.EnergyBlockEntity;
 import reborncore.api.power.ItemPowerManager;
 import reborncore.common.registration.RebornRegister;
@@ -19,7 +20,7 @@ public class PowerManager implements ExternalPowerManager {
 
 	@Override
 	public boolean isPoweredItem(ItemStack stack) {
-		return false;
+		return stack.getItem() instanceof IEnergyItemInfo;
 	}
 
 	@Override
@@ -29,7 +30,18 @@ public class PowerManager implements ExternalPowerManager {
 
 	@Override
 	public void dischargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
-
+		if (! (stack.getItem() instanceof IEnergyItemInfo)) {
+			return;
+		}
+		double chargeEnergy = Math.min(blockEntityPowerAcceptor.getFreeSpace(), blockEntityPowerAcceptor.getMaxInput());
+		if (chargeEnergy <= 0.0) {
+			return;
+		}
+		ItemPowerManager poweredItem = new ItemPowerManager(stack);
+		if (poweredItem.getEnergyStored() > 0) {
+			int extracted = poweredItem.extractEnergy((int) chargeEnergy, false);
+			blockEntityPowerAcceptor.addEnergy(extracted);
+		}
 	}
 
 	@Override

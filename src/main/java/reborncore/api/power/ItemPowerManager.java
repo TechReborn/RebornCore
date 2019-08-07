@@ -2,7 +2,6 @@ package reborncore.api.power;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import reborncore.common.RebornCoreConfig;
 
 public class ItemPowerManager {
 	ItemStack stack;
@@ -32,18 +31,12 @@ public class ItemPowerManager {
 		stack.getTag().putInt("energy", energy);
 	}
 
-	//Checks to ensure that the item has a nbt tag, and upgrades old items to the new format
+	//Checks to ensure that the item has a nbt tag
 	private void validateNBT() {
 		if (!stack.hasTag()) {
 			stack.setTag(new CompoundTag());
 			stack.getTag().putInt("energy", 0);
-		} else {
-			if (stack.getTag().containsKey("charge")) {
-				//Upgrades the item from the old format to the new format
-				stack.getTag().putInt("energy", stack.getTag().getInt("charge") * RebornCoreConfig.euPerFU);
-				stack.getTag().remove("charge");
-			}
-		}
+		} 
 	}
 
 	public void setEnergyStored(int value) {
@@ -51,7 +44,7 @@ public class ItemPowerManager {
 	}
 
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		if (canReceive()) {
+		if (!canReceive()) {
 			return 0;
 		}
 		int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
@@ -64,7 +57,7 @@ public class ItemPowerManager {
 	}
 
 	public int extractEnergy(int maxExtract, boolean simulate) {
-		if (canExtract()) {
+		if (!canExtract()) {
 			return 0;
 		}
 		int energyExtracted = Math.min(getEnergyStored(), maxExtract);
