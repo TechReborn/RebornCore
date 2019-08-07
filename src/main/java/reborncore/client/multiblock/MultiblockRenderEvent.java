@@ -113,6 +113,9 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
 		this.renderModel(world, pos, comp.state);
+
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
 		GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
 	}
