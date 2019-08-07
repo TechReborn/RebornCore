@@ -31,6 +31,7 @@ package reborncore.client.gui.slots;
 import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import reborncore.mixin.extensions.SlotExtensions;
 
 import java.util.function.Predicate;
 
@@ -61,5 +62,9 @@ public class BaseSlot extends Slot {
 
 	public boolean canWorldBlockInsert(){
 		return true;
+	}
+
+	public int getInvSlot(){
+		return ((SlotExtensions)this).getInvSlot();
 	}
 }
