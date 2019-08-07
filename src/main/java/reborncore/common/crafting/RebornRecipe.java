@@ -53,7 +53,7 @@ import reborncore.common.util.serialization.SerializationUtil;
 import java.util.Collections;
 import java.util.List;
 
-public class RebornRecipe implements Recipe {
+public class RebornRecipe implements Recipe<Inventory> {
 
 	private final RebornRecipeType<?> type;
 	private final Identifier name;
@@ -120,7 +120,7 @@ public class RebornRecipe implements Recipe {
 		return type;
 	}
 
-	public RebornRecipeType getRebornRecipeType(){
+	public RebornRecipeType<?> getRebornRecipeType(){
 		return type;
 	}
 

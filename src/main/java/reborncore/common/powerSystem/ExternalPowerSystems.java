@@ -73,7 +73,7 @@ public class ExternalPowerSystems implements IRegistryFactory {
 	}
 
 	@Override
-	public void handleClass(String modId, Class clazz) {
+	public void handleClass(String modId, Class<?> clazz) {
 		if (isPowerManager(clazz)) {
 			try {
 				ExternalPowerManager powerManager = (ExternalPowerManager) clazz.newInstance();
@@ -85,8 +85,8 @@ public class ExternalPowerSystems implements IRegistryFactory {
 		}
 	}
 
-	private boolean isPowerManager(Class clazz) {
-		for (Class iface : clazz.getInterfaces()) {
+	private boolean isPowerManager(Class<?> clazz) {
+		for (Class<?> iface : clazz.getInterfaces()) {
 			if (iface == ExternalPowerManager.class) {
 				return true;
 			}

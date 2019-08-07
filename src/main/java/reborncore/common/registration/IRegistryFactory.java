@@ -69,7 +69,7 @@ public interface IRegistryFactory {
 	 *
 	 * @param clazz the class
 	 */
-	public default void handleClass(String modID, Class clazz) {
+	public default void handleClass(String modID, Class<?> clazz) {
 	}
 
 	/**
