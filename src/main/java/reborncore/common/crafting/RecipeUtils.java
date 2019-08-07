@@ -51,6 +51,7 @@ import java.util.List;
 
 public class RecipeUtils {
 
+	@SuppressWarnings("unchecked")
 	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
 		RecipeManagerExtensions recipeManagerExtensions = (RecipeManagerExtensions) world.getRecipeManager();
 		//noinspection unchecked
