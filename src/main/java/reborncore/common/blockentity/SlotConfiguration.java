@@ -443,8 +443,9 @@ public class SlotConfiguration implements NBTSerializable {
 				if (!crafter.isStackValidInput(itemStackIn)) {
 					return false;
 				}
+			} else {
+				return slotConfig.getSlotIO().getIoConfig().isInsert();
 			}
-			return true;
 		}
 		return false;
 	}
