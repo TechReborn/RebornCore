@@ -34,6 +34,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
@@ -45,10 +46,10 @@ import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.api.blockentity.InventoryProvider;
+import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
@@ -59,12 +60,13 @@ import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory {
+public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUpgradeable, IUpgradeHandler, IListInfoProvider, Inventory, SidedInventory {
 
 	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
 	private SlotConfiguration slotConfiguration;
@@ -281,27 +283,9 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 	//Inventory end
-
-//	@Override
-//	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-//		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getOptionalInventory().isPresent()) {
-//			return LazyOptional.of(() -> (T) getOptionalInventory().get().getExternal(facing));
-//		}
-//		if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-//			if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
-//				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-//				if (!fluidConfig.getIoConfig().isEnabled()) {
-//					return LazyOptional.empty();
-//				}
-//			}
-//			getTank().setSide(facing);
-//			return LazyOptional.of(() -> (T) getTank());
-//		}
-//		return super.getCapability(capability, facing);
-//	}
 
 	@Override
 	public Inventory getUpgradeInvetory() {
@@ -472,4 +456,41 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		Validate.notNull(slotConfiguration, "slotConfiguration cannot be null");
 		return slotConfiguration;
 	}
+
+	@Override
+	public int[] getInvAvailableSlots(Direction side) {
+		if(slotConfiguration == null){
+			return new int[]{}; //I think should be ok, if needed this can return all the slots
+		}
+		return slotConfiguration.getSlotsForSide(side).stream()
+			.filter(Objects::nonNull)
+			.filter(slotConfig -> slotConfig.getSlotIO().ioConfig != SlotConfiguration.ExtractConfig.NONE)
+			.mapToInt(SlotConfiguration.SlotConfig::getSlotID).toArray();
+	}
+
+	@Override
+	public boolean canInsertInvStack(int index, ItemStack stack, @Nullable Direction direction) {
+		if(direction == null){
+			return false;
+		}
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		if (slotConfig.getSlotIO().ioConfig.isInsert()) {
+			if (slotConfigHolder.filter() && getOptionalCrafter().isPresent()) {
+				RecipeCrafter crafter = getOptionalCrafter().get();
+				return crafter.isStackValidInput(stack);
+			} else {
+				return slotConfig.getSlotIO().getIoConfig().isInsert();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean canExtractInvStack(int index, ItemStack stack, Direction direction) {
+		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+		return slotConfig.getSlotIO().ioConfig.isExtact();
+	}
+
 }
