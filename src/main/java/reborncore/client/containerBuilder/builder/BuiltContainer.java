@@ -45,6 +45,7 @@ import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemUtils;
 import reborncore.mixin.extensions.ContainerExtensions;
+import reborncore.mixin.extensions.SlotExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,8 +130,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public ItemStack onSlotClick(int slotId, int dragType, SlotActionType clickTypeIn, PlayerEntity player) {
 		if (dragType == 1 && slotId > 0 && slotId < 1000) {
 			Slot slot = this.slotList.get(slotId);
+			SlotExtensions slotExtensions = (SlotExtensions) slot;
 			if (slot instanceof IRightClickHandler) {
-				if (((IRightClickHandler) slot).handleRightClick(slot.id, player, this)) {
+				if (((IRightClickHandler) slot).handleRightClick(slotExtensions.getInvSlot(), player, this)) {
 					return ItemStack.EMPTY;
 				}
 			}
