@@ -5,7 +5,6 @@
   "client": [
     "MixinPlayerEntityRenderer",
     "MixinItemDynamicRenderer",
-    "MixinItemStack",
     "MixinGameRenderer",
     "MixinItemRenderer",
     "MixinCamera"
