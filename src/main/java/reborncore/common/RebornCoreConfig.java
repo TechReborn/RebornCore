@@ -34,9 +34,6 @@ import reborncore.common.registration.config.ConfigRegistry;
 @RebornRegister("reborncore")
 public class RebornCoreConfig {
 
-	@ConfigRegistry(config = "power", key = "EU - FU ratio", comment = "The Amount of FU to output from EU")
-	public static int euPerFU = 4;
-
 	@ConfigRegistry(config = "client", key = "Stack Info Corner", comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left")
 	public static int stackInfoCorner = 0;
 

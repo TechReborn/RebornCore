@@ -143,8 +143,8 @@ public class StackInfoHUD {
 			if (currentCharge <= quarter) {
 				color = Formatting.DARK_RED;
 			}
-			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge / RebornCoreConfig.euPerFU)
-				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge / RebornCoreConfig.euPerFU) + " "
+			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge)
+				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
 				+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
 			if (stack.getTag() != null && stack.getTag().containsKey("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
