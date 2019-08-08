@@ -45,30 +45,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.loot.context.LootContext;
 import reborncore.api.ToolManager;
-import reborncore.api.items.InventoryUtils;
 import reborncore.api.blockentity.IMachineGuiHandler;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
+import reborncore.api.items.InventoryUtils;
 import reborncore.common.BaseBlockEntityProvider;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.fluid.FluidUtil;
 import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
-import reborncore.common.fluid.FluidUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class BlockMachineBase extends BaseBlockEntityProvider {
 
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
 	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
 
-	public static ItemStack basicFrameStack;
-	public static ItemStack advancedFrameStack;
 	boolean hasCustomStaes;
 
 	public BlockMachineBase() {
@@ -121,17 +114,6 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider {
 		}
 	}
 
-	@Override
-	public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder lootcontext) {
-		List<ItemStack> drops = new ArrayList<>();
-		if (RebornCoreConfig.wrenchRequired) {
-			drops.add(isAdvanced() ? advancedFrameStack.copy() : basicFrameStack.copy());
-		}
-		if(drops.isEmpty()){
-			return super.getDroppedStacks(state, lootcontext);
-		}
-		return drops;
-	}
 
 	public boolean isAdvanced() {
 		return false;
