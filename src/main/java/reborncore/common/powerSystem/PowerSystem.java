@@ -29,7 +29,6 @@
 package reborncore.common.powerSystem;
 
 import org.apache.commons.io.FileUtils;
-import reborncore.common.RebornCoreConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,35 +59,19 @@ public class PowerSystem {
 	}
 
 	public static String getLocaliszedPower(int eu) {
-		if (getDisplayPower() == EnergySystem.EU) {
-			return getRoundedString(eu, EnergySystem.EU.abbreviation);
-		} else {
-			return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation);
-		}
+		return getRoundedString(eu, EnergySystem.EU.abbreviation);
 	}
 
 	public static String getLocaliszedPowerNoSuffix(int eu) {
-		if (getDisplayPower() == EnergySystem.EU) {
-			return getRoundedString(eu, "");
-		} else {
-			return getRoundedString(eu * RebornCoreConfig.euPerFU, "");
-		}
+		return getRoundedString(eu, "");
 	}
 
 	public static String getLocaliszedPowerFormatted(int eu) {
-		if (getDisplayPower() == EnergySystem.EU) {
-			return getRoundedString(eu, EnergySystem.EU.abbreviation);
-		} else {
-			return getRoundedString(eu * RebornCoreConfig.euPerFU, getDisplayPower().abbreviation, true);
-		}
+		return getRoundedString(eu, EnergySystem.EU.abbreviation);
 	}
 
 	public static String getLocaliszedPowerFormattedNoSuffix(int eu) {
-		if (getDisplayPower() == EnergySystem.EU) {
-			return getRoundedString(eu, "", true);
-		} else {
-			return getRoundedString(eu * RebornCoreConfig.euPerFU, "", true);
-		}
+		return getRoundedString(eu, "", true);
 	}
 
 	private static String getRoundedString(int value, String units) {
