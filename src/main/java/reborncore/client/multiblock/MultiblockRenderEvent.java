@@ -40,6 +40,7 @@ package reborncore.client.multiblock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -55,10 +56,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import reborncore.client.multiblock.component.MultiblockComponent;
 import reborncore.mixin.extensions.CameraExtensions;
+import reborncore.mixin.extensions.FluidBlockExtensions;
 
 import java.util.Random;
 
-//TODO a lot of 1.14 work needed here
 public class MultiblockRenderEvent implements AttackBlockCallback {
 
 	public static BlockPos anchor;
@@ -132,7 +133,15 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		final BufferBuilder buffer = tessellator.getBufferBuilder();
 		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
 		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
-		blockRendererDispatcher.tesselateBlock(state, pos, world, buffer, new Random());
+
+		if(state.getBlock() instanceof FluidBlock){
+			FluidBlockExtensions fluidBlockExtensions = (FluidBlockExtensions) state.getBlock();
+			blockRendererDispatcher.tesselateFluid(pos, world, buffer, fluidBlockExtensions.getFluid().getStill().getDefaultState());
+		} else {
+			blockRendererDispatcher.tesselateBlock(state, pos, world, buffer, new Random());
+		}
+
+
 		tessellator.draw();
 	}
 
