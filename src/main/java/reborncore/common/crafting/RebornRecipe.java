@@ -47,7 +47,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.crafting.ingredient.RebornIngredient;
-import reborncore.common.util.NonNullListCollector;
+import reborncore.common.util.DefaultedListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
 
 import java.util.Collections;
@@ -60,8 +60,8 @@ public class RebornRecipe implements Recipe<Inventory> {
 
 	private DefaultedList<RebornIngredient> ingredients = DefaultedList.of();
 	private DefaultedList<ItemStack> outputs = DefaultedList.of();
-	private int power;
-	private int time;
+	protected int power;
+	protected int time;
 
 	public RebornRecipe(RebornRecipeType<?> type, Identifier name) {
 		this.type = type;
@@ -77,7 +77,7 @@ public class RebornRecipe implements Recipe<Inventory> {
 
 		ingredients = SerializationUtil.stream(JsonHelper.getArray(jsonObject, "ingredients"))
 			.map(IngredientManager::deserialize)
-			.collect(NonNullListCollector.toList());
+			.collect(DefaultedListCollector.toList());
 
 		JsonArray resultsJson = JsonHelper.getArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
@@ -129,7 +129,7 @@ public class RebornRecipe implements Recipe<Inventory> {
 	@Deprecated
 	@Override
 	public DefaultedList<Ingredient> getPreviewInputs() {
-		return ingredients.stream().map(RebornIngredient::getPreview).collect(NonNullListCollector.toList());
+		return ingredients.stream().map(RebornIngredient::getPreview).collect(DefaultedListCollector.toList());
 	}
 
 	public DefaultedList<RebornIngredient> getRebornIngredients() {

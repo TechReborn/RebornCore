@@ -42,7 +42,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import reborncore.common.util.NonNullListCollector;
+import reborncore.common.util.DefaultedListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
 import reborncore.mixin.extensions.RecipeManagerExtensions;
 
@@ -60,7 +60,7 @@ public class RecipeUtils {
 
 	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject){
 		if(jsonObject.isJsonArray()){
-			return SerializationUtil.stream(jsonObject.getAsJsonArray()).map(entry -> deserializeItem(entry.getAsJsonObject())).collect(NonNullListCollector.toList());
+			return SerializationUtil.stream(jsonObject.getAsJsonArray()).map(entry -> deserializeItem(entry.getAsJsonObject())).collect(DefaultedListCollector.toList());
 		} else {
 			return DefaultedList.copyOf(deserializeItem(jsonObject.getAsJsonObject()));
 		}

@@ -72,8 +72,8 @@ public class RecipeManager {
 		recipeTypes.forEach((key, value) -> validate(value, world));
 	}
 
-	private static void validate(RebornRecipeType<?> rebornRecipeType, World world){
-		List<RebornRecipe> recipes = rebornRecipeType.getRecipes(world);
+	private static <R extends RebornRecipe> void validate(RebornRecipeType<R> rebornRecipeType, World world){
+		List<R> recipes = rebornRecipeType.getRecipes(world);
 
 		for(RebornRecipe recipe1 : recipes){
 			for(RebornRecipe recipe2 : recipes){

@@ -40,12 +40,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 //Taken from https://github.com/The-Acronym-Coders/BASE/blob/develop/1.12.0/src/main/java/com/teamacronymcoders/base/util/collections/NonnullListCollector.java, thanks for this ;)
-public class NonNullListCollector<T> implements Collector<T, DefaultedList<T>, DefaultedList<T>> {
+public class DefaultedListCollector<T> implements Collector<T, DefaultedList<T>, DefaultedList<T>> {
 
 	private final Set<Characteristics> CH_ID = Collections.unmodifiableSet(EnumSet.of(Characteristics.IDENTITY_FINISH));
 
-	public static <T> NonNullListCollector<T> toList() {
-		return new NonNullListCollector<>();
+	public static <T> DefaultedListCollector<T> toList() {
+		return new DefaultedListCollector<>();
 	}
 
 	@Override
