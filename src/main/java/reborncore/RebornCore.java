@@ -38,14 +38,12 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
-import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.crafting.RecipeManager;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.fluid.RebornFluidManager;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
-import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
@@ -123,7 +121,6 @@ public class RebornCore implements ModInitializer {
 
 		// packets
 		ServerBoundPackets.init();
-		RebornCore.clientOnly(() -> ClientBoundPackets::init);
 
 		IngredientManager.setup();
 		RebornFluidManager.setupBucketMap();

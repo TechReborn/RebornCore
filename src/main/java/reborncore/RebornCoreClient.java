@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import reborncore.client.multiblock.MultiblockRenderEvent;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.fluid.RebornFluidRenderManager;
+import reborncore.common.network.ClientBoundPacketHandlers;
 
 public class RebornCoreClient implements ClientModInitializer {
 
@@ -15,5 +16,6 @@ public class RebornCoreClient implements ClientModInitializer {
 		RebornFluidRenderManager.setupClient();
 		AttackBlockCallback.EVENT.register(multiblockRenderEvent);
 		RebornItemStackRenderer.setup();
+		ClientBoundPacketHandlers.init();
 	}
 }
