@@ -21,7 +21,7 @@ public class InventoryUtils {
 			} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)){
 				int freeStackSpace = targetStack.getMaxCount() - targetStack.getCount();
 				if(freeStackSpace > 0){
-					int transferAmount = Math.min(freeStackSpace, targetStack.getCount());
+					int transferAmount = Math.min(freeStackSpace, input.getCount());
 					if(!simulate){
 						targetStack.increment(transferAmount);
 					}
