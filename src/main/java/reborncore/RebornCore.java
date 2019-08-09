@@ -104,7 +104,6 @@ public class RebornCore implements ModInitializer {
 
 		RebornCoreShields.init();
 
-
 		ModSounds.setup();
 
 		BlockWrenchEventHandler.setup();
