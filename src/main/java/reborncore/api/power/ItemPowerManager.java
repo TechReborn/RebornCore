@@ -66,6 +66,14 @@ public class ItemPowerManager {
 		}
 		return energyExtracted;
 	}
+	
+	public int useEnergy(int maxUse, boolean simulate) {
+		int energyUsed = Math.min(getEnergyStored(), maxUse);
+		if (!simulate) {
+			setEnergyInStack(getEnergyInStack() - energyUsed);
+		}
+		return energyUsed;
+	}
 
 
 	public int getEnergyStored() {

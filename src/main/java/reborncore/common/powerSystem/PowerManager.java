@@ -46,7 +46,16 @@ public class PowerManager implements ExternalPowerManager {
 
 	@Override
 	public void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
-
+		if (! (stack.getItem() instanceof IEnergyItemInfo)) {
+			return;
+		}
+		
+		int chargeEnergy = (int) Math.min(blockEntityPowerAcceptor.getEnergy(), blockEntityPowerAcceptor.getMaxOutput());
+		ItemPowerManager poweredItem = new ItemPowerManager(stack);
+		int energyReceived = poweredItem.receiveEnergy(chargeEnergy, false);
+		if (energyReceived > 0) {
+			blockEntityPowerAcceptor.useEnergy((double) energyReceived);
+		}
 	}
 
 	@Override
