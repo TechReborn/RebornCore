@@ -52,7 +52,7 @@ public class ConfigSlotElement extends ElementBase {
 	public List<ElementBase> elements = new ArrayList<>();
 	boolean filter = false;
 
-	public ConfigSlotElement(Inventory slotInventory, int slotId, SlotType type, int x, int y, GuiBase gui) {
+	public ConfigSlotElement(Inventory slotInventory, int slotId, SlotType type, int x, int y, GuiBase<?> gui) {
 		super(x, y, type.getButtonSprite());
 		this.type = type;
 		this.inventory = slotInventory;
@@ -107,7 +107,7 @@ public class ConfigSlotElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase gui) {
+	public void draw(GuiBase<?> gui) {
 		super.draw(gui);
 		ItemStack stack = inventory.getInvStack(id);
 		int xPos = x + 1 + gui.getGuiLeft();

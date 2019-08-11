@@ -65,7 +65,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase gui) {
+	public void draw(GuiBase<?> gui) {
 		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
@@ -93,7 +93,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onRelease(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onRelease(MachineBaseBlockEntity provider, GuiBase<?> gui, double mouseX, double mouseY) {
 		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleSlotConfig(MachineFacing.UP.getFacing(provider), gui);
 		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
@@ -112,7 +112,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		return true;
 	}
 
-	public void cyleSlotConfig(Direction side, GuiBase guiBase) {
+	public void cyleSlotConfig(Direction side, GuiBase<?> guiBase) {
 		SlotConfiguration.SlotConfig currentSlot = guiBase.getMachine().getSlotConfiguration().getSlotDetails(id).getSideDetail(side);
 
 		//Bit of a mess, in the future have a way to remove config options from this list
@@ -123,11 +123,11 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		Packet packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
+		Packet<?> packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	public void updateCheckBox(CheckBoxElement checkBoxElement, String type, GuiBase guiBase) {
+	public void updateCheckBox(CheckBoxElement checkBoxElement, String type, GuiBase<?> guiBase) {
 		SlotConfiguration.SlotConfigHolder configHolder = guiBase.getMachine().getSlotConfiguration().getSlotDetails(id);
 		boolean input = configHolder.autoInput();
 		boolean output = configHolder.autoOutput();
@@ -142,11 +142,11 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		Packet packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
+		Packet<?> packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
-	private void drawSlotSateColor(MachineBaseBlockEntity machineBase, Direction side, int slotID, int inx, int iny, GuiBase gui) {
+	private void drawSlotSateColor(MachineBaseBlockEntity machineBase, Direction side, int slotID, int inx, int iny, GuiBase<?> gui) {
 		iny += 4;
 		int sx = inx + getX() + gui.getGuiLeft();
 		int sy = iny + getY() + gui.getGuiTop();
@@ -177,14 +177,14 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	}
 
-	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY, GuiBase guiBase) {
+	private boolean isInBox(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY, GuiBase<?> guiBase) {
 		rectX += getX();
 		rectY += getY();
 		return isInRect(guiBase, rectX, rectY, rectWidth, rectHeight, pointX, pointY);
 		//return (pointX - guiBase.getGuiLeft()) >= rectX - 1 && (pointX - guiBase.getGuiLeft()) < rectX + rectWidth + 1 && (pointY - guiBase.getGuiTop()) >= rectY - 1 && (pointY - guiBase.getGuiTop()) < rectY + rectHeight + 1;
 	}
 
-	public void drawState(GuiBase gui,
+	public void drawState(GuiBase<?> gui,
 	                      IWorld world,
 	                      BakedModel model,
 	                      BlockState actualState,
@@ -224,7 +224,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		GlStateManager.popMatrix();*/
 	}
 
-	public void drawState(GuiBase gui, IWorld world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
+	public void drawState(GuiBase<?> gui, IWorld world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
 		drawState(gui, world, model, actualState, pos, dispatcher, x, y, 0, 0, 0, 0);
 	}
 }

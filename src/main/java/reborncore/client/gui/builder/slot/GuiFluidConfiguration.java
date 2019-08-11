@@ -44,11 +44,11 @@ public class GuiFluidConfiguration {
 
 	static ConfigFluidElement fluidConfigElement;
 
-	public static void init(GuiBase guiBase) {
+	public static void init(GuiBase<?> guiBase) {
 		fluidConfigElement = new ConfigFluidElement(guiBase.getMachine().getTank(), SlotType.NORMAL, 35 - guiBase.getGuiLeft() + 50, 35 - guiBase.getGuiTop() - 25, guiBase);
 	}
 
-	public static void draw(GuiBase guiBase, int mouseX, int mouseY) {
+	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
 		fluidConfigElement.draw(guiBase);
 	}
 
@@ -65,7 +65,7 @@ public class GuiFluidConfiguration {
 		return Collections.singletonList(fluidConfigElement);
 	}
 
-	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
 				for (ElementBase element : configFluidElement.elements) {
@@ -89,7 +89,7 @@ public class GuiFluidConfiguration {
 		return !getVisibleElements().isEmpty();
 	}
 
-	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
+	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase<?> guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
 				for (ElementBase element : configFluidElement.elements) {
@@ -112,7 +112,7 @@ public class GuiFluidConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
@@ -146,7 +146,7 @@ public class GuiFluidConfiguration {
 		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
-		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
+		GuiBase<?> base = (GuiBase<?>) MinecraftClient.getInstance().currentScreen;
 		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
 			return null;
 		}

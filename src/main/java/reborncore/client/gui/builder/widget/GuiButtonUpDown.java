@@ -37,9 +37,9 @@ import reborncore.client.gui.builder.GuiBase;
 public class GuiButtonUpDown extends GuiButtonExtended {
 
 	GuiBase.Layer layer;
-	GuiBase gui;
+	GuiBase<?> gui;
 
-	public GuiButtonUpDown(int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
 		super(x, y, 12, 12, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;

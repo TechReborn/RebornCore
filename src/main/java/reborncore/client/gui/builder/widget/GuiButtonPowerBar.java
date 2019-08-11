@@ -38,9 +38,9 @@ import reborncore.common.powerSystem.PowerSystem;
 public class GuiButtonPowerBar extends ButtonWidget {
 
 	GuiBase.Layer layer;
-	GuiBase gui;
+	GuiBase<?> gui;
 
-	public GuiButtonPowerBar( int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+	public GuiButtonPowerBar( int x, int y, GuiBase<?> gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
 		super(x, y, 12, 48, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;

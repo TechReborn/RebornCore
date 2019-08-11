@@ -34,6 +34,7 @@ import io.github.prospector.silk.fluid.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -83,7 +84,7 @@ public class GuiBuilder {
 			height / 2);
 	}
 
-	public void drawEnergyBar(GuiBase gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
+	public void drawEnergyBar(GuiBase<?> gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 
 		gui.blit(x, y, 0, 150, 14, height);
@@ -121,15 +122,15 @@ public class GuiBuilder {
 		gui.blit(posX, posY, 150, 0, 18, 18);
 	}
 
-	public void drawString(GuiBase gui, String string, int x, int y) {
+	public void drawString(GuiBase<?> gui, String string, int x, int y) {
 		gui.getTextRenderer().draw(string, x, y, 16777215);
 	}
 
-	public void drawString(GuiBase gui, String string, int x, int y, int color) {
+	public void drawString(GuiBase<?> gui, String string, int x, int y, int color) {
 		gui.getTextRenderer().draw(string, x, y, color);
 	}
 
-	public void drawProgressBar(GuiBase gui, double progress, int x, int y) {
+	public void drawProgressBar(GuiBase<?> gui, double progress, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 150, 18, 22, 15);
 		int j = (int) (progress);
@@ -138,7 +139,7 @@ public class GuiBuilder {
 		}
 	}
 
-	public void drawOutputSlot(GuiBase gui, int x, int y) {
+	public void drawOutputSlot(GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 174, 0, 26, 26);
 	}
@@ -174,7 +175,7 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawJEIButton(GuiBase gui, int x, int y, GuiBase.Layer layer) {
+	public void drawJEIButton(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -199,7 +200,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 * @param locked boolean Set to true if it is in locked state
 	 */
-	public void drawLockButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
+	public void drawLockButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -232,7 +233,7 @@ public class GuiBuilder {
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawHologramButton(GuiBase gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+	public void drawHologramButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -267,7 +268,7 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawUpDownButtons(GuiBase gui, int x, int y, GuiBase.Layer layer) {
+	public void drawUpDownButtons(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -292,7 +293,7 @@ public class GuiBuilder {
 	 * @param max int Maximum heat value
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBigHeatBar(GuiBase gui, int x, int y, int value, int max, GuiBase.Layer layer) {
+	public void drawBigHeatBar(GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -327,7 +328,7 @@ public class GuiBuilder {
 	 * @param format String Formatted value to put on the bar
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
+	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -367,12 +368,12 @@ public class GuiBuilder {
 		}
 	}
 
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
 		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, suffix, "", Integer.toString(value), layer);
 
 	}
 
-	public void drawBigBlueBar(GuiBase gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
+	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
 		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", "", "", layer);
 	}
 
@@ -382,7 +383,7 @@ public class GuiBuilder {
 	 * @param gui GuiBase GUI to draw on
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawMultiblockMissingBar(GuiBase gui, GuiBase.Layer layer) {
+	public void drawMultiblockMissingBar(GuiBase<?> gui, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -411,7 +412,7 @@ public class GuiBuilder {
 	 * @param x int Top left corner where to place slots
 	 * @param y int Top left corner where to place slots
 	 */
-	public void drawUpgrades(GuiBase gui, int x, int y) {
+	public void drawUpgrades(GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 217, 0, 24, 81);
 	}
@@ -424,14 +425,14 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place tab
 	 * @param stack ItemStack Item to show as tab icon
 	 */
-	public void drawSlotTab(GuiBase gui, int x, int y, ItemStack stack) {
+	public void drawSlotTab(GuiBase<?> gui, int x, int y, ItemStack stack) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 217, 82, 24, 24);
 		gui.getMinecraft().getItemRenderer().renderGuiItem(stack, x + 5, y + 4);
 	}
 
 	// This stuff is WIP
-	public void drawSlotTabExpanded(GuiBase gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
+	public void drawSlotTabExpanded(GuiBase<?> gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
 		int offset = -1;
 		if (!upgrades) {
 			offset = 80;
@@ -453,13 +454,15 @@ public class GuiBuilder {
 	}
 
 	// This stuff is WIP
+	@SuppressWarnings("rawtypes")
 	private class TipsList extends AlwaysSelectedEntryListWidget {
 
 		@SuppressWarnings("unused")
 		private Screen gui;
+		@SuppressWarnings("unused")
 		private List<String> tips = null;
 
-		public TipsList(GuiBase gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
+		public TipsList(GuiBase<?> gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
 			super(gui.getMinecraft(), width, height, top, bottom, left);
 			this.gui = gui;
 			this.tips = tips;
@@ -485,7 +488,7 @@ public class GuiBuilder {
 	 * @param maxOutput int Energy output value
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawEnergyOutput(GuiBase gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
+	public void drawEnergyOutput(GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -514,7 +517,7 @@ public class GuiBuilder {
 	 * @param direction ProgressDirection Direction of progress arrow
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawProgressBar(GuiBase gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
+	public void drawProgressBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -574,7 +577,7 @@ public class GuiBuilder {
 	 * @param buttonID int Button ID used to switch energy systems
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawMultiEnergyBar(GuiBase gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
+	public void drawMultiEnergyBar(GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
 			int mouseY, int buttonID, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
@@ -641,7 +644,7 @@ public class GuiBuilder {
 	 * @param isTankEmpty boolean True if tank is empty
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawTank(GuiBase gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, int maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
+	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, int maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -693,7 +696,7 @@ public class GuiBuilder {
 	 * @param height int Height of fluid to draw
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
-	public void drawFluid(GuiBase gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
+	public void drawFluid(GuiBase<?> gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
 		if(fluid.getFluid() == Fluids.EMPTY){
 			return;
 		}
@@ -712,7 +715,7 @@ public class GuiBuilder {
 		while (offsetHeight != 0) {
 			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
 
-			gui.blit(x, y - offsetHeight, 0,  width, curHeight, sprite);
+			DrawableHelper.blit(x, y - offsetHeight, 0,  width, curHeight, sprite);
 			offsetHeight -= curHeight;
 			iteration++;
 			if (iteration > 50) {
@@ -736,7 +739,7 @@ public class GuiBuilder {
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBurnBar(GuiBase gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+	public void drawBurnBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -773,7 +776,7 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place slots bar
 	 * @param count int Number of output slots
 	 */
-	public void drawOutputSlotBar(GuiBase gui, int x, int y, int count) {
+	public void drawOutputSlotBar(GuiBase<?> gui, int x, int y, int count) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 150, 122, 3, 26);
 		x += 3;

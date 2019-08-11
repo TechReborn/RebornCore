@@ -62,7 +62,7 @@ public class GuiSlotConfiguration {
 		selectedSlot = -1;
 	}
 
-	public static void init(GuiBase guiBase) {
+	public static void init(GuiBase<?> guiBase) {
 		reset();
 		slotElementMap.clear();
 
@@ -78,7 +78,7 @@ public class GuiSlotConfiguration {
 
 	}
 
-	public static void draw(GuiBase guiBase, int mouseX, int mouseY) {
+	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
 		BuiltContainer container = guiBase.container;
 		for (Slot slot : container.slotList) {
 			if (guiBase.blockEntity != slot.inventory) {
@@ -145,7 +145,7 @@ public class GuiSlotConfiguration {
 		if (!(MinecraftClient.getInstance().currentScreen instanceof GuiBase)) {
 			return null;
 		}
-		GuiBase base = (GuiBase) MinecraftClient.getInstance().currentScreen;
+		GuiBase<?> base = (GuiBase<?>) MinecraftClient.getInstance().currentScreen;
 		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
 			return null;
 		}
@@ -153,7 +153,7 @@ public class GuiSlotConfiguration {
 		return machineBase;
 	}
 
-	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
 				for (ElementBase element : configSlotElement.elements) {
@@ -191,7 +191,7 @@ public class GuiSlotConfiguration {
 		return !getVisibleElements().isEmpty();
 	}
 
-	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase guiBase) {
+	public static void mouseClickMove(double mouseX, double mouseY, int mouseButton, long timeSinceLastClick, GuiBase<?> guiBase) {
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
 				for (ElementBase element : configSlotElement.elements) {
@@ -214,7 +214,7 @@ public class GuiSlotConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase guiBase) {
+	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
@@ -243,7 +243,7 @@ public class GuiSlotConfiguration {
 		return clicked;
 	}
 
-	public static List<Rectangle> getExtraSpace(GuiBase guiBase){
+	public static List<Rectangle> getExtraSpace(GuiBase<?> guiBase){
 		List<Rectangle> list = new ArrayList<>();
 		if(guiBase.upgrades){
 			list.add(new Rectangle(guiBase.getGuiLeft() - 25, guiBase.getGuiTop(), 20, 120));
@@ -252,7 +252,7 @@ public class GuiSlotConfiguration {
 		return list;
 	}
 
-	public static List<Rectangle> getExtraSpaceForConfig(GuiBase guiBase){
+	public static List<Rectangle> getExtraSpaceForConfig(GuiBase<?> guiBase){
 		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1){
 			return Collections.emptyList();
 		}

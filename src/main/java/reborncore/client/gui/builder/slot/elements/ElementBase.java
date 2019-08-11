@@ -127,20 +127,20 @@ public class ElementBase {
 		}
 	}
 
-	public void draw(GuiBase gui) {
+	public void draw(GuiBase<?> gui) {
 		for (OffsetSprite sprite : getSpriteContainer().offsetSprites) {
 			drawSprite(gui, sprite.getSprite(), x + sprite.getOffsetX(gui.getMachine()), y + sprite.getOffsetY(gui.getMachine()));
 		}
 	}
 
-	public void renderUpdate(GuiBase gui) {
+	public void renderUpdate(GuiBase<?> gui) {
 		isHoveringLast = isHovering;
 		isPressingLast = isPressing;
 		isDraggingLast = isDragging;
 		isReleasingLast = isReleasing;
 	}
 
-	public void update(GuiBase gui) {
+	public void update(GuiBase<?> gui) {
 		for (UpdateAction action : updateActions) {
 			action.update(gui, this);
 		}
@@ -222,28 +222,28 @@ public class ElementBase {
 		return this;
 	}
 
-	public boolean onHover(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onHover(MachineBaseBlockEntity provider, GuiBase<?> gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : hoverActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !hoverActions.isEmpty();
 	}
 
-	public boolean onDrag(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onDrag(MachineBaseBlockEntity provider, GuiBase<?> gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : dragActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !dragActions.isEmpty();
 	}
 
-	public boolean onStartPress(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onStartPress(MachineBaseBlockEntity provider, GuiBase<?> gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : startPressActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !startPressActions.isEmpty();
 	}
 
-	public boolean onRelease(MachineBaseBlockEntity provider, GuiBase gui, double mouseX, double mouseY) {
+	public boolean onRelease(MachineBaseBlockEntity provider, GuiBase<?> gui, double mouseX, double mouseY) {
 		for (ElementBase.Action action : releaseActions) {
 			if (action.execute(this, gui, provider, mouseX, mouseY)) {
 				return true;
@@ -258,21 +258,21 @@ public class ElementBase {
 	}
 
 	public interface Action {
-		boolean execute(ElementBase element, GuiBase gui, MachineBaseBlockEntity provider, double mouseX, double mouseY);
+		boolean execute(ElementBase element, GuiBase<?> gui, MachineBaseBlockEntity provider, double mouseX, double mouseY);
 	}
 
 	public interface UpdateAction {
-		void update(GuiBase gui, ElementBase element);
+		void update(GuiBase<?> gui, ElementBase element);
 	}
 
-	public void drawRect(GuiBase gui, int x, int y, int width, int height, int colour) {
+	public void drawRect(GuiBase<?> gui, int x, int y, int width, int height, int colour) {
 		drawGradientRect(gui, x, y, width, height, colour, colour);
 	}
 
 	/*
 		Taken from Gui
 	*/
-	public void drawGradientRect(GuiBase gui, int x, int y, int width, int height, int startColor, int endColor) {
+	public void drawGradientRect(GuiBase<?> gui, int x, int y, int width, int height, int startColor, int endColor) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
 
@@ -284,25 +284,25 @@ public class ElementBase {
 		RenderUtil.drawGradientRect(0, left, top, right, bottom, startColor, endColor);
 	}
 
-	public int adjustX(GuiBase gui, int x) {
+	public int adjustX(GuiBase<?> gui, int x) {
 		return gui.getGuiLeft() + x;
 	}
 
-	public int adjustY(GuiBase gui, int y) {
+	public int adjustY(GuiBase<?> gui, int y) {
 		return gui.getGuiTop() + y;
 	}
 
-	public boolean isInRect(GuiBase gui, int x, int y, int xSize, int ySize, double mouseX, double mouseY) {
+	public boolean isInRect(GuiBase<?> gui, int x, int y, int xSize, int ySize, double mouseX, double mouseY) {
 		return gui.isPointInRect(x + gui.getGuiLeft(), y + gui.getGuiTop(), xSize, ySize, mouseX, mouseY);
 	}
 
-	public void drawString(GuiBase gui, String string, int x, int y, int color) {
+	public void drawString(GuiBase<?> gui, String string, int x, int y, int color) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
 		gui.getTextRenderer().draw(string, x, y, color);
 	}
 
-	public void drawString(GuiBase gui, String string, int x, int y) {
+	public void drawString(GuiBase<?> gui, String string, int x, int y) {
 		drawString(gui, string, x, y, 16777215);
 	}
 
@@ -310,11 +310,11 @@ public class ElementBase {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(textureLocation);
 	}
 
-	public void drawCenteredString(GuiBase gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.xSize / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
+	public void drawCenteredString(GuiBase<?> gui, String string, int y, int colour) {
+		drawString(gui, string, (gui.getContainerWidth() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
-	public void drawCenteredString(GuiBase gui, String string, int x, int y, int colour) {
+	public void drawCenteredString(GuiBase<?> gui, String string, int x, int y, int colour) {
 		drawString(gui, string, (x - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
@@ -322,7 +322,7 @@ public class ElementBase {
 		return MinecraftClient.getInstance().textRenderer.getStringWidth(string);
 	}
 
-	public void drawSprite(GuiBase gui, ISprite iSprite, int x, int y) {
+	public void drawSprite(GuiBase<?> gui, ISprite iSprite, int x, int y) {
 		Sprite sprite = iSprite.getSprite(gui.getMachine());
 		if (sprite != null) {
 			if (sprite.hasTextureInfo()) {

@@ -40,7 +40,7 @@ public class ConfigFluidElement extends ElementBase {
 	public List<ElementBase> elements = new ArrayList<>();
 	boolean filter = false;
 
-	public ConfigFluidElement(Tank tank, SlotType type, int x, int y, GuiBase gui) {
+	public ConfigFluidElement(Tank tank, SlotType type, int x, int y, GuiBase<?> gui) {
 		super(x, y, type.getButtonSprite());
 		this.type = type;
 		this.tank = tank;
@@ -69,7 +69,7 @@ public class ConfigFluidElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase gui) {
+	public void draw(GuiBase<?> gui) {
 		super.draw(gui);
 		if (isHovering) {
 			drawSprite(gui, type.getButtonHoverOverlay(), x, y);

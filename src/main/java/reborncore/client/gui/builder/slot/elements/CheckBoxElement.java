@@ -66,7 +66,7 @@ public class CheckBoxElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase gui) {
+	public void draw(GuiBase<?> gui) {
 		//	super.draw(gui);
 		ISprite sprite = checkBoxSprite.getNormal();
 		if (ticked.test(this)) {

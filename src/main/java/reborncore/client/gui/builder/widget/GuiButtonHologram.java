@@ -37,9 +37,9 @@ import reborncore.client.gui.builder.GuiBase;
 public class GuiButtonHologram extends GuiButtonExtended {
 
 	GuiBase.Layer layer;
-	GuiBase gui;
+	GuiBase<?> gui;
 
-	public GuiButtonHologram(int x, int y, GuiBase gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
+	public GuiButtonHologram(int x, int y, GuiBase<?> gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
 		super(x, y, 20, 12, "", pressAction);
 		this.layer = layer;
 		this.gui = gui;

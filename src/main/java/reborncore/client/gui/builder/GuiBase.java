@@ -37,6 +37,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -60,10 +61,9 @@ import java.util.List;
 /**
  * Created by Prospector
  */
-public class GuiBase extends AbstractContainerScreen {
 
-	public int xSize = 176;
-	public int ySize = 176;
+public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
+
 	public GuiBuilder builder = new GuiBuilder();
 	public BlockEntity blockEntity;
 	@Nullable
@@ -71,14 +71,20 @@ public class GuiBase extends AbstractContainerScreen {
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
+	private int xSize = 176;
+	private int ySize = 176;
 
 	public boolean upgrades;
 
-	public GuiBase(PlayerEntity player, BlockEntity blockEntity, BuiltContainer container) {
-		super(container, player.inventory, new LiteralText(container.getName()));
+	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T container) {
+		super(container, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
 		this.blockEntity = blockEntity;
-		this.container = container;
+		this.container = (BuiltContainer) container;
 		slotConfigType = SlotConfigType.NONE;
+	}
+	
+	public int getContainerWidth() {
+		return containerWidth;
 	}
 
 	protected void drawSlot(int x, int y, Layer layer) {
@@ -131,7 +137,8 @@ public class GuiBase extends AbstractContainerScreen {
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
-		builder.drawDefaultBackground(this, left, top + 10, containerWidth, containerHeight);
+		
+		builder.drawDefaultBackground(this, left, top, xSize, ySize);
 		if (drawPlayerSlots()) {
 			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
 		}
@@ -208,7 +215,7 @@ public class GuiBase extends AbstractContainerScreen {
 	}
 
 	protected void drawTitle() {
-		drawCentredString(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey()), 16, 4210752, Layer.FOREGROUND);
+		drawCentredString(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
