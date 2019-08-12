@@ -14,21 +14,27 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TagIngredient extends RebornIngredient {
 
 	private final Identifier tagIdentifier;
 	private final Tag<Item> tag;
+	private final Optional<Integer> count;
 
-	public TagIngredient(Identifier tagIdentifier, Tag<Item> tag) {
+	public TagIngredient(Identifier tagIdentifier, Tag<Item> tag, Optional<Integer> count) {
 		super(IngredientManager.TAG_RECIPE_TYPE);
 		this.tagIdentifier = tagIdentifier;
 		this.tag = tag;
+		this.count = count;
 	}
 
 	@Override
 	public boolean test(ItemStack itemStack) {
+		if(count.isPresent() && count.get() > itemStack.getCount()){
+			return false;
+		}
 		return itemStack.getItem().isIn(tag);
 	}
 
@@ -43,6 +49,11 @@ public class TagIngredient extends RebornIngredient {
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
+		Optional<Integer> count = Optional.empty();
+		if(json.has("count")){
+			count = Optional.of(JsonHelper.getInt(json, "count"));
+		}
+
 		if(json.has("server_sync")){
 			Identifier tagIdent = new Identifier(JsonHelper.getString(json, "tag_identifier"));
 			Tag.Builder<Item> tagBuilder = Tag.Builder.create();
@@ -52,7 +63,7 @@ public class TagIngredient extends RebornIngredient {
 				Validate.isTrue(item != Items.AIR, "item cannot be air");
 				tagBuilder.add(item);
 			}
-			return new TagIngredient(tagIdent, tagBuilder.build(tagIdent));
+			return new TagIngredient(tagIdent, tagBuilder.build(tagIdent), count);
 		}
 
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "tag"));
@@ -60,7 +71,7 @@ public class TagIngredient extends RebornIngredient {
 		if (tag == null) {
 			throw new JsonSyntaxException("Unknown item tag '" + identifier + "'");
 		}
-		return new TagIngredient(identifier, tag);
+		return new TagIngredient(identifier, tag, count);
 	}
 
 	@Override
@@ -75,6 +86,7 @@ public class TagIngredient extends RebornIngredient {
 			jsonObject.addProperty("item_" + i, Registry.ITEM.getId(items[i]).toString());
 		}
 
+		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
 		jsonObject.addProperty("tag_identifier", tagIdentifier.toString());
 		return jsonObject;
 	}
