@@ -65,7 +65,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider {
 	boolean hasCustomStaes;
 
 	public BlockMachineBase() {
-		this(Block.Settings.of(Material.METAL));
+		this(Block.Settings.of(Material.METAL).strength(2F, 2F));
 	}
 
 	public BlockMachineBase(Block.Settings builder) {
