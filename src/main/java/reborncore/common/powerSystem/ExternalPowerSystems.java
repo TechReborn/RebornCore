@@ -35,19 +35,16 @@ import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.api.power.ItemPowerManager;
-import reborncore.common.registration.IRegistryFactory;
-import reborncore.common.registration.RebornRegister;
-import reborncore.common.registration.RegistryTarget;
-
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@IRegistryFactory.RegistryFactory
-public class ExternalPowerSystems implements IRegistryFactory {
+public class ExternalPowerSystems  {
 
 	public static List<ExternalPowerManager> externalPowerHandlerList = new ArrayList<>();
+
+	public static void addPowerHandler(ExternalPowerManager powerManager){
+		externalPowerHandlerList.add(powerManager);
+	}
 
 	public static boolean isPoweredItem(ItemStack stack) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPoweredItem(stack));
@@ -73,19 +70,6 @@ public class ExternalPowerSystems implements IRegistryFactory {
 
 	}
 
-	@Override
-	public void handleClass(String modId, Class<?> clazz) {
-		if (isPowerManager(clazz)) {
-			try {
-				ExternalPowerManager powerManager = (ExternalPowerManager) clazz.newInstance();
-				externalPowerHandlerList.add(powerManager);
-				RebornCore.LOGGER.info("Loaded power manager from: " + powerManager.getClass().getSimpleName());
-			} catch (InstantiationException | IllegalAccessException e) {
-				throw new RuntimeException("Failed to register compat module", e);
-			}
-		}
-	}
-
 	private boolean isPowerManager(Class<?> clazz) {
 		for (Class<?> iface : clazz.getInterfaces()) {
 			if (iface == ExternalPowerManager.class) {
@@ -95,13 +79,4 @@ public class ExternalPowerSystems implements IRegistryFactory {
 		return false;
 	}
 
-	@Override
-	public Class<? extends Annotation> getAnnotation() {
-		return RebornRegister.class;
-	}
-
-	@Override
-	public List<RegistryTarget> getTargets() {
-		return Collections.singletonList(RegistryTarget.CLASS);
-	}
 }

@@ -8,10 +8,8 @@ import reborncore.api.power.ExternalPowerManager;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.EnergyBlockEntity;
 import reborncore.api.power.ItemPowerManager;
-import reborncore.common.registration.RebornRegister;
 
-@RebornRegister("reborncore")
-public class PowerManager implements ExternalPowerManager {
+public class DefaultPowerManager implements ExternalPowerManager {
 
 	@Override
 	public ExternalPowerHandler createPowerHandler(PowerAcceptorBlockEntity acceptor) {

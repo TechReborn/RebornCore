@@ -26,30 +26,35 @@
  * THE SOFTWARE.
  */
 
-package reborncore.common.registration.config;
+package reborncore.common.config;
 
-import reborncore.common.registration.IRegistryFactory;
-import reborncore.common.registration.RegistrationManager;
-import reborncore.common.registration.RegistryTarget;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@IRegistryFactory.RegistryFactory
-public class ConfigRegistryFactory implements IRegistryFactory {
+public class Configuration {
 
-	public static Map<String, Configuration> configMap = new HashMap<>();
+	Class clazz;
+	String modId;
 
-	@Override
-	public void handleField(String modId, Field field) {
+	public Configuration(Class clazz, String modId) {
+		this.clazz = clazz;
+		this.modId = modId;
+		setup();
+	}
 
+	public static Map<String, ConfigurationWrapper> configMap = new HashMap<>();
 
+	private void setup() {
+		Arrays.stream(clazz.getDeclaredFields()).forEach(field -> handleField(field));
+		configMap.forEach((s, configuration) -> configuration.save());
+	}
+
+	private void handleField(Field field){
+		if(!field.isAnnotationPresent(Config.class)){
+			return;
+		}
 		try {
-			ConfigRegistry annotation = (ConfigRegistry) RegistrationManager.getAnnoationFromArray(field.getAnnotations(), this);
+			Config annotation = field.getAnnotation(Config.class);
 
 			String key = annotation.key();
 			if(key.isEmpty()){
@@ -58,9 +63,9 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 
 			String category = annotation.category();
 
-			Configuration configuration = configMap.get(modId);
+			ConfigurationWrapper configuration = configMap.get(modId);
 			if(configuration == null){
-				configuration = new Configuration(modId);
+				configuration = new ConfigurationWrapper(modId);
 				configMap.put(modId, configuration);
 			}
 
@@ -76,22 +81,6 @@ public class ConfigRegistryFactory implements IRegistryFactory {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void factoryComplete() {
-		//Save all the configs
-		configMap.forEach((s, configuration) -> configuration.save());
-	}
-
-	@Override
-	public List<RegistryTarget> getTargets() {
-		return Collections.singletonList(RegistryTarget.FIELD);
-	}
-
-	@Override
-	public Class<? extends Annotation> getAnnotation() {
-		return ConfigRegistry.class;
 	}
 
 }

@@ -38,15 +38,18 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
+import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.config.Configuration;
 import reborncore.common.crafting.RecipeManager;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.fluid.RebornFluidManager;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ServerBoundPackets;
+import reborncore.common.powerSystem.DefaultPowerManager;
+import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.registration.RegistrationManager;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
@@ -74,9 +77,7 @@ public class RebornCore implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// Load RC registries
-		@SuppressWarnings("unused")
-		RegistrationManager registrationManager = new RegistrationManager("reborncore", getClass());
+		new Configuration(RebornCoreConfig.class, "reborncore");
 
 		//TODO this may explode, find a better way to get config dir :D
 		configDir = new File(new File("config"), "teamreborn");
@@ -123,6 +124,7 @@ public class RebornCore implements ModInitializer {
 
 		IngredientManager.setup();
 		RebornFluidManager.setupBucketMap();
+		ExternalPowerSystems.addPowerHandler(new DefaultPowerManager());
 
 		CommandRegistry.INSTANCE.register(false, dispatcher -> dispatcher.register(CommandManager.literal("rc_validate_recipes").executes(context -> {
 			try {

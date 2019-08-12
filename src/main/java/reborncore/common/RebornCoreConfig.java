@@ -28,26 +28,24 @@
 
 package reborncore.common;
 
-import reborncore.common.registration.RebornRegister;
-import reborncore.common.registration.config.ConfigRegistry;
+import reborncore.common.config.Config;
 
-@RebornRegister("reborncore")
 public class RebornCoreConfig {
 
-	@ConfigRegistry(config = "client", key = "Stack Info Corner", comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left")
+	@Config(config = "client", key = "Stack Info Corner", comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left")
 	public static int stackInfoCorner = 0;
 
-	@ConfigRegistry(config = "client", key = "Stack Info X", comment = "X padding for HUD ")
+	@Config(config = "client", key = "Stack Info X", comment = "X padding for HUD ")
 	public static int stackInfoX = 2;
 
-	@ConfigRegistry(config = "client", key = "Stack Info Y", comment = "Y padding for HUD ")
+	@Config(config = "client", key = "Stack Info Y", comment = "Y padding for HUD ")
 	public static int stackInfoY = 7;
 
 
-	@ConfigRegistry(config = "misc", key = "Enable Seasonal Easter Eggs", comment = "Disable this is you don't want seasonal easter eggs")
+	@Config(config = "misc", key = "Enable Seasonal Easter Eggs", comment = "Disable this is you don't want seasonal easter eggs")
 	public static boolean easterEggs = true;
 
-	@ConfigRegistry(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower teir will smoke")
+	@Config(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower teir will smoke")
 	public static boolean smokeHighTeir = false;
 
 }
