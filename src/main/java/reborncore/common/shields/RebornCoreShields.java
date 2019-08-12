@@ -41,7 +41,6 @@ public class RebornCoreShields {
 		ItemCraftCallback.EVENT.register((stack, playerEntity) -> {
 			if (stack.getItem() == Items.SHIELD) {
 				for (Shield shield : ShieldRegistry.shieldList) {
-					System.out.println(shield.name);
 					if (shield.name.equalsIgnoreCase(playerEntity.getName().toString())) {
 						ItemNBTHelper.setString(stack, "type", shield.name);
 						ItemNBTHelper.setBoolean(stack, "vanilla", false);
