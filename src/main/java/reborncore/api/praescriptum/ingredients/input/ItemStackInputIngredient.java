@@ -100,11 +100,6 @@ public class ItemStackInputIngredient extends InputIngredient<ItemStack> {
 		return ItemUtils.toFormattedString(ingredient);
 	}
 
-//	@Override
-//	public int hashCode() {
-//		return Objects.hash(ingredient.getItem(), ingredient.getMetadata(), ingredient.getTagCompound(), consumable);
-//	}
-
 	@Override
 	public boolean equals(Object object) {
 		if (getClass() != object.getClass()) return false;

@@ -29,6 +29,7 @@
 package reborncore.api.praescriptum.recipes;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
@@ -111,14 +112,73 @@ public class Recipe implements Serializable {
 	public Recipe withEnergyCostPerTick(int energyCostPerTick) {
 		if (energyCostPerTick < 0) throw new IllegalArgumentException("Energy cost per tick cannot be less than 0");
 
-		this.energyCostPerTick = energyCostPerTick;
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setInteger("energyCostPerTick", energyCostPerTick);
+
 		return this;
 	}
 
 	public Recipe withOperationDuration(int operationDuration) {
 		if (operationDuration < 0) throw new IllegalArgumentException("Operation duration cannot be less than 0");
 
-		this.operationDuration = operationDuration;
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setInteger("operationDuration", operationDuration);
+
+		return this;
+	}
+
+	public Recipe withMetadata(NBTTagCompound metadata) {
+		this.metadata = metadata;
+		return this;
+	}
+
+	public Recipe withMetadata(String key, int value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setInteger(key, value);
+
+		return this;
+	}
+
+	public Recipe withMetadata(String key, short value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setShort(key, value);
+
+		return this;
+	}
+
+	public Recipe withMetadata(String key, byte value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setByte(key, value);
+
+		return this;
+	}
+
+	public Recipe withMetadata(String key, float value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setFloat(key, value);
+
+		return this;
+	}
+
+	public Recipe withMetadata(String key, double value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setDouble(key, value);
+
+		return this;
+	}
+
+	public Recipe withMetadata(String key, boolean value) {
+		if (metadata == null) metadata = new NBTTagCompound();
+
+		metadata.setBoolean(key, value);
+
 		return this;
 	}
 
@@ -144,11 +204,19 @@ public class Recipe implements Serializable {
 	}
 
 	public int getEnergyCostPerTick() {
-		return energyCostPerTick;
+		if (metadata == null) return 0;
+
+		return metadata.hasKey("energyCostPerTick") ? metadata.getInteger("energyCostPerTick") : 0;
 	}
 
 	public int getOperationDuration() {
-		return operationDuration;
+		if (metadata == null) return 0;
+
+		return metadata.hasKey("operationDuration") ? metadata.getInteger("operationDuration") : 0;
+	}
+
+	public NBTTagCompound getMetadata() {
+		return metadata;
 	}
 	// << Getters
 
@@ -157,7 +225,6 @@ public class Recipe implements Serializable {
 
 	private List<InputIngredient> inputIngredients = new ArrayList<>();
 	private List<OutputIngredient> outputIngredients = new ArrayList<>();
-	private int energyCostPerTick;
-	private int operationDuration;
+	private NBTTagCompound metadata;
 	// << Fields
 }

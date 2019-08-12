@@ -60,7 +60,7 @@ public class EnergyOutputIngredient extends OutputIngredient<Double> {
 	public boolean matches(Object other) {
 		if (!(ClassUtils.isPrimitiveOrWrapper(Double.class))) return false;
 
-		return ingredient.equals(other);
+		return ingredient == other;
 	}
 
 	@Override

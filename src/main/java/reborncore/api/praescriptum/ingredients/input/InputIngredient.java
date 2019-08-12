@@ -57,12 +57,6 @@ public abstract class InputIngredient<T> extends Ingredient<T> {
 	}
 
 	@Override
-	public int hashCode() {
-//		return Objects.hash(ingredient, consumable);
-		return 1;
-	}
-
-	@Override
 	public boolean equals(Object object) {
 		if (getClass() != object.getClass()) return false;
 

@@ -67,12 +67,12 @@ public class OreDictionaryInputIngredient extends InputIngredient<String> {
 
 	@Override
 	public Object getUnspecific() {
-		return null;
+		throw new UnsupportedOperationException("Operation not supported for this ingredient.");
 	}
 
 	@Override
 	public InputIngredient<String> copy() {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException("Operation not supported for this ingredient.");
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class OreDictionaryInputIngredient extends InputIngredient<String> {
 
 	@Override
 	public void shrink(int amount) {
-		throw new UnsupportedOperationException("Not supported");
+		throw new UnsupportedOperationException("Operation not supported for this ingredient.");
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class OreDictionaryInputIngredient extends InputIngredient<String> {
 
 		// cache the ore list by making use of the fact that forge always uses the same list,
 		// unless it's EMPTY_LIST, which should never happen.
-		List<ItemStack> ret = OreDictionary.getOres((String) ingredient);
+		List<ItemStack> ret = OreDictionary.getOres(ingredient);
 
 		if (ret != OreDictionary.EMPTY_LIST) equivalents = ret;
 

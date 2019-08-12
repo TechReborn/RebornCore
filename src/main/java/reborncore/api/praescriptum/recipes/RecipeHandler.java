@@ -64,6 +64,7 @@ public class RecipeHandler {
 	/**
 	 * Adds a recipe to this handler.
 	 *
+	 * @param recipe The recipe
 	 * @param replace Replace conflicting existing recipes, not recommended, may be ignored
 	 * @return True on success, false otherwise, e.g. on conflicts
 	 */
@@ -103,8 +104,7 @@ public class RecipeHandler {
 		Recipe newRecipe = createRecipe()
 			.withInput(listOfInputs)
 			.withOutput(listOfOutputs)
-			.withEnergyCostPerTick(recipe.getEnergyCostPerTick())
-			.withOperationDuration(recipe.getOperationDuration());
+			.withMetadata(recipe.getMetadata());
 
 		recipes.add(newRecipe);
 
@@ -154,7 +154,8 @@ public class RecipeHandler {
 	/**
 	 * Given the inputs find and apply the recipe to said inputs.
 	 *
-	 * @param items Recipe input (not modified)
+	 * @param items Recipe input items (not modified)
+	 * @param fluids Recipe input fluids (not modified)
 	 * @param simulate If true the manager will accept partially missing ingredients or
 	 * ingredients with insufficient quantities. This is primarily used to check whether a
 	 * slot/tank/etc can accept the input while trying to supply a machine with resources
@@ -205,6 +206,17 @@ public class RecipeHandler {
 		return ret;
 	}
 
+	/**
+	 * Given the inputs and the recipe apply the recipe to said inputs.
+	 *
+	 * @param recipe The recipe
+	 * @param items Recipe input items (not modified)
+	 * @param fluids Recipe input fluids (not modified)
+	 * @param simulate If true the manager will accept partially missing ingredients or
+	 * ingredients with insufficient quantities. This is primarily used to check whether a
+	 * slot/tank/etc can accept the input while trying to supply a machine with resources
+	 * @return True if the operation was successful or false otherwise
+	 */
 	public boolean apply(Recipe recipe, ImmutableList<ItemStack> items, ImmutableList<FluidStack> fluids, boolean simulate) {
 		Stream<ItemStackInputIngredient> itemIngredients = items.stream()
 			.filter(stack -> !ItemUtils.isEmpty(stack))
@@ -256,6 +268,11 @@ public class RecipeHandler {
 		return recipes.remove(recipe);
 	}
 
+	/**
+	 * Get all the recipes from this handler
+	 *
+	 * @return A list with all the recipes
+	 */
 	public List<Recipe> getRecipes() {
 		return recipes;
 	}
