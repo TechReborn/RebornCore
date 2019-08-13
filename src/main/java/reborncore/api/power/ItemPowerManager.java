@@ -97,4 +97,8 @@ public class ItemPowerManager {
 	public void setEnergy(int energy) {
 		setEnergyInStack(energy);
 	}
+	
+	public ItemStack getStack() {
+		return stack;
+	}
 }

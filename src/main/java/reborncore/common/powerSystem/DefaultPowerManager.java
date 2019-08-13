@@ -57,7 +57,16 @@ public class DefaultPowerManager implements ExternalPowerManager {
 	}
 
 	@Override
-	public void chargeItem(ItemPowerManager powerAcceptor, ItemStack stack) {
-
+	public void chargeItem(ItemPowerManager sourcePowerItem, ItemStack targetStack) {
+		if (! (targetStack.getItem() instanceof IEnergyItemInfo)) {
+			return;
+		}
+		ItemPowerManager targetPoweredItem = new ItemPowerManager(targetStack);
+		IEnergyItemInfo sourcePowerInfo = (IEnergyItemInfo) sourcePowerItem.getStack().getItem();
+		int chargeEnergy = Math.min(sourcePowerItem.getEnergyStored(), sourcePowerInfo.getMaxOutput());
+		int energyReceived = targetPoweredItem.receiveEnergy(chargeEnergy, false);
+		if (energyReceived > 0 ) {
+			sourcePowerItem.extractEnergy(energyReceived, false);
+		}
 	}
 }

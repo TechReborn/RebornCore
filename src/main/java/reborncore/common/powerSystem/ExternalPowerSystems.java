@@ -61,6 +61,12 @@ public class ExternalPowerSystems  {
 			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
 			.forEach(externalPowerManager -> externalPowerManager.chargeItem(blockEntityPowerAcceptor, stack));
 	}
+	
+	public static void chargeItem(ItemPowerManager capEnergy, ItemStack stack) {
+		externalPowerHandlerList.stream()
+			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
+			.forEach(externalPowerManager -> externalPowerManager.chargeItem(capEnergy, stack));
+	}
 
 	public static boolean isPowered(BlockEntity blockEntity, Direction facing) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPowered(blockEntity, facing));
