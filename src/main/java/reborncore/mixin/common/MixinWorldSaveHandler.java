@@ -53,8 +53,6 @@ public class MixinWorldSaveHandler implements DataAttachmentProvider {
 		}
 
 		try {
-
-			System.out.println(reborncore_getFile().getAbsolutePath());
 			FileOutputStream fio = new FileOutputStream(reborncore_getFile());
 			NbtIo.writeCompressed(tag, fio);
 			fio.close();
@@ -78,7 +76,6 @@ public class MixinWorldSaveHandler implements DataAttachmentProvider {
 						entry.getValue().read(tag.getCompound(name));
 					}
 				}
-
 			} catch (IOException e){
 				throw new RuntimeException("Failed to read reborncore world data!", e);
 			}
