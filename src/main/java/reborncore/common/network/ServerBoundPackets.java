@@ -69,7 +69,7 @@ public class ServerBoundPackets {
 
 			context.getTaskQueue().execute(() -> {
 				MachineBaseBlockEntity legacyMachineBase = (MachineBaseBlockEntity) context.getPlayer().world.getBlockEntity(pos);
-				legacyMachineBase.getSlotConfiguration().fromTag(tagCompound);
+				legacyMachineBase.getSlotConfiguration().read(tagCompound);
 				legacyMachineBase.markDirty();
 
 				Packet packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.getSlotConfiguration());
@@ -143,14 +143,14 @@ public class ServerBoundPackets {
 	public static Packet createPacketFluidConfigSave(BlockPos pos, FluidConfiguration.FluidConfig fluidConfiguration) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "fluid_config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(fluidConfiguration.toTag());
+			packetBuffer.writeCompoundTag(fluidConfiguration.write());
 		});
 	}
 
 	public static Packet createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.toTag());
+			packetBuffer.writeCompoundTag(slotConfig.write());
 		});
 	}
 
@@ -175,7 +175,7 @@ public class ServerBoundPackets {
 	public static Packet createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "slot_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.toTag());
+			packetBuffer.writeCompoundTag(slotConfig.write());
 		});
 	}
 }

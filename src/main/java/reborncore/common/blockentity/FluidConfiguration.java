@@ -30,6 +30,7 @@ package reborncore.common.blockentity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.util.NBTSerializable;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class FluidConfiguration implements NBTSerializable {
 
 	public FluidConfiguration(CompoundTag tagCompound) {
 		sideMap = new HashMap<>();
-		fromTag(tagCompound);
+		read(tagCompound);
 	}
 
 	public FluidConfig getSideDetail(Direction side) {
@@ -119,17 +120,18 @@ public class FluidConfiguration implements NBTSerializable {
 		this.output = output;
 	}
 
+	@NonNull
 	@Override
-	public CompoundTag toTag() {
+	public CompoundTag write() {
 		CompoundTag compound = new CompoundTag();
-		Arrays.stream(Direction.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).toTag()));
+		Arrays.stream(Direction.values()).forEach(facing -> compound.put("side_" + facing.ordinal(), sideMap.get(facing).write()));
 		compound.putBoolean("input", input);
 		compound.putBoolean("output", output);
 		return compound;
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
+	public void read(@NonNull CompoundTag nbt) {
 		sideMap.clear();
 		Arrays.stream(Direction.values()).forEach(facing -> {
 			CompoundTag compound = nbt.getCompound("side_" + facing.ordinal());
@@ -155,7 +157,7 @@ public class FluidConfiguration implements NBTSerializable {
 		}
 
 		public FluidConfig(CompoundTag tagCompound) {
-			fromTag(tagCompound);
+			read(tagCompound);
 		}
 
 		public Direction getSide() {
@@ -166,8 +168,9 @@ public class FluidConfiguration implements NBTSerializable {
 			return ioConfig;
 		}
 
+		@NonNull
 		@Override
-		public CompoundTag toTag() {
+		public CompoundTag write() {
 			CompoundTag tagCompound = new CompoundTag();
 			tagCompound.putInt("side", side.ordinal());
 			tagCompound.putInt("config", ioConfig.ordinal());
@@ -175,7 +178,7 @@ public class FluidConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void fromTag(CompoundTag nbt) {
+		public void read(@NonNull CompoundTag nbt) {
 			side = Direction.values()[nbt.getInt("side")];
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInt("config")];
 		}

@@ -263,10 +263,10 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			getOptionalCrafter().get().write(tagCompound);
 		}
 		if (slotConfiguration != null) {
-			tagCompound.put("slotConfig", slotConfiguration.toTag());
+			tagCompound.put("slotConfig", slotConfiguration.write());
 		}
 		if (fluidConfiguration != null) {
-			tagCompound.put("fluidConfig", fluidConfiguration.toTag());
+			tagCompound.put("fluidConfig", fluidConfiguration.write());
 		}
 		upgradeInventory.write(tagCompound, "Upgrades");
 		return tagCompound;

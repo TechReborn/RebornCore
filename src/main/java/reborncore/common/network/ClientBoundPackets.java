@@ -53,14 +53,14 @@ public class ClientBoundPackets {
 	public static Packet createPacketFluidConfigSync(BlockPos pos, FluidConfiguration fluidConfiguration) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "fluid_config_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(fluidConfiguration.toTag());
+			packetBuffer.writeCompoundTag(fluidConfiguration.write());
 		});
 	}
 
 	public static Packet createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "slot_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
-			packetBuffer.writeCompoundTag(slotConfig.toTag());
+			packetBuffer.writeCompoundTag(slotConfig.write());
 		});
 	}
 
