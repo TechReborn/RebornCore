@@ -216,10 +216,10 @@ public class ItemUtils {
 	}
 
 	/**
-	 * Get or create an ItemStack NBT data
+	 * Get or create an ItemStack NBT data.
 	 *
-	 * @param stack the itemstack
-	 * @return the existing NBT or a new one if it does not exist
+	 * @param stack The stack
+	 * @return The existing NBT or a new one if it does not exist
 	 */
 	public static NBTTagCompound getStackNbtData(ItemStack stack) {
 		NBTTagCompound ret = stack.getTagCompound();
@@ -233,31 +233,31 @@ public class ItemUtils {
 	}
 
 	/**
-	 * Check if a stack is empty
+	 * Check if a stack is empty.
 	 *
-	 * @param stack the itemstack
-	 * @return true if the stack is empty or false otherwise
+	 * @param stack The stack
+	 * @return True if the stack is empty or false otherwise
 	 */
 	public static boolean isEmpty(ItemStack stack) {
 		return stack == ItemStack.EMPTY || stack == null || stack.getCount() <= 0;
 	}
 
 	/**
-	 * Get the size of a stack
+	 * Get the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @return the size of the stack
+	 * @param stack The stack
+	 * @return The size of the stack
 	 */
 	public static int getSize(ItemStack stack) {
 		return isEmpty(stack) ? 0 : stack.getCount();
 	}
 
 	/**
-	 * Set the size of a stack
+	 * Set the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @param size the new size
-	 * @return the resulting stack
+	 * @param stack The stack
+	 * @param size The new size
+	 * @return The resulting stack
 	 */
 	public static ItemStack setSize(ItemStack stack, int size) {
 		if (size <= 0) return ItemStack.EMPTY;
@@ -268,53 +268,66 @@ public class ItemUtils {
 	}
 
 	/**
-	 * Increase the size of a stack
+	 * Increase the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @param amount amount to be increased by
-	 * @return the resulting stack
+	 * @param stack The stack
+	 * @param amount Amount to be increased by
+	 * @return The resulting stack
 	 */
 	public static ItemStack increaseSize(ItemStack stack, int amount) {
 		return setSize(stack, getSize(stack) + amount);
 	}
 
 	/**
-	 * Increase the size of a stack
+	 * Increase the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @return the resulting stack
+	 * @param stack The stack
+	 * @return The resulting stack
 	 */
 	public static ItemStack increaseSize(ItemStack stack) {
 		return increaseSize(stack, 1);
 	}
 
 	/**
-	 * Decrease the size of a stack
+	 * Decrease the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @param amount amount to be decreased by
-	 * @return the resulting stack
+	 * @param stack The stack
+	 * @param amount Amount to be decreased by
+	 * @return The resulting stack
 	 */
 	public static ItemStack decreaseSize(ItemStack stack, int amount) {
 		return setSize(stack, getSize(stack) - amount);
 	}
 
 	/**
-	 * Decrease the size of a stack
+	 * Decrease the size of a stack.
 	 *
-	 * @param stack the itemstack
-	 * @return the resulting stack
+	 * @param stack The stack
+	 * @return The resulting stack
 	 */
 	public static ItemStack decreaseSize(ItemStack stack) {
 		return decreaseSize(stack, 1);
 	}
 
 	/**
-	 * Drop a stack to the world
+	 * Copy an ItemStack while modifying the stack size.
 	 *
-	 * @param world the world
-	 * @param pos the position
-	 * @param stack the itemstack
+	 * @param stack The stack
+	 * @param size The new size
+	 * @return The resulting stack
+	 */
+	public static ItemStack copyWithSize(ItemStack stack, int size) {
+		if (isEmpty(stack)) return ItemStack.EMPTY;
+
+		return setSize(stack.copy(), size);
+	}
+
+	/**
+	 * Drop a stack to the world.
+	 *
+	 * @param world The world
+	 * @param pos The position
+	 * @param stack The itemstack
 	 */
 	public static void dropToWorld(World world, BlockPos pos, ItemStack stack) {
 		if (isEmpty(stack)) return;
@@ -330,10 +343,10 @@ public class ItemUtils {
 	}
 
 	/**
-	 * Simple util to decently represent an ItemStack with a string
+	 * Simple util to decently represent an ItemStack with a string.
 	 *
-	 * @param itemStack the ItemStack to be represent
-	 * @return a formatted string representing the ItemStack
+	 * @param itemStack The ItemStack to be represent
+	 * @return A formatted string representing the ItemStack
 	 */
 	public static String toFormattedString(ItemStack itemStack) {
 		return (itemStack == null) ? "(null)" : (itemStack.getItem() == null) ?
