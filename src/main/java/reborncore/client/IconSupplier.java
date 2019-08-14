@@ -30,34 +30,24 @@ package reborncore.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.texture.Sprite;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Identifier;
+import reborncore.RebornCore;
 
-//TODO move to fabric api
-public class IconSupplier {
-	public static String armour_head_name = "reborncore:gui/slot_sprites/armour_head";
-	@Environment(EnvType.CLIENT)
-	public static Sprite armour_head;
-
-	public static String armour_chest_name = "reborncore:gui/slot_sprites/armour_chest";
-	@Environment(EnvType.CLIENT)
-	public static Sprite armour_chest;
-
-	public static String armour_legs_name = "reborncore:gui/slot_sprites/armour_legs";
-	@Environment(EnvType.CLIENT)
-	public static Sprite armour_legs;
-
-	public static String armour_feet_name = "reborncore:gui/slot_sprites/armour_feet";
-	@Environment(EnvType.CLIENT)
-	public static Sprite armour_feet;
-
-//	@Environment(EnvType.CLIENT)
-//	@SubscribeEvent
-//	public void preTextureStitch(TextureStitchEvent.Pre event) {
-//		SpriteAtlasTexture map = event.getMap();
-//		armour_head = map.getSprite(new Identifier(armour_head_name));
-//		armour_chest = map.getSprite(new Identifier(armour_chest_name));
-//		armour_legs = map.getSprite(new Identifier(armour_legs_name));
-//		armour_feet = map.getSprite(new Identifier(armour_feet_name));
-//	}
-
+@Environment(EnvType.CLIENT)
+public class IconSupplier implements ClientSpriteRegistryCallback {
+	
+	public static Identifier armour_head_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_head");
+	public static Identifier armour_chest_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_chest");
+	public static Identifier armour_legs_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_legs");
+	public static Identifier armour_feet_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_feet");
+	
+	@Override
+	public void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry) {
+		registry.register(IconSupplier.armour_head_id);
+		registry.register(IconSupplier.armour_chest_id);
+		registry.register(IconSupplier.armour_legs_id);
+		registry.register(IconSupplier.armour_feet_id);
+	}
 }

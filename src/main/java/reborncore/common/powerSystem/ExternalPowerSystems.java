@@ -32,7 +32,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import reborncore.RebornCore;
 import reborncore.api.power.ExternalPowerManager;
 import reborncore.api.power.ItemPowerManager;
 import java.util.ArrayList;
@@ -75,14 +74,4 @@ public class ExternalPowerSystems  {
 	public static void requestEnergyFromArmor(ItemPowerManager capEnergy, LivingEntity entityLiving) {
 
 	}
-
-	private boolean isPowerManager(Class<?> clazz) {
-		for (Class<?> iface : clazz.getInterfaces()) {
-			if (iface == ExternalPowerManager.class) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 }

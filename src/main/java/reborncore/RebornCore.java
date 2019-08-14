@@ -104,9 +104,7 @@ public class RebornCore implements ModInitializer {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("redstonearsenal:tool.wrench_flux"), false));
 
 		RebornCoreShields.init();
-
 		ModSounds.setup();
-
 		BlockWrenchEventHandler.setup();
 
 		/**

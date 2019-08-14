@@ -31,21 +31,22 @@ package reborncore.client.containerBuilder.builder.slot;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
 
 public class SpriteSlot extends FilteredSlot {
 
-	private final String spriteName;
+	private final Identifier spriteName;
 	int stacksize;
 
-	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final String sprite, final int stacksize) {
+	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final Identifier sprite, final int stacksize) {
 		super(inventory, index, xPosition, yPosition);
 		this.spriteName = sprite;
 		this.stacksize = stacksize;
 	}
 
-	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final String sprite) {
+	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final Identifier sprite) {
 		this(inventory, index, xPosition, yPosition, sprite, 64);
 	}
 
@@ -58,6 +59,6 @@ public class SpriteSlot extends FilteredSlot {
 	@Nullable
 	@Environment(EnvType.CLIENT)
 	public String getBackgroundSprite() {
-		return this.spriteName;
+		return this.spriteName.toString();
 	}
 }

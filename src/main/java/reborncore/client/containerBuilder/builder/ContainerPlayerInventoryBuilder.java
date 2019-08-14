@@ -32,6 +32,8 @@ import net.minecraft.container.Slot;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.util.Identifier;
+
 import org.apache.commons.lang3.Range;
 import reborncore.client.IconSupplier;
 import reborncore.client.containerBuilder.builder.slot.SpriteSlot;
@@ -105,26 +107,26 @@ public final class ContainerPlayerInventoryBuilder {
 		}
 
 		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
-		                                                   final EquipmentSlot slotType, final String sprite) {
+		                                                   final EquipmentSlot slotType, final Identifier sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(this.parent.player, index, xStart, yStart, sprite, 1)
 				.setFilter(stack -> stack.getItem() instanceof ArmorItem));
 			return this;
 		}
 
 		public ContainerPlayerArmorInventoryBuilder helmet(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 2, xStart, yStart, EquipmentSlot.HEAD, IconSupplier.armour_head_name);
+			return this.armor(this.parent.player.getInvSize() - 2, xStart, yStart, EquipmentSlot.HEAD, IconSupplier.armour_head_id);
 		}
 
 		public ContainerPlayerArmorInventoryBuilder chestplate(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 3, xStart, yStart, EquipmentSlot.CHEST, IconSupplier.armour_chest_name);
+			return this.armor(this.parent.player.getInvSize() - 3, xStart, yStart, EquipmentSlot.CHEST, IconSupplier.armour_chest_id);
 		}
 
 		public ContainerPlayerArmorInventoryBuilder leggings(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 4, xStart, yStart, EquipmentSlot.LEGS, IconSupplier.armour_legs_name);
+			return this.armor(this.parent.player.getInvSize() - 4, xStart, yStart, EquipmentSlot.LEGS, IconSupplier.armour_legs_id);
 		}
 
 		public ContainerPlayerArmorInventoryBuilder boots(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 5, xStart, yStart, EquipmentSlot.FEET, IconSupplier.armour_feet_name);
+			return this.armor(this.parent.player.getInvSize() - 5, xStart, yStart, EquipmentSlot.FEET, IconSupplier.armour_feet_id);
 		}
 
 		public ContainerPlayerArmorInventoryBuilder complete(final int xStart, final int yStart) {

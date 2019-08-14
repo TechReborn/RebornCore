@@ -2,9 +2,7 @@ package reborncore.common.world;
 
 import org.apache.commons.lang3.Validate;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class DataAttachmentRegistry {
