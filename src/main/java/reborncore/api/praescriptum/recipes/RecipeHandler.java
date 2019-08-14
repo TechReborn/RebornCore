@@ -257,6 +257,19 @@ public class RecipeHandler {
 	/**
 	 * Removes a recipe from this handler.
 	 *
+	 * @param recipe The recipe
+	 * @return True if the recipe has been removed or false otherwise
+	 */
+	public boolean removeRecipe(Recipe recipe) {
+		if (recipe == null) return false;
+
+		cachedRecipes.invalidate(recipe); // remove from cache
+		return recipes.remove(recipe);
+	}
+
+	/**
+	 * Removes a recipe from this handler.
+	 *
 	 * @param ingredients The input ingredients
 	 * @return True if a valid recipe has been found and removed or false otherwise
 	 */
