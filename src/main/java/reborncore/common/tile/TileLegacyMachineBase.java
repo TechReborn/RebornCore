@@ -146,7 +146,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 			for (int i = 0; i < getUpgradeSlotCount(); i++) {
 				ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
 				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-					((IUpgrade) stack.getItem()).process(this, this, stack);
+					((IUpgrade) stack.getItem()).process(this, stack);
 				}
 			}
 		}
@@ -534,7 +534,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, IInv
 	}
 
 	@Override
-	public IInventory getUpgradeInvetory() {
+	public ISidedInventory getUpgradeInventory() {
 		return upgradeInventory;
 	}
 

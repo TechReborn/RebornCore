@@ -29,20 +29,48 @@
 package reborncore.api.tile;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
 public interface IUpgradeable {
-
+	/**
+	 * Check if a tile can be upgrade.
+	 *
+	 * @return Wether the tile can be upgraded or not
+	 */
 	public default boolean canBeUpgraded() {
 		return true;
 	}
 
-	public IInventory getUpgradeInvetory();
+	/**
+	 * Get the inventory slots for upgrades.
+	 *
+	 * @return The upgrade slots or null if there are none
+	 */
+	public ISidedInventory getUpgradeInventory();
 
-	public int getUpgradeSlotCount();
-
-	public default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack){
-		return true;
+	@Deprecated
+	public default IInventory getUpgradeInvetory() {
+		return getUpgradeInventory();
 	}
 
+	/**
+	 * Get the number of upgrade slots (default = 4).
+	 *
+	 * @return The number of upgrade slots
+	 */
+	public default int getUpgradeSlotCount() {
+		return 4;
+	}
+
+	/**
+	 * Check if a certain upgrade is valid for this IUpgradable instance.
+	 *
+	 * @param upgrade The IUpgrade item
+	 * @param stack The stack container the IUpgrade item
+	 * @return True if the upgrade is valid or false otherwise
+	 */
+	public default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack) {
+		return true;
+	}
 }
