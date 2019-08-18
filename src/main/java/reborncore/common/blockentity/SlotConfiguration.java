@@ -333,11 +333,8 @@ public class SlotConfiguration implements NBTSerializable {
 				return;
 			}
 			BlockEntity blockEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
-			if (!(blockEntity instanceof net.minecraft.inventory.Inventory)) {
-				return;
-			}
-			net.minecraft.inventory.Inventory destHandler = (net.minecraft.inventory.Inventory)blockEntity;
-			ItemStack stack = InventoryUtils.insertItemStacked(destHandler, sourceStack, false);
+
+			ItemStack stack = InventoryUtils.insertItem(sourceStack, blockEntity, side.getOpposite());
 			inventory.setInvStack(slotID, stack);
 		}
 
