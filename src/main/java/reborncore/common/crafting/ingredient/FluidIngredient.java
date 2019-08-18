@@ -129,4 +129,9 @@ public class FluidIngredient extends RebornIngredient {
 		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
 		return jsonObject;
 	}
+
+	@Override
+	public int getCount() {
+		return count.orElse(1);
+	}
 }

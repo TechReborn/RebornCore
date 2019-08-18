@@ -54,6 +54,8 @@ public abstract class RebornIngredient implements Predicate<ItemStack> {
 
 	protected abstract JsonObject toJson();
 
+	public abstract int getCount();
+
 	//Same as above but adds the type
 	public final JsonObject witeToJson(){
 		JsonObject jsonObject = toJson();

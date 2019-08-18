@@ -131,7 +131,8 @@ public class StackIngredient extends RebornIngredient {
 		return jsonObject;
 	}
 
-	public int getCount(){
+	@Override
+	public int getCount() {
 		return count.orElse(1);
 	}
 }

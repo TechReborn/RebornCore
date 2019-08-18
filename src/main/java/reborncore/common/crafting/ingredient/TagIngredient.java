@@ -90,4 +90,9 @@ public class TagIngredient extends RebornIngredient {
 		jsonObject.addProperty("tag_identifier", tagIdentifier.toString());
 		return jsonObject;
 	}
+
+	@Override
+	public int getCount() {
+		return count.orElse(1);
+	}
 }
