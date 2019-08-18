@@ -30,11 +30,13 @@ package reborncore.common.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.BooleanProperty;
@@ -44,6 +46,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import reborncore.api.ToolManager;
 import reborncore.api.blockentity.IMachineGuiHandler;
@@ -57,7 +60,7 @@ import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
 
-public abstract class BlockMachineBase extends BaseBlockEntityProvider {
+public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
 	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
@@ -165,6 +168,15 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider {
 		}
 
 		return super.activate(state, worldIn, pos, playerIn, hand, hitResult);
+	}
+
+	@Override
+	public SidedInventory getInventory(BlockState blockState, IWorld world, BlockPos blockPos) {
+		BlockEntity blockEntity = world.getBlockEntity(blockPos);
+		if(blockEntity instanceof MachineBaseBlockEntity){
+			return (MachineBaseBlockEntity)blockEntity;
+		}
+		return null;
 	}
 
 	public boolean isActive(BlockState state) {
