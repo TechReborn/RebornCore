@@ -44,6 +44,7 @@ import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
+import reborncore.common.fluid.container.ItemFluidInfo;
 import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 
@@ -104,7 +105,7 @@ public class ContainerBlockEntityInventoryBuilder {
 
 	public ContainerBlockEntityInventoryBuilder fluidSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
-			stack -> true /* TODO fluid item stack  */));
+			stack -> stack.getItem() instanceof ItemFluidInfo));
 		return this;
 	}
 
