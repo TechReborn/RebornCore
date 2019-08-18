@@ -45,7 +45,7 @@ public class TagIngredient extends RebornIngredient {
 
 	@Override
 	public List<ItemStack> getPreviewStacks() {
-		return tag.values().stream().map(ItemStack::new).collect(Collectors.toList());
+		return tag.values().stream().map(ItemStack::new).peek(itemStack -> itemStack.setCount(count.orElse(1))).collect(Collectors.toList());
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
