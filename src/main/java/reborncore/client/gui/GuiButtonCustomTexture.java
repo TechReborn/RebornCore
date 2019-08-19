@@ -34,8 +34,7 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
+import reborncore.common.util.Color;
 
 public class GuiButtonCustomTexture extends ButtonWidget {
 	public int textureU;
@@ -88,7 +87,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 			GuiLighting.enableForItems();
 			renderImage(this.x, this.y);
 			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
-				Color.white.getRGB());
+			                Color.WHITE.getColor());
 		}
 	}
 

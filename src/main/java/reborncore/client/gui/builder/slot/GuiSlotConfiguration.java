@@ -42,10 +42,10 @@ import reborncore.client.gui.builder.slot.elements.SlotType;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.util.Color;
 import reborncore.mixin.extensions.SlotExtensions;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class GuiSlotConfiguration {
 			}
 			GlStateManager.color3f(255, 0, 0);
 			Color color = new Color(255, 0, 0, 128);
-			GuiUtil.drawGradientRect(slot.xPosition - 1, slot.yPosition - 1, 18, 18, color.getRGB(), color.getRGB());
+			GuiUtil.drawGradientRect(slot.xPosition - 1, slot.yPosition - 1, 18, 18, color.getColor(), color.getColor());
 			GlStateManager.color3f(255, 255, 255);
 		}
 
@@ -241,34 +241,6 @@ public class GuiSlotConfiguration {
 			}
 		}
 		return clicked;
-	}
-
-	public static List<Rectangle> getExtraSpace(GuiBase<?> guiBase){
-		List<Rectangle> list = new ArrayList<>();
-		if(guiBase.upgrades){
-			list.add(new Rectangle(guiBase.getGuiLeft() - 25, guiBase.getGuiTop(), 20, 120));
-		}
-		list.addAll(getExtraSpaceForConfig(guiBase));
-		return list;
-	}
-
-	public static List<Rectangle> getExtraSpaceForConfig(GuiBase<?> guiBase){
-		if(GuiBase.slotConfigType != GuiBase.SlotConfigType.ITEMS || selectedSlot == -1){
-			return Collections.emptyList();
-		}
-		List<Rectangle> list = new ArrayList<>();
-		ConfigSlotElement slotElement = slotElementMap.get(selectedSlot);
-
-		if(slotElement == null || guiBase == null){
-			return Collections.emptyList();
-		}
-
-		//I have no idea why this works, but it does. pls fix if you know how.
-		list.add(new Rectangle(slotElement.adjustX(guiBase, slotElement.getX()) + guiBase.getGuiLeft() - 25, slotElement.adjustY(guiBase, 0) -10, slotElement.getWidth() - 5, slotElement.getHeight() + 15));
-
-
-
-		return list;
 	}
 
 }

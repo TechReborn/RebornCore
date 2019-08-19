@@ -34,8 +34,7 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
+import reborncore.common.util.Color;
 
 public class GuiButtonItemTexture extends ButtonWidget {
 
@@ -79,7 +78,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 			itemRenderer.renderGuiItemIcon(itemstack, this.x, this.y);
 			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
-				Color.white.getRGB());
+			                Color.WHITE.getColor());
 		}
 	}
 

@@ -45,9 +45,8 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.util.Color;
 import reborncore.common.util.MachineFacing;
-
-import java.awt.*;
 
 public class FluidConfigPopupElement extends ElementBase {
 	public boolean filter = false;
@@ -169,7 +168,7 @@ public class FluidConfigPopupElement extends ElementBase {
 				break;
 		}
 		GlStateManager.color3f(255, 255, 255);
-		GuiUtil.drawGradientRect(sx, sy, 18, 18, color.getRGB(), color.getRGB());
+		GuiUtil.drawGradientRect(sx, sy, 18, 18, color.getColor(), color.getColor());
 		GlStateManager.color3f(255, 255, 255);
 	}
 
