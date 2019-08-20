@@ -39,6 +39,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
@@ -52,7 +53,6 @@ import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
-import net.minecraft.fluid.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		return containerWidth;
 	}
 
-	protected void drawSlot(int x, int y, Layer layer) {
+	public void drawSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += left;
 			y += top;
@@ -95,7 +95,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		builder.drawSlot(this, x - 1, y - 1);
 	}
 
-	protected void drawOutputSlotBar(int x, int y, int count, Layer layer) {
+	public void drawOutputSlotBar(int x, int y, int count, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += left;
 			y += top;
@@ -103,7 +103,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		builder.drawOutputSlotBar(this, x - 4, y - 4, count);
 	}
 
-	protected void drawArmourSlots(int x, int y, Layer layer) {
+	public void drawArmourSlots(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += left;
 			y += top;
@@ -114,7 +114,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		builder.drawSlot(this, x - 1, y - 1 + 18 + 18 + 18);
 	}
 
-	protected void drawOutputSlot(int x, int y, Layer layer) {
+	public void drawOutputSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += left;
 			y += top;
