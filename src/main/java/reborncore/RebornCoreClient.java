@@ -18,7 +18,7 @@ public class RebornCoreClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		RebornFluidRenderManager.setupClient();
 		AttackBlockCallback.EVENT.register(multiblockRenderEvent);
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(new IconSupplier());
+		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(IconSupplier::registerSprites);
 		RebornItemStackRenderer.setup();
 		ClientBoundPacketHandlers.init();
 	}

@@ -35,16 +35,15 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import reborncore.RebornCore;
 
-@Environment(EnvType.CLIENT)
-public class IconSupplier implements ClientSpriteRegistryCallback {
+public class IconSupplier {
 	
 	public static Identifier armour_head_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_head");
 	public static Identifier armour_chest_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_chest");
 	public static Identifier armour_legs_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_legs");
 	public static Identifier armour_feet_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_feet");
-	
-	@Override
-	public void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry) {
+
+	@Environment(EnvType.CLIENT)
+	public static void registerSprites(SpriteAtlasTexture atlasTexture, ClientSpriteRegistryCallback.Registry registry) {
 		registry.register(IconSupplier.armour_head_id);
 		registry.register(IconSupplier.armour_chest_id);
 		registry.register(IconSupplier.armour_legs_id);
