@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 public interface Syncable {
 
-	//TODO make this better
 	void getSyncPair(List<Pair<Supplier, Consumer>> pairList);
 
 }

@@ -34,7 +34,6 @@ public class StackIngredient extends RebornIngredient {
 		this.count = count;
 		this.tag = tag;
 		this.requireEmptyTag = requireEmptyTag;
-		//TODO remove this limitation
 		Validate.isTrue(stacks.size() == 1, "stack size must 1");
 	}
 

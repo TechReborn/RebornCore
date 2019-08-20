@@ -161,7 +161,7 @@ public class RebornRecipe implements Recipe<Inventory> {
 	 * @return return true if fluid was taken and should craft
 	 */
 	public boolean onCraft(BlockEntity blockEntity){
-		return true; //TODO look into this being a boolean, seems a little odd, not sure what usees it for now
+		return true;
 	}
 
 	//Done as our recipes do not support these functions, hopefully nothing blidly calls them

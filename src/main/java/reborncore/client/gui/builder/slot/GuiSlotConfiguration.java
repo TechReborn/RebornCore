@@ -105,16 +105,6 @@ public class GuiSlotConfiguration {
 			.collect(Collectors.toList());
 	}
 
-	//TODO fabric events
-	//Allows closing of the widget with the escape key
-//	@SubscribeEvent
-//	public static void keyboardEvent(GuiScreenEvent.KeyboardKeyPressedEvent.Post event) {
-//		if (!getVisibleElements().isEmpty() && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE) {
-//			selectedSlot = -1;
-//			event.setCanceled(true);
-//		}
-//	}
-
 	public static void copyToClipboard() {
 		MachineBaseBlockEntity machine = getMachine();
 		if (machine == null || machine.getSlotConfiguration() == null) {

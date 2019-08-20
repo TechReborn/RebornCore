@@ -261,7 +261,6 @@ public abstract class IMultiblockPart extends BlockEntity {
 
 	public abstract BlockState getCachedState();
 
-	//TODO 1.13 seemed to have been removed in 1.13, not sure what its replacment is
 	public boolean isInvalid() {
 		return false;
 	}

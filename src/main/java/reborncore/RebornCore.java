@@ -79,8 +79,7 @@ public class RebornCore implements ModInitializer {
 	public void onInitialize() {
 		new Configuration(RebornCoreConfig.class, "reborncore");
 
-		//TODO this may explode, find a better way to get config dir :D
-		configDir = new File(new File("config"), "teamreborn");
+		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}

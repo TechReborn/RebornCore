@@ -194,17 +194,6 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		return false;
 	}
 
-	// This stops the blockEntity from getting cleared when the state is
-	// updated(rotation and on/off)
-	//TODO 1.13 blockEntity patches seem missing?
-	//	@Override
-	//	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-	//		if (oldState.getBlock() != newSate.getBlock()) {
-	//			return true;
-	//		}
-	//		return false;
-	//	}
-
 	public Optional<RebornInventory> getOptionalInventory() {
 		if (this instanceof InventoryProvider) {
 			InventoryProvider inventory = (InventoryProvider) this;
