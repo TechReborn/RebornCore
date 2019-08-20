@@ -29,6 +29,7 @@
 package reborncore.common.util;
 
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Created by covers1624 on 3/27/2016.
@@ -38,7 +39,7 @@ public class ArrayUtils {
 	public static String[] arrayToLowercase(String[] array) {
 		String[] copy = new String[array.length];
 		for (int i = 0; i < array.length; i++) {
-			copy[i] = array[i].toLowerCase().intern();
+			copy[i] = array[i].toLowerCase(Locale.ROOT).intern();
 		}
 		return copy;
 	}

@@ -36,6 +36,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 
+import java.util.Locale;
+
 public class TorchHelper {
 
 	public static ActionResult placeTorch(ItemUsageContext itemUsageContext) {
@@ -43,7 +45,7 @@ public class TorchHelper {
 
 		for (int i = 0; i < player.inventory.main.size(); i++) {
 			ItemStack torchStack = player.inventory.getInvStack(i);
-			if (torchStack.isEmpty() || !torchStack.getTranslationKey().toLowerCase().contains("torch")) {
+			if (torchStack.isEmpty() || !torchStack.getTranslationKey().toLowerCase(Locale.ROOT).contains("torch")) {
 				continue;
 			}
 			Item item = torchStack.getItem();

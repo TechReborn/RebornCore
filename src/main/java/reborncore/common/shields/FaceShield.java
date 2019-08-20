@@ -30,6 +30,8 @@ package reborncore.common.shields;
 
 import net.minecraft.util.Identifier;
 
+import java.util.Locale;
+
 /**
  * Created by Mark on 21/03/2016.
  */
@@ -40,7 +42,7 @@ public class FaceShield extends Shield {
 
 	@Override
 	public Identifier getShieldTexture() {
-		return new Identifier("reborncore:textures/shields/people/" + name.toLowerCase() + ".png");
+		return new Identifier("reborncore:textures/shields/people/" + name.toLowerCase(Locale.ROOT) + ".png");
 	}
 
 	@Override

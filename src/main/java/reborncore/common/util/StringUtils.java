@@ -31,6 +31,8 @@ package reborncore.common.util;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
+import java.util.Locale;
+
 /**
  * @author Prospector on 11/05/16
  */
@@ -48,7 +50,7 @@ public class StringUtils {
 		if (input == null || input.length() == 0) {
 			return input;
 		}
-		String output = input.toLowerCase();
+		String output = input.toLowerCase(Locale.ROOT);
 		return output.substring(0, 1).toUpperCase() + output.substring(1);
 	}
 
