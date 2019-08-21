@@ -65,7 +65,7 @@ import java.util.List;
 public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public GuiBuilder builder = new GuiBuilder();
-	public BlockEntity blockEntity;
+	public BlockEntity be;
 	@Nullable
 	public BuiltContainer container;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
@@ -78,7 +78,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T container) {
 		super(container, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
-		this.blockEntity = blockEntity;
+		this.be = blockEntity;
 		this.container = (BuiltContainer) container;
 		slotConfigType = SlotConfigType.NONE;
 	}
@@ -142,8 +142,8 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		if (drawPlayerSlots()) {
 			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
 		}
-		if (tryAddUpgrades() && blockEntity instanceof IUpgradeable) {
-			IUpgradeable upgradeable = (IUpgradeable) blockEntity;
+		if (tryAddUpgrades() && be instanceof IUpgradeable) {
+			IUpgradeable upgradeable = (IUpgradeable) be;
 			if (upgradeable.canBeUpgraded()) {
 				builder.drawUpgrades(this, left - 24, top + 6);
 				upgrades = true;
@@ -215,7 +215,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	protected void drawTitle() {
-		drawCentredString(StringUtils.t(blockEntity.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
+		drawCentredString(StringUtils.t(be.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
@@ -342,7 +342,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	@Nullable
 	public MachineBaseBlockEntity getMachine() {
-		return (MachineBaseBlockEntity) blockEntity;
+		return (MachineBaseBlockEntity) be;
 	}
 
 	/**
@@ -373,7 +373,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	public boolean isConfigEnabled() {
-		return blockEntity instanceof MachineBaseBlockEntity && container != null;
+		return be instanceof MachineBaseBlockEntity && container != null;
 	}
 
 	public int getGuiLeft(){

@@ -46,7 +46,6 @@ import reborncore.common.util.Color;
 import reborncore.mixin.extensions.SlotExtensions;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +67,7 @@ public class GuiSlotConfiguration {
 
 		BuiltContainer container = guiBase.container;
 		for (Slot slot : container.slotList) {
-			if (guiBase.blockEntity != slot.inventory) {
+			if (guiBase.be != slot.inventory) {
 				continue;
 			}
 			SlotExtensions slotExtensions = (SlotExtensions) slot;
@@ -81,7 +80,7 @@ public class GuiSlotConfiguration {
 	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
 		BuiltContainer container = guiBase.container;
 		for (Slot slot : container.slotList) {
-			if (guiBase.blockEntity != slot.inventory) {
+			if (guiBase.be != slot.inventory) {
 				continue;
 			}
 			GlStateManager.color3f(255, 0, 0);
@@ -136,10 +135,10 @@ public class GuiSlotConfiguration {
 			return null;
 		}
 		GuiBase<?> base = (GuiBase<?>) MinecraftClient.getInstance().currentScreen;
-		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
+		if (!(base.be instanceof MachineBaseBlockEntity)) {
 			return null;
 		}
-		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.blockEntity;
+		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.be;
 		return machineBase;
 	}
 
@@ -168,7 +167,7 @@ public class GuiSlotConfiguration {
 
 		if (getVisibleElements().isEmpty()) {
 			for (Slot slot : container.slotList) {
-				if (guiBase.blockEntity != slot.inventory) {
+				if (guiBase.be != slot.inventory) {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {

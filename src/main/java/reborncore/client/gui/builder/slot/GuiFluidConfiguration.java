@@ -138,10 +138,10 @@ public class GuiFluidConfiguration {
 			return null;
 		}
 		GuiBase<?> base = (GuiBase<?>) MinecraftClient.getInstance().currentScreen;
-		if (!(base.blockEntity instanceof MachineBaseBlockEntity)) {
+		if (!(base.be instanceof MachineBaseBlockEntity)) {
 			return null;
 		}
-		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.blockEntity;
+		MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) base.be;
 		return machineBase;
 	}
 

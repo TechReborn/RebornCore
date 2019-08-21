@@ -603,9 +603,9 @@ public class GuiBuilder {
 					+ displayPower.abbreviation).formatted(Formatting.GOLD));
 			list.add(new LiteralText(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
 					+ Formatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
-			if (gui.blockEntity instanceof IListInfoProvider) {
+			if (gui.be instanceof IListInfoProvider) {
 				if (Screen.hasShiftDown()) {
-					((IListInfoProvider) gui.blockEntity).addInfo(list, true, true);
+					((IListInfoProvider) gui.be).addInfo(list, true, true);
 					list.add(new LiteralText(""));
 					list.add(new LiteralText(
 							Formatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));

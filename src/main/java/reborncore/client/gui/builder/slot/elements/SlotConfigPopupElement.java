@@ -68,7 +68,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
-		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.blockEntity);
+		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.be);
 		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		BlockState state = world.getBlockState(pos);
@@ -122,7 +122,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.blockEntity.getPos(), newConfig);
+		Packet<?> packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.be.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -141,7 +141,7 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.blockEntity.getPos(), id, input, output, filter);
+		Packet<?> packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.be.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 

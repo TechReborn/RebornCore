@@ -64,7 +64,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
-		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.blockEntity);
+		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.be);
 		IWorld world = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		BlockState state = world.getBlockState(pos);
@@ -113,7 +113,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		FluidConfiguration.ExtractConfig fluidIO = config.getIoConfig().getNext();
 		FluidConfiguration.FluidConfig newConfig = new FluidConfiguration.FluidConfig(side, fluidIO);
 
-		Packet<?> packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.blockEntity.getPos(), newConfig);
+		Packet<?> packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.be.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSave);
 	}
 
@@ -128,7 +128,7 @@ public class FluidConfigPopupElement extends ElementBase {
 			output = !configHolder.autoOutput();
 		}
 
-		Packet<?> packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.blockEntity.getPos(), input, output);
+		Packet<?> packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.be.getPos(), input, output);
 		NetworkManager.sendToServer(packetFluidIOSave);
 	}
 

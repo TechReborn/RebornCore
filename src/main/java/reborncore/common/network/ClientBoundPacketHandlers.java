@@ -47,6 +47,7 @@ public class ClientBoundPacketHandlers {
 				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
 				if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
 					RebornCore.LOGGER.error("Failed to sync fluid config data to " + pos);
+					return;
 				}
 				fluidConfiguration.getAllSides().forEach(fluidConfig -> machineBase.fluidConfiguration.updateFluidConfig(fluidConfig));
 				machineBase.fluidConfiguration.setInput(fluidConfiguration.autoInput());
@@ -67,6 +68,7 @@ public class ClientBoundPacketHandlers {
 				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
 				if (machineBase == null || machineBase.getSlotConfiguration() == null || slotConfig == null || slotConfig.getSlotDetails() == null) {
 					RebornCore.LOGGER.error("Failed to sync slot data to " + pos);
+					return;
 				}
 				MinecraftClient.getInstance().execute(() -> slotConfig.getSlotDetails().forEach(slotConfigHolder -> machineBase.getSlotConfiguration().updateSlotDetails(slotConfigHolder)));
 			});
