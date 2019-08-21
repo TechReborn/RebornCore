@@ -215,7 +215,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	protected void drawTitle() {
-		drawCentredString(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
+		drawCentredString(StringUtils.t(blockEntity.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
