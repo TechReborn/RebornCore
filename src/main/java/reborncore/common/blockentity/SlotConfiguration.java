@@ -56,7 +56,7 @@ public class SlotConfiguration implements NBTSerializable {
 	@Nullable
 	Inventory inventory;
 
-	public SlotConfiguration(RebornInventory inventory) {
+	public SlotConfiguration(RebornInventory<?> inventory) {
 		this.inventory = inventory;
 
 		for (int i = 0; i < inventory.getInvSize(); i++) {
@@ -290,7 +290,7 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		private void handleItemInput(MachineBaseBlockEntity machineBase) {
-			RebornInventory inventory = machineBase.getOptionalInventory().get();
+			RebornInventory<?> inventory = machineBase.getOptionalInventory().get();
 			ItemStack targetStack = inventory.getInvStack(slotID);
 			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
@@ -327,7 +327,7 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		private void handleItemOutput(MachineBaseBlockEntity machineBase) {
-			RebornInventory inventory = machineBase.getOptionalInventory().get();
+			RebornInventory<?> inventory = machineBase.getOptionalInventory().get();
 			ItemStack sourceStack = inventory.getInvStack(slotID);
 			if (sourceStack.isEmpty()) {
 				return;

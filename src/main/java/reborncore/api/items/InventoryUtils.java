@@ -47,8 +47,8 @@ public class InventoryUtils {
 			return ItemStack.EMPTY;
 		} else if(blockEntity instanceof Inventory){
 			Inventory inventory = (Inventory) blockEntity;
-			for (int i = 0; i < inventory.getInvSize(); i++) {
-				return insertIntoInv(inventory, i, stack);
+			for (int i = 0; i < inventory.getInvSize() & !stack.isEmpty(); i++) {
+				stack = insertIntoInv(inventory, i, stack);
 			}
 		}
 		return stack;
