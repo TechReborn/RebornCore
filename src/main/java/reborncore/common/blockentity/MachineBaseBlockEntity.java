@@ -194,16 +194,15 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		return false;
 	}
 
-	public Optional<RebornInventory> getOptionalInventory() {
+	public Optional<RebornInventory<?>> getOptionalInventory() {
 		if (this instanceof InventoryProvider) {
 			InventoryProvider inventory = (InventoryProvider) this;
 			if (inventory.getInventory() == null) {
 				return Optional.empty();
 			}
-			return Optional.of((RebornInventory) inventory.getInventory());
-		} else {
-			return Optional.empty();
+			return Optional.of((RebornInventory<?>) inventory.getInventory());
 		}
+		return Optional.empty();
 	}
 
 	protected Optional<RecipeCrafter> getOptionalCrafter() {
@@ -213,9 +212,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 				return Optional.empty();
 			}
 			return Optional.of(crafterProvider.getRecipeCrafter());
-		} else {
-			return Optional.empty();
 		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -468,9 +466,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			if (slotConfigHolder.filter() && getOptionalCrafter().isPresent()) {
 				RecipeCrafter crafter = getOptionalCrafter().get();
 				return crafter.isStackValidInput(stack);
-			} else {
-				return slotConfig.getSlotIO().getIoConfig().isInsert();
 			}
+			return slotConfig.getSlotIO().getIoConfig().isInsert();
 		}
 		return false;
 	}
