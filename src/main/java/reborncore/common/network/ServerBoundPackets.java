@@ -31,6 +31,8 @@ package reborncore.common.network;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +55,7 @@ public class ServerBoundPackets {
 				legacyMachineBase.fluidConfiguration.updateFluidConfig(fluidConfiguration);
 				legacyMachineBase.markDirty();
 
-				Packet packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
+				Packet<ClientPlayPacketListener> packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
 				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
 
 				//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
@@ -72,7 +74,7 @@ public class ServerBoundPackets {
 				legacyMachineBase.getSlotConfiguration().read(tagCompound);
 				legacyMachineBase.markDirty();
 
-				Packet packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.getSlotConfiguration());
+				Packet<ClientPlayPacketListener> packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.getSlotConfiguration());
 				NetworkManager.sendToWorld(packetSlotSync, (ServerWorld) legacyMachineBase.getWorld());
 			});
 		});
@@ -92,7 +94,7 @@ public class ServerBoundPackets {
 				config.setOutput(output);
 
 				//Syncs back to the client
-				Packet packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
+				Packet<ClientPlayPacketListener> packetFluidConfigSync = ClientBoundPackets.createPacketFluidConfigSync(pos, legacyMachineBase.fluidConfiguration);
 				NetworkManager.sendToTracking(packetFluidConfigSync, legacyMachineBase);
 			});
 		});
@@ -117,7 +119,7 @@ public class ServerBoundPackets {
 				holder.setfilter(filter);
 
 				//Syncs back to the client
-				Packet packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, machineBase.getSlotConfiguration());
+				Packet<ClientPlayPacketListener> packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, machineBase.getSlotConfiguration());
 				NetworkManager.sendToAll(packetSlotSync, context.getPlayer().getServer());
 			});
 		});
@@ -132,7 +134,7 @@ public class ServerBoundPackets {
 				legacyMachineBase.getSlotConfiguration().getSlotDetails(slotConfig.getSlotID()).updateSlotConfig(slotConfig);
 				legacyMachineBase.markDirty();
 
-				Packet packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.getSlotConfiguration());
+				Packet<ClientPlayPacketListener> packetSlotSync = ClientBoundPackets.createPacketSlotSync(pos, legacyMachineBase.getSlotConfiguration());
 				NetworkManager.sendToWorld(packetSlotSync, (ServerWorld) legacyMachineBase.getWorld());
 			});
 		});
@@ -140,21 +142,21 @@ public class ServerBoundPackets {
 	}
 
 
-	public static Packet createPacketFluidConfigSave(BlockPos pos, FluidConfiguration.FluidConfig fluidConfiguration) {
+	public static Packet<ServerPlayPacketListener> createPacketFluidConfigSave(BlockPos pos, FluidConfiguration.FluidConfig fluidConfiguration) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "fluid_config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(fluidConfiguration.write());
 		});
 	}
 
-	public static Packet createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
+	public static Packet<ServerPlayPacketListener> createPacketConfigSave(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "config_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.write());
 		});
 	}
 
-	public static Packet createPacketFluidIOSave(BlockPos pos, boolean input, boolean output) {
+	public static Packet<ServerPlayPacketListener> createPacketFluidIOSave(BlockPos pos, boolean input, boolean output) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "fluid_io_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeBoolean(input);
@@ -162,7 +164,7 @@ public class ServerBoundPackets {
 		});
 	}
 
-	public static Packet createPacketIOSave(BlockPos pos, int slotID, boolean input, boolean output, boolean filter) {
+	public static Packet<ServerPlayPacketListener> createPacketIOSave(BlockPos pos, int slotID, boolean input, boolean output, boolean filter) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "io_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeInt(slotID);
@@ -172,7 +174,7 @@ public class ServerBoundPackets {
 		});
 	}
 
-	public static Packet createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig) {
+	public static Packet<ServerPlayPacketListener> createPacketSlotSave(BlockPos pos, SlotConfiguration.SlotConfig slotConfig) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "slot_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.write());

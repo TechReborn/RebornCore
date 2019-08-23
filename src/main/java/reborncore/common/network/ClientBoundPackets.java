@@ -32,6 +32,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.blockentity.FluidConfiguration;
@@ -39,32 +40,32 @@ import reborncore.common.blockentity.SlotConfiguration;
 
 public class ClientBoundPackets {
 
-	public static Packet createCustomDescriptionPacket(BlockEntity blockEntity) {
+	public static Packet<ClientPlayPacketListener> createCustomDescriptionPacket(BlockEntity blockEntity) {
 		return createCustomDescriptionPacket(blockEntity.getPos(), blockEntity.toTag(new CompoundTag()));
 	}
 
-	public static Packet createCustomDescriptionPacket(BlockPos blockPos, CompoundTag nbt) {
+	public static Packet<ClientPlayPacketListener> createCustomDescriptionPacket(BlockPos blockPos, CompoundTag nbt) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "custom_description"), packetBuffer -> {
 			packetBuffer.writeBlockPos(blockPos);
 			packetBuffer.writeCompoundTag(nbt);
 		});
 	}
 
-	public static Packet createPacketFluidConfigSync(BlockPos pos, FluidConfiguration fluidConfiguration) {
+	public static Packet<ClientPlayPacketListener> createPacketFluidConfigSync(BlockPos pos, FluidConfiguration fluidConfiguration) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "fluid_config_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(fluidConfiguration.write());
 		});
 	}
 
-	public static Packet createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
+	public static Packet<ClientPlayPacketListener> createPacketSlotSync(BlockPos pos, SlotConfiguration slotConfig) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "slot_sync"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.write());
 		});
 	}
 
-	public static Packet createPacketSendObject(int id, Object value, Container container) {
+	public static Packet<ClientPlayPacketListener> createPacketSendObject(int id, Object value, Container container) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "send_object"), packetBuffer -> {
 			packetBuffer.writeInt(id);
 			packetBuffer.writeObject(value);

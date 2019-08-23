@@ -36,6 +36,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
@@ -50,7 +52,7 @@ import java.util.function.Consumer;
 public class NetworkManager {
 
 
-	public static Packet createServerBoundPacket(Identifier identifier, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
+	public static Packet<ServerPlayPacketListener> createServerBoundPacket(Identifier identifier, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		packetBufferConsumer.accept(new ExtendedPacketBuffer(buf));
 		return new CustomPayloadC2SPacket(identifier, buf);
@@ -60,7 +62,7 @@ public class NetworkManager {
 		ServerSidePacketRegistry.INSTANCE.register(identifier, (packetContext, packetByteBuf) -> consumer.accept(new ExtendedPacketBuffer(packetByteBuf), packetContext));
 	}
 
-	public static Packet createClientBoundPacket(Identifier identifier, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
+	public static Packet<ClientPlayPacketListener> createClientBoundPacket(Identifier identifier, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		packetBufferConsumer.accept(new ExtendedPacketBuffer(buf));
 		return new CustomPayloadS2CPacket(identifier, buf);
@@ -70,30 +72,30 @@ public class NetworkManager {
 	}
 
 
-	public static void sendToServer(Packet packet) {
+	public static void sendToServer(Packet<?> packet) {
 		MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
 	}
 
-	public static void sendToAll(Packet packet, MinecraftServer server) {
+	public static void sendToAll(Packet<?> packet, MinecraftServer server) {
 		server.getPlayerManager().sendToAll(packet);
 	}
 
-	public static void sendToPlayer(Packet packet, ServerPlayerEntity serverPlayerEntity) {
+	public static void sendToPlayer(Packet<?> packet, ServerPlayerEntity serverPlayerEntity) {
 		serverPlayerEntity.networkHandler.sendPacket(packet);
 	}
 
-	public static void sendToWorld(Packet packet, ServerWorld world) {
+	public static void sendToWorld(Packet<?> packet, ServerWorld world) {
 		world.getPlayers().forEach(serverPlayerEntity -> sendToPlayer(packet, serverPlayerEntity));
 	}
 
 
-	public static void sendToTracking(Packet packet, ServerWorld world, BlockPos pos) {
+	public static void sendToTracking(Packet<?> packet, ServerWorld world, BlockPos pos) {
 		//TODO fix this to be better
 		sendToWorld(packet, world);
 
 	}
 
-	public static void sendToTracking(Packet packet, BlockEntity blockEntity) {
+	public static void sendToTracking(Packet<?> packet, BlockEntity blockEntity) {
 		sendToTracking(packet, (ServerWorld) blockEntity.getWorld(), blockEntity.getPos());
 	}
 
