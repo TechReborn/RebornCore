@@ -9,7 +9,8 @@
     "MixinFluidBlock",
     "MixinSlot",
     "MixinBucketItem",
-    "MixinWorldSaveHandler"
+    "MixinWorldSaveHandler",
+    "MixinItemStack"
   ],
   "injectors": {
     "defaultRequire": 1
