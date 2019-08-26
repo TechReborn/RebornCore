@@ -134,7 +134,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	@Override
-	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
+	protected void drawBackground(float lastFrameDuration, int mouseX, int mouseY) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
 		

@@ -65,7 +65,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
 	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
 
-	boolean hasCustomStaes;
+	boolean hasCustomStates;
 
 	public BlockMachineBase() {
 		this(Block.Settings.of(Material.METAL).strength(2F, 2F));
@@ -77,7 +77,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 	public BlockMachineBase(Block.Settings builder, boolean hasCustomStates) {
 		super(builder);
-		this.hasCustomStaes = hasCustomStates;
+		this.hasCustomStates = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
 				this.stateFactory.getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
@@ -188,14 +188,14 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	}
 
 	public void setFacing(Direction facing, World world, BlockPos pos) {
-		if (hasCustomStaes) {
+		if (hasCustomStates) {
 			return;
 		}
 		world.setBlockState(pos, world.getBlockState(pos).with(FACING, facing));
 	}
 
 	public void setActive(Boolean active, World world, BlockPos pos) {
-		if (hasCustomStaes) {
+		if (hasCustomStates) {
 			return;
 		}
 		Direction facing = world.getBlockState(pos).get(FACING);
