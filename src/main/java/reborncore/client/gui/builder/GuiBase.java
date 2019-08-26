@@ -393,10 +393,8 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	@Override
-	protected boolean isClickOutsideBounds(double double_1, double double_2, int int_1, int int_2, int int_3) {
-		if(isConfigEnabled()){
-			int_1 -= 20;
-		}
-		return super.isClickOutsideBounds(double_1, double_2, int_1, int_2, int_3);
+	protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top, int mouseButton) {
+		//Expanded the width to allow for the upgrades
+		return super.isClickOutsideBounds(mouseX + 40, mouseY, left + 40, top, mouseButton);
 	}
 }
