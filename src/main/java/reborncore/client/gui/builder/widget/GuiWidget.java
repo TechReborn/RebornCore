@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder.widget;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
@@ -77,7 +77,7 @@ public abstract class GuiWidget<T extends Container> extends AbstractContainerSc
 
 	@Override
 	protected void drawBackground(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		minecraft.getTextureManager().bindTexture(background);
 		int x = (this.width - this.containerWidth) / 2;
 		int y = (this.height - this.containerHeight) / 2;

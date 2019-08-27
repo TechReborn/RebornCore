@@ -37,10 +37,11 @@
 
 package reborncore.client.multiblock;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -107,31 +108,31 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 
 		minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translated(-dx, -dy, -dz);
-		GlStateManager.translated(pos.getX(), pos.getY() -1.7, pos.getZ());
-		GlStateManager.scaled(0.8, 0.8, 0.8);
-		GlStateManager.translated(0.2, 0.2, 0.2);
+		RenderSystem.pushMatrix();
+		RenderSystem.translated(-dx, -dy, -dz);
+		RenderSystem.translated(pos.getX(), pos.getY() -1.7, pos.getZ());
+		RenderSystem.scaled(0.8, 0.8, 0.8);
+		RenderSystem.translated(0.2, 0.2, 0.2);
 
 		GuiLighting.disable();
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 
-		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
+		RenderSystem.blendFunc(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.CONSTANT_ALPHA);
 		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
 		this.renderModel(world, pos, comp.state);
 
-		GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		RenderSystem.blendFunc(class_4493.class_4535.ONE, class_4493.class_4534.ZERO);
 
-		GlStateManager.disableBlend();
-		GlStateManager.popMatrix();
+		RenderSystem.disableBlend();
+		RenderSystem.popMatrix();
 	}
 
 	private void renderModel(World world, BlockPos pos, BlockState state) {
 		final BlockRenderManager blockRendererDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBufferBuilder();
-		GlStateManager.translated(-pos.getX(), -pos.getY(), -pos.getZ());
+		RenderSystem.translated(-pos.getX(), -pos.getY(), -pos.getZ());
 		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
 
 		if(state.getBlock() instanceof FluidBlock){

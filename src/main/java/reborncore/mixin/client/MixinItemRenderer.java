@@ -1,6 +1,6 @@
 package reborncore.mixin.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -28,11 +28,11 @@ public abstract class MixinItemRenderer {
 			if(!durabilityExtensions.showDurability(stack)){
 				return;
 			}
-			GlStateManager.disableLighting();
-			GlStateManager.disableDepthTest();
-			GlStateManager.disableTexture();
-			GlStateManager.disableAlphaTest();
-			GlStateManager.disableBlend();
+			RenderSystem.disableLighting();
+			RenderSystem.disableDepthTest();
+			RenderSystem.disableTexture();
+			RenderSystem.disableAlphaTest();
+			RenderSystem.disableBlend();
 
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferBuilder = tessellator.getBufferBuilder();
@@ -44,11 +44,11 @@ public abstract class MixinItemRenderer {
 			this.renderGuiQuad(bufferBuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
 			this.renderGuiQuad(bufferBuilder, x + 2, y + 13, durability, 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
 
-			GlStateManager.enableBlend();
-			GlStateManager.enableAlphaTest();
-			GlStateManager.enableTexture();
-			GlStateManager.enableLighting();
-			GlStateManager.enableDepthTest();
+			RenderSystem.enableBlend();
+			RenderSystem.enableAlphaTest();
+			RenderSystem.enableTexture();
+			RenderSystem.enableLighting();
+			RenderSystem.enableDepthTest();
 		}
 	}
 

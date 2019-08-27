@@ -29,7 +29,7 @@
 package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.prospector.silk.fluid.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -75,7 +75,7 @@ public class GuiBuilder {
 	}
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 0, 0, width / 2, height / 2);
 		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
@@ -217,9 +217,9 @@ public class GuiBuilder {
 			} else {
 				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
 			}
-			GlStateManager.pushMatrix();
+			RenderSystem.pushMatrix();
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.popMatrix();
+			RenderSystem.popMatrix();
 		}
 	}
 
@@ -250,13 +250,13 @@ public class GuiBuilder {
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.hologram"));
-			GlStateManager.pushMatrix();
+			RenderSystem.pushMatrix();
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.popMatrix();
+			RenderSystem.popMatrix();
 		}
 	}
 
@@ -363,8 +363,8 @@ public class GuiBuilder {
 				mouseY -= gui.getGuiTop();
 			}
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 	}
 
@@ -393,14 +393,14 @@ public class GuiBuilder {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
-		GlStateManager.disableLighting();
-		GlStateManager.enableDepthTest();
-		GlStateManager.colorMask(true, true, true, false);
+		RenderSystem.disableLighting();
+		RenderSystem.enableDepthTest();
+		RenderSystem.colorMask(true, true, true, false);
 		RenderUtil.drawGradientRect(0, x, y, x + 176, y + 20, 0x000000, 0xC0000000);
 		RenderUtil.drawGradientRect(0, x, y + 20, x + 176, y + 20 + 48, 0xC0000000, 0xC0000000);
 		RenderUtil.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
-		GlStateManager.colorMask(true, true, true, true);
-		GlStateManager.disableDepthTest();
+		RenderSystem.colorMask(true, true, true, true);
+		RenderSystem.disableDepthTest();
 		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
 	}
 
@@ -441,7 +441,7 @@ public class GuiBuilder {
 		gui.blit(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
 		gui.blit(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
 		gui.blit(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 
 		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
 		List<String> tips = new ArrayList<String>();
@@ -450,7 +450,7 @@ public class GuiBuilder {
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy"));
 		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10, tips);
 		explanation.render(mouseX, mouseY, 1.0f);
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 	}
 
 	// This stuff is WIP
@@ -559,8 +559,8 @@ public class GuiBuilder {
 				mouseY -= gui.getGuiTop();
 			}
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 	}
 
@@ -625,8 +625,8 @@ public class GuiBuilder {
 				list1.add(itextcomponent.asFormattedString());
 			}
 			gui.renderTooltip(list1, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		gui.addPowerButton(x, y, buttonID, layer);
 	}
@@ -680,8 +680,8 @@ public class GuiBuilder {
 				mouseY -= gui.getGuiTop();
 			}
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 	}
 
@@ -709,7 +709,7 @@ public class GuiBuilder {
 		final int iconHeight = sprite.getHeight();
 		int offsetHeight = drawHeight;
 
-		GlStateManager.color3f((color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F);
+		RenderSystem.color3f((color >> 16 & 255) / 255.0F, (float) (color >> 8 & 255) / 255.0F, (float) (color & 255) / 255.0F);
 
 		int iteration = 0;
 		while (offsetHeight != 0) {
@@ -722,7 +722,7 @@ public class GuiBuilder {
 				break;
 			}
 		}
-		GlStateManager.color3f(1F, 1F, 1F);
+		RenderSystem.color3f(1F, 1F, 1F);
 
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 	}
@@ -763,8 +763,8 @@ public class GuiBuilder {
 				mouseY -= gui.getGuiTop();
 			}
 			gui.renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 	}
 

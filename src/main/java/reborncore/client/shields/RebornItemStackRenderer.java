@@ -28,7 +28,7 @@
 
 package reborncore.client.shields;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.model.ShieldEntityModel;
@@ -112,10 +112,10 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 				renderer.render(itemStackIn);
 				return;
 			}
-			GlStateManager.pushMatrix();
-			GlStateManager.scalef(1.0F, -1.0F, -1.0F);
+			RenderSystem.pushMatrix();
+			RenderSystem.scalef(1.0F, -1.0F, -1.0F);
 			modelShield.renderItem();
-			GlStateManager.popMatrix();
+			RenderSystem.popMatrix();
 			return;
 		}
 		renderer.render(itemStackIn);

@@ -28,7 +28,7 @@
 
 package reborncore.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -59,21 +59,21 @@ public class HolidayRenderEvent {
 		                   float netHeadYaw,
 		                   float headPitch,
 		                   float scale) {
-			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.field_6220 + (abstractClientPlayer.field_6283 - abstractClientPlayer.field_6220) * partialTicks);
+			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.prevBodyYaw + (abstractClientPlayer.bodyYaw - abstractClientPlayer.prevBodyYaw) * partialTicks);
 			float pitch = abstractClientPlayer.prevPitch + (abstractClientPlayer.pitch - abstractClientPlayer.prevPitch) * partialTicks;
 			MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
-			GlStateManager.pushMatrix();
-			GlStateManager.rotatef(yaw, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotatef(pitch, 1.0F, 0.0F, 0.0F);
+			RenderSystem.pushMatrix();
+			RenderSystem.rotatef(yaw, 0.0F, 1.0F, 0.0F);
+			RenderSystem.rotatef(pitch, 1.0F, 0.0F, 0.0F);
 			//GlStateManager.translate(-0.25F, -0.0F, 0.0F);
 			if (abstractClientPlayer.isSneaking()) {
-				GlStateManager.translatef(0.0F, 0.26F, 0.0F);
+				RenderSystem.translatef(0.0F, 0.26F, 0.0F);
 			}
 
 			float scale2 = 1.0F;
-			GlStateManager.scalef(scale2, scale2, scale2);
+			RenderSystem.scalef(scale2, scale2, scale2);
 			santaHat.render(0.0625F);
-			GlStateManager.popMatrix();
+			RenderSystem.popMatrix();
 
 		}
 

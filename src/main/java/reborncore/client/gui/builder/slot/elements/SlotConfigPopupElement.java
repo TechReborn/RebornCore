@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -170,9 +170,9 @@ public class SlotConfigPopupElement extends ElementBase {
 				color = new Color(0, 0, 0, 0);
 				break;
 		}
-		GlStateManager.color3f(255, 255, 255);
+		RenderSystem.color3f(255, 255, 255);
 		GuiUtil.drawGradientRect(sx, sy, 18, 18, color.getColor(), color.getColor());
-		GlStateManager.color3f(255, 255, 255);
+		RenderSystem.color3f(255, 255, 255);
 
 	}
 
@@ -196,18 +196,18 @@ public class SlotConfigPopupElement extends ElementBase {
 	                      float rotY,
 	                      float rotZ) {
 
-		GlStateManager.pushMatrix();
-		GlStateManager.enableDepthTest();
-		GlStateManager.translatef(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
-		GlStateManager.scalef(16F, 16F, 16F);
-		GlStateManager.translatef(0.5F, 0.5F, 0.5F);
-		GlStateManager.scalef(-1, -1, -1);
+		RenderSystem.pushMatrix();
+		RenderSystem.enableDepthTest();
+		RenderSystem.translatef(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
+		RenderSystem.scalef(16F, 16F, 16F);
+		RenderSystem.translatef(0.5F, 0.5F, 0.5F);
+		RenderSystem.scalef(-1, -1, -1);
 		if (rotAngle != 0) {
-			GlStateManager.rotatef(rotAngle, rotX, rotY, rotZ);
+			RenderSystem.rotatef(rotAngle, rotX, rotY, rotZ);
 		}
 		dispatcher.getModelRenderer().render(model, actualState, 1F, false);
-		GlStateManager.disableDepthTest();
-		GlStateManager.popMatrix();
+		RenderSystem.disableDepthTest();
+		RenderSystem.popMatrix();
 
 /*		GlStateManager.pushMatrix();
 		GlStateManager.enableDepth();

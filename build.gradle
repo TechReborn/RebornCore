@@ -47,12 +47,12 @@ configurations {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.14.4"
-	mappings "net.fabricmc:yarn:1.14.4+build.2"
-	modCompile "net.fabricmc:fabric-loader:0.4.8+build.159"
+	minecraft "com.mojang:minecraft:19w34a"
+	mappings "net.fabricmc:yarn:19w34a+build.12"
+	modCompile "net.fabricmc:fabric-loader:0.6.0+build.163"
 
 	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.1+build.208"
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.2+build.212-1.15"
 
 	compileOnly "com.google.code.findbugs:jsr305:+"
 

@@ -29,7 +29,7 @@
 package reborncore.client.gui.builder.slot;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Slot;
 import net.minecraft.text.LiteralText;
@@ -83,10 +83,10 @@ public class GuiSlotConfiguration {
 			if (guiBase.be != slot.inventory) {
 				continue;
 			}
-			GlStateManager.color3f(255, 0, 0);
+			RenderSystem.color3f(255, 0, 0);
 			Color color = new Color(255, 0, 0, 128);
 			GuiUtil.drawGradientRect(slot.xPosition - 1, slot.yPosition - 1, 18, 18, color.getColor(), color.getColor());
-			GlStateManager.color3f(255, 255, 255);
+			RenderSystem.color3f(255, 255, 255);
 		}
 
 		if (selectedSlot != -1) {

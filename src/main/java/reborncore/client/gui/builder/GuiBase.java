@@ -28,7 +28,7 @@
 
 package reborncore.client.gui.builder;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
@@ -135,7 +135,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	@Override
 	protected void drawBackground(float lastFrameDuration, int mouseX, int mouseY) {
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
 		
 		builder.drawDefaultBackground(this, left, top, xSize, ySize);
@@ -193,23 +193,23 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
 			renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 81 : 0;
 		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
 			renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
 			renderTooltip(list, mouseX, mouseY);
-			GlStateManager.disableLighting();
-			GlStateManager.color4f(1, 1, 1, 1);
+			RenderSystem.disableLighting();
+			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		super.drawMouseoverTooltip(mouseX, mouseY);
 	}
@@ -234,7 +234,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			factorY = top;
 		}
 		getTextRenderer().draw(string, x + factorX, y + factorY, colour);
-		GlStateManager.color4f(1, 1, 1, 1);
+		RenderSystem.color4f(1, 1, 1, 1);
 	}
 
 	public void addPowerButton(int x, int y, int id, Layer layer) {

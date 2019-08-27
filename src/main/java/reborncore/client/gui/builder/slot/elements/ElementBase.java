@@ -28,7 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GuiLighting;
@@ -326,21 +327,21 @@ public class ElementBase {
 		Sprite sprite = iSprite.getSprite(gui.getMachine());
 		if (sprite != null) {
 			if (sprite.hasTextureInfo()) {
-				GlStateManager.color3f(1F, 1F, 1F);
+				RenderSystem.color3f(1F, 1F, 1F);
 				setTextureSheet(sprite.textureLocation);
 				gui.blit(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
 			}
 			if (sprite.hasStack()) {
-				GlStateManager.pushMatrix();
-				GlStateManager.enableBlend();
-				GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+				RenderSystem.pushMatrix();
+				RenderSystem.enableBlend();
+				RenderSystem.blendFunc(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.ONE_MINUS_SRC_ALPHA);
 				GuiLighting.enableForItems();
 
 				ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 				itemRenderer.renderGuiItem(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
 
-				GlStateManager.disableLighting();
-				GlStateManager.popMatrix();
+				RenderSystem.disableLighting();
+				RenderSystem.popMatrix();
 			}
 		}
 	}
@@ -357,7 +358,7 @@ public class ElementBase {
 	}
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
 		gui.blit(x, y, 0, 0, width / 2, height / 2);
 		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);

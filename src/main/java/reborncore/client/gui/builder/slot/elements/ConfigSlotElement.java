@@ -28,7 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -113,17 +114,17 @@ public class ConfigSlotElement extends ElementBase {
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
 
-		GlStateManager.enableDepthTest();
-		GlStateManager.pushMatrix();
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.enableDepthTest();
+		RenderSystem.pushMatrix();
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.ONE_MINUS_SRC_ALPHA);
 		GuiLighting.enableForItems();
 		ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
 		renderItem.renderGuiItem(gui.getMinecraft().player, stack, xPos, yPos);
 		renderItem.renderGuiItemOverlay(gui.getTextRenderer(), stack, xPos, yPos, null);
-		GlStateManager.disableDepthTest();
-		GlStateManager.disableLighting();
-		GlStateManager.popMatrix();
+		RenderSystem.disableDepthTest();
+		RenderSystem.disableLighting();
+		RenderSystem.popMatrix();
 		if (isHovering) {
 			drawSprite(gui, type.getButtonHoverOverlay(), x, y);
 		}

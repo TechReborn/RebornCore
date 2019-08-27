@@ -28,9 +28,10 @@
 
 package reborncore.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -96,7 +97,7 @@ public class RenderUtil {
 		int color = 0;
 		GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
 
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 		for (int i = 0; i < width; i += 16) {
 			for (int j = 0; j < renderAmount; j += 16) {
 				int drawWidth = (int) Math.min(width - i, 16);
@@ -122,7 +123,7 @@ public class RenderUtil {
 				tessellator.draw();
 			}
 		}
-		GlStateManager.disableBlend();
+		RenderSystem.disableBlend();
 	}
 
 	public static void drawGradientRect(int zLevel, int left, int top, int right, int bottom, int startColor, int endColor) {
@@ -134,11 +135,11 @@ public class RenderUtil {
 		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
 		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
 		float f7 = (float) (endColor & 255) / 255.0F;
-		GlStateManager.disableTexture();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlphaTest();
-		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.shadeModel(7425);
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.blendFuncSeparate(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.ONE_MINUS_SRC_ALPHA, class_4493.class_4535.ONE, class_4493.class_4534.ZERO);
+		RenderSystem.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
 		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
@@ -147,10 +148,10 @@ public class RenderUtil {
 		vertexbuffer.vertex((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
 		vertexbuffer.vertex((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
 		tessellator.draw();
-		GlStateManager.shadeModel(7424);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlphaTest();
-		GlStateManager.enableTexture();
+		RenderSystem.shadeModel(7424);
+		RenderSystem.disableBlend();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.enableTexture();
 	}
 
 }
