@@ -606,9 +606,6 @@ public class GuiBuilder {
 			if (gui.be instanceof IListInfoProvider) {
 				if (Screen.hasShiftDown()) {
 					((IListInfoProvider) gui.be).addInfo(list, true, true);
-					list.add(new LiteralText(""));
-					list.add(new LiteralText(
-							Formatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
 				} else {
 					list.add(new LiteralText(""));
 					list.add((new LiteralText(Formatting.BLUE + "Shift" + Formatting.GRAY + " "
@@ -628,7 +625,6 @@ public class GuiBuilder {
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
 		}
-		gui.addPowerButton(x, y, buttonID, layer);
 	}
 
 	/**

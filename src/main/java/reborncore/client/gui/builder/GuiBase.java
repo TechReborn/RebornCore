@@ -35,7 +35,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +48,6 @@ import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
-import reborncore.client.gui.builder.widget.GuiButtonPowerBar;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
@@ -67,7 +65,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	public GuiBuilder builder = new GuiBuilder();
 	public BlockEntity be;
 	@Nullable
-	public BuiltContainer container;
+	public BuiltContainer builtContainer;
 	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
@@ -79,7 +77,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T container) {
 		super(container, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
 		this.be = blockEntity;
-		this.container = (BuiltContainer) container;
+		this.builtContainer = (BuiltContainer) container;
 		slotConfigType = SlotConfigType.NONE;
 	}
 	
@@ -170,7 +168,6 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	@Environment(EnvType.CLIENT)
 	@Override
 	protected void drawForeground(int mouseX, int mouseY) {
-		this.buttons.clear();
 		drawTitle();
 		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
 			GuiSlotConfiguration.draw(this, mouseX, mouseY);
@@ -235,21 +232,6 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		}
 		getTextRenderer().draw(string, x + factorX, y + factorY, colour);
 		GlStateManager.color4f(1, 1, 1, 1);
-	}
-
-	public void addPowerButton(int x, int y, int id, Layer layer) {
-		int factorX = 0;
-		int factorY = 0;
-		if (layer == Layer.BACKGROUND) {
-			factorX = left;
-			factorY = top;
-		}
-		addButton(new GuiButtonPowerBar(x + factorX, y + factorY, this, layer, new ButtonWidget.PressAction() {
-			@Override
-			public void onPress(ButtonWidget var1) {
-
-			}
-		}));
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
@@ -373,7 +355,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	public boolean isConfigEnabled() {
-		return be instanceof MachineBaseBlockEntity && container != null;
+		return be instanceof MachineBaseBlockEntity && builtContainer != null;
 	}
 
 	public int getGuiLeft(){

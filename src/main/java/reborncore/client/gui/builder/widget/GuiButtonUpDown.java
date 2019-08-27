@@ -44,6 +44,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+		return;
 	}
 }
