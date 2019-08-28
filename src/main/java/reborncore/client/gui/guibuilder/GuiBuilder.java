@@ -73,6 +73,10 @@ public class GuiBuilder {
 	public GuiBuilder(Identifier resourceLocation) {
 		GuiBuilder.resourceLocation = resourceLocation;
 	}
+	
+	public Identifier getResourceLocation() {
+		return resourceLocation;
+	}
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
