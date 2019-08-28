@@ -35,6 +35,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,6 +55,7 @@ import reborncore.common.util.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -207,6 +209,14 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			renderTooltip(list, mouseX, mouseY);
 			GlStateManager.disableLighting();
 			GlStateManager.color4f(1, 1, 1, 1);
+		}
+		Iterator<AbstractButtonWidget> buttonsList = buttons.iterator();
+		while (buttonsList.hasNext()) {
+			AbstractButtonWidget abstractButtonWidget = (AbstractButtonWidget) buttonsList.next();
+			if (abstractButtonWidget.isHovered()) {
+				abstractButtonWidget.renderToolTip(mouseX, mouseY);
+				break;
+			}
 		}
 		super.drawMouseoverTooltip(mouseX, mouseY);
 	}

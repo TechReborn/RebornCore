@@ -39,7 +39,6 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 	GuiBase<?> gui;
 	UpDownButtonType type;
 	
-
 	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, ButtonWidget.PressAction pressAction, UpDownButtonType type) {
 		super(x, y, 12, 12, "", pressAction);
 		this.gui = gui;
@@ -51,9 +50,6 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
-		x += gui.getGuiLeft();
-		y += gui.getGuiTop();
-
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:
