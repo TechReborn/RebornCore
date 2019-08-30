@@ -37,13 +37,42 @@ import reborncore.client.gui.builder.GuiBase;
 public class GuiButtonUpDown extends GuiButtonExtended {
 
 	GuiBase<?> gui;
-
-	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, ButtonWidget.PressAction pressAction) {
+	UpDownButtonType type;
+	
+	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, ButtonWidget.PressAction pressAction, UpDownButtonType type) {
 		super(x, y, 12, 12, "", pressAction);
 		this.gui = gui;
+		this.type = type;
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
+			return;
+		}
+		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
+		switch (type) {
+		case FASTFORWARD:
+			gui.blit(x, y, 174, 74, 12, 12);
+			break;
+		case FORWARD:
+			gui.blit(x, y, 174, 86, 12, 12);
+			break;
+		case REWIND:
+			gui.blit(x, y, 174, 98, 12, 12);
+			break;
+		case FASTREWIND:
+			gui.blit(x, y, 174, 110, 12, 12);
+			break;
+		default:
+			break;
+		}			
+	}
+	
+	public enum UpDownButtonType{
+		FASTFORWARD,
+		FORWARD,
+		REWIND,
+		FASTREWIND;
 	}
 }

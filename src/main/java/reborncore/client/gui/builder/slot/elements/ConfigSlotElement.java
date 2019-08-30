@@ -61,7 +61,7 @@ public class ConfigSlotElement extends ElementBase {
 
 		SlotConfigPopupElement popupElement;
 
-		boolean inputEnabled = gui.container.slotList.stream()
+		boolean inputEnabled = gui.builtContainer.slotList.stream()
 			.filter(Objects::nonNull)
 			.filter(slot -> slot.inventory == inventory)
 			.filter(slot -> slot instanceof BaseSlot)

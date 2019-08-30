@@ -33,6 +33,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -41,6 +43,7 @@ import org.apache.commons.lang3.Validate;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.chunkloading.ChunkLoaderManager;
 
 public class ServerBoundPackets {
 
@@ -139,6 +142,15 @@ public class ServerBoundPackets {
 			});
 		});
 
+		NetworkManager.registerServerBoundHandler(new Identifier("reborncore", "chunk_loader_request"), (packetBuffer, context) -> {
+			BlockPos pos = packetBuffer.readBlockPos();
+			context.getTaskQueue().execute(() -> {
+				Validate.isInstanceOf(ServerPlayerEntity.class, context.getPlayer(), "something very very bad has happened");
+				ChunkLoaderManager chunkLoaderManager = ChunkLoaderManager.get(context.getPlayer().world);
+				chunkLoaderManager.syncChunkLoaderToClient((ServerPlayerEntity) context.getPlayer(), pos);
+			});
+		});
+
 	}
 
 
@@ -178,6 +190,12 @@ public class ServerBoundPackets {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "slot_save"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
 			packetBuffer.writeCompoundTag(slotConfig.write());
+		});
+	}
+
+	public static Packet<ServerPlayPacketListener> requestChunkloaderChunks(BlockPos pos) {
+		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "chunk_loader_request"), packetBuffer -> {
+			packetBuffer.writeBlockPos(pos);
 		});
 	}
 }

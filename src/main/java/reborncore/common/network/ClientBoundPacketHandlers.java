@@ -2,20 +2,28 @@ package reborncore.common.network;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
+import reborncore.client.ClientChunkManager;
 import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.chunkloading.ChunkLoaderManager;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class ClientBoundPacketHandlers {
@@ -87,6 +95,18 @@ public class ClientBoundPacketHandlers {
 					}
 				}
 			});
+		});
+
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "sync_chunks"), (extendedPacketBuffer, context) -> {
+			CompoundTag tag = extendedPacketBuffer.readCompoundTag();
+			ListTag listTag = tag.getList("chunks", tag.getType());
+			List<ChunkLoaderManager.LoadedChunk> chunks = listTag.stream()
+				.map(tag1 -> (CompoundTag) tag1)
+				.map(ChunkLoaderManager.LoadedChunk::new)
+				.collect(Collectors.toList());
+
+			context.getTaskQueue().execute(() -> ClientChunkManager.setLoadedChunks(chunks));
+
 		});
 	}
 

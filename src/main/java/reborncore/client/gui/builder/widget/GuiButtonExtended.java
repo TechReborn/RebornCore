@@ -32,7 +32,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import org.apache.logging.log4j.util.TriConsumer;
 
 
-public class GuiButtonExtended extends ButtonWidget {
+public class GuiButtonExtended extends GuiButtonSimple {
 
 	private TriConsumer<GuiButtonExtended, Double, Double> clickHandler;
 
@@ -50,10 +50,10 @@ public class GuiButtonExtended extends ButtonWidget {
 	}
 
 	@Override
-	public void onClick(double x, double y) {
+	public void onClick(double mouseX, double mouseY) {
 		if(clickHandler != null){
-			clickHandler.accept(this, x, y);
+			clickHandler.accept(this, mouseX, mouseY);
 		}
-		super.onClick(x, y);
+		super.onClick(mouseY, mouseY);
 	}
 }

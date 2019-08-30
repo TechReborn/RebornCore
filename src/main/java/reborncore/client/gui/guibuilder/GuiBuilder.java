@@ -73,6 +73,10 @@ public class GuiBuilder {
 	public GuiBuilder(Identifier resourceLocation) {
 		GuiBuilder.resourceLocation = resourceLocation;
 	}
+	
+	public Identifier getResourceLocation() {
+		return resourceLocation;
+	}
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -258,29 +262,6 @@ public class GuiBuilder {
 			gui.renderTooltip(list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
-	}
-
-	/**
-	 * Draws four buttons in a raw to increase or decrease values
-	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place button
-	 * @param y int Top left corner where to place button
-	 * @param layer Layer Layer to draw on
-	 */
-	public void drawUpDownButtons(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
-		if (layer == GuiBase.Layer.BACKGROUND) {
-			x += gui.getGuiLeft();
-			y += gui.getGuiTop();
-		}
-		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 174, 74, 12, 12);
-		gui.blit(x + 12, y, 174, 86, 12, 12);
-		gui.blit(x + 24, y, 174, 98, 12, 12);
-		gui.blit(x + 36, y, 174, 110, 12, 12);
 	}
 
 	/**
@@ -606,9 +587,6 @@ public class GuiBuilder {
 			if (gui.be instanceof IListInfoProvider) {
 				if (Screen.hasShiftDown()) {
 					((IListInfoProvider) gui.be).addInfo(list, true, true);
-					list.add(new LiteralText(""));
-					list.add(new LiteralText(
-							Formatting.BLUE + StringUtils.t("reborncore.gui.tooltip.power_click")));
 				} else {
 					list.add(new LiteralText(""));
 					list.add((new LiteralText(Formatting.BLUE + "Shift" + Formatting.GRAY + " "
@@ -628,7 +606,6 @@ public class GuiBuilder {
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		gui.addPowerButton(x, y, buttonID, layer);
 	}
 
 	/**
