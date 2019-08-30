@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.network.ClientBoundPackets;
@@ -134,6 +135,7 @@ public class ChunkLoaderManager implements DataAttachment {
 			this.world = world;
 			this.player = player;
 			this.chunkLoader = chunkLoader;
+			Validate.isTrue(!StringUtils.isBlank(player), "Player cannot be null");
 		}
 
 		public LoadedChunk(CompoundTag tag) {
