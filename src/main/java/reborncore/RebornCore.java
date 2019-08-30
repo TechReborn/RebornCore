@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
+import reborncore.common.chunkloading.ChunkLoaderManager;
 import reborncore.common.config.Configuration;
 import reborncore.common.crafting.RecipeManager;
 import reborncore.common.crafting.ingredient.IngredientManager;
@@ -54,6 +55,7 @@ import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
+import reborncore.common.world.DataAttachment;
 
 import java.io.File;
 import java.util.function.Supplier;
@@ -131,6 +133,8 @@ public class RebornCore implements ModInitializer {
 			}
 			return 0;
 		})));
+
+		DataAttachment.REGISTRY.register(ChunkLoaderManager.class, ChunkLoaderManager::new);
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;

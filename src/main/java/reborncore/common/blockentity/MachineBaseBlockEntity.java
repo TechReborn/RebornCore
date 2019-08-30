@@ -29,9 +29,11 @@
 package reborncore.common.blockentity;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -42,7 +44,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.api.IListInfoProvider;
@@ -477,6 +481,14 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		return slotConfig.getSlotIO().ioConfig.isExtact();
+	}
+
+	public void onBreak(World world, PlayerEntity playerEntity, BlockPos blockPos, BlockState blockState){
+
+	}
+
+	public void onPlace(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack){
+
 	}
 
 }

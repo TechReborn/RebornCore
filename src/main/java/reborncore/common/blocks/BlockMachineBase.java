@@ -60,6 +60,8 @@ import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
 
+import javax.annotation.Nullable;
+
 public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
@@ -102,6 +104,11 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		super.onPlaced(worldIn, pos, state, placer, stack);
 		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
+
+		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
+		if(blockEntity instanceof MachineBaseBlockEntity){
+			((MachineBaseBlockEntity) blockEntity).onPlace(worldIn, pos, state, placer, stack);
+		}
 	}
 
 	@Override
@@ -230,4 +237,13 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	}
 
 	public abstract IMachineGuiHandler getGui();
+
+	@Override
+	public void onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
+		BlockEntity blockEntity = world.getBlockEntity(blockPos);
+		if(blockEntity instanceof MachineBaseBlockEntity){
+			((MachineBaseBlockEntity) blockEntity).onBreak(world, playerEntity, blockPos, blockState);
+		}
+		super.onBreak(world, blockPos, blockState, playerEntity);
+	}
 }

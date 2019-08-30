@@ -31,12 +31,18 @@ package reborncore.common.network;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.chunkloading.ChunkLoaderManager;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ClientBoundPackets {
 
@@ -71,6 +77,18 @@ public class ClientBoundPackets {
 			packetBuffer.writeObject(value);
 			packetBuffer.writeInt(container.getClass().getName().length());
 			packetBuffer.writeString(container.getClass().getName());
+		});
+	}
+
+	public static Packet<ClientPlayPacketListener> createPacketSyncLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks){
+		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "sync_chunks"), extendedPacketBuffer -> {
+			CompoundTag tag = new CompoundTag();
+			ListTag listTag = new ListTag();
+
+			listTag.addAll(chunks.stream().map(ChunkLoaderManager.LoadedChunk::write).collect(Collectors.toList()));
+			tag.put("chunks", listTag);
+
+			extendedPacketBuffer.writeCompoundTag(tag);
 		});
 	}
 
