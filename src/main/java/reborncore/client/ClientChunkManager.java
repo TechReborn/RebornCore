@@ -1,6 +1,6 @@
 package reborncore.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -9,14 +9,12 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 import reborncore.common.network.ServerBoundPackets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
 public class ClientChunkManager {
@@ -55,10 +53,10 @@ public class ClientChunkManager {
 		double y = camera.getPos().y;
 		double z = camera.getPos().z;
 
-		GlStateManager.disableTexture();
-		GlStateManager.disableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.disableBlend();
 
-		GlStateManager.lineWidth(5.0F);
+		RenderSystem.lineWidth(5.0F);
 
 		bufferBuilder.begin(3, VertexFormats.POSITION_COLOR);
 
@@ -74,9 +72,9 @@ public class ClientChunkManager {
 		});
 
 		tessellator.draw();
-		GlStateManager.lineWidth(1.0F);
-		GlStateManager.enableBlend();
-		GlStateManager.enableTexture();
+		RenderSystem.lineWidth(1.0F);
+		RenderSystem.enableBlend();
+		RenderSystem.enableTexture();
 	}
 
 }
