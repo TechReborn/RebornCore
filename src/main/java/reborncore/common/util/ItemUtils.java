@@ -30,9 +30,9 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import reborncore.api.power.IEnergyItemInfo;
 import reborncore.api.power.ItemPowerManager;
 import reborncore.common.recipes.IRecipeInput;
+import team.reborn.energy.Energy;
 
 import java.util.List;
 
@@ -107,12 +107,12 @@ public class ItemUtils {
 			return 0.0;
 		}
 
-		if (!(stack.getItem() instanceof IEnergyItemInfo)) {
+		if (!Energy.valid(stack)) {
 			return 0.0;
 		}
 
 		ItemPowerManager powerManager = new ItemPowerManager(stack);
-		return (double) powerManager.getEnergyStored() / (double) powerManager.getMaxEnergyStored();
+		return powerManager.getEnergyStored() / powerManager.getMaxEnergyStored();
 	}
 
 	public static boolean isActive(ItemStack stack) {

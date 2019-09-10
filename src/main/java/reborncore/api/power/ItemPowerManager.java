@@ -2,53 +2,84 @@ package reborncore.api.power;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import team.reborn.energy.*;
 
 public class ItemPowerManager {
-	ItemStack stack;
-	IEnergyItemInfo itemPowerInfo;
+
+	static {
+		Energy.registerHolder(object -> {
+			if(object instanceof ItemStack){
+				return ((ItemStack) object).getItem() instanceof EnergyHolder;
+			}
+			return false;
+		}, object -> {
+			final ItemStack stack = (ItemStack) object;
+			final EnergyHolder energyHolder = (EnergyHolder) stack.getItem();
+			return new EnergyStorage() {
+				@Override
+				public double getStored(EnergySide face) {
+					validateNBT();
+					return stack.getTag().getDouble("energy");
+				}
+
+				@Override
+				public void setStored(double amount) {
+					validateNBT();
+					stack.getTag().putDouble("energy", amount);
+				}
+
+				@Override
+				public double getMaxStoredPower() {
+					return energyHolder.getMaxStoredPower();
+				}
+
+				@Override
+				public EnergyTier getTier() {
+					return energyHolder.getTier();
+				}
+
+				private void validateNBT() {
+					if (!stack.hasTag()) {
+						stack.setTag(new CompoundTag());
+						stack.getTag().putInt("energy", 0);
+					}
+				}
+			};
+		});
+	}
+
+	private final ItemStack stack;
+	private final double maxOutput;
+	private final double maxInput;
+	private final double maxStored;
 
 	public ItemPowerManager(ItemStack stack) {
 		this.stack = stack;
-		if (stack.getItem() instanceof IEnergyItemInfo) {
-			this.itemPowerInfo = (IEnergyItemInfo) stack.getItem();
-		}
-		validateNBT();
+
+		maxOutput = Energy.of(stack).getMaxOutput();
+		maxInput = Energy.of(stack).getMaxInput();
+		maxStored = Energy.of(stack).getEnergy();
 	}
 
-	public ItemPowerManager(ItemStack stack, IEnergyItemInfo itemPowerInfo) {
-		this.stack = stack;
-		this.itemPowerInfo = itemPowerInfo;
-		validateNBT();
+	private double getEnergyInStack() {
+		return Energy.of(stack).getEnergy();
 	}
 
-	private int getEnergyInStack() {
-		validateNBT();
-		return stack.getTag().getInt("energy");
+	private void setEnergyInStack(double energy) {
+		Energy.of(stack).set(energy);
 	}
+	
 
-	private void setEnergyInStack(int energy) {
-		validateNBT();
-		stack.getTag().putInt("energy", energy);
-	}
-
-	//Checks to ensure that the item has a nbt tag
-	private void validateNBT() {
-		if (!stack.hasTag()) {
-			stack.setTag(new CompoundTag());
-			stack.getTag().putInt("energy", 0);
-		} 
-	}
-
-	public void setEnergyStored(int value) {
+	public void setEnergyStored(double value) {
 		setEnergyInStack(value);
 	}
 
-	public int receiveEnergy(int maxReceive, boolean simulate) {
+	public double receiveEnergy(double maxReceive, boolean simulate) {
 		if (!canReceive()) {
 			return 0;
 		}
-		int energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
-		                              Math.min((int) itemPowerInfo.getMaxInput(), maxReceive));
+		double energyReceived = Math.min(getMaxEnergyStored() - getEnergyStored(),
+		                              Math.min((double) Energy.of(stack).getMaxInput(), maxReceive));
 
 		if (!simulate) {
 			setEnergyInStack(getEnergyInStack() + energyReceived);
@@ -56,19 +87,19 @@ public class ItemPowerManager {
 		return energyReceived;
 	}
 
-	public int extractEnergy(int maxExtract, boolean simulate) {
+	public double extractEnergy(double maxExtract, boolean simulate) {
 		if (!canExtract()) {
 			return 0;
 		}
-		int energyExtracted = Math.min(getEnergyStored(), maxExtract);
+		double energyExtracted = Math.min(getEnergyStored(), maxExtract);
 		if (!simulate) {
 			setEnergyInStack(getEnergyInStack() - energyExtracted);
 		}
 		return energyExtracted;
 	}
 	
-	public int useEnergy(int maxUse, boolean simulate) {
-		int energyUsed = Math.min(getEnergyStored(), maxUse);
+	public double useEnergy(double maxUse, boolean simulate) {
+		double energyUsed = Math.min(getEnergyStored(), maxUse);
 		if (!simulate) {
 			setEnergyInStack(getEnergyInStack() - energyUsed);
 		}
@@ -76,25 +107,25 @@ public class ItemPowerManager {
 	}
 
 
-	public int getEnergyStored() {
+	public double getEnergyStored() {
 		return getEnergyInStack();
 	}
 
 
-	public int getMaxEnergyStored() {
-		return (int) itemPowerInfo.getCapacity();
+	public double getMaxEnergyStored() {
+		return maxStored;
 	}
 
 
 	public boolean canExtract() {
-		return itemPowerInfo.getMaxOutput() != 0;
+		return maxOutput != 0;
 	}
 
 	public boolean canReceive() {
-		return itemPowerInfo.getMaxInput() != 0;
+		return maxInput != 0;
 	}
 
-	public void setEnergy(int energy) {
+	public void setEnergy(double energy) {
 		setEnergyInStack(energy);
 	}
 	

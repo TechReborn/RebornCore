@@ -67,6 +67,9 @@ dependencies {
 	modCompile "io.github.prospector.silk:SilkAPI:1.2.4-43"
 	include "io.github.prospector.silk:SilkAPI:1.2.4-43"
 
+	compile 'teamreborn:energy:0.0.5'
+	include 'teamreborn:energy:0.0.5'
+
 	ctRuntime "CurseTools:CurseTools:+"
 }
 
