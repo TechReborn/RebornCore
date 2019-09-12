@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.network.ClientBoundPackets;
@@ -64,6 +65,13 @@ public class ChunkLoaderManager implements DataAttachment {
 			.findFirst();
 	}
 
+	public Optional<LoadedChunk> getLoadedChunk(World world, ChunkPos chunkPos){
+		return loadedChunks.stream()
+			.filter(loadedChunk -> loadedChunk.getWorld().equals(getWorldName(world)))
+			.filter(loadedChunk -> loadedChunk.getChunk().equals(chunkPos))
+			.findFirst();
+	}
+
 	public List<LoadedChunk> getLoadedChunks(World world, BlockPos chunkloader){
 		return loadedChunks.stream()
 			.filter(loadedChunk -> loadedChunk.getWorld().equals(getWorldName(world)))
@@ -74,6 +82,11 @@ public class ChunkLoaderManager implements DataAttachment {
 	public boolean isChunkLoaded(World world, ChunkPos chunkPos, BlockPos chunkLoader){
 		return getLoadedChunk(world, chunkPos, chunkLoader).isPresent();
 	}
+
+	public boolean isChunkLoaded(World world, ChunkPos chunkPos){
+		return getLoadedChunk(world, chunkPos).isPresent();
+	}
+
 
 	public void loadChunk(World world, ChunkPos chunkPos, BlockPos chunkLoader, String player){
 		Validate.isTrue(!isChunkLoaded(world, chunkPos, chunkLoader), "chunk is already loaded");
@@ -96,8 +109,11 @@ public class ChunkLoaderManager implements DataAttachment {
 		LoadedChunk loadedChunk = optionalLoadedChunk.get();
 
 		loadedChunks.remove(loadedChunk);
-		final ServerChunkManager serverChunkManager = ((ServerWorld) world).method_14178();
-		serverChunkManager.removeTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
+
+		if(!isChunkLoaded(world, loadedChunk.getChunk())){
+			final ServerChunkManager serverChunkManager = ((ServerWorld) world).method_14178();
+			serverChunkManager.removeTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
+		}
 	}
 
 	public static Identifier getWorldName(World world){
@@ -134,6 +150,7 @@ public class ChunkLoaderManager implements DataAttachment {
 			this.world = world;
 			this.player = player;
 			this.chunkLoader = chunkLoader;
+			Validate.isTrue(!StringUtils.isBlank(player), "Player cannot be null");
 		}
 
 		public LoadedChunk(CompoundTag tag) {

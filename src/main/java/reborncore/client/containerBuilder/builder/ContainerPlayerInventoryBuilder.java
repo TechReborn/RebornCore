@@ -135,7 +135,7 @@ public final class ContainerPlayerInventoryBuilder {
 		}
 
 		public ContainerPlayerInventoryBuilder addArmor() {
-			this.parent.armor = Range.between(this.startIndex, this.parent.parent.slots.size() - 1);
+			this.parent.armor = Range.between(this.startIndex - 1, this.parent.parent.slots.size() - 2);
 			return this.parent;
 		}
 	}
