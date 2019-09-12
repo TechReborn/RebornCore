@@ -210,8 +210,8 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 
 	// BlockEntity
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void markRemoved() {
+		super.markRemoved();
 		powerManagers.forEach(ExternalPowerHandler::invalidate);
 	}
 

@@ -17,7 +17,7 @@ public class MixinGameRenderer {
 
 	}
 
-	@Inject(method = "renderCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;shouldRender()Z", ordinal = 0))
+	@Inject(method = "renderCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(J)V", ordinal = 0))
 	private void renderCenter_2(float float_1, long long_1, CallbackInfo info) {
 		ClientChunkManager.render();
 	}

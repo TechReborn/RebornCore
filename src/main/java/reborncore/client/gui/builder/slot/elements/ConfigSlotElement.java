@@ -28,8 +28,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -117,7 +117,7 @@ public class ConfigSlotElement extends ElementBase {
 		RenderSystem.enableDepthTest();
 		RenderSystem.pushMatrix();
 		RenderSystem.enableBlend();
-		RenderSystem.blendFunc(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA);
 		GuiLighting.enableForItems();
 		ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
 		renderItem.renderGuiItem(gui.getMinecraft().player, stack, xPos, yPos);

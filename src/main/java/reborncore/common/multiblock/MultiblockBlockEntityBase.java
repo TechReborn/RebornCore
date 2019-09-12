@@ -174,8 +174,8 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 	 *
 	 */
 	@Override
-	public void validate() {
-		super.validate();
+	public void cancelRemoval() {
+		super.cancelRemoval();
 		MultiblockRegistry.onPartAdded(this.getWorld(), this);
 	}
 

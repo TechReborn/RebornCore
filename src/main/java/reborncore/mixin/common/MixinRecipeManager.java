@@ -14,11 +14,11 @@ import java.util.Map;
 @Mixin(RecipeManager.class)
 public abstract class MixinRecipeManager implements RecipeManagerExtensions {
 
-	@Shadow protected abstract <C extends Inventory, T extends Recipe<C>> Map<Identifier, Recipe<C>> getAllForType(RecipeType<T> recipeType_1);
+	@Shadow protected abstract <C extends Inventory, T extends Recipe<C>> Map<Identifier, Recipe<C>> getAllOfType(RecipeType<T> recipeType_1);
 
 	@Override
 	public <C extends Inventory, T extends Recipe<C>> Map<Identifier, Recipe<C>> getAll(RecipeType<T> type) {
-		return getAllForType(type);
+		return getAllOfType(type);
 	}
 
 

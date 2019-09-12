@@ -144,7 +144,7 @@ public class MultiblockWorldRegistry {
 				// controller
 				for (IMultiblockPart orphan : orphansToProcess) {
 					coord = orphan.getWorldLocation();
-					if (!this.worldObj.isBlockLoaded(coord)) {
+					if (!this.worldObj.isChunkLoaded(coord)) {
 						continue;
 					}
 
@@ -322,7 +322,7 @@ public class MultiblockWorldRegistry {
 	public void onPartAdded(IMultiblockPart part) {
 		BlockPos pos = part.getWorldLocation();
 
-		if (!this.worldObj.isBlockLoaded(pos)) {
+		if (!this.worldObj.isChunkLoaded(pos)) {
 			// Part goes into the waiting-for-chunk-load list
 			Set<IMultiblockPart> partSet;
 			int chunkHash = new ChunkPos(pos).hashCode();

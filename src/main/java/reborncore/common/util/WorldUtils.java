@@ -49,7 +49,7 @@ public class WorldUtils {
 	}
 
 	public static boolean chunkExists(World world, int x, int z) {
-		return world.isBlockLoaded(new BlockPos(x << 4, 64, z << 4));
+		return world.isChunkLoaded(new BlockPos(x << 4, 64, z << 4));
 	}
 
 	public static void dropItem(ItemStack itemStack, World world, BlockPos pos) {

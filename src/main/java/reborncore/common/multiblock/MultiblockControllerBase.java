@@ -499,7 +499,7 @@ public abstract class MultiblockControllerBase {
 	 */
 	private void _onAssimilated(MultiblockControllerBase otherController) {
 		if (referenceCoord != null) {
-			if (this.worldObj.isBlockLoaded(this.referenceCoord)) {
+			if (this.worldObj.isChunkLoaded(this.referenceCoord)) {
 				BlockEntity te = this.worldObj.getBlockEntity(referenceCoord);
 				if (te instanceof IMultiblockPart) {
 					((IMultiblockPart) te).forfeitMultiblockSaveDelegate();
@@ -550,7 +550,7 @@ public abstract class MultiblockControllerBase {
 			// If our chunks are loaded (they should be), we must mark our
 			// chunks as dirty.
 			if (minimumCoord != null && maximumCoord != null
-				&& this.worldObj.isAreaLoaded(this.minimumCoord, this.maximumCoord)) {
+				&& this.worldObj.isRegionLoaded(this.minimumCoord, this.maximumCoord)) {
 				int minChunkX = minimumCoord.getX() >> 4;
 				int minChunkZ = minimumCoord.getZ() >> 4;
 				int maxChunkX = maximumCoord.getX() >> 4;
@@ -890,7 +890,7 @@ public abstract class MultiblockControllerBase {
 
 		for (IMultiblockPart part : connectedParts) {
 			pos = part.getWorldLocation();
-			if (!this.worldObj.isBlockLoaded(pos) || part.isInvalid()) {
+			if (!this.worldObj.isChunkLoaded(pos) || part.isInvalid()) {
 				deadParts.add(part);
 				onDetachBlock(part);
 				continue;
@@ -996,7 +996,7 @@ public abstract class MultiblockControllerBase {
 		}
 
 		for (IMultiblockPart part : connectedParts) {
-			if (this.worldObj.isBlockLoaded(part.getWorldLocation())) {
+			if (this.worldObj.isChunkLoaded(part.getWorldLocation())) {
 				onDetachBlock(part);
 			}
 		}
@@ -1021,7 +1021,7 @@ public abstract class MultiblockControllerBase {
 
 		for (IMultiblockPart part : connectedParts) {
 			pos = part.getWorldLocation();
-			if (part.isInvalid() || !this.worldObj.isBlockLoaded(pos)) {
+			if (part.isInvalid() || !this.worldObj.isChunkLoaded(pos)) {
 				// Chunk is unloading, skip this coord to prevent chunk thrashing
 				continue;
 			}

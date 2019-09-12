@@ -28,9 +28,9 @@
 
 package reborncore.client.texture;
 
-import net.minecraft.class_4536;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.TextureUtil;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
@@ -94,7 +94,7 @@ public class InputStreamTexture extends AbstractTexture {
 			}
 		}
 		this.bindTexture();
-		class_4536.prepareImage(this.getGlId(), 0, image.getWidth(), image.getHeight());
+		TextureUtil.prepareImage(this.getGlId(), 0, image.getWidth(), image.getHeight());
 		image.upload(0, 0, 0, 0, 0, image.getWidth(), image.getHeight(), false, false, false);
 	}
 }

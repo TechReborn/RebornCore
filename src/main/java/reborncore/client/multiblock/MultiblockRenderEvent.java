@@ -37,11 +37,11 @@
 
 package reborncore.client.multiblock;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.class_4493;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -117,12 +117,12 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		GuiLighting.disable();
 		RenderSystem.enableBlend();
 
-		RenderSystem.blendFunc(class_4493.class_4535.SRC_ALPHA, class_4493.class_4534.CONSTANT_ALPHA);
+		RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.CONSTANT_ALPHA);
 		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
 		this.renderModel(world, pos, comp.state);
 
-		RenderSystem.blendFunc(class_4493.class_4535.ONE, class_4493.class_4534.ZERO);
+		RenderSystem.blendFunc(GlStateManager.class_4535.ONE, GlStateManager.class_4534.ZERO);
 
 		RenderSystem.disableBlend();
 		RenderSystem.popMatrix();

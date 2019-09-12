@@ -3,6 +3,7 @@ package reborncore.common.fluid;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.class_4538;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -12,7 +13,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.ViewableWorld;
 
 import java.util.function.Supplier;
 
@@ -65,12 +65,12 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	protected int method_15733(ViewableWorld viewableWorld) {
+	protected int method_15733(class_4538 world) {
 		return 4;
 	}
 
 	@Override
-	protected int getLevelDecreasePerBlock(ViewableWorld viewableWorld) {
+	protected int getLevelDecreasePerBlock(class_4538 world) {
 		return 1;
 	}
 
@@ -96,7 +96,7 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	public int getTickRate(ViewableWorld viewableWorld) {
+	public int getTickRate(class_4538 world) {
 		return 10;
 	}
 

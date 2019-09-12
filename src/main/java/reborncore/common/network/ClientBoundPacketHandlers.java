@@ -34,7 +34,7 @@ public class ClientBoundPacketHandlers {
 			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
 			context.getTaskQueue().execute(() -> {
 				World world = MinecraftClient.getInstance().world;
-				if (world.isBlockLoaded(pos)) {
+				if (world.isChunkLoaded(pos)) {
 					BlockEntity blockentity = world.getBlockEntity(pos);
 					if (blockentity != null && tagCompound != null) {
 						blockentity.fromTag(tagCompound);
@@ -49,7 +49,7 @@ public class ClientBoundPacketHandlers {
 
 			context.getTaskQueue().execute(() -> {
 				FluidConfiguration fluidConfiguration = new FluidConfiguration(compoundTag);
-				if (!MinecraftClient.getInstance().world.isBlockLoaded(pos)) {
+				if (!MinecraftClient.getInstance().world.isChunkLoaded(pos)) {
 					return;
 				}
 				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
@@ -70,7 +70,7 @@ public class ClientBoundPacketHandlers {
 
 			context.getTaskQueue().execute(() -> {
 				SlotConfiguration slotConfig = new SlotConfiguration(compoundTag);
-				if (!MinecraftClient.getInstance().world.isBlockLoaded(pos)) {
+				if (!MinecraftClient.getInstance().world.isChunkLoaded(pos)) {
 					return;
 				}
 				MachineBaseBlockEntity machineBase = (MachineBaseBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(pos);
