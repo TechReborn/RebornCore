@@ -33,7 +33,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerManager;
-import reborncore.api.power.ItemPowerManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,17 +60,17 @@ public class ExternalPowerSystems  {
 			.forEach(externalPowerManager -> externalPowerManager.chargeItem(blockEntityPowerAcceptor, stack));
 	}
 	
-	public static void chargeItem(ItemPowerManager capEnergy, ItemStack stack) {
+	public static void chargeItem(ItemStack itemStack, ItemStack stack) {
 		externalPowerHandlerList.stream()
 			.filter(externalPowerManager -> externalPowerManager.isPoweredItem(stack))
-			.forEach(externalPowerManager -> externalPowerManager.chargeItem(capEnergy, stack));
+			.forEach(externalPowerManager -> externalPowerManager.chargeItem(itemStack, stack));
 	}
 
 	public static boolean isPowered(BlockEntity blockEntity, Direction facing) {
 		return externalPowerHandlerList.stream().anyMatch(externalPowerManager -> externalPowerManager.isPowered(blockEntity, facing));
 	}
 
-	public static void requestEnergyFromArmor(ItemPowerManager capEnergy, LivingEntity entityLiving) {
+	public static void requestEnergyFromArmor(ItemStack capEnergy, LivingEntity entityLiving) {
 
 	}
 }

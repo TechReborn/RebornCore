@@ -181,17 +181,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 					}
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
-				// This uses the power
 				double useRequirement = getEuPerTick(currentRecipe.getPower());
-				double used = Energy.of(energy).simulate().extract(useRequirement);
-				if (used == useRequirement) {
-					Energy.of(energy).extract(useRequirement);
-					// Increase the ticktime
+				Energy.of(energy).use(useRequirement, () -> {
 					currentTickTime++;
 					if (currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null) {
 						soundHanlder.playSound(false, blockEntity);
 					}
-				}
+				});
 			}
 		}
 		setInvDirty(false);

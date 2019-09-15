@@ -18,11 +18,10 @@ public class PowerHandler implements ExternalPowerHandler {
 
 	@Override
 	public void tick() {
-		Map<Direction, BlockEntity> acceptors = new HashMap<>();
 		if (powerAcceptor.getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (Direction side : Direction.values()) {
 				BlockEntity blockEntity = powerAcceptor.getWorld().getBlockEntity(powerAcceptor.getPos().offset(side));
-				if (blockEntity == null) {
+				if(blockEntity == null || !Energy.valid(blockEntity)){
 					continue;
 				}
 				Energy.of(powerAcceptor)
@@ -31,7 +30,6 @@ public class PowerHandler implements ExternalPowerHandler {
 						Energy.of(blockEntity).side(EnergySide.fromMinecraft(side.getOpposite()))
 					)
 					.move();
-
 			}
 		}
 	}

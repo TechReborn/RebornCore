@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
-import reborncore.api.power.ItemPowerManager;
 import team.reborn.energy.Energy;
 
 public class DefaultPowerManager implements ExternalPowerManager {
@@ -55,11 +54,11 @@ public class DefaultPowerManager implements ExternalPowerManager {
 	}
 
 	@Override
-	public void chargeItem(ItemPowerManager sourcePowerItem, ItemStack targetStack) {
+	public void chargeItem(ItemStack itemStack, ItemStack targetStack) {
 		if (!Energy.valid(targetStack)) {
 			return;
 		}
-		Energy.of(sourcePowerItem.getStack())
+		Energy.of(itemStack)
 			.into(
 				Energy
 					.of(targetStack)

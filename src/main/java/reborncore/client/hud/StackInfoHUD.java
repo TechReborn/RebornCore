@@ -37,10 +37,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
 import org.lwjgl.opengl.GL11;
-import reborncore.api.power.ItemPowerManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.StringUtils;
+import team.reborn.energy.Energy;
 import team.reborn.energy.EnergyHolder;
 
 import java.util.ArrayList;
@@ -129,10 +129,9 @@ public class StackInfoHUD {
 
 		String text = "";
 		if (stack.getItem() instanceof EnergyHolder) {
-			ItemPowerManager capEnergy = new ItemPowerManager(stack);
 
-			double maxCharge = capEnergy.getMaxEnergyStored();
-			double currentCharge = capEnergy.getEnergyStored();
+			double maxCharge = Energy.of(stack).getMaxStored();
+			double currentCharge = Energy.of(stack).getEnergy();
 
 			Formatting color = Formatting.GREEN;
 			double quarter = maxCharge / 4;
