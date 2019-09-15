@@ -28,7 +28,7 @@
 
 package reborncore.common.util;
 
-import io.github.prospector.silk.fluid.FluidInstance;
+import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -97,8 +97,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public final CompoundTag write(CompoundTag nbt) {
-		CompoundTag tankData = new CompoundTag();
-		fluidInstance.toTag(tankData);
+		CompoundTag tankData = fluidInstance.write();
 		nbt.put(name, tankData);
 		return nbt;
 	}
