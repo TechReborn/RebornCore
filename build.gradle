@@ -38,9 +38,8 @@ version = "4.0.14"
 group = 'RebornCore'
 
 def ENV = System.getenv()
-if (ENV.BUILD_NUMBER) {
-	version = version + "." + "${System.getenv().BUILD_NUMBER}"
-}
+def build_number = ENV.BUILD_NUMBER ?: "local"
+version = "${version}+build.$build_number"
 
 configurations {
 	ctRuntime {}
