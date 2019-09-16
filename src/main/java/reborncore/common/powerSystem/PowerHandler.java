@@ -6,9 +6,6 @@ import reborncore.api.power.ExternalPowerHandler;
 import team.reborn.energy.Energy;
 import team.reborn.energy.EnergySide;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PowerHandler implements ExternalPowerHandler {
 	PowerAcceptorBlockEntity powerAcceptor;
 	

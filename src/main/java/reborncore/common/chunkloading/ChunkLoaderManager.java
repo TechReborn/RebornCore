@@ -20,7 +20,6 @@ import reborncore.common.world.DataAttachment;
 import reborncore.common.world.DataAttachmentProvider;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 //This does not do the actual chunk loading, just keeps track of what chunks the chunk loader has loaded
