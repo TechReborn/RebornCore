@@ -39,7 +39,6 @@ import reborncore.api.IListInfoProvider;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
-import team.reborn.energy.Energy;
 import team.reborn.energy.EnergySide;
 import team.reborn.energy.EnergyStorage;
 import team.reborn.energy.EnergyTier;

@@ -60,8 +60,6 @@ import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
 
-import javax.annotation.Nullable;
-
 public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
 	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
