@@ -28,9 +28,12 @@
 
 package reborncore.common.crafting;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
@@ -39,6 +42,7 @@ import reborncore.common.crafting.ingredient.RebornIngredient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RecipeManager {
@@ -69,7 +73,22 @@ public class RecipeManager {
 	}
 
 	public static void validateRecipes(World world){
-		recipeTypes.forEach((key, value) -> validate(value, world));
+		//recipeTypes.forEach((key, value) -> validate(value, world));
+
+		System.out.println("Validating recipes");
+		world.getRecipeManager().keys().forEach(identifier -> {
+			try {
+				Recipe recipe =  world.getRecipeManager().get(identifier).get();
+				RecipeSerializer recipeSerializer = recipe.getSerializer();
+				PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+				recipeSerializer.write(buf, recipe);
+
+				Recipe readback = recipeSerializer.read(identifier, buf);
+			} catch (Exception e){
+				throw new RuntimeException("Failed to read " + identifier, e);
+			}
+		});
+		System.out.println("Done");
 	}
 
 	private static <R extends RebornRecipe> void validate(RebornRecipeType<R> rebornRecipeType, World world){
