@@ -1,7 +1,5 @@
 package reborncore.common.network;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,11 +17,13 @@ import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.chunkloading.ChunkLoaderManager;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Environment(EnvType.CLIENT)
+@Sided(Side.CLIENT)
 public class ClientBoundPacketHandlers {
 
 	public static void init() {

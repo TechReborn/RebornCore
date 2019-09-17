@@ -29,8 +29,6 @@
 package reborncore.client.gui.builder;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -52,6 +50,7 @@ import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
+import reborncore.modloader.Sided;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -167,7 +166,6 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		return true;
 	}
 
-	@Environment(EnvType.CLIENT)
 	@Override
 	protected void drawForeground(int mouseX, int mouseY) {
 		drawTitle();

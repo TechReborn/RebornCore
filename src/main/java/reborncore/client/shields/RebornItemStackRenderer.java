@@ -38,10 +38,10 @@ import net.minecraft.client.texture.TextureCache;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import reborncore.RebornCoreClient;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.shields.json.ShieldUser;
 import reborncore.common.util.ItemNBTHelper;
-import reborncore.mixin.extensions.ItemDynamicRendererExtensions;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -63,7 +63,7 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 	ItemDynamicRenderer renderer;
 
 	public static void setup(){
-		ItemDynamicRendererExtensions.getExtension().extend(RebornItemStackRenderer::new);
+		RebornCoreClient.hooks.extendItemDynamicRenderer(RebornItemStackRenderer::new);
 	}
 
 	public RebornItemStackRenderer(ItemDynamicRenderer renderer) {

@@ -28,12 +28,12 @@
 
 package reborncore.common.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
+import reborncore.RebornCore;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
 
 /**
  * Class stolen from SteamAgeRevolution, which I stole from BloodMagic, which was stolen from EnderCore, which stole the
@@ -47,12 +47,12 @@ public class ChatUtils {
 	private static final int DELETION_ID = 1337; //MAKE THIS UNIQUE PER MOD THAT USES THIS
 
 	public static void sendNoSpamMessages(int messageID, Text message) {
-		if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT){
+		if(RebornCore.getSide() == Side.CLIENT){
 			sendNoSpamMessage(messageID, message);
 		}
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Sided(Side.CLIENT)
 	private static void sendNoSpamMessage(int messageID, Text message) {
 		int deleteID = DELETION_ID + messageID;
 		ChatHud chat = MinecraftClient.getInstance().inGameHud.getChatHud();

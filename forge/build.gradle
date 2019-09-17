@@ -1,0 +1,87 @@
+import reborn.team.utils.RemapJar
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'java'
+
+minecraft {
+	mappings channel: 'snapshot', version: '20190719-1.14.3'
+
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+	// This wont work untill https://github.com/MinecraftForge/ForgeGradle/issues/583 is fixed :/, building the jar works fine
+	runs {
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.console.level', 'debug'
+			mods {
+				reborncore {
+					source sourceSets.main
+				}
+			}
+		}
+
+		server {
+			workingDirectory project.file('run')
+			property 'forge.logging.console.level', 'debug'
+			mods {
+				reborncore {
+					source sourceSets.main
+				}
+			}
+		}
+	}
+}
+
+minecraft{
+
+}
+
+//Remap the intermediary named jar to srg
+task srgJar(type: RemapJar) {
+	from "intermediary"
+	to "srg"
+
+	input = rootProject.remapJar.archivePath
+	output = file("build/reborncore/rc.jar")
+
+	minecraftJar = rootProject.minecraft.getMinecraftMappedProvider().getIntermediaryJar()
+	mcVersion = rootProject.minecraft.getMinecraftProvider().minecraftVersion
+}
+srgJar.dependsOn rootProject.remapJar
+
+//Only way FG allows for file deps
+repositories {
+	flatDir {
+		dirs 'build/reborncore/'
+	}
+}
+
+afterEvaluate {
+	srgJar.doTask()
+}
+
+dependencies {
+	minecraft 'net.minecraftforge:forge:1.14.4-28.1.0'
+
+	//Include the SRG remaped jar to then be renamed to mcp
+	compile fg.deobf(name: 'rc')
+}
+
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+
+task buildFinal(type: Zip) {
+	from zipTree(srgJar.output)
+	from zipTree(reobfFile)
+
+	from { rootProject.configurations.include.collect { it.isDirectory() ? it : zipTree(it) } }
+
+	destinationDir(file('/build/libs'))
+	archiveName 'RebornCore-forge.jar'
+}
+
+afterEvaluate {
+	buildFinal.dependsOn 'reobfJar'
+}
+
+
+build.dependsOn buildFinal

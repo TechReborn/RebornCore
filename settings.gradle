@@ -1,1 +1,3 @@
-rootProject.name = "RebornCore-1.14.4"
+rootProject.name = "RebornCore-base"
+include 'fabric'
+include 'forge'

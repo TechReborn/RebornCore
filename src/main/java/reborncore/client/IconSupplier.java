@@ -28,12 +28,12 @@
 
 package reborncore.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import reborncore.RebornCore;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
+import reborncore.modloader.events.client.SpriteRegistryEvent;
 
 public class IconSupplier {
 	
@@ -42,8 +42,8 @@ public class IconSupplier {
 	public static Identifier armour_legs_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_legs");
 	public static Identifier armour_feet_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_feet");
 
-	@Environment(EnvType.CLIENT)
-	public static void registerSprites(SpriteAtlasTexture atlasTexture, ClientSpriteRegistryCallback.Registry registry) {
+	@Sided(Side.CLIENT)
+	public static void registerSprites(SpriteAtlasTexture atlasTexture, SpriteRegistryEvent.Registry registry) {
 		registry.register(IconSupplier.armour_head_id);
 		registry.register(IconSupplier.armour_chest_id);
 		registry.register(IconSupplier.armour_legs_id);

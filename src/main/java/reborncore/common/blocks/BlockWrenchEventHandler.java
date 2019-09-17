@@ -28,12 +28,12 @@
 
 package reborncore.common.blocks;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import reborncore.api.ToolManager;
+import reborncore.modloader.events.UseBlockEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class BlockWrenchEventHandler {
 
 
 	public static void setup(){
-		UseBlockCallback.EVENT.register((UseBlockCallback) (playerEntity, world, hand, blockHitResult) -> {
+		UseBlockEvent.HANDLER.register((playerEntity, world, hand, blockHitResult) -> {
 			if (hand == Hand.OFF_HAND) {
 				// Wrench should be in main hand
 				return ActionResult.PASS;

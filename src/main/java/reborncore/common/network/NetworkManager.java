@@ -29,9 +29,6 @@
 package reborncore.common.network;
 
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
@@ -45,6 +42,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
+import reborncore.RebornCore;
+import reborncore.modloader.networking.PacketContext;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -58,8 +57,8 @@ public class NetworkManager {
 		return new CustomPayloadC2SPacket(identifier, buf);
 	}
 
-	public static void registerServerBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer){
-		ServerSidePacketRegistry.INSTANCE.register(identifier, (packetContext, packetByteBuf) -> consumer.accept(new ExtendedPacketBuffer(packetByteBuf), packetContext));
+	public static void registerServerBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer) {
+		RebornCore.hooks.registerServerBoundHandler(identifier, consumer);
 	}
 
 	public static Packet<ClientPlayPacketListener> createClientBoundPacket(Identifier identifier, Consumer<ExtendedPacketBuffer> packetBufferConsumer) {
@@ -67,8 +66,9 @@ public class NetworkManager {
 		packetBufferConsumer.accept(new ExtendedPacketBuffer(buf));
 		return new CustomPayloadS2CPacket(identifier, buf);
 	}
-	public static void registerClientBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer){
-		ClientSidePacketRegistry.INSTANCE.register(identifier, (packetContext, packetByteBuf) -> consumer.accept(new ExtendedPacketBuffer(packetByteBuf), packetContext));
+
+	public static void registerClientBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer) {
+		RebornCore.hooks.registerClientBoundHandler(identifier, consumer);
 	}
 
 

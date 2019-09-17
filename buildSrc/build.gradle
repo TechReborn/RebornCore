@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net'
+	}
+}
+
+dependencies {
+	compile 'org.ow2.asm:asm:7.1'
+	compile 'org.ow2.asm:asm-commons:7.1'
+	compile 'net.fabricmc:tiny-mappings-parser:0.1.1.8'
+	compile 'net.fabricmc:tiny-remapper:0.1.0.40'
+	compile ('net.fabricmc:stitch:0.2.1.61') {
+		transitive = false
+	}
+	compile 'commons-io:commons-io:2.6'
+
+}

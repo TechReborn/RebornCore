@@ -31,7 +31,7 @@ package reborncore.client.gui.slots;
 import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import reborncore.mixin.extensions.SlotExtensions;
+import reborncore.RebornCore;
 
 import java.util.function.Predicate;
 
@@ -65,6 +65,6 @@ public class BaseSlot extends Slot {
 	}
 
 	public int getSlotID(){
-		return ((SlotExtensions)this).getInvSlot();
+		return RebornCore.hooks.getSlotID(this);
 	}
 }

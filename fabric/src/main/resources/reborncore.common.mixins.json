@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "reborncore.fabric.mixin.common",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinCraftingResultSlot",
+    "MixinContainer",
+    "MixinRecipeManager",
+    "MixinFluidBlock",
+    "MixinSlot",
+    "MixinBucketItem",
+    "MixinWorldSaveHandler",
+    "MixinItemStack"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

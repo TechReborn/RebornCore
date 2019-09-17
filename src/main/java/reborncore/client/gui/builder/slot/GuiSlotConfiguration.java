@@ -33,6 +33,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Slot;
 import net.minecraft.text.LiteralText;
+import reborncore.RebornCore;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -43,7 +44,6 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.Color;
-import reborncore.mixin.extensions.SlotExtensions;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -70,9 +70,8 @@ public class GuiSlotConfiguration {
 			if (guiBase.be != slot.inventory) {
 				continue;
 			}
-			SlotExtensions slotExtensions = (SlotExtensions) slot;
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), slotExtensions.getInvSlot(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(slotExtensions.getInvSlot(), slotElement);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), RebornCore.hooks.getSlotID(slot), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(RebornCore.hooks.getSlotID(slot), slotElement);
 		}
 
 	}
@@ -171,8 +170,7 @@ public class GuiSlotConfiguration {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
-					SlotExtensions slotExtensions = (SlotExtensions) slot;
-					selectedSlot = slotExtensions.getInvSlot();
+					selectedSlot = RebornCore.hooks.getSlotID(slot);
 					return true;
 				}
 			}

@@ -1,8 +1,8 @@
 package reborncore.common.config;
 
-import net.fabricmc.loader.api.FabricLoader;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import reborncore.RebornCore;
 
 import java.io.*;
 
@@ -14,7 +14,7 @@ public class ConfigurationWrapper {
 
 
 	public ConfigurationWrapper(String path) {
-		this.file = new File(FabricLoader.getInstance().getConfigDirectory(), path + ".hocon");
+		this.file = new File(RebornCore.hooks.getConfigDir(), path + ".hocon");
 		configurationLoader = getLoader();
 		try {
 			configurationNode = configurationLoader.load();

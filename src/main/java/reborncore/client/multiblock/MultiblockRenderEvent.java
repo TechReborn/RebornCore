@@ -38,7 +38,6 @@
 package reborncore.client.multiblock;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
@@ -47,6 +46,8 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.BaseFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -54,13 +55,14 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
+import reborncore.RebornCore;
+import reborncore.RebornCoreClient;
 import reborncore.client.multiblock.component.MultiblockComponent;
-import reborncore.mixin.extensions.CameraExtensions;
-import reborncore.mixin.extensions.FluidBlockExtensions;
+import reborncore.modloader.events.AttackBlockEvent;
 
 import java.util.Random;
 
-public class MultiblockRenderEvent implements AttackBlockCallback {
+public class MultiblockRenderEvent implements AttackBlockEvent {
 
 	public static BlockPos anchor;
 	public MultiblockSet currentMultiblock;
@@ -76,8 +78,7 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 	public void onWorldRenderLast(float partialTicks) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 
-		CameraExtensions cameraExtensions = (CameraExtensions) MinecraftClient.getInstance().gameRenderer.getCamera();
-		float sneak = cameraExtensions.getCameraY();
+		float sneak = RebornCoreClient.hooks.getCameraY();
 
 		if (mc.player != null && anchor != null) {
 			if (currentMultiblock != null && sneak > 1.618F) {
@@ -135,8 +136,8 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
 
 		if(state.getBlock() instanceof FluidBlock){
-			FluidBlockExtensions fluidBlockExtensions = (FluidBlockExtensions) state.getBlock();
-			blockRendererDispatcher.tesselateFluid(pos, world, buffer, fluidBlockExtensions.getFluid().getStill().getDefaultState());
+			BaseFluid fluid = RebornCore.hooks.getFluidFromBlock((FluidBlock) state.getBlock());
+			blockRendererDispatcher.tesselateFluid(pos, world, buffer, fluid.getStill().getDefaultState());
 		} else {
 			blockRendererDispatcher.tesselateBlock(state, pos, world, buffer, new Random());
 		}

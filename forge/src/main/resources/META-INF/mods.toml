@@ -1,0 +1,8 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+
+[[mods]]
+	modId="reborncore"
+	version="${file.jarVersion}"
+	displayName="Reborn Core"
+	description="A mod"

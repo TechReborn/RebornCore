@@ -1,19 +1,19 @@
 package reborncore.common.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Lazy;
+import reborncore.RebornCoreClient;
+import reborncore.modloader.events.client.SpriteRegistryEvent;
 
 import java.util.stream.Stream;
 
-public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {
+public class RebornFluidRenderManager implements SpriteRegistryEvent {
 
 	public static void setupClient(){
 		RebornFluidRenderManager rebornFluidRenderManager = new RebornFluidRenderManager();
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(rebornFluidRenderManager);
+		SpriteRegistryEvent.BLOCK_ATLAS.register(rebornFluidRenderManager);
 		RebornFluidManager.getFluidStream().forEach(RebornFluidRenderManager::setupFluidRenderer);
 	}
 
@@ -25,7 +25,7 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {
 			return new Sprite[]{spriteAtlas.getSprite(fluidSettings.getStillTexture()), spriteAtlas.getSprite(fluidSettings.getFlowingTexture())};
 		});
 
-		FluidRenderHandlerRegistry.INSTANCE.register(fluid, (extendedBlockView, blockPos, fluidState) -> sprites.get());
+		RebornCoreClient.hooks.getFluidRenderHandlerRegistry().register(fluid, (extendedBlockView, blockPos, fluidState) -> sprites.get());
 	}
 
 	@Override

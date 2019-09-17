@@ -22,3 +22,5 @@ classes/*
 *.launch
 /doc/
 /maven
+/forge/run
+/fabric/run

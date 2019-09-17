@@ -30,9 +30,8 @@ package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import reborncore.RebornCore;
 import reborncore.common.fluid.container.FluidInstance;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -183,7 +182,7 @@ public class GuiBuilder {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
-		if (FabricLoader.getInstance().isModLoaded("jei")) {
+		if (RebornCore.hooks.isModLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
 				x += gui.getGuiLeft();
 				y += gui.getGuiTop();
@@ -679,8 +678,8 @@ public class GuiBuilder {
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		y += height;
-		final Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidSprites(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState())[0];
-		int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidColor(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState());
+		final Sprite sprite = RebornCoreClient.hooks.getFluidSprite(fluid.getFluid(), gui.getMachine().getWorld(), gui.getMachine().getPos());
+		int color = RebornCoreClient.hooks.getFluidColor(fluid.getFluid(), gui.getMachine().getWorld(), gui.getMachine().getPos());
 
 		final int drawHeight = (int) (fluid.getAmount() / (maxCapacity * 1F) * height);
 		final int iconHeight = sprite.getHeight();

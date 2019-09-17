@@ -1,8 +1,6 @@
 package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
@@ -12,11 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 import reborncore.common.network.ServerBoundPackets;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
+@Sided(Side.CLIENT)
 public class ClientChunkManager {
 
 	private static List<ChunkLoaderManager.LoadedChunk> loadedChunks = new ArrayList<>();

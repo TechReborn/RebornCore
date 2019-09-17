@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "reborncore.fabric.mixin.client",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MixinPlayerEntityRenderer",
+    "MixinItemDynamicRenderer",
+    "MixinGameRenderer",
+    "MixinItemRenderer",
+    "MixinCamera"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

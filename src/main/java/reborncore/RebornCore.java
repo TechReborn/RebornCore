@@ -28,12 +28,9 @@
 
 package reborncore;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.world.WorldTickCallback;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
-import net.fabricmc.loader.api.FabricLoader;
+import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,11 +54,19 @@ import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
 import reborncore.common.world.DataAttachment;
+import reborncore.modloader.ModLoaderHooks;
+import reborncore.modloader.Side;
+import reborncore.modloader.events.CommandRegistryEvent;
+import reborncore.modloader.events.WorldTickEvent;
 
 import java.io.File;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RebornCore implements ModInitializer {
+public class RebornCore {
+	public static final RebornCore INSTANCE = new RebornCore();
+
+	public static ModLoaderHooks hooks;
 
 	public static final String MOD_NAME = "Reborn Core";
 	public static final String MOD_ID = "reborncore";
@@ -73,17 +78,13 @@ public class RebornCore implements ModInitializer {
 
 	public static boolean LOADED = false;
 
-	public RebornCore() {
 
-	}
-
-	@Override
 	public void onInitialize() {
 		new Configuration(RebornCoreConfig.class, "reborncore");
 
 		ItemPowerHolder.setup();
 
-		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
+		configDir = new File(hooks.getConfigDir(), "teamreborn");
 		if (!configDir.exists()) {
 			configDir.mkdir();
 		}
@@ -118,7 +119,7 @@ public class RebornCore implements ModInitializer {
 		 * each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
 		 * ticks run only on the server, and only when worlds are loaded.
 		 */
-		WorldTickCallback.EVENT.register(MultiblockRegistry::tickStart);
+		WorldTickEvent.HANDLER.register(MultiblockRegistry::tickStart);
 
 		// packets
 		ServerBoundPackets.init();
@@ -127,7 +128,7 @@ public class RebornCore implements ModInitializer {
 		RebornFluidManager.setupBucketMap();
 		ExternalPowerSystems.addPowerHandler(new DefaultPowerManager());
 
-		CommandRegistry.INSTANCE.register(false, dispatcher -> dispatcher.register(CommandManager.literal("rc_validate_recipes").executes(context -> {
+		CommandRegistryEvent.HANDLER.register(dispatcher -> dispatcher.register(CommandManager.literal("rc_validate_recipes").executes(context -> {
 			try {
 				RecipeManager.validateRecipes(context.getSource().getWorld());
 			} catch (Exception e){
@@ -142,12 +143,12 @@ public class RebornCore implements ModInitializer {
 		LOADED = true;
 	}
 
-	public static EnvType getSide() {
-		return FabricLoader.getInstance().getEnvironmentType();
+	public static Side getSide() {
+		return hooks.getSide();
 	}
 
 	public static void clientOnly(Supplier<Runnable> runnable){
-		if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT){
+		if(getSide() == Side.CLIENT){
 			runnable.get().run();
 		}
 	}

@@ -28,10 +28,10 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.Identifier;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
 
 import javax.annotation.Nullable;
 
@@ -57,7 +57,7 @@ public class SpriteSlot extends FilteredSlot {
 
 	@Override
 	@Nullable
-	@Environment(EnvType.CLIENT)
+	@Sided(Side.CLIENT)
 	public String getBackgroundSprite() {
 		return this.spriteName.toString();
 	}

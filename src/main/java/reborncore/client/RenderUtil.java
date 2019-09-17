@@ -29,8 +29,6 @@
 package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -41,6 +39,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
+import reborncore.RebornCoreClient;
 import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.util.Tank;
 import net.minecraft.fluid.Fluid;
@@ -67,11 +66,7 @@ public class RenderUtil {
 	}
 
 	public static Sprite getStillTexture(Fluid fluid) {
-		FluidRenderHandler fluidRenderHandler =  FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-		if(fluidRenderHandler != null){
-			return fluidRenderHandler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN , fluid.getDefaultState())[0];
-		}
-		return null;
+		return RebornCoreClient.hooks.getFluidSprite(fluid, MinecraftClient.getInstance().world, BlockPos.ORIGIN);
 	}
 
 	public static void renderGuiTank(Tank tank, double x, double y, double zLevel, double width, double height) {

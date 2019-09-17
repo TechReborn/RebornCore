@@ -28,8 +28,6 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.container.Container;
 import net.minecraft.container.ContainerListener;
 import net.minecraft.container.Slot;
@@ -40,9 +38,11 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
+import reborncore.RebornCore;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemUtils;
-import reborncore.mixin.extensions.ContainerExtensions;
+import reborncore.modloader.Side;
+import reborncore.modloader.Sided;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +127,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ContainerListener listener : ContainerExtensions.get(this).getListeners()) {
+		for (final ContainerListener listener : RebornCore.hooks.getListeners(this)) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
@@ -211,7 +211,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.objectValues.get(var).getMiddle().accept(value);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Sided(Side.CLIENT)
 	@Override
 	public void setProperties(final int id, final int value) {
 
