@@ -44,18 +44,21 @@ public class RecipeRemover {
 	}
 
 	public static void removeAnyRecipe(ItemStack resultItem) {
-		for (IRecipe tmpRecipe : CraftingManager.REGISTRY) {
-			ItemStack recipeResult = tmpRecipe.getRecipeOutput();
-			if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
-				removeRecipe(tmpRecipe);
+		for (Object tmpObject : CraftingManager.REGISTRY) {
+			if (tmpObject instanceof IRecipe) {
+				IRecipe tmpRecipe = (IRecipe) tmpObject;
+				ItemStack recipeResult = tmpRecipe.getRecipeOutput();
+				if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
+					removeRecipe(tmpRecipe);
+				}
 			}
 		}
 	}
 
 	public static void removeShapedRecipe(ItemStack resultItem) {
-		for (IRecipe tmpRecipe : CraftingManager.REGISTRY) {
-			if (tmpRecipe instanceof ShapedRecipes) {
-				ShapedRecipes recipe = (ShapedRecipes) tmpRecipe;
+		for (Object tmpObject : CraftingManager.REGISTRY) {
+			if (tmpObject instanceof ShapedRecipes) {
+				ShapedRecipes recipe = (ShapedRecipes) tmpObject;
 				ItemStack recipeResult = recipe.getRecipeOutput();
 				if (ItemStack.areItemStacksEqual(resultItem, recipeResult)) {
 					removeRecipe(recipe);

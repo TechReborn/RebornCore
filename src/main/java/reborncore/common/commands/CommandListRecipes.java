@@ -66,9 +66,12 @@ public class CommandListRecipes extends CommandBase {
 			return;
 		}
 		List<IRecipe> recipeList = new ArrayList<>();
-		CraftingManager.REGISTRY.forEach(recipe -> {
-			if(ItemUtils.isItemEqual(recipe.getRecipeOutput(), player.getHeldItem(EnumHand.MAIN_HAND), true, true, true)){
-				recipeList.add(recipe);
+		CraftingManager.REGISTRY.forEach(value -> {
+			if (value instanceof IRecipe) {
+				IRecipe recipe = (IRecipe) value;
+				if(ItemUtils.isItemEqual(recipe.getRecipeOutput(), player.getHeldItem(EnumHand.MAIN_HAND), true, true, true)){
+					recipeList.add(recipe);
+				}				
 			}
 		});
 		if(recipeList.isEmpty()){
