@@ -5,9 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.api.power.ExternalPowerManager;
-import reborncore.api.power.IEnergyItemInfo;
-import reborncore.api.power.EnergyBlockEntity;
-import reborncore.api.power.ItemPowerManager;
+import team.reborn.energy.Energy;
 
 public class DefaultPowerManager implements ExternalPowerManager {
 
@@ -18,55 +16,53 @@ public class DefaultPowerManager implements ExternalPowerManager {
 
 	@Override
 	public boolean isPoweredItem(ItemStack stack) {
-		return stack.getItem() instanceof IEnergyItemInfo;
+		return Energy.valid(stack);
 	}
 
 	@Override
 	public boolean isPowered(BlockEntity blockEntity, Direction side) {
-		return blockEntity instanceof EnergyBlockEntity;
+		return Energy.valid(blockEntity);
 	}
 
 	@Override
 	public void dischargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
-		if (! (stack.getItem() instanceof IEnergyItemInfo)) {
+		if (!Energy.valid(stack)) {
 			return;
 		}
-		double chargeEnergy = Math.min(blockEntityPowerAcceptor.getFreeSpace(), blockEntityPowerAcceptor.getMaxInput());
-		if (chargeEnergy <= 0.0) {
-			return;
-		}
-		ItemPowerManager poweredItem = new ItemPowerManager(stack);
-		if (poweredItem.getEnergyStored() > 0) {
-			int extracted = poweredItem.extractEnergy((int) chargeEnergy, false);
-			blockEntityPowerAcceptor.addEnergy(extracted);
-		}
+
+		Energy.of(stack)
+			.into(
+				Energy
+				      .of(blockEntityPowerAcceptor)
+			)
+			.move();
+
 	}
 
 	@Override
 	public void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack) {
-		if (! (stack.getItem() instanceof IEnergyItemInfo)) {
+		if (!Energy.valid(stack)) {
 			return;
 		}
-		
-		int chargeEnergy = (int) Math.min(blockEntityPowerAcceptor.getEnergy(), blockEntityPowerAcceptor.getMaxOutput());
-		ItemPowerManager poweredItem = new ItemPowerManager(stack);
-		int energyReceived = poweredItem.receiveEnergy(chargeEnergy, false);
-		if (energyReceived > 0) {
-			blockEntityPowerAcceptor.useEnergy((double) energyReceived);
-		}
+
+		Energy.of(blockEntityPowerAcceptor)
+			.into(
+				Energy
+					.of(stack)
+			)
+			.move();
 	}
 
 	@Override
-	public void chargeItem(ItemPowerManager sourcePowerItem, ItemStack targetStack) {
-		if (! (targetStack.getItem() instanceof IEnergyItemInfo)) {
+	public void chargeItem(ItemStack itemStack, ItemStack targetStack) {
+		if (!Energy.valid(targetStack)) {
 			return;
 		}
-		ItemPowerManager targetPoweredItem = new ItemPowerManager(targetStack);
-		IEnergyItemInfo sourcePowerInfo = (IEnergyItemInfo) sourcePowerItem.getStack().getItem();
-		int chargeEnergy = Math.min(sourcePowerItem.getEnergyStored(), sourcePowerInfo.getMaxOutput());
-		int energyReceived = targetPoweredItem.receiveEnergy(chargeEnergy, false);
-		if (energyReceived > 0 ) {
-			sourcePowerItem.extractEnergy(energyReceived, false);
-		}
+		Energy.of(itemStack)
+			.into(
+				Energy
+					.of(targetStack)
+			)
+			.move();
 	}
 }

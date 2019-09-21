@@ -34,20 +34,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.EnumPowerTier;
 import reborncore.api.power.ExternalPowerHandler;
-import reborncore.api.power.EnergyBlockEntity;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
+import team.reborn.energy.Energy;
+import team.reborn.energy.EnergySide;
+import team.reborn.energy.EnergyStorage;
+import team.reborn.energy.EnergyTier;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity implements EnergyBlockEntity, IListInfoProvider // TechReborn
+public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity implements EnergyStorage, IListInfoProvider // TechReborn
 {
-	private EnumPowerTier blockEntityPowerTier;
+	private EnergyTier blockEntityPowerTier;
 	private double energy;
 
 	public double extraPowerStorage;
@@ -78,12 +81,21 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	public void checkTier() {
-		if (this.getMaxInput() == 0) {
-			blockEntityPowerTier = EnumPowerTier.getTier((int) this.getBaseMaxOutput());
+		if (this.getMaxInput(EnergySide.UNKNOWN) == 0) {
+			blockEntityPowerTier = getTier((int) this.getBaseMaxOutput());
 		} else {
-			blockEntityPowerTier = EnumPowerTier.getTier((int) this.getBaseMaxInput());
+			blockEntityPowerTier = getTier((int) this.getBaseMaxInput());
 		}
 
+	}
+
+	public static EnergyTier getTier(int power) {
+		for (EnergyTier tier : EnergyTier.values()) {
+			if (tier.getMaxInput() >= power) {
+				return tier;
+			}
+		}
+		return EnergyTier.INFINITE;
 	}
 
 	public void setExtraPowerStorage(double extraPowerStorage) {
@@ -108,7 +120,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			return;
 		}
 
-		double chargeEnergy = Math.min(getFreeSpace(), getMaxInput());
+		double chargeEnergy = Math.min(getFreeSpace(), getMaxInput(EnergySide.UNKNOWN));
 		if (chargeEnergy <= 0.0) {
 			return;
 		}
@@ -124,6 +136,26 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			ExternalPowerSystems.dischargeItem(this, batteryStack);
 		}
 
+	}
+
+	/**
+	 * Charge battery from machine placed inside inventory slot
+	 *
+	 * @param slot int Slot ID for battery slot
+	 */
+	public void discharge(int slot) {
+		if (world.isClient) {
+			return;
+		}
+
+		ItemStack batteryStack = getOptionalInventory().get().getInvStack(slot);
+		if(batteryStack.isEmpty()){
+			return;
+		}
+
+		if(Energy.valid(batteryStack)){
+			Energy.of(this).into(Energy.of(batteryStack)).move();
+		}
 	}
 
 	public int getEnergyScaled(int scale) {
@@ -223,27 +255,32 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		powerManagers.forEach(ExternalPowerHandler::unload);
 	}
 
-	// IEnergyInterfaceTile
-	@Override
+
 	public double getEnergy() {
+		return getStored(EnergySide.UNKNOWN);
+	}
+
+	@Override
+	public double getStored(EnergySide face) {
 		return energy;
 	}
 
 	@Override
-	public void setEnergy(double energy) {
-		if (!checkOverfill) {
-			this.energy = energy;
-			return;
+	public void setStored(double amount) {
+		this.energy = amount;
+		if(checkOverfill){
+			this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 		}
-		this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 	}
 
-	@Override
+	public void setEnergy(double energy) {
+		setStored(energy);
+	}
+
 	public double addEnergy(double energy) {
 		return addEnergy(energy, false);
 	}
 
-	@Override
 	public double addEnergy(double energy, boolean simulate) {
 		double energyReceived = Math.min(getMaxPower(), Math.min(getFreeSpace(), energy));
 
@@ -253,17 +290,14 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		return energyReceived;
 	}
 
-	@Override
 	public boolean canUseEnergy(double input) {
 		return input <= energy;
 	}
 
-	@Override
 	public double useEnergy(double energy) {
 		return useEnergy(energy, false);
 	}
 
-	@Override
 	public double useEnergy(double extract, boolean simulate) {
 		if (extract > energy) {
 			extract = energy;
@@ -274,18 +308,32 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		return extract;
 	}
 
-	@Override
 	public boolean canAddEnergy(double energyIn) {
 		return getEnergy() + energyIn <= getMaxPower();
 	}
 
-	@Override
 	public double getMaxPower() {
 		return getBaseMaxPower() + extraPowerStorage;
 	}
 
 	@Override
-	public double getMaxOutput() {
+	public double getMaxStoredPower() {
+		return getMaxPower();
+	}
+
+	public boolean canAcceptEnergy(Direction direction) {
+		return true;
+	}
+
+	public boolean canProvideEnergy(Direction direction) {
+		return true;
+	}
+
+	@Override
+	public double getMaxOutput(EnergySide face) {
+		if(!canProvideEnergy(fromSide(face))) {
+			return 0;
+		}
 		double maxOutput = 0;
 		if (this.extraTier > 0) {
 			maxOutput = this.getTier().getMaxOutput();
@@ -296,7 +344,10 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	@Override
-	public double getMaxInput() {
+	public double getMaxInput(EnergySide face) {
+		if(!canAcceptEnergy(fromSide(face))) {
+			return 0;
+		}
 		double maxInput = 0;
 		if (this.extraTier > 0) {
 			maxInput = this.getTier().getMaxInput();
@@ -306,23 +357,30 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		return maxInput + extraPowerInput;
 	}
 
-	public EnumPowerTier getPushingTier() {
+	public static Direction fromSide(EnergySide side){
+		if(side == EnergySide.UNKNOWN){
+			return null;
+		}
+		return Direction.values()[side.ordinal()];
+	}
+
+	public EnergyTier getPushingTier() {
 		return getTier();
 	}
 
 	@Override
-	public EnumPowerTier getTier() {
+	public EnergyTier getTier() {
 		if (blockEntityPowerTier == null) {
 			checkTier();
 		}
 
 		if (extraTier > 0) {
-			for (EnumPowerTier enumTier : EnumPowerTier.values()) {
+			for (EnergyTier enumTier : EnergyTier.values()) {
 				if (enumTier.ordinal() == blockEntityPowerTier.ordinal() + extraTier) {
 					return blockEntityPowerTier;
 				}
 			}
-			return EnumPowerTier.INFINITE;
+			return EnergyTier.INFINITE;
 		}
 		return blockEntityPowerTier;
 	}
@@ -332,13 +390,13 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	public void addInfo(List<Text> info, boolean isReal, boolean hasData) {
 		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
 				+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
-		if (getMaxInput() != 0) {
+		if (getMaxInput(EnergySide.UNKNOWN) != 0) {
 			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput())));
+					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput(EnergySide.UNKNOWN))));
 		}
-		if (getMaxOutput() != 0) {
+		if (getMaxOutput(EnergySide.UNKNOWN) <= 0) {
 			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput())));
+					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput(EnergySide.UNKNOWN))));
 		}
 		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
 				+ Formatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
@@ -354,4 +412,5 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 
 		super.addInfo(info, isReal, hasData);
 	}
+
 }

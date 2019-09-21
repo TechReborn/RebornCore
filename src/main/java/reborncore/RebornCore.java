@@ -38,6 +38,7 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
+import reborncore.api.power.ItemPowerHolder;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
 import reborncore.common.chunkloading.ChunkLoaderManager;
@@ -76,10 +77,11 @@ public class RebornCore implements ModInitializer {
 
 	}
 
-
 	@Override
 	public void onInitialize() {
 		new Configuration(RebornCoreConfig.class, "reborncore");
+
+		ItemPowerHolder.setup();
 
 		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
 		if (!configDir.exists()) {

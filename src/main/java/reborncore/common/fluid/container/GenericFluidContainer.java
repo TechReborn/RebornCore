@@ -1,6 +1,5 @@
 package reborncore.common.fluid.container;
 
-import io.github.prospector.silk.fluid.FluidInstance;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;

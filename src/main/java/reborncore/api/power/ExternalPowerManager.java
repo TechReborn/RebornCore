@@ -46,7 +46,7 @@ public interface ExternalPowerManager {
 
 	public void chargeItem(PowerAcceptorBlockEntity blockEntityPowerAcceptor, ItemStack stack);
 
-	public void chargeItem(ItemPowerManager powerAcceptor, ItemStack stack);
+	public void chargeItem(ItemStack powerAcceptor, ItemStack stack);
 
 	/**
 	 * Requests that the specified power acceptor be charged from the armor slots in an entity's inventory.
@@ -54,5 +54,5 @@ public interface ExternalPowerManager {
 	 * @param powerAcceptor The item requesting to be charged
 	 * @param entity The entity whose inventory contains the power acceptor
 	 */
-	default void requestEnergyFromArmor(ItemPowerManager powerAcceptor, LivingEntity entity) { }
+	default void requestEnergyFromArmor(ItemStack powerAcceptor, LivingEntity entity) { }
 }

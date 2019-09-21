@@ -30,7 +30,7 @@ package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.prospector.silk.fluid.FluidInstance;
+import reborncore.common.fluid.container.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;

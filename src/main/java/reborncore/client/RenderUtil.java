@@ -42,9 +42,9 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
+import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.util.Tank;
 import net.minecraft.fluid.Fluid;
-import io.github.prospector.silk.fluid.FluidInstance;
 
 /**
  * Created by Gigabit101 on 08/08/2016.

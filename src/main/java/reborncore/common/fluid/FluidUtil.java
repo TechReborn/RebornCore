@@ -1,6 +1,6 @@
 package reborncore.common.fluid;
 
-import io.github.prospector.silk.fluid.FluidInstance;
+import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;

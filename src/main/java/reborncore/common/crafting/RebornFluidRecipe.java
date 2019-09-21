@@ -1,7 +1,7 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
-import io.github.prospector.silk.fluid.FluidInstance;
+import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;

@@ -34,13 +34,12 @@ repositories {
 	}
 }
 
-version = "4.0.15"
+version = "4.0.16"
 group = 'RebornCore'
 
 def ENV = System.getenv()
-if (ENV.BUILD_NUMBER) {
-	version = version + "." + "${System.getenv().BUILD_NUMBER}"
-}
+def build_number = ENV.BUILD_NUMBER ?: "local"
+version = "${version}+build.$build_number"
 
 configurations {
 	ctRuntime {}
@@ -57,16 +56,15 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:+"
 
 	compile 'org.checkerframework:checker-qual:2.10.0'
-
 	compile 'org.spongepowered:configurate-hocon:3.6'
 
 	include 'org.spongepowered:configurate-hocon:3.6'
 	include 'org.spongepowered:configurate-core:3.6'
 	include 'com.typesafe:config:1.3.1'
 
-	modCompile "io.github.prospector.silk:SilkAPI:1.2.4-43"
-	include "io.github.prospector.silk:SilkAPI:1.2.4-43"
-
+	compile 'teamreborn:energy:0.0.7'
+	include 'teamreborn:energy:0.0.7'
+	
 	ctRuntime "CurseTools:CurseTools:+"
 }
 

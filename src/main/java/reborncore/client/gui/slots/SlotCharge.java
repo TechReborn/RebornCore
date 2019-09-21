@@ -30,7 +30,7 @@ package reborncore.client.gui.slots;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import reborncore.api.power.IEnergyItemInfo;
+import team.reborn.energy.Energy;
 
 /**
  * Created by Rushmead
@@ -42,11 +42,7 @@ public class SlotCharge extends BaseSlot {
 
 	@Override
 	public boolean canInsert(ItemStack stack) {
-		if (stack.getItem() instanceof IEnergyItemInfo) {
-			return true;
-		} else {
-			return false;
-		}
+		return Energy.valid(stack);
 	}
 
 	@Override

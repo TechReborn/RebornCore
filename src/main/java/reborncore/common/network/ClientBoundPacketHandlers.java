@@ -2,7 +2,6 @@ package reborncore.common.network;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,7 +21,6 @@ import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
