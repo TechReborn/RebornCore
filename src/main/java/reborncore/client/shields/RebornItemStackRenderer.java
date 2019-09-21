@@ -94,19 +94,19 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 				if (shieldTexture != null) {
 					if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
 						if (customTextureMap.containsKey(location.getPath())) {
-							MinecraftClient.getInstance().getTextureManager().bindTexture(location);
+							MinecraftClient.getInstance().getTextureManager().method_22813(location);
 						} else {
 							AbstractTexture texture = shieldTexture.getTexture();
 							customTextureMap.put(location.getPath(), texture);
 							final Identifier resourceLocation = location;
 							THREAD_POOL.submit(() -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
-							MinecraftClient.getInstance().getTextureManager().bindTexture(TextureCache.DEFAULT_SHIELD);
+							MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
 						}
 					} else {
-						MinecraftClient.getInstance().getTextureManager().bindTexture(TextureCache.DEFAULT_SHIELD);
+						MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
 					}
 				} else {
-					MinecraftClient.getInstance().getTextureManager().bindTexture(TextureCache.DEFAULT_SHIELD);
+					MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
 				}
 			} else {
 				renderer.render(itemStackIn);

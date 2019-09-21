@@ -57,7 +57,7 @@ public class RenderUtil {
 	}
 
 	public static void bindBlockTexture() {
-		engine().bindTexture(BLOCK_TEX);
+		engine().method_22813(BLOCK_TEX);
 	}
 
 	public static Sprite getStillTexture(FluidInstance fluid) {

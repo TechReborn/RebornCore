@@ -106,7 +106,7 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		World world = player.world;
 
-		minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		minecraft.getTextureManager().method_22813(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
 		RenderSystem.pushMatrix();
 		RenderSystem.translated(-dx, -dy, -dz);
@@ -133,7 +133,7 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder buffer = tessellator.getBufferBuilder();
 		RenderSystem.translated(-pos.getX(), -pos.getY(), -pos.getZ());
-		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_LMAP);
+		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_NORMAL);
 
 		if(state.getBlock() instanceof FluidBlock){
 			FluidBlockExtensions fluidBlockExtensions = (FluidBlockExtensions) state.getBlock();

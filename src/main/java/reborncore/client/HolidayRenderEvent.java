@@ -61,7 +61,7 @@ public class HolidayRenderEvent {
 		                   float scale) {
 			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.prevBodyYaw + (abstractClientPlayer.bodyYaw - abstractClientPlayer.prevBodyYaw) * partialTicks);
 			float pitch = abstractClientPlayer.prevPitch + (abstractClientPlayer.pitch - abstractClientPlayer.prevPitch) * partialTicks;
-			MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+			MinecraftClient.getInstance().getTextureManager().method_22813(TEXTURE);
 			RenderSystem.pushMatrix();
 			RenderSystem.rotatef(yaw, 0.0F, 1.0F, 0.0F);
 			RenderSystem.rotatef(pitch, 1.0F, 0.0F, 0.0F);

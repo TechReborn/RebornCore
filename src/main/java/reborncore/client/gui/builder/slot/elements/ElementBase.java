@@ -308,7 +308,7 @@ public class ElementBase {
 	}
 
 	public void setTextureSheet(Identifier textureLocation) {
-		MinecraftClient.getInstance().getTextureManager().bindTexture(textureLocation);
+		MinecraftClient.getInstance().getTextureManager().method_22813(textureLocation);
 	}
 
 	public void drawCenteredString(GuiBase<?> gui, String string, int y, int colour) {
@@ -359,7 +359,7 @@ public class ElementBase {
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
+		MinecraftClient.getInstance().getTextureManager().method_22813(GuiBuilder.defaultTextureSheet);
 		gui.blit(x, y, 0, 0, width / 2, height / 2);
 		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);

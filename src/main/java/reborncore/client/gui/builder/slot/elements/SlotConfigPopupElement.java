@@ -75,7 +75,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		BlockState actualState = state.getBlock().getDefaultState();
 		BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		BakedModel model = dispatcher.getModels().getModel(state.getBlock().getDefaultState());
-		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		MinecraftClient.getInstance().getTextureManager().method_22813(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
