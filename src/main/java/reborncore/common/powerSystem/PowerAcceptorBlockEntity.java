@@ -39,6 +39,7 @@ import reborncore.api.IListInfoProvider;
 import reborncore.api.power.ExternalPowerHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
+import team.reborn.energy.Energy;
 import team.reborn.energy.EnergySide;
 import team.reborn.energy.EnergyStorage;
 import team.reborn.energy.EnergyTier;
@@ -135,6 +136,26 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			ExternalPowerSystems.dischargeItem(this, batteryStack);
 		}
 
+	}
+
+	/**
+	 * Charge battery from machine placed inside inventory slot
+	 *
+	 * @param slot int Slot ID for battery slot
+	 */
+	public void discharge(int slot) {
+		if (world.isClient) {
+			return;
+		}
+
+		ItemStack batteryStack = getOptionalInventory().get().getInvStack(slot);
+		if(batteryStack.isEmpty()){
+			return;
+		}
+
+		if(Energy.valid(batteryStack)){
+			Energy.of(this).into(Energy.of(batteryStack)).move();
+		}
 	}
 
 	public int getEnergyScaled(int scale) {

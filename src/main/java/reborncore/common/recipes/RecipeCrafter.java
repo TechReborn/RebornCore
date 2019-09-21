@@ -137,6 +137,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (ticksSinceLastChange == 20) {
 			setInvDirty(true);
 			ticksSinceLastChange = 0;
+			setIsActive();
 		}
 		// It will now look for new recipes.
 		if (currentRecipe == null && isInvDirty()) {
