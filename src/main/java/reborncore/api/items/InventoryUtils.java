@@ -41,10 +41,13 @@ public class InventoryUtils {
 			SidedInventory sidedInventory = (SidedInventory) blockEntity;
 			for(int slot : sidedInventory.getInvAvailableSlots(direction)){
 				if(sidedInventory.canInsertInvStack(slot, stack, direction)){
-					return insertIntoInv(sidedInventory, slot, stack);
+					stack = insertIntoInv(sidedInventory, slot, stack);
+					if(stack.isEmpty()){
+						break;
+					}
 				}
 			}
-			return ItemStack.EMPTY;
+			return stack;
 		} else if(blockEntity instanceof Inventory){
 			Inventory inventory = (Inventory) blockEntity;
 			for (int i = 0; i < inventory.getInvSize() & !stack.isEmpty(); i++) {
