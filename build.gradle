@@ -32,6 +32,10 @@ repositories {
 		name = 'sponge'
 		url = 'https://repo.spongepowered.org/maven'
 	}
+	maven {
+		name = "Energies"
+		url = 'https://dl.bintray.com/alexiy/maven-repo'
+	}
 }
 
 version = "4.0.16"
@@ -64,6 +68,8 @@ dependencies {
 
 	compile 'teamreborn:energy:0.0.7'
 	include 'teamreborn:energy:0.0.7'
+
+	modCompileOnly 'io.github.alexiyorlov:Energies:1.14.4-1.1.0:dev'
 	
 	ctRuntime "CurseTools:CurseTools:+"
 }
