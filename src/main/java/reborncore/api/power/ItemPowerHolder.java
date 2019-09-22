@@ -15,7 +15,7 @@ public final class ItemPowerHolder {
 		setup = true;
 		Energy.registerHolder(object -> {
 			if(object instanceof ItemStack){
-				return ((ItemStack) object).getItem() instanceof EnergyHolder;
+				return !((ItemStack) object).isEmpty() && ((ItemStack) object).getItem() instanceof EnergyHolder;
 			}
 			return false;
 		}, object -> {

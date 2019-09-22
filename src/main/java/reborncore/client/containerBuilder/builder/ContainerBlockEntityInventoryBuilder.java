@@ -45,8 +45,8 @@ import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
 import reborncore.common.fluid.container.ItemFluidInfo;
-import reborncore.common.powerSystem.ExternalPowerSystems;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
+import team.reborn.energy.Energy;
 
 import java.util.function.*;
 
@@ -99,7 +99,7 @@ public class ContainerBlockEntityInventoryBuilder {
 
 	public ContainerBlockEntityInventoryBuilder energySlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
-			.setFilter(ExternalPowerSystems::isPoweredItem));
+			.setFilter(Energy::valid));
 		return this;
 	}
 

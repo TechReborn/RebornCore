@@ -28,6 +28,7 @@
 
 package reborncore.common.powerSystem;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +37,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Direction;
 import reborncore.api.IListInfoProvider;
-import reborncore.api.power.ExternalPowerHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
 import team.reborn.energy.Energy;
@@ -45,8 +45,6 @@ import team.reborn.energy.EnergyStorage;
 import team.reborn.energy.EnergyTier;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity implements EnergyStorage, IListInfoProvider // TechReborn
 {
@@ -65,19 +63,9 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	// option.
 	public int maxPacketsPerTick = 1;
 
-	private List<ExternalPowerHandler> powerManagers;
-
 	public PowerAcceptorBlockEntity(BlockEntityType<?> blockEntityType) {
 		super(blockEntityType);
 		checkTier();
-		setupManagers();
-	}
-
-	private void setupManagers() {
-		final PowerAcceptorBlockEntity blockEntity = this;
-		powerManagers = ExternalPowerSystems.externalPowerHandlerList.stream()
-				.map(externalPowerManager -> externalPowerManager.createPowerHandler(blockEntity)).filter(Objects::nonNull)
-				.collect(Collectors.toList());
 	}
 
 	public void checkTier() {
@@ -132,8 +120,13 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			return;
 		}
 
-		if (ExternalPowerSystems.isPoweredItem(batteryStack)) {
-			ExternalPowerSystems.dischargeItem(this, batteryStack);
+		if (Energy.valid(batteryStack)) {
+			Energy.of(batteryStack)
+				.into(
+					Energy
+						.of(this)
+				)
+				.move();
 		}
 
 	}
@@ -186,7 +179,20 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			return;
 		}
 
-		powerManagers.forEach(ExternalPowerHandler::tick);
+		if (getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
+			for (Direction side : Direction.values()) {
+				BlockEntity blockEntity = getWorld().getBlockEntity(getPos().offset(side));
+				if(blockEntity == null || !Energy.valid(blockEntity)){
+					continue;
+				}
+				Energy.of(this)
+					.side(EnergySide.fromMinecraft(side))
+					.into(
+						Energy.of(blockEntity).side(EnergySide.fromMinecraft(side.getOpposite()))
+					)
+					.move();
+			}
+		}
 
 		powerChange = getEnergy() - powerLastTick;
 		powerLastTick = getEnergy();
@@ -239,22 +245,6 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	public abstract double getBaseMaxOutput();
 
 	public abstract double getBaseMaxInput();
-
-	// BlockEntity
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		powerManagers.forEach(ExternalPowerHandler::invalidate);
-	}
-
-	// @Override
-	// TODO 1.13 blockEntity patches are gone?
-	public void onChunkUnload() {
-		// super.onChunkUnload();
-
-		powerManagers.forEach(ExternalPowerHandler::unload);
-	}
-
 
 	public double getEnergy() {
 		return getStored(EnergySide.UNKNOWN);
