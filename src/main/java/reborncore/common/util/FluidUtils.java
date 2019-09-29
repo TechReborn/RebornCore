@@ -46,6 +46,9 @@ public class FluidUtils {
 		if (f1.equals(f2)) {
 			return true;
 		}
+		if (f1 == null || f2 == null) {
+			return false;
+		}
 		// This is a work around TR's fucked fluid names that we dont want to break
 		// worlds in 1.12 to fix. //TODO remove in 1.13
 		String s1 = f1.getName();
