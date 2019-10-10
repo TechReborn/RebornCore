@@ -28,7 +28,7 @@ public class StackIngredient extends RebornIngredient {
 	private final Optional<CompoundTag> tag;
 	private final boolean requireEmptyTag;
 
-	private StackIngredient(List<ItemStack> stacks, Optional<Integer> count, Optional<CompoundTag> tag, boolean requireEmptyTag) {
+	public StackIngredient(List<ItemStack> stacks, Optional<Integer> count, Optional<CompoundTag> tag, boolean requireEmptyTag) {
 		super(IngredientManager.STACK_RECIPE_TYPE);
 		this.stacks = stacks;
 		this.count = count;
