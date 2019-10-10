@@ -68,6 +68,13 @@ public class RebornRecipe implements Recipe<Inventory> {
 		this.name = name;
 	}
 
+	public RebornRecipe(RebornRecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
+		this(type, name);
+		this.ingredients = ingredients;
+		this.outputs = outputs;
+		this.power = power;
+	}
+
 	public void deserialize(JsonObject jsonObject){
 		//Crash if the recipe has all ready been deserialized
 		Validate.isTrue(ingredients.isEmpty());

@@ -20,6 +20,11 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 		super(type, name);
 	}
 
+	public RebornFluidRecipe(RebornRecipeType<?> type, Identifier name, FluidInstance fluidInstance) {
+		this(type, name);
+		this.fluidInstance = fluidInstance;
+	}
+
 	@Override
 	public void deserialize(JsonObject jsonObject) {
 		super.deserialize(jsonObject);
