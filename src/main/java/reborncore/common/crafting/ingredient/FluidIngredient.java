@@ -31,7 +31,7 @@ public class FluidIngredient extends RebornIngredient {
 	private final Lazy<List<ItemStack>> previewStacks;
 	private final Lazy<Ingredient> previewIngredient;
 
-	private FluidIngredient(Fluid fluid, Optional<List<Item>> holders, Optional<Integer> count) {
+	public FluidIngredient(Fluid fluid, Optional<List<Item>> holders, Optional<Integer> count) {
 		super(IngredientManager.FLUID_RECIPE_TYPE);
 		this.fluid = fluid;
 		this.holders = holders;
