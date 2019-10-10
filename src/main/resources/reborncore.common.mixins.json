@@ -10,7 +10,8 @@
     "MixinSlot",
     "MixinBucketItem",
     "MixinWorldSaveHandler",
-    "MixinItemStack"
+    "MixinItemStack",
+    "MixinIngredient"
   ],
   "injectors": {
     "defaultRequire": 1
