@@ -73,6 +73,7 @@ public class RebornRecipe implements Recipe<Inventory> {
 		this.ingredients = ingredients;
 		this.outputs = outputs;
 		this.power = power;
+		this.time = time;
 	}
 
 	public void deserialize(JsonObject jsonObject){
