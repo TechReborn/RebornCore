@@ -1,6 +1,9 @@
 package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DefaultedList;
+import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
@@ -20,8 +23,12 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 		super(type, name);
 	}
 
-	public RebornFluidRecipe(RebornRecipeType<?> type, Identifier name, FluidInstance fluidInstance) {
-		this(type, name);
+	public RebornFluidRecipe(RebornRecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time) {
+		super(type, name, ingredients, outputs, power, time);
+	}
+
+	public RebornFluidRecipe(RebornRecipeType<?> type, Identifier name, DefaultedList<RebornIngredient> ingredients, DefaultedList<ItemStack> outputs, int power, int time, FluidInstance fluidInstance) {
+		this(type, name, ingredients, outputs, power, time);
 		this.fluidInstance = fluidInstance;
 	}
 
