@@ -46,6 +46,7 @@ import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
+import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.util.DefaultedListCollector;
@@ -170,6 +171,11 @@ public class RebornRecipe implements Recipe<Inventory> {
 	 * @return if true the recipe will craft, if false it will not
 	 */
 	public boolean canCraft(BlockEntity blockEntity){
+		if(blockEntity instanceof IRecipeCrafterProvider){
+			if(!((IRecipeCrafterProvider) blockEntity).canCraft(this)){
+				return false;
+			}
+		}
 		return true;
 	}
 

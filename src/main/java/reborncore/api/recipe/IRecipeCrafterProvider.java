@@ -28,6 +28,7 @@
 
 package reborncore.api.recipe;
 
+import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.recipes.RecipeCrafter;
 
 /**
@@ -36,4 +37,8 @@ import reborncore.common.recipes.RecipeCrafter;
 public interface IRecipeCrafterProvider {
 
 	RecipeCrafter getRecipeCrafter();
+
+	default boolean canCraft(RebornRecipe rebornRecipe){
+		return true;
+	}
 }
