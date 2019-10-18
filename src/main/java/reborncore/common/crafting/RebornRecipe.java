@@ -47,6 +47,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.common.crafting.ingredient.DummyIngredient;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.util.DefaultedListCollector;
@@ -65,6 +66,8 @@ public class RebornRecipe implements Recipe<Inventory> {
 	protected int power;
 	protected int time;
 
+	protected boolean dummy = false;
+
 	public RebornRecipe(RebornRecipeType<?> type, Identifier name) {
 		this.type = type;
 		this.name = name;
@@ -79,6 +82,11 @@ public class RebornRecipe implements Recipe<Inventory> {
 	}
 
 	public void deserialize(JsonObject jsonObject){
+		if(jsonObject.has("dummy")){
+			makeDummy();
+			return;
+		}
+
 		//Crash if the recipe has all ready been deserialized
 		Validate.isTrue(ingredients.isEmpty());
 
@@ -94,6 +102,10 @@ public class RebornRecipe implements Recipe<Inventory> {
 	}
 
 	public void serialize(JsonObject jsonObject) {
+		if(isDummy()){
+			jsonObject.addProperty("dummy", true);
+			return;
+		}
 		jsonObject.addProperty("power", power);
 		jsonObject.addProperty("time", time);
 
@@ -170,7 +182,10 @@ public class RebornRecipe implements Recipe<Inventory> {
 	 * @param blockEntity the blockEntity that is doing the crafting
 	 * @return if true the recipe will craft, if false it will not
 	 */
-	public boolean canCraft(BlockEntity blockEntity){
+	public boolean canCraft(BlockEntity blockEntity) {
+		if(isDummy()) {
+			return false;
+		}
 		if(blockEntity instanceof IRecipeCrafterProvider){
 			if(!((IRecipeCrafterProvider) blockEntity).canCraft(this)){
 				return false;
@@ -222,5 +237,14 @@ public class RebornRecipe implements Recipe<Inventory> {
 	@Override
 	public boolean isIgnoredInRecipeBook() {
 		return true;
+	}
+
+	private boolean isDummy() {
+		return dummy;
+	}
+
+	void makeDummy() {
+		this.ingredients.add(new DummyIngredient());
+		this.dummy = true;
 	}
 }

@@ -61,11 +61,17 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 		}
 
 		R recipe = newRecipe(recipeId);
+
 		try{
+			if(!ConditionManager.shouldLoadRecipe(json)) {
+				recipe.makeDummy();
+				return recipe;
+			}
+
 			recipe.deserialize(json);
 		} catch (Throwable t){
 			t.printStackTrace();
-			RebornCore.LOGGER.error("Failed to read recipe" + recipeId);
+			RebornCore.LOGGER.error("Failed to read recipe: " + recipeId);
 		}
 		return recipe;
 
