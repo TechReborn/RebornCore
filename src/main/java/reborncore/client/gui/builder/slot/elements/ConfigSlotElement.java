@@ -34,11 +34,10 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.slots.BaseSlot;
-import reborncore.common.recipes.RecipeCrafter;
+import reborncore.common.blockentity.SlotConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,11 +89,11 @@ public class ConfigSlotElement extends ElementBase {
 			return true;
 		}));
 
-		if (gui.getMachine() instanceof IRecipeCrafterProvider) {
-			RecipeCrafter recipeCrafter = ((IRecipeCrafterProvider) gui.getMachine()).getRecipeCrafter();
-			if (Arrays.stream(recipeCrafter.inputSlots).anyMatch(value -> value == slotId)) {
+		if (gui.getMachine() instanceof SlotConfiguration.SlotFilter){
+			SlotConfiguration.SlotFilter slotFilter = (SlotConfiguration.SlotFilter) gui.getMachine();
+			if (Arrays.stream(slotFilter.getInputSlots()).anyMatch(value -> value == slotId)) {
 				elements.add(new CheckBoxElement("Filter Input", 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-					checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
+				                                 checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 					popupElement.updateCheckBox((CheckBoxElement) element, "filter", gui13);
 					return true;
 				}));
