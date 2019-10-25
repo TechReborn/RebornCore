@@ -7,7 +7,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.5-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.2.6-SNAPSHOT"
 	}
 }
 
@@ -52,10 +52,10 @@ configurations {
 dependencies {
 	minecraft "com.mojang:minecraft:1.14.4"
 	mappings "net.fabricmc:yarn:1.14.4+build.2"
-	modCompile "net.fabricmc:fabric-loader:0.6.1+build.165"
+	modCompile "net.fabricmc:fabric-loader:0.6.3+build.167"
 
 	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.2+build.226-1.14"
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.4.1+build.245-1.14"
 
 	compileOnly "com.google.code.findbugs:jsr305:+"
 
