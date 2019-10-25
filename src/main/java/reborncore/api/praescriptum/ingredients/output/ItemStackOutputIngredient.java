@@ -80,4 +80,9 @@ public class ItemStackOutputIngredient extends OutputIngredient<ItemStack> {
 
 		return matches(((ItemStackOutputIngredient) object).ingredient);
 	}
+	
+	@Override
+	public int getCount() {
+		return ItemUtils.getSize(ingredient);
+	}
 }

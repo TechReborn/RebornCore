@@ -39,5 +39,9 @@ public abstract class OutputIngredient<T> extends Ingredient<T> {
 	}
 
 	public abstract OutputIngredient<T> copy();
+	
+	public int getCount() {
+		return 0;
+	}
 }
 

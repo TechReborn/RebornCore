@@ -49,11 +49,18 @@ import java.util.List;
  * @author estebes
  */
 public class Recipe implements Serializable {
+
+	/**
+	 * It is strongly recommended that all serializable classes explicitly declare
+	 * serialVersionUID values
+	 */
+	private static final long serialVersionUID = 528013385268499955L;
+
 	public Recipe(RecipeHandler manager) {
 		this.manager = manager;
 	}
 
-	public Recipe withInput(List<InputIngredient> inputs) {
+	public Recipe withInput(List<InputIngredient<?>> inputs) {
 		inputIngredients.addAll(inputs);
 		return this;
 	}
@@ -90,7 +97,7 @@ public class Recipe implements Serializable {
 		return this;
 	}
 
-	public Recipe withOutput(List<OutputIngredient> outputs) {
+	public Recipe withOutput(List<OutputIngredient<?>> outputs) {
 		outputIngredients.addAll(outputs);
 		return this;
 	}
@@ -195,11 +202,11 @@ public class Recipe implements Serializable {
 	}
 
 	// Getters >>
-	public List<InputIngredient> getInputIngredients() {
+	public List<InputIngredient<?>> getInputIngredients() {
 		return inputIngredients;
 	}
 
-	public List<OutputIngredient> getOutputIngredients() {
+	public List<OutputIngredient<?>> getOutputIngredients() {
 		return outputIngredients;
 	}
 
@@ -223,8 +230,8 @@ public class Recipe implements Serializable {
 	// Fields >>
 	private final RecipeHandler manager;
 
-	private List<InputIngredient> inputIngredients = new ArrayList<>();
-	private List<OutputIngredient> outputIngredients = new ArrayList<>();
+	private List<InputIngredient<?>> inputIngredients = new ArrayList<>();
+	private List<OutputIngredient<?>> outputIngredients = new ArrayList<>();
 	private NBTTagCompound metadata;
 	// << Fields
 }

@@ -60,7 +60,7 @@ public abstract class InputIngredient<T> extends Ingredient<T> {
 	public boolean equals(Object object) {
 		if (getClass() != object.getClass()) return false;
 
-		return matches(((InputIngredient) object).ingredient) && this.consumable == ((InputIngredient) object).consumable;
+		return matches(((InputIngredient<?>) object).ingredient) && this.consumable == ((InputIngredient<?>) object).consumable;
 	}
 
 	// Fields >>

@@ -37,7 +37,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import reborncore.api.power.IEnergyItemInfo;
 import reborncore.common.powerSystem.forge.ForgePowerItemManager;

@@ -77,12 +77,12 @@ public class RecipeHandler {
 
 		if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
 
-		ImmutableList<InputIngredient> listOfInputs = recipe.getInputIngredients().stream()
+		ImmutableList<InputIngredient<?>> listOfInputs = recipe.getInputIngredients().stream()
 			.filter(IngredientUtils.isIngredientEmpty((ingredient) ->
 				LogUtils.LOGGER.warn(String.format("The %s %s is invalid. Skipping...", ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
 			.collect(ImmutableList.toImmutableList());
 
-		ImmutableList<OutputIngredient> listOfOutputs = recipe.getOutputIngredients().stream()
+		ImmutableList<OutputIngredient<?>> listOfOutputs = recipe.getOutputIngredients().stream()
 			.filter(IngredientUtils.isIngredientEmpty((ingredient) ->
 					LogUtils.LOGGER.warn(String.format("The %s %s is invalid. Skipping...", ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
 			.collect(ImmutableList.toImmutableList());
@@ -117,16 +117,34 @@ public class RecipeHandler {
 	 * @param ingredients The ingredient list
 	 * @return The recipe if it exists or empty otherwise
 	 */
-	protected Optional<Recipe> getRecipe(ImmutableList<InputIngredient> ingredients) {
+	protected Optional<Recipe> getRecipe(ImmutableList<InputIngredient<?>> ingredients) {
 		return recipes.stream()
 			.filter(recipe -> {
-				final List<InputIngredient> listA = new ArrayList<>(recipe.getInputIngredients());
+				final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
 				ingredients.forEach(entry ->
 					listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
 				return listA.isEmpty();
 			})
 			.findAny();
+	}
+	
+	/**
+	 * Get the recipe for given outputs
+	 * 
+	 * @param output List of outputs
+	 * @return The recipe if it exists or empty otherwise
+	 */
+	public Optional<Recipe> getRecipeByOutput(ImmutableList<OutputIngredient<?>> output) {
+		return this.recipes.stream().filter((recipe) -> {
+			List<OutputIngredient<?>> listA = new ArrayList<>(recipe.getOutputIngredients());
+			output.forEach((entry) -> {
+				listA.removeIf((temp) -> {
+					return temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount();
+				});
+			});
+			return listA.isEmpty();
+		}).findAny();
 	}
 
 	/**
@@ -145,7 +163,7 @@ public class RecipeHandler {
 			.filter(stack -> stack.amount <= 0)
 			.map(FluidStackInputIngredient::copyOf); // map FluidStacks
 
-		ImmutableList<InputIngredient> ingredients = Stream.concat(itemIngredients, fluidIngredients)
+		ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
 			.collect(ImmutableList.toImmutableList());
 
 		return Optional.ofNullable(cachedRecipes.get(ingredients));
@@ -170,7 +188,7 @@ public class RecipeHandler {
 			.filter(stack -> stack.amount <= 0)
 			.map(FluidStackInputIngredient::of); // map FluidStacks
 
-		ImmutableList<InputIngredient> ingredients = Stream.concat(itemIngredients, fluidIngredients)
+		ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
 			.collect(ImmutableList.toImmutableList());
 
 		if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
@@ -181,14 +199,14 @@ public class RecipeHandler {
 			// check if everything need for the input is available in the input (ingredients + quantities)
 			if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
 
-			final List<InputIngredient> listA = new ArrayList<>(recipe.getInputIngredients());
+			final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
 			ingredients.forEach(entry ->
 				listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
 			if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
 			if (!simulate) {
-				final List<InputIngredient> listB = new ArrayList<>(recipe.getInputIngredients());
+				final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
 				ingredients.forEach(entry ->
 					listB.removeIf(temp -> {
 						if (temp.matches(entry.ingredient)) {
@@ -226,20 +244,20 @@ public class RecipeHandler {
 			.filter(stack -> stack.amount <= 0)
 			.map(FluidStackInputIngredient::of); // map FluidStacks
 
-		ImmutableList<InputIngredient> ingredients = Stream.concat(itemIngredients, fluidIngredients)
+		ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
 			.collect(ImmutableList.toImmutableList());
 
 		// check if everything need for the input is available in the input (ingredients + quantities)
 		if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-		final List<InputIngredient> listA = new ArrayList<>(recipe.getInputIngredients());
+		final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
 		ingredients.forEach(entry ->
 			listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
 		if (!listA.isEmpty()) return false; // the input did not match
 
 		if (!simulate) {
-			final List<InputIngredient> listB = new ArrayList<>(recipe.getInputIngredients());
+			final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
 			ingredients.forEach(entry ->
 				listB.removeIf(temp -> {
 					if (temp.matches(entry.ingredient)) {
@@ -273,7 +291,7 @@ public class RecipeHandler {
 	 * @param ingredients The input ingredients
 	 * @return True if a valid recipe has been found and removed or false otherwise
 	 */
-	public boolean removeRecipe(ImmutableList<InputIngredient> ingredients) {
+	public boolean removeRecipe(ImmutableList<InputIngredient<?>> ingredients) {
 		Recipe recipe = getRecipe(ingredients).orElse(null);
 		if (recipe == null) return false;
 
@@ -293,14 +311,14 @@ public class RecipeHandler {
 	// Fields >>
 	protected final List<Recipe> recipes = new ArrayList<>();
 
-	protected final LoadingCache<ImmutableList<InputIngredient>, Recipe> cachedRecipes =
+	protected final LoadingCache<ImmutableList<InputIngredient<?>>, Recipe> cachedRecipes =
 		Caffeine.newBuilder()
 			.expireAfterAccess(10, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build(ingredients ->
 				recipes.stream()
 					.filter(recipe -> {
-						final List<InputIngredient> listA = new ArrayList<>(recipe.getInputIngredients());
+						final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
 						ingredients.forEach(entry ->
 							listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 

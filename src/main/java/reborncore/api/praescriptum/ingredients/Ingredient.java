@@ -48,7 +48,7 @@ public abstract class Ingredient<T> {
 	public boolean equals(Object object) {
 		if (getClass() != object.getClass()) return false;
 
-		return matches(((Ingredient) object).ingredient);
+		return matches(((Ingredient<?>) object).ingredient);
 	}
 
 	@Override
