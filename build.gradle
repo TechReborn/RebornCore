@@ -38,7 +38,7 @@ repositories {
 	}
 }
 
-version = "4.0.20"
+version = "4.0.21"
 group = 'RebornCore'
 
 def ENV = System.getenv()
