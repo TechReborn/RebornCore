@@ -1,15 +1,17 @@
 package reborncore.common.crafting;
 
+import java.util.HashMap;
+import java.util.function.Function;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.commons.lang3.Validate;
 
-import java.util.HashMap;
-import java.util.function.Function;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class ConditionManager {
 
@@ -21,16 +23,20 @@ public final class ConditionManager {
 		register("development", Boolean.class, (bool) -> bool == FabricLoader.getInstance().isDevelopmentEnvironment());
 
 		//Only loads the recipe when the item is registered
-		register("item", Identifier.class, Registry.ITEM::containsId);
+		register("item", Identifier.class, (id) -> registryContains(Registry.ITEM, id));
 
 		//Only loads the recipe when the fluid is registered
-		register("fluid", Identifier.class, Registry.FLUID::containsId);
+		register("fluid", Identifier.class, (id) -> registryContains(Registry.FLUID, id));
 
 		//Only loads the recipe when the tag is loaded
 		register("tag", Identifier.class, s -> ItemTags.getContainer().getEntries().containsKey(s));
 
 		//Only load the recipe if the provided mod is loaded
 		register("mod", String.class, s -> FabricLoader.getInstance().isModLoaded(s));
+	}
+
+	private static boolean registryContains(SimpleRegistry<?> registry, Identifier ident) {
+		return registry.get(ident) != null;
 	}
 
 	public static <T> void register(String name, Class<T> type, RecipeCondition<T> recipeCondition){
