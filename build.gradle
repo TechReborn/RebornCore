@@ -69,7 +69,7 @@ dependencies {
 	compile 'teamreborn:energy:0.0.8'
 	include 'teamreborn:energy:0.0.8'
 
-	compileOnly 'io.github.alexiyorlov:Energies:1.1.1+1.14.4:dev'
+	modCompileOnly 'io.github.alexiyorlov:Energies:1.1.1+1.14.4:dev'
 	
 	ctRuntime "CurseTools:CurseTools:+"
 }
