@@ -30,7 +30,9 @@ package reborncore.api.praescriptum.recipes;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
 import net.minecraftforge.fluids.FluidStack;
+
 import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
@@ -194,10 +196,7 @@ public class Recipe implements Serializable {
 	}
 
 	public void register(boolean replace) {
-		boolean success = false;
-
-		success = manager.addRecipe(this, replace);
-
+		boolean success = manager.addRecipe(this, replace);
 		if (!success) LogUtils.LOGGER.warn("Registration failed for input " + this);
 	}
 
