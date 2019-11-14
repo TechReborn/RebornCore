@@ -28,7 +28,6 @@ public abstract class MixinItemRenderer {
 			if(!durabilityExtensions.showDurability(stack)){
 				return;
 			}
-			RenderSystem.disableLighting();
 			RenderSystem.disableDepthTest();
 			RenderSystem.disableTexture();
 			RenderSystem.disableAlphaTest();
@@ -36,7 +35,6 @@ public abstract class MixinItemRenderer {
 
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferBuilder = tessellator.getBuffer();
-
 
 			int durability = (int) (13 * (1 - Math.max(0.0F, durabilityExtensions.getDurability(stack))));
 			int color = durabilityExtensions.getDurabilityColor(stack);
@@ -47,7 +45,6 @@ public abstract class MixinItemRenderer {
 			RenderSystem.enableBlend();
 			RenderSystem.enableAlphaTest();
 			RenderSystem.enableTexture();
-			RenderSystem.enableLighting();
 			RenderSystem.enableDepthTest();
 		}
 	}
