@@ -50,7 +50,6 @@ import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.powerSystem.compat.Energies;
 import reborncore.common.shields.RebornCoreShields;
 import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
@@ -81,9 +80,6 @@ public class RebornCore implements ModInitializer {
 		new Configuration(RebornCoreConfig.class, "reborncore");
 
 		ItemPowerHolder.setup();
-		if(FabricLoader.getInstance().isModLoaded("energies")){
-			Energies.setup();
-		}
 
 		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
 		if (!configDir.exists()) {
