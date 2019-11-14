@@ -1,6 +1,6 @@
 package reborncore.mixin.client;
 
-import net.minecraft.client.render.item.ItemDynamicRenderer;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -9,14 +9,14 @@ import reborncore.mixin.extensions.ItemDynamicRendererExtensions;
 
 import java.util.function.Function;
 
-@Mixin(ItemDynamicRenderer.class)
+@Mixin(BuiltinModelItemRenderer.class)
 public class MixinItemDynamicRenderer implements ItemDynamicRendererExtensions {
 
 	@Shadow @Final @Mutable
-	public static ItemDynamicRenderer INSTANCE;
+	public static BuiltinModelItemRenderer INSTANCE;
 
 	@Override
-	public void extend(Function<ItemDynamicRenderer, ItemDynamicRenderer> function) {
+	public void extend(Function<BuiltinModelItemRenderer, BuiltinModelItemRenderer> function) {
 		INSTANCE = function.apply(INSTANCE);
 	}
 }

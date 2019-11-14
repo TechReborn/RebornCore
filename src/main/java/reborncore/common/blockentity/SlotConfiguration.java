@@ -242,7 +242,7 @@ public class SlotConfiguration implements NBTSerializable {
 			});
 			input = nbt.getBoolean("input");
 			output = nbt.getBoolean("output");
-			if (nbt.containsKey("filter")) { //Was added later, this allows old saves to be upgraded
+			if (nbt.contains("filter")) { //Was added later, this allows old saves to be upgraded
 				filter = nbt.getBoolean("filter");
 			}
 		}
@@ -429,7 +429,7 @@ public class SlotConfiguration implements NBTSerializable {
 		} catch (CommandSyntaxException e) {
 			throw new UnsupportedOperationException("Clipboard conetents isnt a valid slot configuation");
 		}
-		if (!compound.containsKey("machine") || !compound.getString("machine").equals(machineIdent)) {
+		if (!compound.contains("machine") || !compound.getString("machine").equals(machineIdent)) {
 			throw new UnsupportedOperationException("Machine config is not for this machine.");
 		}
 		read(compound.getCompound("data"));

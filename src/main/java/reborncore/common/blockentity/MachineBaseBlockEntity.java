@@ -229,14 +229,14 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		if (getOptionalCrafter().isPresent()) {
 			getOptionalCrafter().get().read(tagCompound);
 		}
-		if (tagCompound.containsKey("slotConfig")) {
+		if (tagCompound.contains("slotConfig")) {
 			slotConfiguration = new SlotConfiguration(tagCompound.getCompound("slotConfig"));
 		} else {
 			if (getOptionalInventory().isPresent()) {
 				slotConfiguration = new SlotConfiguration(getOptionalInventory().get());
 			}
 		}
-		if (tagCompound.containsKey("fluidConfig") && getTank() != null) {
+		if (tagCompound.contains("fluidConfig") && getTank() != null) {
 			fluidConfiguration = new FluidConfiguration(tagCompound.getCompound("fluidConfig"));
 		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();

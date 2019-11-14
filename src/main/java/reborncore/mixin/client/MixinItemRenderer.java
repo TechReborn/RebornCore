@@ -35,7 +35,7 @@ public abstract class MixinItemRenderer {
 			RenderSystem.disableBlend();
 
 			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder bufferBuilder = tessellator.getBufferBuilder();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 
 			int durability = (int) (13 * (1 - Math.max(0.0F, durabilityExtensions.getDurability(stack))));

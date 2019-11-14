@@ -28,20 +28,25 @@
 
 package reborncore.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 
 /**
  * Created by Mark on 27/11/2016.
  */
-public class HolidayRenderEvent {
+public class HolidayRenderManager {
 
-	static ModelSantaHat santaHat = new ModelSantaHat();
+	private static final ModelSantaHat santaHat = new ModelSantaHat();
 	private static final Identifier TEXTURE = new Identifier("reborncore", "textures/models/santa_hat.png");
 
 	public static class LayerRender extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
@@ -51,37 +56,19 @@ public class HolidayRenderEvent {
 		}
 
 		@Override
-		public void render(AbstractClientPlayerEntity abstractClientPlayer,
-		                   float limbSwing,
-		                   float limbSwingAmount,
-		                   float partialTicks,
-		                   float ageInTicks,
-		                   float netHeadYaw,
-		                   float headPitch,
-		                   float scale) {
-			float yaw = abstractClientPlayer.prevYaw + (abstractClientPlayer.yaw - abstractClientPlayer.prevYaw) * partialTicks - (abstractClientPlayer.prevBodyYaw + (abstractClientPlayer.bodyYaw - abstractClientPlayer.prevBodyYaw) * partialTicks);
-			float pitch = abstractClientPlayer.prevPitch + (abstractClientPlayer.pitch - abstractClientPlayer.prevPitch) * partialTicks;
-			MinecraftClient.getInstance().getTextureManager().method_22813(TEXTURE);
-			RenderSystem.pushMatrix();
-			RenderSystem.rotatef(yaw, 0.0F, 1.0F, 0.0F);
-			RenderSystem.rotatef(pitch, 1.0F, 0.0F, 0.0F);
-			//GlStateManager.translate(-0.25F, -0.0F, 0.0F);
-			if (abstractClientPlayer.isSneaking()) {
-				RenderSystem.translatef(0.0F, 0.26F, 0.0F);
-			}
+		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AbstractClientPlayerEntity player, float f, float g, float tickDelta, float h, float j, float k) {
+			MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+			VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
+			matrixStack.push();
 
-			float scale2 = 1.0F;
-			RenderSystem.scalef(scale2, scale2, scale2);
-			santaHat.render(0.0625F);
-			RenderSystem.popMatrix();
+			float yaw = player.prevYaw + (player.yaw - player.prevYaw) * tickDelta - (player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw) * tickDelta);
+			float pitch = player.prevPitch + (player.pitch - player.prevPitch) * tickDelta;
 
+			matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(yaw));
+			matrixStack.multiply(Vector3f.POSITIVE_X.getRotationQuaternion(pitch));
+			santaHat.render(matrixStack, vertexConsumer, i, LivingEntityRenderer.method_23622(player, 0.0F), 1F, 1F, 1F);
+			matrixStack.pop();
 		}
-
-		@Override
-		public boolean hasHurtOverlay() {
-			return false;
-		}
-
 	}
 
 }

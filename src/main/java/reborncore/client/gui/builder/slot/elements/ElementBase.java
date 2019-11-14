@@ -308,7 +308,7 @@ public class ElementBase {
 	}
 
 	public void setTextureSheet(Identifier textureLocation) {
-		MinecraftClient.getInstance().getTextureManager().method_22813(textureLocation);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(textureLocation);
 	}
 
 	public void drawCenteredString(GuiBase<?> gui, String string, int y, int colour) {
@@ -334,8 +334,7 @@ public class ElementBase {
 			if (sprite.hasStack()) {
 				RenderSystem.pushMatrix();
 				RenderSystem.enableBlend();
-				RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA);
-				GuiLighting.enableForItems();
+				RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
 				ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 				itemRenderer.renderGuiItem(sprite.itemStack, x + gui.getGuiLeft(), y + gui.getGuiTop());
@@ -359,7 +358,7 @@ public class ElementBase {
 
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		MinecraftClient.getInstance().getTextureManager().method_22813(GuiBuilder.defaultTextureSheet);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
 		gui.blit(x, y, 0, 0, width / 2, height / 2);
 		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);

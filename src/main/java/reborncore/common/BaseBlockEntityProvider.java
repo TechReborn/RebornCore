@@ -63,7 +63,7 @@ public abstract class BaseBlockEntityProvider extends Block implements BlockEnti
 
 	@Override
 	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (stack.hasTag() && stack.getTag().containsKey("blockEntity_data")) {
+		if (stack.hasTag() && stack.getTag().contains("blockEntity_data")) {
 			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 			CompoundTag nbt = stack.getTag().getCompound("blockEntity_data");
 			injectLocationData(nbt, pos);

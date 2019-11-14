@@ -105,7 +105,6 @@ public class StackInfoHUD {
 		if (stack != EMPTY) {
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GuiLighting.enableForItems();
 
 			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 			itemRenderer.renderGuiItem(stack, x, y);
@@ -118,7 +117,6 @@ public class StackInfoHUD {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(32826);
 		GuiLighting.enable();
-		GuiLighting.enableForItems();
 		renderItemStack(stack, x, y - 5);
 	}
 
@@ -145,7 +143,7 @@ public class StackInfoHUD {
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge)
 				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
 				+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
-			if (stack.getTag() != null && stack.getTag().containsKey("isActive")) {
+			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
 					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
 						+ Formatting.GOLD + ")" + Formatting.GRAY;

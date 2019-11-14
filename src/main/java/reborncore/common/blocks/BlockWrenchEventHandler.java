@@ -53,7 +53,7 @@ public class BlockWrenchEventHandler {
 				BlockState state = world.getBlockState(blockHitResult.getBlockPos());
 				if(wrenableBlocks.contains(state.getBlock())){
 					Block block = state.getBlock();
-					block.activate(state, world, blockHitResult.getBlockPos(), playerEntity, hand, blockHitResult);
+					block.onUse(state, world, blockHitResult.getBlockPos(), playerEntity, hand, blockHitResult);
 					return ActionResult.SUCCESS;
 				}
 			}

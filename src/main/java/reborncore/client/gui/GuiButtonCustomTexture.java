@@ -70,7 +70,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 		if (this.visible) {
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
-			mc.getTextureManager().method_22813(WIDGETS_LOCATION);
+			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
 
@@ -84,7 +84,6 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glEnable(32826);
 			GuiLighting.enable();
-			GuiLighting.enableForItems();
 			renderImage(this.x, this.y);
 			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
 			                Color.WHITE.getColor());
@@ -93,7 +92,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 
 	public void renderImage(int offsetX, int offsetY) {
 		TextureManager render = MinecraftClient.getInstance().getTextureManager();
-		render.method_22813(new Identifier(imageprefix + this.texturename + ".png"));
+		render.bindTexture(new Identifier(imageprefix + this.texturename + ".png"));
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

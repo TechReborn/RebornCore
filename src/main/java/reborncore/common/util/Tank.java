@@ -109,7 +109,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public final Tank read(CompoundTag nbt) {
-		if (nbt.containsKey(name)) {
+		if (nbt.contains(name)) {
 			// allow to read empty tanks
 			setFluid(Fluids.EMPTY);
 

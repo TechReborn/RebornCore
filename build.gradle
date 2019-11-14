@@ -21,13 +21,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenLocal()
 	mavenCentral()
 	jcenter()
-	maven {
-		name = "Modmuss50"
-		url = "http://maven.modmuss50.me/"
-	}
 	maven {
 		name = 'sponge'
 		url = 'https://repo.spongepowered.org/maven'
@@ -46,12 +41,12 @@ configurations {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:19w38b"
-	mappings "net.fabricmc:yarn:19w38b+build.4"
-	modCompile "net.fabricmc:fabric-loader:0.6.2+build.166"
+	minecraft "com.mojang:minecraft:19w46a"
+	mappings "net.fabricmc:yarn:19w46a+build.2:v2"
+	modCompile "net.fabricmc:fabric-loader:0.6.4+build.169"
 
 	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.2+build.232-1.15"
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.4.12+build.261-1.15"
 
 	compileOnly "com.google.code.findbugs:jsr305:+"
 

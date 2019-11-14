@@ -67,7 +67,7 @@ public class InventoryItem extends InventoryBase {
 		if (!stack.hasTag()) {
 			stack.setTag(new CompoundTag());
 		}
-		if (!stack.getTag().containsKey("inventory")) {
+		if (!stack.getTag().contains("inventory")) {
 			stack.getTag().put("inventory", new CompoundTag());
 		}
 		return stack.getTag().getCompound("inventory");
@@ -76,7 +76,7 @@ public class InventoryItem extends InventoryBase {
 	public CompoundTag getSlotData(int slot) {
 		validateSlotIndex(slot);
 		CompoundTag invData = getInvData();
-		if (!invData.containsKey("slot_" + slot)) {
+		if (!invData.contains("slot_" + slot)) {
 			invData.put("slot_" + slot, new CompoundTag());
 		}
 		return invData.getCompound("slot_" + slot);

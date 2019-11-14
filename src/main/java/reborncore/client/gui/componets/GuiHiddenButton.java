@@ -48,7 +48,7 @@ public class GuiHiddenButton extends ButtonWidget {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		if (this.visible) {
 			TextRenderer fontrenderer = MinecraftClient.getInstance().textRenderer;
-			MinecraftClient.getInstance().getTextureManager().method_22813(WIDGETS_LOCATION);
+			MinecraftClient.getInstance().getTextureManager().bindTexture(WIDGETS_LOCATION);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.isHovered = mouseX >= this.x && mouseY >= this.y
 				&& mouseX < this.x + this.width && mouseY < this.y + this.height;

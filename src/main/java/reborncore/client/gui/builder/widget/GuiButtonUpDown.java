@@ -50,7 +50,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
-		gui.getMinecraft().getTextureManager().method_22813(gui.builder.getResourceLocation());
+		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:
 			gui.blit(x, y, 174, 74, 12, 12);

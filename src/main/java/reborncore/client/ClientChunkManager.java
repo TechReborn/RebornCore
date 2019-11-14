@@ -47,7 +47,7 @@ public class ClientChunkManager {
 
 		Camera camera = minecraftClient.gameRenderer.getCamera();
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBufferBuilder();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 		double x = camera.getPos().x;
 		double y = camera.getPos().y;

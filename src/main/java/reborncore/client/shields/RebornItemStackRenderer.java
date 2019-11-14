@@ -31,10 +31,15 @@ package reborncore.client.shields;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.ShieldEntityModel;
-import net.minecraft.client.render.item.ItemDynamicRenderer;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.TextureCache;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -52,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Mark on 21/03/2016.
  */
-public class RebornItemStackRenderer extends ItemDynamicRenderer {
+public class RebornItemStackRenderer extends BuiltinModelItemRenderer {
 
 	private BannerBlockEntity banner = new BannerBlockEntity();
 	private ShieldEntityModel modelShield = new ShieldEntityModel();
@@ -60,25 +65,25 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 	private HashMap<String, AbstractTexture> customTextureMap = new HashMap<>();
 	private static final ExecutorService THREAD_POOL = new ThreadPoolExecutor(0, 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue());
 
-	ItemDynamicRenderer renderer;
+	BuiltinModelItemRenderer renderer;
 
 	public static void setup(){
 		ItemDynamicRendererExtensions.getExtension().extend(RebornItemStackRenderer::new);
 	}
 
-	public RebornItemStackRenderer(ItemDynamicRenderer renderer) {
+	public RebornItemStackRenderer(BuiltinModelItemRenderer renderer) {
 		this.renderer = renderer;
 	}
 
 	@Override
-	public void render(ItemStack itemStackIn) {
-		if (itemStackIn.getItem() == Items.SHIELD) {
-			boolean isCustom = !ItemNBTHelper.getBoolean(itemStackIn, "vanilla", false);
+	public void render(ItemStack stack, MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
+		if (stack.getItem() == Items.SHIELD) {
+			boolean isCustom = !ItemNBTHelper.getBoolean(stack, "vanilla", false);
 			if (isCustom) {
 				Identifier location = null;
-				String str = ItemNBTHelper.getString(itemStackIn, "type", "vanilla");
+				String str = ItemNBTHelper.getString(stack, "type", "vanilla");
 				if (ShieldJsonLoader.shieldJsonFile == null || ShieldJsonLoader.shieldJsonFile.userList == null) {
-					renderer.render(itemStackIn);
+					renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
 					return;
 				}
 				for (ShieldUser user : ShieldJsonLoader.shieldJsonFile.userList) {
@@ -87,38 +92,39 @@ public class RebornItemStackRenderer extends ItemDynamicRenderer {
 					}
 				}
 				if (location == null) {
-					renderer.render(itemStackIn);
+					renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
 					return;
 				}
 				ShieldTexture shieldTexture = ShieldTextureStore.getTexture(str);
 				if (shieldTexture != null) {
 					if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
 						if (customTextureMap.containsKey(location.getPath())) {
-							MinecraftClient.getInstance().getTextureManager().method_22813(location);
+							MinecraftClient.getInstance().getTextureManager().bindTexture(location);
 						} else {
 							AbstractTexture texture = shieldTexture.getTexture();
 							customTextureMap.put(location.getPath(), texture);
 							final Identifier resourceLocation = location;
 							THREAD_POOL.submit(() -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
-							MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
+							MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
 						}
 					} else {
-						MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
+						MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
 					}
 				} else {
-					MinecraftClient.getInstance().getTextureManager().method_22813(TextureCache.DEFAULT_SHIELD);
+					MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
 				}
 			} else {
-				renderer.render(itemStackIn);
+				renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
 				return;
 			}
 			RenderSystem.pushMatrix();
 			RenderSystem.scalef(1.0F, -1.0F, -1.0F);
-			modelShield.renderItem();
+			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.modelShield.getLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEX), false, stack.hasEnchantmentGlint());
+			modelShield.render(matrix, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F);
 			RenderSystem.popMatrix();
 			return;
 		}
-		renderer.render(itemStackIn);
+		renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
 
 	}
 }

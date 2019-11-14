@@ -31,9 +31,13 @@ package reborncore.client.gui.builder.slot.elements;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -75,7 +79,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		BlockState actualState = state.getBlock().getDefaultState();
 		BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		BakedModel model = dispatcher.getModels().getModel(state.getBlock().getDefaultState());
-		MinecraftClient.getInstance().getTextureManager().method_22813(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
@@ -205,7 +209,13 @@ public class SlotConfigPopupElement extends ElementBase {
 		if (rotAngle != 0) {
 			RenderSystem.rotatef(rotAngle, rotX, rotY, rotZ);
 		}
-		dispatcher.getModelRenderer().render(model, actualState, 1F, false);
+
+		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+		MatrixStack matrixStack = new MatrixStack();
+		matrixStack.push();
+		dispatcher.getModelRenderer().render(matrixStack.peek(), immediate.getBuffer(RenderLayers.getEntityBlockLayer(actualState)), actualState, model, 1F, 1F, 1F, 1,1);
+		matrixStack.pop();
+
 		RenderSystem.disableDepthTest();
 		RenderSystem.popMatrix();
 

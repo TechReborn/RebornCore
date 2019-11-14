@@ -38,9 +38,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -87,7 +88,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 
 	@Override
-	protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
 		ACTIVE = BooleanProperty.of("active");
 		builder.add(FACING, ACTIVE);
@@ -132,27 +133,27 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
 	@Override
-	public boolean activate(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockHitResult hitResult) {
+	public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockHitResult hitResult) {
 
 		ItemStack stack = playerIn.getStackInHand(hand);
 		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 
 		// We extended BlockTileBase. Thus we should always have blockEntity entity. I hope.
 		if (blockEntity == null) {
-			return false;
+			return ActionResult.PASS;
 		}
 
 		if (blockEntity instanceof MachineBaseBlockEntity) {
 			Tank tank = ((MachineBaseBlockEntity) blockEntity).getTank();
 			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
-				return true;
+				return ActionResult.SUCCESS;
 			}
 		}
 
 		if (!stack.isEmpty()) {
 			if (ToolManager.INSTANCE.canHandleTool(stack)) {
 				if (WrenchUtils.handleWrench(stack, worldIn, pos, playerIn, hitResult.getSide())) {
-					return true;
+					return ActionResult.SUCCESS;
 				}
 			} else if (stack.getItem() instanceof IUpgrade && blockEntity instanceof IUpgradeable) {
 				IUpgradeable upgradeableEntity = (IUpgradeable) blockEntity;
@@ -161,7 +162,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 					                                     true).getCount() > 0) {
 						stack = InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setStackInHand(Hand.MAIN_HAND, stack);
-						return true;
+						return ActionResult.SUCCESS;
 					}
 				}
 			}
@@ -169,10 +170,10 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 		if (getGui() != null && !playerIn.isSneaking()) {
 			getGui().open(playerIn, pos, worldIn);
-			return true;
+			return ActionResult.SUCCESS;
 		}
 
-		return super.activate(state, worldIn, pos, playerIn, hand, hitResult);
+		return super.onUse(state, worldIn, pos, playerIn, hand, hitResult);
 	}
 
 	@Override

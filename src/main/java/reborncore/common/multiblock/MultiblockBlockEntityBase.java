@@ -122,7 +122,7 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 		// the data here until
 		// we receive a validate() call, which creates the controller and hands
 		// off the cached data.
-		if (data.containsKey("multiblockData")) {
+		if (data.contains("multiblockData")) {
 			this.cachedMultiblockData = data.getCompound("multiblockData");
 		}
 	}
@@ -212,7 +212,7 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 	 * @param packetData The NBT data from the blockEntity entity's description packet.
 	 */
 	protected void decodeDescriptionPacket(CompoundTag packetData) {
-		if (packetData.containsKey("multiblockData")) {
+		if (packetData.contains("multiblockData")) {
 			CompoundTag tag = packetData.getCompound("multiblockData");
 			if (isConnected()) {
 				getMultiblockController().decodeDescriptionPacket(tag);

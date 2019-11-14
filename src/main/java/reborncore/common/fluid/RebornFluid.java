@@ -1,19 +1,20 @@
 package reborncore.common.fluid;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.class_4538;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldView;
 
 import java.util.function.Supplier;
 
@@ -34,7 +35,7 @@ public abstract class RebornFluid extends BaseFluid {
 		this.bucketItemSuppler = bucketItemSuppler;
 		this.flowingSuppler = flowingSuppler;
 		this.stillSuppler = stillSuppler;
-		BlockRenderLayerMap.INSTANCE.putFluid(this, BlockRenderLayer.field_9179);
+		BlockRenderLayerMap.INSTANCE.putFluid(this, RenderLayer.getTranslucent());
 	}
 
 	public FluidSettings getFluidSettings() {
@@ -67,12 +68,12 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	protected int method_15733(class_4538 world) {
+	protected int method_15733(WorldView world) {
 		return 4;
 	}
 
 	@Override
-	protected int getLevelDecreasePerBlock(class_4538 world) {
+	protected int getLevelDecreasePerBlock(WorldView world) {
 		return 1;
 	}
 
@@ -93,7 +94,7 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	public int getTickRate(class_4538 world) {
+	public int getTickRate(WorldView world) {
 		return 10;
 	}
 
@@ -113,7 +114,7 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	protected void appendProperties(StateFactory.Builder<Fluid, FluidState> stateBuilder) {
+	protected void appendProperties(StateManager.Builder<Fluid, FluidState> stateBuilder) {
 		super.appendProperties(stateBuilder);
 		if(!still){
 			stateBuilder.add(LEVEL);

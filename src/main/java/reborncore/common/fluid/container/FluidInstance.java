@@ -104,7 +104,7 @@ public class FluidInstance implements NBTSerializable {
     public void read(CompoundTag tag) {
         fluid = Registry.FLUID.get(new Identifier(tag.getString(FLUID_KEY)));
         amount = tag.getInt(AMOUNT_KEY);
-        if (tag.containsKey(TAG_KEY)) {
+        if (tag.contains(TAG_KEY)) {
             this.tag = tag.getCompound(TAG_KEY);
         }
     }

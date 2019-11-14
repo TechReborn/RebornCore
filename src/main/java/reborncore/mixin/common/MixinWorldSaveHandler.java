@@ -72,7 +72,7 @@ public class MixinWorldSaveHandler implements DataAttachmentProvider {
 
 				for(Map.Entry<Class<? extends DataAttachment>, DataAttachment> entry : attachmentMap.entrySet()){
 					String name = entry.getKey().getName();
-					if(tag.containsKey(name)){
+					if(tag.contains(name)){
 						entry.getValue().read(tag.getCompound(name));
 					}
 				}

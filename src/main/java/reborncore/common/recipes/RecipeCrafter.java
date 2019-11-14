@@ -293,7 +293,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public void read(CompoundTag tag) {
 		CompoundTag data = tag.getCompound("Crater");
 
-		if (data.containsKey("currentTickTime")) {
+		if (data.contains("currentTickTime")) {
 			currentTickTime = data.getInt("currentTickTime");
 		}
 

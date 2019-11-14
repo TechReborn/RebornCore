@@ -60,7 +60,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
 				&& mouseY < this.y + this.height;
-			mc.getTextureManager().method_22813(WIDGETS_LOCATION);
+			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
 			if (flag) {
@@ -74,7 +74,6 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glEnable(32826);
 			GuiLighting.enable();
-			GuiLighting.enableForItems();
 			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 			itemRenderer.renderGuiItemIcon(itemstack, this.x, this.y);
 			this.drawString(mc.textRenderer, this.NAME, this.x + 20, this.y + 3,

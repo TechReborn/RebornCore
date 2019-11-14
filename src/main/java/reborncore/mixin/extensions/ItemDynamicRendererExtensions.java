@@ -1,15 +1,15 @@
 package reborncore.mixin.extensions;
 
-import net.minecraft.client.render.item.ItemDynamicRenderer;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 
 import java.util.function.Function;
 
 public interface ItemDynamicRendererExtensions {
 
 	static ItemDynamicRendererExtensions getExtension(){
-		return (ItemDynamicRendererExtensions) ItemDynamicRenderer.INSTANCE;
+		return (ItemDynamicRendererExtensions) BuiltinModelItemRenderer.INSTANCE;
 	}
 
-	void extend(Function<ItemDynamicRenderer, ItemDynamicRenderer> function);
+	void extend(Function<BuiltinModelItemRenderer, BuiltinModelItemRenderer> function);
 
 }

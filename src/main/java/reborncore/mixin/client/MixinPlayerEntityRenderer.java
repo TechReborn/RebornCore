@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import reborncore.client.HolidayRenderEvent;
+import reborncore.client.HolidayRenderManager;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.util.CalenderUtils;
 
@@ -23,7 +23,7 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 	@Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
 	private void construct(EntityRenderDispatcher entityRenderDispatcher, boolean alex, CallbackInfo info){
 		if (CalenderUtils.christmas && RebornCoreConfig.easterEggs) {
-			addFeature(new HolidayRenderEvent.LayerRender(this));
+			addFeature(new HolidayRenderManager.LayerRender(this));
 		}
 	}
 

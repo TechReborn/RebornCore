@@ -83,7 +83,7 @@ public class WrenchUtils {
 						worldIn.removeBlockEntity(pos);
 						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 					}
-					worldIn.playSound(null, playerIn.x, playerIn.y, playerIn.z, ModSounds.BLOCK_DISMANTLE,
+					worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), ModSounds.BLOCK_DISMANTLE,
 						SoundCategory.BLOCKS, 0.6F, 1F);
 				}
 			} else {

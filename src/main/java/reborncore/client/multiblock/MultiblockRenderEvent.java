@@ -46,7 +46,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -66,7 +68,6 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 	public static BlockPos anchor;
 	public MultiblockSet currentMultiblock;
 	public BlockPos parent;
-	private VisibleRegion camera;
 
 	public void setMultiblock(MultiblockSet set) {
 		currentMultiblock = set;
@@ -92,21 +93,15 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 
 	private void renderComponent(MultiblockComponent comp, BlockPos anchor, float partialTicks, ClientPlayerEntity player) {
 
-		double dx = player.prevRenderX + (player.x - player.prevRenderX) * partialTicks;
-		double dy = player.prevRenderY + (player.y - player.prevRenderY) * partialTicks;
-		double dz = player.prevRenderZ + (player.z - player.prevRenderZ) * partialTicks;
-		if (camera == null) {
-			camera = new FrustumWithOrigin();
-		}
-		camera.setOrigin(dx, dy, dz);
+		double dx = player.prevRenderX + (player.getX() - player.prevRenderX) * partialTicks;
+		double dy = player.prevRenderY + (player.getY() - player.prevRenderY) * partialTicks;
+		double dz = player.prevRenderZ + (player.getZ() - player.prevRenderZ) * partialTicks;
+
 		BlockPos pos = anchor.add(comp.getRelativePosition());
-//		if (!camera.intersects(new BoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX(), pos.getY(), pos.getZ()))) {
-//			return;
-//		}
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		World world = player.world;
 
-		minecraft.getTextureManager().method_22813(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
 		RenderSystem.pushMatrix();
 		RenderSystem.translated(-dx, -dy, -dz);
@@ -117,12 +112,12 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 		GuiLighting.disable();
 		RenderSystem.enableBlend();
 
-		RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.CONSTANT_ALPHA);
+		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.CONSTANT_ALPHA);
 		GL14.glBlendColor(1F, 1F, 1F, 0.35F);
 
 		this.renderModel(world, pos, comp.state);
 
-		RenderSystem.blendFunc(GlStateManager.class_4535.ONE, GlStateManager.class_4534.ZERO);
+		RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
 		RenderSystem.disableBlend();
 		RenderSystem.popMatrix();
@@ -131,15 +126,22 @@ public class MultiblockRenderEvent implements AttackBlockCallback {
 	private void renderModel(World world, BlockPos pos, BlockState state) {
 		final BlockRenderManager blockRendererDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		final Tessellator tessellator = Tessellator.getInstance();
-		final BufferBuilder buffer = tessellator.getBufferBuilder();
+		final BufferBuilder buffer = tessellator.getBuffer();
 		RenderSystem.translated(-pos.getX(), -pos.getY(), -pos.getZ());
-		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_NORMAL);
+		buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
 
 		if(state.getBlock() instanceof FluidBlock){
 			FluidBlockExtensions fluidBlockExtensions = (FluidBlockExtensions) state.getBlock();
-			blockRendererDispatcher.tesselateFluid(pos, world, buffer, fluidBlockExtensions.getFluid().getStill().getDefaultState());
+			blockRendererDispatcher.renderFluid(pos, world, buffer, fluidBlockExtensions.getFluid().getStill().getDefaultState());
 		} else {
-			blockRendererDispatcher.tesselateBlock(state, pos, world, buffer, new Random());
+
+			BakedModel model = blockRendererDispatcher.getModels().getModel(state.getBlock().getDefaultState());
+
+			VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+			MatrixStack matrixStack = new MatrixStack();
+			matrixStack.push();
+			blockRendererDispatcher.getModelRenderer().render(matrixStack.peek(), immediate.getBuffer(RenderLayers.getEntityBlockLayer(state)), state, model, 1F, 1F, 1F, 1,1);
+			matrixStack.pop();
 		}
 
 

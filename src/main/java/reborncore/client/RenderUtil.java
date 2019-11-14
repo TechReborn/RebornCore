@@ -57,7 +57,7 @@ public class RenderUtil {
 	}
 
 	public static void bindBlockTexture() {
-		engine().method_22813(BLOCK_TEX);
+		engine().bindTexture(BLOCK_TEX);
 	}
 
 	public static Sprite getStillTexture(FluidInstance fluid) {
@@ -106,14 +106,14 @@ public class RenderUtil {
 				int drawX = (int) (x + i);
 				int drawY = posY + j;
 
-				double minU = icon.getMinU();
-				double maxU = icon.getMaxU();
-				double minV = icon.getMinV();
-				double maxV = icon.getMaxV();
+				float minU = icon.getMinU();
+				float maxU = icon.getMaxU();
+				float minV = icon.getMinV();
+				float maxV = icon.getMaxV();
 
 				Tessellator tessellator = Tessellator.getInstance();
-				BufferBuilder tes = tessellator.getBufferBuilder();
-				tes.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+				BufferBuilder tes = tessellator.getBuffer();
+				tes.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 				tes.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * drawHeight / 16F).next();
 				tes.vertex(drawX + drawWidth, drawY + drawHeight, 0)
 					.texture(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
@@ -138,10 +138,10 @@ public class RenderUtil {
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.disableAlphaTest();
-		RenderSystem.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA, GlStateManager.class_4535.ONE, GlStateManager.class_4534.ZERO);
+		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderSystem.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBufferBuilder();
+		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
 		vertexbuffer.vertex((double) right, (double) top, (double) 0).color(f1, f2, f3, f).next();
 		vertexbuffer.vertex((double) left, (double) top, (double) 0).color(f1, f2, f3, f).next();
