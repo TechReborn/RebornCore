@@ -11,10 +11,10 @@ import java.util.List;
 
 @Mixin(Ingredient.class)
 public class MixinIngredient implements IngredientExtensions {
-    @Shadow private ItemStack[] stackArray;
+    @Shadow private ItemStack[] matchingStacks;
 
     @Override
     public List<ItemStack> getIngredientStacks() {
-        return Arrays.asList(stackArray);
+        return Arrays.asList(matchingStacks);
     }
 }
