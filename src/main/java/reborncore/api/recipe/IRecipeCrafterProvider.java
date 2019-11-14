@@ -28,12 +28,35 @@
 
 package reborncore.api.recipe;
 
+import net.minecraft.item.ItemStack;
+import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.recipes.RecipeCrafter;
 
 /**
  * Created by modmuss50 on 11/04/2016.
  */
-public interface IRecipeCrafterProvider {
+public interface IRecipeCrafterProvider extends SlotConfiguration.SlotFilter {
 
 	RecipeCrafter getRecipeCrafter();
+
+	default boolean canCraft(RebornRecipe rebornRecipe){
+		return true;
+	}
+
+	@Override
+	default boolean isStackValid(int slotID, ItemStack stack){
+		if(getRecipeCrafter() == null){
+			return false;
+		}
+		return getRecipeCrafter().isStackValidInput(stack);
+	}
+
+	@Override
+	default int[] getInputSlots(){
+		if(getRecipeCrafter() == null){
+			return new int[]{};
+		}
+		return getRecipeCrafter().inputSlots;
+	}
 }

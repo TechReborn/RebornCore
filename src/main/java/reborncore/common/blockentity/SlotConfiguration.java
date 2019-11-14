@@ -39,10 +39,9 @@ import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.RebornCore;
 import reborncore.api.items.InventoryUtils;
-import reborncore.common.recipes.RecipeCrafter;
-import reborncore.common.util.RebornInventory;
 import reborncore.common.util.ItemUtils;
 import reborncore.common.util.NBTSerializable;
+import reborncore.common.util.RebornInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -305,6 +304,9 @@ public class SlotConfiguration implements NBTSerializable {
 				if (sourceStack.isEmpty()) {
 					continue;
 				}
+				if(!canInsertItem(slotID, sourceStack, side, machineBase)){
+					continue;
+				}
 				//Checks if we are going to merge stacks that the items are the same
 				if (!targetStack.isEmpty()) {
 					if (!ItemUtils.isItemEqual(sourceStack, targetStack, true, false)) {
@@ -437,17 +439,18 @@ public class SlotConfiguration implements NBTSerializable {
 
 	//DO NOT CALL THIS, use the inventory access on the inventory
 	public static boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction, MachineBaseBlockEntity blockEntity) {
+		if(itemStackIn.isEmpty()){
+			return false;
+		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = blockEntity.getSlotConfiguration().getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		if (slotConfig.getSlotIO().getIoConfig().isInsert()) {
-			if (slotConfigHolder.filter() && blockEntity.getOptionalCrafter().isPresent()) {
-				RecipeCrafter crafter = blockEntity.getOptionalCrafter().get();
-				if (!crafter.isStackValidInput(itemStackIn)) {
-					return false;
+			if (slotConfigHolder.filter()) {
+				if(blockEntity instanceof SlotFilter){
+					return ((SlotFilter) blockEntity).isStackValid(index, itemStackIn);
 				}
-			} else {
-				return slotConfig.getSlotIO().getIoConfig().isInsert();
 			}
+			return true;
 		}
 		return false;
 	}
@@ -460,6 +463,12 @@ public class SlotConfiguration implements NBTSerializable {
 			return true;
 		}
 		return false;
+	}
+
+	public interface SlotFilter {
+		boolean isStackValid(int slotID, ItemStack stack);
+
+		int[] getInputSlots();
 	}
 
 }

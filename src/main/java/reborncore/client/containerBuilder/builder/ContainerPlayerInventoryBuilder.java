@@ -33,7 +33,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.util.Identifier;
-
 import org.apache.commons.lang3.Range;
 import reborncore.client.IconSupplier;
 import reborncore.client.containerBuilder.builder.slot.SpriteSlot;
@@ -109,7 +108,12 @@ public final class ContainerPlayerInventoryBuilder {
 		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
 		                                                   final EquipmentSlot slotType, final Identifier sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(this.parent.player, index, xStart, yStart, sprite, 1)
-				.setFilter(stack -> stack.getItem() instanceof ArmorItem));
+				.setFilter(stack -> {
+					if(stack.getItem() instanceof ArmorItem){
+						return ((ArmorItem) stack.getItem()).getSlotType() == slotType;
+					}
+					return false;
+				}));
 			return this;
 		}
 
