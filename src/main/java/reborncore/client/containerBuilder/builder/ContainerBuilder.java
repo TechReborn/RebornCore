@@ -100,9 +100,7 @@ public class ContainerBuilder {
 	 * and if the player is not to far from him to close the GUI if necessary
 	 */
 	public BuiltContainer create() {
-		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
-			this.playerInventoryRanges,
-			this.tileInventoryRanges, null);
+		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract, null);
 		if (!this.shortValues.isEmpty())
 			built.addShortSync(this.shortValues);
 		if (!this.integerValues.isEmpty())
@@ -122,9 +120,7 @@ public class ContainerBuilder {
 	}
 
 	public BuiltContainer create(final TileLegacyMachineBase tile) {
-		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract,
-				this.playerInventoryRanges,
-				this.tileInventoryRanges, tile);
+		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract, tile);
 		if (!this.shortValues.isEmpty())
 			built.addShortSync(this.shortValues);
 		if (!this.integerValues.isEmpty())
