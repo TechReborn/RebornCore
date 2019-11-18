@@ -64,6 +64,10 @@ minecraft {
 group = 'RebornCore'
 
 dependencies {
+	// Classgraph
+	shade ("io.github.classgraph:classgraph:${project.classgraph_version}")
+
+	// Caffeine
 	shade ("com.github.ben-manes.caffeine:caffeine:${project.caffeine_version}")
 }
 

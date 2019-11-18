@@ -57,6 +57,7 @@ import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
+import reborncore.common.scriba.TileRegistrationManager;
 import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
@@ -120,6 +121,8 @@ public class RebornCore implements IModInfo {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
 
 		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
+
+		TileRegistrationManager.INSTANCE.registerReferencedTiles();
 	}
 
 	@Mod.EventHandler

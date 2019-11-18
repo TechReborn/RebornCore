@@ -22,41 +22,20 @@
  * SOFTWARE.
  */
 
-package reborncore.common.registration;
 
-import reborncore.Distribution;
-import reborncore.RebornCore;
+package reborncore.api.compat;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
- * This anoation gets applied to any class that contains
+ * @author estebes
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface RebornRegistry {
+public interface ICompatModule {
+     void preInit(FMLPreInitializationEvent event);
 
-    /**
-     * The mod id that should be active when the annotion is being proccessed.
-     *
-     * @return mod id
-     */
-    public String modID() default RebornCore.MOD_ID;
+    void init(FMLInitializationEvent event);
 
-    public int priority() default 0;
-
-    public boolean earlyReg() default false;
-
-    public Distribution side() default Distribution.UNIVERSAL;
-
-    /**
-     * comma separted mod ids that must be present for the manager to atempt to load the class
-     *
-     * @return
-     */
-    public String modOnly() default "";
-
+    void postInit(FMLPostInitializationEvent event);
 }
