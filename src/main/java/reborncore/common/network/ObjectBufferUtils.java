@@ -33,6 +33,8 @@ import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.fluids.FluidStack;
 
+import reborncore.RebornCore;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
@@ -85,6 +87,7 @@ public enum ObjectBufferUtils {
 	}
 
 	public static void writeObject(Object object, ExtendedPacketBuffer buffer){
+		RebornCore.logHelper.fatal(object.getClass());
 		ObjectBufferUtils utils = Arrays.stream(values()).filter(objectBufferUtils -> objectBufferUtils.clazz == object.getClass()).findFirst().orElse(null);
 		Objects.requireNonNull(utils, "No support found for " + object.getClass());
 		buffer.writeInt(utils.ordinal());

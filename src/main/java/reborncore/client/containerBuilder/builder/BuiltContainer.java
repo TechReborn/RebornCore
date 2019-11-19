@@ -28,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -54,6 +55,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
     private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
+    private final ArrayList<MutableTriple<Supplier, Consumer, FluidStack>> fluidStackValues;
     private final ArrayList<MutableTriple<Supplier, Consumer, Object>> objectValues;
     private List<Consumer<InventoryCrafting>> craftEvents;
     private Integer[] integerParts;
@@ -67,6 +69,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
         this.shortValues = new ArrayList<>();
         this.integerValues = new ArrayList<>();
         this.longValues = new ArrayList<>();
+        this.fluidStackValues = new ArrayList<>();
         this.objectValues = new ArrayList<>();
 
         this.tile = tile;
@@ -89,6 +92,12 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
             this.integerValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), 0));
         this.integerValues.trimToSize();
         this.integerParts = new Integer[this.integerValues.size()];
+    }
+
+    public void addFluidStackSync(final List<Pair<Supplier, Consumer>> syncables) {
+        for (final Pair<Supplier, Consumer> syncable : syncables)
+            this.fluidStackValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
+        this.fluidStackValues.trimToSize();
     }
 
     public void addObjectSync(final List<Pair<Supplier, Consumer>> syncables) {
@@ -173,6 +182,18 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
                 }
             }
 
+            if (!this.fluidStackValues.isEmpty()) {
+                int fluidStacks = 0;
+                for (final MutableTriple<Supplier, Consumer, FluidStack> value : this.fluidStackValues) {
+                    final FluidStack supplied = (FluidStack) value.getLeft();
+                    if (((Supplier) supplied).get() != value.getRight()) {
+                        sendFluidStack(listener, this, fluidStacks, (FluidStack) ((Supplier) supplied).get());
+                        value.setRight((FluidStack) ((Supplier) supplied).get());
+                    }
+                    fluidStacks++;
+                }
+            }
+
             if (!this.objectValues.isEmpty()) {
                 int objects = 0;
                 for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
@@ -221,6 +242,16 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
             }
         }
 
+        if (!this.fluidStackValues.isEmpty()) {
+            int fluidStacks = 0;
+            for (final MutableTriple<Supplier, Consumer, FluidStack> value : this.fluidStackValues) {
+                final FluidStack supplied = (FluidStack) value.getLeft().get();
+                sendFluidStack(listener, this, fluidStacks, supplied);
+                value.setRight(supplied);
+                fluidStacks++;
+            }
+        }
+
         if (!this.objectValues.isEmpty()) {
             int objects = 0;
             for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
@@ -235,6 +266,11 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
     @Override
     public void handleLong(int var, long value) {
         this.longValues.get(var).getMiddle().accept(value);
+    }
+
+    @Override
+    public void handleFluidStack(int var, FluidStack value) {
+        this.fluidStackValues.get(var).getMiddle().accept(value);
     }
 
     @Override

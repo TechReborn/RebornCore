@@ -53,6 +53,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<LongSupplier, LongConsumer>> longValues;
+	final List<Pair<Supplier, Consumer>> fluidStackValues;
 	final List<Pair<Supplier, Consumer>> objectValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;
@@ -68,6 +69,7 @@ public class ContainerBuilder {
 		this.shortValues = new ArrayList<>();
 		this.integerValues = new ArrayList<>();
 		this.longValues = new ArrayList<>();
+		this.fluidStackValues = new ArrayList<>();
 		this.objectValues = new ArrayList<>();
 
 		this.craftEvents = new ArrayList<>();
@@ -107,6 +109,8 @@ public class ContainerBuilder {
 			built.addIntegerSync(this.integerValues);
 		if (!this.longValues.isEmpty())
 			built.addLongSync(longValues);
+		if (!this.fluidStackValues.isEmpty())
+			built.addFluidStackSync(fluidStackValues);
 		if (!this.objectValues.isEmpty())
 			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty())
@@ -127,6 +131,8 @@ public class ContainerBuilder {
 			built.addIntegerSync(this.integerValues);
 		if (!this.longValues.isEmpty())
 			built.addLongSync(longValues);
+		if (!this.fluidStackValues.isEmpty())
+			built.addFluidStackSync(fluidStackValues);
 		if (!this.objectValues.isEmpty())
 			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty())
