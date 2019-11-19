@@ -1,3 +1,27 @@
+/*
+ * This file is part of TechReborn, licensed under the MIT License (MIT).
+ *
+ * Copyright (c) 2018 TechReborn
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package reborncore.api.praescriptum.fuels;
 
 import net.minecraft.item.ItemStack;
@@ -15,51 +39,65 @@ import reborncore.common.util.ItemUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author estebes
+ */
 public class Fuel {
     public Fuel(FuelHandler handler) {
         this.handler = handler;
     }
 
-    public Fuel withInput(List<InputIngredient<?>> inputs) {
+    public Fuel fromSource(List<InputIngredient<?>> inputs) {
         inputIngredients.addAll(inputs);
         return this;
     }
 
-    public Fuel withInput(ItemStack itemStack) {
-        if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Input cannot be empty");
+    public Fuel fromSource(ItemStack itemStack) {
+        if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(ItemStackInputIngredient.of(itemStack));
         return this;
     }
 
-    public Fuel withInput(String oreDict) {
+    public Fuel fromSource(String oreDict) {
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict));
         return this;
     }
 
-    public Fuel withInput(String oreDict, int amount) {
-        if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+    public Fuel fromSource(String oreDict, int amount) {
+        if (amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount));
         return this;
     }
 
-    public Fuel withInput(String oreDict, int amount, Integer meta) {
-        if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+    public Fuel fromSource(String oreDict, int amount, Integer meta) {
+        if (amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount, meta));
         return this;
     }
 
-    public Fuel withInput(FluidStack fluidStack) {
-        if (fluidStack.amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+    public Fuel fromSource(FluidStack fluidStack) {
+        if (fluidStack.amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(FluidStackInputIngredient.of(fluidStack));
         return this;
     }
 
-    public Fuel withOutput(double energyOutput) {
+    public Fuel withEnergyOutput(double energyOutput) {
+        if (energyOutput < 0) throw new IllegalArgumentException("Energy output cannot be less than 0.0D");
+
         this.energyOutput = energyOutput;
+        return this;
+    }
+
+    public Fuel withEnergyPerTick(double energyPerTick) {
+        if (energyPerTick < 0) throw new IllegalArgumentException("Energy per tick cannot be less than 0.0D");
+
+        if (metadata == null) metadata = new NBTTagCompound();
+
+        metadata.setDouble("energyPerTick", energyPerTick);
         return this;
     }
 
@@ -126,6 +164,12 @@ public class Fuel {
 
     public double getEnergyOutput() {
         return energyOutput;
+    }
+
+    public double getEnergyPerTick() {
+        if (metadata == null) return 0.0D;
+
+        return metadata.hasKey("energyPerTick") ? metadata.getDouble("energyPerTick") : 0.0D;
     }
 
     public NBTTagCompound getMetadata() {

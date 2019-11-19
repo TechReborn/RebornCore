@@ -24,79 +24,89 @@
 
 package reborncore.api.praescriptum.ingredients.input;
 
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import reborncore.common.util.FluidUtils;
-
-import java.util.Objects;
+import java.util.List;
 
 /**
  * @author estebes
  */
-public class FluidStackInputIngredient extends InputIngredient<FluidStack> {
-    public static FluidStackInputIngredient of(FluidStack ingredient) {
-        return new FluidStackInputIngredient(ingredient);
+public class FluidInputIngredient extends InputIngredient<String> {
+    public static FluidInputIngredient of(String ingredient) {
+        return of(ingredient, 1);
     }
 
-    public static FluidStackInputIngredient copyOf(FluidStack ingredient) {
-        return new FluidStackInputIngredient(ingredient.copy());
+    public static FluidInputIngredient of(String ingredient, int amount) {
+        return of(ingredient, amount, null);
     }
 
-    protected FluidStackInputIngredient(FluidStack ingredient) {
+    public static FluidInputIngredient of(String ingredient, int amount, Integer meta) {
+        return new FluidInputIngredient(ingredient, amount, meta);
+    }
+
+    protected FluidInputIngredient(String ingredient) {
+        this(ingredient, 1);
+    }
+
+    protected FluidInputIngredient(String ingredient, int amount) {
+        this(ingredient, amount, null);
+    }
+
+    protected FluidInputIngredient(String ingredient, int amount, Integer meta) {
         super(ingredient);
+
+        this.amount = amount;
+        this.meta = meta;
     }
 
     @Override
     public Object getUnspecific() {
-        return ingredient.getFluid();
+        throw new UnsupportedOperationException("Operation not supported for this ingredient.");
     }
 
     @Override
-    public InputIngredient<FluidStack> copy() {
-        return of(ingredient.copy());
+    public InputIngredient<String> copy() {
+        throw new UnsupportedOperationException("Operation not supported for this ingredient.");
     }
 
     @Override
     public boolean isEmpty() {
-        return ingredient.amount <= 0;
+        return amount <= 0;
     }
 
     @Override
     public int getCount() {
-        return ingredient.amount;
+        return amount;
     }
 
     @Override
     public void shrink(int amount) {
-        ingredient.amount -= amount;
+        throw new UnsupportedOperationException("Operation not supported for this ingredient.");
     }
 
     @Override
     public boolean matches(Object other) {
-        return other instanceof FluidStack &&
-                ingredient.isFluidEqual((FluidStack) other);
+        if (!(other instanceof FluidStack)) return false;
+
+        FluidStack fluidStack = (FluidStack) other;
+        return ingredient.equals(FluidRegistry.getFluidName(fluidStack));
     }
 
     @Override
     public boolean matchesStrict(Object other) {
-        return other instanceof FluidStack &&
-                ingredient.isFluidStackIdentical((FluidStack) other);
+        return other instanceof String && ingredient.equals(other);
     }
 
     @Override
     public String toFormattedString() {
-        return FluidUtils.toFormattedString(ingredient);
+        return ingredient;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(ingredient, consumable);
-    }
+    // Fields >>
+    public final int amount;
+    public final Integer meta;
 
-    @Override
-    public boolean equals(Object object) {
-        if (getClass() != object.getClass()) return false;
-
-        return matches(((FluidStackInputIngredient) object).ingredient) && this.consumable == ((FluidStackInputIngredient) object).consumable;
-    }
+    private List<FluidStack> equivalents;
+    // << Fields
 }

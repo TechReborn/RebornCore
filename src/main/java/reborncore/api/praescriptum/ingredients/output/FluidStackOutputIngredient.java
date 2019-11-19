@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2018 modmuss50 and Gigabit101
+ * This file is part of TechReborn, licensed under the MIT License (MIT).
  *
- *
+ * Copyright (c) 2018 TechReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,20 +10,16 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- *
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package reborncore.api.praescriptum.ingredients.output;
@@ -36,38 +32,38 @@ import reborncore.common.util.FluidUtils;
  * @author estebes
  */
 public class FluidStackOutputIngredient extends OutputIngredient<FluidStack> {
-	public static FluidStackOutputIngredient of(FluidStack ingredient) {
-		return new FluidStackOutputIngredient(ingredient);
-	}
+    public static FluidStackOutputIngredient of(FluidStack ingredient) {
+        return new FluidStackOutputIngredient(ingredient);
+    }
 
-	protected FluidStackOutputIngredient(FluidStack ingredient) {
-		super(ingredient);
-	}
+    protected FluidStackOutputIngredient(FluidStack ingredient) {
+        super(ingredient);
+    }
 
-	@Override
-	public OutputIngredient<FluidStack> copy() {
-		return of(ingredient.copy());
-	}
+    @Override
+    public OutputIngredient<FluidStack> copy() {
+        return of(ingredient.copy());
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return ingredient.amount <= 0;
-	}
+    @Override
+    public boolean isEmpty() {
+        return ingredient.amount <= 0;
+    }
 
-	@Override
-	public boolean matches(Object other) {
-		return other instanceof FluidStack &&
-			ingredient.isFluidEqual((FluidStack) other);
-	}
+    @Override
+    public boolean matches(Object other) {
+        return other instanceof FluidStack &&
+                ingredient.isFluidEqual((FluidStack) other);
+    }
 
-	@Override
-	public boolean matchesStrict(Object other) {
-		return other instanceof FluidStack &&
-			ingredient.isFluidStackIdentical((FluidStack) other);
-	}
+    @Override
+    public boolean matchesStrict(Object other) {
+        return other instanceof FluidStack &&
+                ingredient.isFluidStackIdentical((FluidStack) other);
+    }
 
-	@Override
-	public String toFormattedString() {
-		return FluidUtils.toFormattedString(ingredient);
-	}
+    @Override
+    public String toFormattedString() {
+        return FluidUtils.toFormattedString(ingredient);
+    }
 }
