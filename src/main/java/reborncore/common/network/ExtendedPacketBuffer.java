@@ -29,12 +29,17 @@
 package reborncore.common.network;
 
 import io.netty.buffer.ByteBuf;
+
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+
+import reborncore.RebornCore;
+
+import java.io.*;
 import java.math.BigInteger;
 
 public class ExtendedPacketBuffer extends PacketBuffer {
@@ -67,6 +72,39 @@ public class ExtendedPacketBuffer extends PacketBuffer {
 			return (BigInteger) inputStream.readObject();
 		} catch (Exception e){
 			throw new RuntimeException("Failed to read big int");
+		}
+	}
+
+	public void writeFluidStack(FluidStack fluidStack) {
+		try {
+			if (!(fluidStack != null && FluidRegistry.getFluidName(fluidStack) != null)) {
+				this.writeShort(-1);
+			} else {
+				ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+				CompressedStreamTools.writeCompressed(fluidStack.writeToNBT(new NBTTagCompound()), byteStream);
+				byte[] bytes = byteStream.toByteArray();
+				this.writeShort((short) bytes.length);
+				this.writeByteArray(bytes);
+			}
+		} catch (IOException exception) {
+			RebornCore.logHelper.fatal(exception);
+		}
+	}
+
+	public FluidStack readFluidStack() {
+		try {
+			short length = this.readShort();
+
+			if (length < 0) {
+				return null;
+			} else {
+				byte[] bytes = this.readByteArray(length);
+				ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
+				return FluidStack.loadFluidStackFromNBT(CompressedStreamTools.readCompressed(byteStream));
+			}
+		} catch (IOException exception) {
+			RebornCore.logHelper.fatal(exception);
+			return null;
 		}
 	}
 }

@@ -31,6 +31,8 @@ package reborncore.common.network;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraftforge.fluids.FluidStack;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
@@ -66,7 +68,11 @@ public enum ObjectBufferUtils {
 
 	BIG_INT(BigInteger.class, (pos, buffer) -> {
 		buffer.writeBigInt(pos);
-	}, ExtendedPacketBuffer::readBigInt);
+	}, ExtendedPacketBuffer::readBigInt),
+
+	FLUID_STACK(FluidStack.class, (pos, buffer) -> {
+		buffer.writeFluidStack(pos);
+	}, ExtendedPacketBuffer::readFluidStack),;
 
 	Class clazz;
 	ObjectWriter writer;
