@@ -232,7 +232,7 @@ public class FuelHandler {
     public Optional<Fuel> findAndApply(ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
 
@@ -279,7 +279,7 @@ public class FuelHandler {
     public Optional<Fuel> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf)
+                .map(ItemStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
@@ -327,7 +327,7 @@ public class FuelHandler {
     public Optional<Fuel> findAndApply2(FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return Optional.empty();
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
 
@@ -374,7 +374,7 @@ public class FuelHandler {
     public Optional<Fuel> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
+                .map(FluidStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
@@ -478,7 +478,7 @@ public class FuelHandler {
     public boolean apply(Fuel fuel, ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
 
         // check if everything need for the source is available in the source (ingredients + quantities)
         if (ingredients.size() != fuel.getInputIngredients().size()) return false;
@@ -559,7 +559,7 @@ public class FuelHandler {
     public boolean apply2(Fuel fuel, FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
 
         // check if everything need for the source is available in the source (ingredients + quantities)
         if (ingredients.size() != fuel.getInputIngredients().size()) return false;
@@ -599,7 +599,7 @@ public class FuelHandler {
     public boolean apply2(Fuel fuel, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
+                .map(FluidStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         // check if everything need for the source is available in the source (ingredients + quantities)

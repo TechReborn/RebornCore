@@ -258,7 +258,7 @@ public class RecipeHandler {
     public Optional<Recipe> findAndApply(ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
@@ -305,7 +305,7 @@ public class RecipeHandler {
     public Optional<Recipe> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf)
+                .map(ItemStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
@@ -353,7 +353,7 @@ public class RecipeHandler {
     public Optional<Recipe> findAndApply2(FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return Optional.empty();
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
@@ -400,7 +400,7 @@ public class RecipeHandler {
     public Optional<Recipe> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
+                .map(FluidStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
@@ -504,7 +504,7 @@ public class RecipeHandler {
     public boolean apply(Recipe recipe, ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
 
         // check if everything need for the input is available in the input (ingredients + quantities)
         if (ingredients.size() != recipe.getInputIngredients().size()) return false;
@@ -585,7 +585,7 @@ public class RecipeHandler {
     public boolean apply2(Recipe recipe, FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
+        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
 
         // check if everything need for the input is available in the input (ingredients + quantities)
         if (ingredients.size() != recipe.getInputIngredients().size()) return false;
@@ -625,7 +625,7 @@ public class RecipeHandler {
     public boolean apply2(Recipe recipe, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
+                .map(FluidStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         // check if everything need for the input is available in the input (ingredients + quantities)
