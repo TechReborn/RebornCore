@@ -1,32 +1,4 @@
-/*
- * Copyright (c) 2018 modmuss50 and Gigabit101
- *
- *
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- *
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- *
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-package reborncore.api.praescriptum.recipes;
+package reborncore.api.praescriptum.fuels;
 
 import net.minecraft.item.ItemStack;
 
@@ -39,7 +11,6 @@ import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.OreDictionaryInputIngredient;
-import reborncore.api.praescriptum.ingredients.output.OutputIngredient;
 import reborncore.common.util.ItemUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,51 +26,39 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
-/**
- * @author estebes
- */
-public class RecipeHandler {
-    public RecipeHandler(String name) {
-        if (StringUtils.isBlank(name)) throw new IllegalArgumentException("The recipe handler name cannot be blank");
+public class FuelHandler {
+    public FuelHandler(String name) {
+        if (StringUtils.isBlank(name)) throw new IllegalArgumentException("The fuel handler name cannot be blank");
 
         this.name = name;
     }
 
     /**
-     * Create a recipe for this handler.
+     * Create a fuel for this handler.
      *
-     * @return new recipe object for ease of use
+     * @return new fuel object for ease of use
      */
-    public Recipe createRecipe() {
-        return new Recipe(this);
+    public Fuel createFuel() {
+        return new Fuel(this);
     }
 
     /**
-     * Adds a recipe to this handler.
+     * Adds a fuel to this handler.
      *
-     * @param recipe  The recipe
-     * @param replace Replace conflicting existing recipes, not recommended, may be ignored
+     * @param fuel    The fuel
+     * @param replace Replace conflicting existing fuels, not recommended, may be ignored
      * @return True on success, false otherwise, e.g. on conflicts
      */
-    public boolean addRecipe(Recipe recipe, boolean replace) {
-        Objects.requireNonNull(recipe.getInputIngredients(), "The input is null");
+    public boolean addFuel(Fuel fuel, boolean replace) {
+        Objects.requireNonNull(fuel.getInputIngredients(), "The input is null");
 
-        if (recipe.getInputIngredients().size() <= 0) throw new IllegalArgumentException("No inputs");
+        if (fuel.getInputIngredients().size() <= 0) throw new IllegalArgumentException("No inputs");
 
-        Objects.requireNonNull(recipe.getOutputIngredients(), "The output is null");
+        if (fuel.getEnergyOutput() <= 0.0D) throw new IllegalArgumentException("The output is 0");
 
-        if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
-
-        ImmutableList<InputIngredient<?>> listOfInputs = recipe.getInputIngredients().stream()
+        ImmutableList<InputIngredient<?>> listOfInputs = fuel.getInputIngredients().stream()
                 .filter(IngredientUtils.isIngredientEmpty((ingredient) ->
-                        LogUtils.LOGGER.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
-                                ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
-                .collect(ImmutableList.toImmutableList());
-
-        ImmutableList<OutputIngredient<?>> listOfOutputs = recipe.getOutputIngredients().stream()
-                .filter(IngredientUtils.isIngredientEmpty((ingredient) ->
-                        LogUtils.LOGGER.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
-                                ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
+                        LogUtils.LOGGER.warn(String.format("The %s %s is invalid. Skipping...", ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
                 .collect(ImmutableList.toImmutableList());
 
         boolean canBeSkipped = listOfInputs.stream()
@@ -107,47 +66,47 @@ public class RecipeHandler {
                 .anyMatch(ingredient -> OreDictionary.getOres(((OreDictionaryInputIngredient) ingredient).ingredient).isEmpty());
 
         if (canBeSkipped) {
-            LogUtils.LOGGER.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                    name, listOfInputs, listOfOutputs));
+            LogUtils.LOGGER.warn(String.format("Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
+                    listOfInputs, fuel.getEnergyOutput()));
 
             return false;
         }
 
-        Optional<Recipe> temp = getRecipe(listOfInputs);
+        Optional<Fuel> temp = getFuel(listOfInputs);
 
         if (temp.isPresent()) {
             if (replace) {
                 do {
-                    if (!removeRecipe(listOfInputs))
-                        LogUtils.LOGGER.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, listOfInputs));
-                } while (getRecipe(listOfInputs).isPresent());
+                    if (!removeFuel(listOfInputs))
+                        LogUtils.LOGGER.error(String.format("Something went wrong while removing the fuel with inputs %s", listOfInputs));
+                } while (getFuel(listOfInputs).isPresent());
             } else {
-                LogUtils.LOGGER.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", listOfInputs,
-                        name, listOfOutputs, listOfInputs, listOfInputs, listOfOutputs));
+                LogUtils.LOGGER.error(String.format("Skipping %s => %s due to duplicate input for %s (%s => %s)", listOfInputs,
+                        fuel.getEnergyOutput(), listOfInputs, listOfInputs, fuel.getEnergyOutput()));
                 return false;
             }
         }
 
-        Recipe newRecipe = createRecipe()
+        Fuel newFuel = createFuel()
                 .withInput(listOfInputs)
-                .withOutput(listOfOutputs)
-                .withMetadata(recipe.getMetadata());
+                .withOutput(fuel.getEnergyOutput())
+                .withMetadata(fuel.getMetadata());
 
-        recipes.add(newRecipe);
+        fuels.add(newFuel);
 
         return true;
     }
 
     /**
-     * Get the recipe for the given ingredients.
+     * Get the fuel for the given ingredients.
      *
      * @param ingredients The ingredient list
-     * @return The recipe if it exists or empty otherwise
+     * @return The fuel if it exists or empty otherwise
      */
-    protected Optional<Recipe> getRecipe(ImmutableList<InputIngredient<?>> ingredients) {
-        return recipes.stream()
-                .filter(recipe -> {
-                    final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+    protected Optional<Fuel> getFuel(ImmutableList<InputIngredient<?>> ingredients) {
+        return fuels.stream()
+                .filter(fuel -> {
+                    final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
                     ingredients.forEach(entry ->
                             listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
@@ -157,85 +116,69 @@ public class RecipeHandler {
     }
 
     /**
-     * Get the recipe for given outputs
+     * Find a matching fuel for the provided inputs
      *
-     * @param output List of outputs
-     * @return The recipe if it exists or empty otherwise
+     * @param itemStack Fuel input item (not modified)
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> getRecipeByOutput(ImmutableList<OutputIngredient<?>> output) {
-        return this.recipes.stream().filter((recipe) -> {
-            List<OutputIngredient<?>> listA = new ArrayList<>(recipe.getOutputIngredients());
-            output.forEach((entry) ->
-                    listA.removeIf((temp) -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
-
-            return listA.isEmpty();
-        }).findAny();
-    }
-
-    /**
-     * Find a matching recipe for the provided inputs
-     *
-     * @param itemStack Recipe input item (not modified)
-     * @return Recipe result, or empty if none
-     */
-    public Optional<Recipe> findRecipe(ItemStack itemStack) {
+    public Optional<Fuel> findFuel(ItemStack itemStack) {
         if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return Optional.ofNullable(cachedFuels.get(ingredients));
     }
 
     /**
-     * Find a matching recipe for the provided inputs
+     * Find a matching fuel for the provided inputs
      *
-     * @param itemStacks Recipe input items (not modified)
-     * @return Recipe result, or empty if none
+     * @param itemStacks Fuel input items (not modified)
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findRecipe(ImmutableList<ItemStack> itemStacks) {
+    public Optional<Fuel> findFuel(ImmutableList<ItemStack> itemStacks) {
         ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::copyOf)
                 .collect(ImmutableList.toImmutableList());
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return Optional.ofNullable(cachedFuels.get(ingredients));
     }
 
     /**
-     * Find a matching recipe for the provided inputs
+     * Find a matching fuel for the provided inputs
      *
-     * @param fluidStack Recipe input fluid (not modified)
-     * @return Recipe result, or empty if none
+     * @param fluidStack Fuel input fluid (not modified)
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findRecipe2(FluidStack fluidStack) {
+    public Optional<Fuel> findFuel2(FluidStack fluidStack) {
         if (fluidStack.amount <= 0) return Optional.empty();
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return Optional.ofNullable(cachedFuels.get(ingredients));
     }
 
     /**
-     * Find a matching recipe for the provided inputs
+     * Find a matching fuel for the provided inputs
      *
-     * @param fluidStacks Recipe input fluids (not modified)
-     * @return Recipe result, or empty if none
+     * @param fluidStacks Fuel input fluids (not modified)
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findRecipe2(ImmutableList<FluidStack> fluidStacks) {
+    public Optional<Fuel> findFuel2(ImmutableList<FluidStack> fluidStacks) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
                 .map(FluidStackInputIngredient::copyOf)
                 .collect(ImmutableList.toImmutableList());
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return Optional.ofNullable(cachedFuels.get(ingredients));
     }
 
     /**
-     * Find a matching recipe for the provided inputs
+     * Find a matching fuel for the provided inputs
      *
-     * @param itemStacks  Recipe input items (not modified)
-     * @param fluidStacks Recipe input fluids (not modified)
-     * @return Recipe result, or empty if none
+     * @param itemStacks  Fuel input items (not modified)
+     * @param fluidStacks Fuel input fluids (not modified)
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findRecipe3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks) {
+    public Optional<Fuel> findFuel3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks) {
         Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::copyOf); // map ItemStacks
@@ -247,39 +190,39 @@ public class RecipeHandler {
         ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
                 .collect(ImmutableList.toImmutableList());
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return Optional.ofNullable(cachedFuels.get(ingredients));
     }
 
     /**
-     * Given the inputs find and apply the recipe to said inputs.
+     * Given the inputs find and apply the fuel to said inputs.
      *
-     * @param itemStack Recipe input item (not modified)
+     * @param itemStack Fuel input item (not modified)
      * @param simulate  If true the manager will accept partially missing ingredients or
      *                  ingredients with insufficient quantities. This is primarily used to check whether a
      *                  slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findAndApply(ItemStack itemStack, boolean simulate) {
+    public Optional<Fuel> findAndApply(ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
 
-        ret.map(recipe -> {
+        ret.map(fuel -> {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
             if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
                 ingredients.forEach(entry ->
                         listB.removeIf(temp -> {
                             if (temp.matches(entry.ingredient)) {
@@ -291,22 +234,22 @@ public class RecipeHandler {
                 );
             }
 
-            return Optional.of(recipe);
+            return Optional.of(fuel);
         });
 
         return ret;
     }
 
     /**
-     * Given the inputs find and apply the recipe to said inputs.
+     * Given the inputs find and apply the fuel to said inputs.
      *
-     * @param itemStacks Recipe input items (not modified)
+     * @param itemStacks Fuel input items (not modified)
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
+    public Optional<Fuel> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::copyOf)
@@ -314,20 +257,20 @@ public class RecipeHandler {
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
 
-        ret.map(recipe -> {
+        ret.map(fuel -> {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
             if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
                 ingredients.forEach(entry ->
                         listB.removeIf(temp -> {
                             if (temp.matches(entry.ingredient)) {
@@ -339,42 +282,42 @@ public class RecipeHandler {
                 );
             }
 
-            return Optional.of(recipe);
+            return Optional.of(fuel);
         });
 
         return ret;
     }
 
     /**
-     * Given the inputs find and apply the recipe to said inputs.
+     * Given the inputs find and apply the fuel to said inputs.
      *
-     * @param fluidStack Recipe input fluid (not modified)
+     * @param fluidStack Fuel input fluid (not modified)
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findAndApply2(FluidStack fluidStack, boolean simulate) {
+    public Optional<Fuel> findAndApply2(FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return Optional.empty();
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
 
-        ret.map(recipe -> {
+        ret.map(fuel -> {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
             if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
                 ingredients.forEach(entry ->
                         listB.removeIf(temp -> {
                             if (temp.matches(entry.ingredient)) {
@@ -386,22 +329,22 @@ public class RecipeHandler {
                 );
             }
 
-            return Optional.of(recipe);
+            return Optional.of(fuel);
         });
 
         return ret;
     }
 
     /**
-     * Given the inputs find and apply the recipe to said inputs.
+     * Given the inputs find and apply the fuel to said inputs.
      *
-     * @param fluidStacks Recipe input fluids (not modified)
+     * @param fluidStacks Fuel input fluids (not modified)
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
+    public Optional<Fuel> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
                 .map(FluidStackInputIngredient::copyOf)
@@ -409,20 +352,20 @@ public class RecipeHandler {
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
 
-        ret.map(recipe -> {
+        ret.map(fuel -> {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
             if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
                 ingredients.forEach(entry ->
                         listB.removeIf(temp -> {
                             if (temp.matches(entry.ingredient)) {
@@ -434,23 +377,23 @@ public class RecipeHandler {
                 );
             }
 
-            return Optional.of(recipe);
+            return Optional.of(fuel);
         });
 
         return ret;
     }
 
     /**
-     * Given the inputs find and apply the recipe to said inputs.
+     * Given the inputs find and apply the fuel to said inputs.
      *
-     * @param itemStacks  Recipe input items (not modified)
-     * @param fluidStacks Recipe input fluids (not modified)
+     * @param itemStacks  Fuel input items (not modified)
+     * @param fluidStacks Fuel input fluids (not modified)
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return Fuel result, or empty if none
      */
-    public Optional<Recipe> findAndApply3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
+    public Optional<Fuel> findAndApply3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::of); // map ItemStacks
@@ -464,20 +407,20 @@ public class RecipeHandler {
 
         if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
 
-        ret.map(recipe -> {
+        ret.map(fuel -> {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
             if (!listA.isEmpty()) return Optional.empty(); // the input did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
                 ingredients.forEach(entry ->
                         listB.removeIf(temp -> {
                             if (temp.matches(entry.ingredient)) {
@@ -489,38 +432,38 @@ public class RecipeHandler {
                 );
             }
 
-            return Optional.of(recipe);
+            return Optional.of(fuel);
         });
 
         return ret;
     }
 
     /**
-     * Given the inputs and the recipe apply the recipe to said inputs.
+     * Given the inputs and the fuel apply the fuel to said inputs.
      *
-     * @param recipe    The recipe
-     * @param itemStack Recipe input item (not modified)
+     * @param fuel      The fuel
+     * @param itemStack Fuel input item (not modified)
      * @param simulate  If true the manager will accept partially missing ingredients or
      *                  ingredients with insufficient quantities. This is primarily used to check whether a
      *                  slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply(Recipe recipe, ItemStack itemStack, boolean simulate) {
+    public boolean apply(Fuel fuel, ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return false;
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
 
         // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
         ingredients.forEach(entry ->
                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
         if (!listA.isEmpty()) return false; // the input did not match
 
         if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient)) {
@@ -536,32 +479,32 @@ public class RecipeHandler {
     }
 
     /**
-     * Given the inputs and the recipe apply the recipe to said inputs.
+     * Given the inputs and the fuel apply the fuel to said inputs.
      *
-     * @param recipe     The recipe
-     * @param itemStacks Recipe input items (not modified)
+     * @param fuel       The fuel
+     * @param itemStacks Fuel input items (not modified)
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply(Recipe recipe, ImmutableList<ItemStack> itemStacks, boolean simulate) {
+    public boolean apply(Fuel fuel, ImmutableList<ItemStack> itemStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::of)
                 .collect(ImmutableList.toImmutableList());
 
         // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
         ingredients.forEach(entry ->
                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
         if (!listA.isEmpty()) return false; // the input did not match
 
         if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient)) {
@@ -577,31 +520,31 @@ public class RecipeHandler {
     }
 
     /**
-     * Given the inputs and the recipe apply the recipe to said inputs.
+     * Given the inputs and the fuel apply the fuel to said inputs.
      *
-     * @param recipe     The recipe
-     * @param fluidStack Recipe input fluid (not modified)
+     * @param fuel       The fuel
+     * @param fluidStack Fuel input fluid (not modified)
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply2(Recipe recipe, FluidStack fluidStack, boolean simulate) {
+    public boolean apply2(Fuel fuel, FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return false;
 
         ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
 
         // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
         ingredients.forEach(entry ->
                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
         if (!listA.isEmpty()) return false; // the input did not match
 
         if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient)) {
@@ -617,32 +560,32 @@ public class RecipeHandler {
     }
 
     /**
-     * Given the inputs and the recipe apply the recipe to said inputs.
+     * Given the inputs and the fuel apply the fuel to said inputs.
      *
-     * @param recipe      The recipe
-     * @param fluidStacks Recipe input fluids (not modified)
+     * @param fuel        The fuel
+     * @param fluidStacks Fuel input fluids (not modified)
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply2(Recipe recipe, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
+    public boolean apply2(Fuel fuel, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
                 .filter(stack -> stack.amount <= 0)
                 .map(FluidStackInputIngredient::copyOf)
                 .collect(ImmutableList.toImmutableList());
 
         // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
         ingredients.forEach(entry ->
                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
         if (!listA.isEmpty()) return false; // the input did not match
 
         if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient)) {
@@ -658,17 +601,17 @@ public class RecipeHandler {
     }
 
     /**
-     * Given the inputs and the recipe apply the recipe to said inputs.
+     * Given the inputs and the fuel apply the fuel to said inputs.
      *
-     * @param recipe      The recipe
-     * @param itemStacks  Recipe input items (not modified)
-     * @param fluidStacks Recipe input fluids (not modified)
+     * @param fuel        The fuel
+     * @param itemStacks  Fuel input items (not modified)
+     * @param fluidStacks Fuel input fluids (not modified)
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply3(Recipe recipe, ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
+    public boolean apply3(Fuel fuel, ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
         Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
                 .filter(stack -> !ItemUtils.isEmpty(stack))
                 .map(ItemStackInputIngredient::of); // map ItemStacks
@@ -681,16 +624,16 @@ public class RecipeHandler {
                 .collect(ImmutableList.toImmutableList());
 
         // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
         ingredients.forEach(entry ->
                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 
         if (!listA.isEmpty()) return false; // the input did not match
 
         if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
+            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
             ingredients.forEach(entry ->
                     listB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient)) {
@@ -706,54 +649,54 @@ public class RecipeHandler {
     }
 
     /**
-     * Removes a recipe from this handler.
+     * Removes a fuel from this handler.
      *
-     * @param recipe The recipe
-     * @return True if the recipe has been removed or false otherwise
+     * @param fuel The fuel
+     * @return True if the fuel has been removed or false otherwise
      */
-    public boolean removeRecipe(Recipe recipe) {
-        if (recipe == null) return false;
+    public boolean removeFuel(Fuel fuel) {
+        if (fuel == null) return false;
 
-        cachedRecipes.invalidate(recipe); // remove from cache
-        return recipes.remove(recipe);
+        cachedFuels.invalidate(fuel); // remove from cache
+        return fuels.remove(fuel);
     }
 
     /**
-     * Removes a recipe from this handler.
+     * Removes a fuel from this handler.
      *
      * @param ingredients The input ingredients
-     * @return True if a valid recipe has been found and removed or false otherwise
+     * @return True if a valid fuel has been found and removed or false otherwise
      */
-    public boolean removeRecipe(ImmutableList<InputIngredient<?>> ingredients) {
-        Recipe recipe = getRecipe(ingredients).orElse(null);
-        if (recipe == null) return false;
+    public boolean removeFuel(ImmutableList<InputIngredient<?>> ingredients) {
+        Fuel fuel = getFuel(ingredients).orElse(null);
+        if (fuel == null) return false;
 
-        cachedRecipes.invalidate(ingredients); // remove from cache
-        return recipes.remove(recipe);
+        cachedFuels.invalidate(ingredients); // remove from cache
+        return fuels.remove(fuel);
     }
 
     /**
-     * Get all the recipes from this handler
+     * Get all the fuels from this handler
      *
-     * @return A list with all the recipes
+     * @return A list with all the fuels
      */
-    public List<Recipe> getRecipes() {
-        return recipes;
+    public List<Fuel> getFuels() {
+        return fuels;
     }
 
     // Fields >>
     public final String name;
 
-    protected final List<Recipe> recipes = new ArrayList<>();
+    protected final List<Fuel> fuels = new ArrayList<>();
 
-    protected final LoadingCache<ImmutableList<InputIngredient<?>>, Recipe> cachedRecipes =
+    protected final LoadingCache<ImmutableList<InputIngredient<?>>, Fuel> cachedFuels =
             Caffeine.newBuilder()
                     .expireAfterAccess(10, TimeUnit.MINUTES)
                     .maximumSize(100)
                     .build(ingredients ->
-                            recipes.stream()
-                                    .filter(recipe -> {
-                                        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
+                            fuels.stream()
+                                    .filter(fuel -> {
+                                        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
                                         ingredients.forEach(entry ->
                                                 listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
 

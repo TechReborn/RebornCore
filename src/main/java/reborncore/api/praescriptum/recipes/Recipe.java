@@ -51,186 +51,180 @@ import java.util.List;
  * @author estebes
  */
 public class Recipe implements Serializable {
+    public Recipe(RecipeHandler handler) {
+        this.handler = handler;
+    }
 
-	/**
-	 * It is strongly recommended that all serializable classes explicitly declare
-	 * serialVersionUID values
-	 */
-	private static final long serialVersionUID = 528013385268499955L;
+    public Recipe withInput(List<InputIngredient<?>> inputs) {
+        inputIngredients.addAll(inputs);
+        return this;
+    }
 
-	public Recipe(RecipeHandler manager) {
-		this.manager = manager;
-	}
+    public Recipe withInput(ItemStack itemStack) {
+        if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Input cannot be empty");
 
-	public Recipe withInput(List<InputIngredient<?>> inputs) {
-		inputIngredients.addAll(inputs);
-		return this;
-	}
+        inputIngredients.add(ItemStackInputIngredient.of(itemStack));
+        return this;
+    }
 
-	public Recipe withInput(ItemStack itemStack) {
-		if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Input cannot be empty");
+    public Recipe withInput(String oreDict) {
+        inputIngredients.add(OreDictionaryInputIngredient.of(oreDict));
+        return this;
+    }
 
-		inputIngredients.add(ItemStackInputIngredient.of(itemStack));
-		return this;
-	}
+    public Recipe withInput(String oreDict, int amount) {
+        if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
 
-	public Recipe withInput(String oreDict) {
-		inputIngredients.add(OreDictionaryInputIngredient.of(oreDict));
-		return this;
-	}
-	public Recipe withInput(String oreDict, int amount) {
-		if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+        inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount));
+        return this;
+    }
 
-		inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount));
-		return this;
-	}
+    public Recipe withInput(String oreDict, int amount, Integer meta) {
+        if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
 
-	public Recipe withInput(String oreDict, int amount, Integer meta) {
-		if (amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+        inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount, meta));
+        return this;
+    }
 
-		inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount, meta));
-		return this;
-	}
+    public Recipe withInput(FluidStack fluidStack) {
+        if (fluidStack.amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
 
-	public Recipe withInput(FluidStack fluidStack) {
-		if (fluidStack.amount <= 0) throw new IllegalArgumentException("Input cannot be empty");
+        inputIngredients.add(FluidStackInputIngredient.of(fluidStack));
+        return this;
+    }
 
-		inputIngredients.add(FluidStackInputIngredient.of(fluidStack));
-		return this;
-	}
+    public Recipe withOutput(List<OutputIngredient<?>> outputs) {
+        outputIngredients.addAll(outputs);
+        return this;
+    }
 
-	public Recipe withOutput(List<OutputIngredient<?>> outputs) {
-		outputIngredients.addAll(outputs);
-		return this;
-	}
+    public Recipe withOutput(ItemStack itemStack) {
+        if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Output cannot be empty");
 
-	public Recipe withOutput(ItemStack itemStack) {
-		if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Output cannot be empty");
+        outputIngredients.add(ItemStackOutputIngredient.of(itemStack));
+        return this;
+    }
 
-		outputIngredients.add(ItemStackOutputIngredient.of(itemStack));
-		return this;
-	}
+    public Recipe withOutput(FluidStack fluidStack) {
+        if (fluidStack.amount <= 0) throw new IllegalArgumentException("Output cannot be empty");
 
-	public Recipe withOutput(FluidStack fluidStack) {
-		if (fluidStack.amount <= 0) throw new IllegalArgumentException("Output cannot be empty");
+        outputIngredients.add(FluidStackOutputIngredient.of(fluidStack));
+        return this;
+    }
 
-		outputIngredients.add(FluidStackOutputIngredient.of(fluidStack));
-		return this;
-	}
+    public Recipe withEnergyCostPerTick(int energyCostPerTick) {
+        if (energyCostPerTick < 0) throw new IllegalArgumentException("Energy cost per tick cannot be less than 0");
 
-	public Recipe withEnergyCostPerTick(int energyCostPerTick) {
-		if (energyCostPerTick < 0) throw new IllegalArgumentException("Energy cost per tick cannot be less than 0");
+        if (metadata == null) metadata = new NBTTagCompound();
 
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setInteger("energyCostPerTick", energyCostPerTick);
 
-		metadata.setInteger("energyCostPerTick", energyCostPerTick);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withOperationDuration(int operationDuration) {
+        if (operationDuration < 0) throw new IllegalArgumentException("Operation duration cannot be less than 0");
 
-	public Recipe withOperationDuration(int operationDuration) {
-		if (operationDuration < 0) throw new IllegalArgumentException("Operation duration cannot be less than 0");
+        if (metadata == null) metadata = new NBTTagCompound();
 
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setInteger("operationDuration", operationDuration);
 
-		metadata.setInteger("operationDuration", operationDuration);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(NBTTagCompound metadata) {
+        this.metadata = metadata;
+        return this;
+    }
 
-	public Recipe withMetadata(NBTTagCompound metadata) {
-		this.metadata = metadata;
-		return this;
-	}
+    public Recipe withMetadata(String key, int value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, int value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setInteger(key, value);
 
-		metadata.setInteger(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(String key, short value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, short value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setShort(key, value);
 
-		metadata.setShort(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(String key, byte value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, byte value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setByte(key, value);
 
-		metadata.setByte(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(String key, float value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, float value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setFloat(key, value);
 
-		metadata.setFloat(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(String key, double value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, double value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setDouble(key, value);
 
-		metadata.setDouble(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public Recipe withMetadata(String key, boolean value) {
+        if (metadata == null) metadata = new NBTTagCompound();
 
-	public Recipe withMetadata(String key, boolean value) {
-		if (metadata == null) metadata = new NBTTagCompound();
+        metadata.setBoolean(key, value);
 
-		metadata.setBoolean(key, value);
+        return this;
+    }
 
-		return this;
-	}
+    public void register() {
+        register(false);
+    }
 
-	public void register() {
-		register(false);
-	}
+    public void register(boolean replace) {
+        boolean success = handler.addRecipe(this, replace);
+        if (!success) LogUtils.LOGGER.warn("Registration failed for input " + this);
+    }
 
-	public void register(boolean replace) {
-		boolean success = manager.addRecipe(this, replace);
-		if (!success) LogUtils.LOGGER.warn("Registration failed for input " + this);
-	}
+    // Getters >>
+    public List<InputIngredient<?>> getInputIngredients() {
+        return inputIngredients;
+    }
 
-	// Getters >>
-	public List<InputIngredient<?>> getInputIngredients() {
-		return inputIngredients;
-	}
+    public List<OutputIngredient<?>> getOutputIngredients() {
+        return outputIngredients;
+    }
 
-	public List<OutputIngredient<?>> getOutputIngredients() {
-		return outputIngredients;
-	}
+    public int getEnergyCostPerTick() {
+        if (metadata == null) return 0;
 
-	public int getEnergyCostPerTick() {
-		if (metadata == null) return 0;
+        return metadata.hasKey("energyCostPerTick") ? metadata.getInteger("energyCostPerTick") : 0;
+    }
 
-		return metadata.hasKey("energyCostPerTick") ? metadata.getInteger("energyCostPerTick") : 0;
-	}
+    public int getOperationDuration() {
+        if (metadata == null) return 0;
 
-	public int getOperationDuration() {
-		if (metadata == null) return 0;
+        return metadata.hasKey("operationDuration") ? metadata.getInteger("operationDuration") : 0;
+    }
 
-		return metadata.hasKey("operationDuration") ? metadata.getInteger("operationDuration") : 0;
-	}
+    public NBTTagCompound getMetadata() {
+        return metadata;
+    }
+    // << Getters
 
-	public NBTTagCompound getMetadata() {
-		return metadata;
-	}
-	// << Getters
+    // Fields >>
+    private final RecipeHandler handler;
 
-	// Fields >>
-	private final RecipeHandler manager;
-
-	private List<InputIngredient<?>> inputIngredients = new ArrayList<>();
-	private List<OutputIngredient<?>> outputIngredients = new ArrayList<>();
-	private NBTTagCompound metadata;
-	// << Fields
+    private List<InputIngredient<?>> inputIngredients = new ArrayList<>();
+    private List<OutputIngredient<?>> outputIngredients = new ArrayList<>();
+    private NBTTagCompound metadata;
+    // << Fields
 }
