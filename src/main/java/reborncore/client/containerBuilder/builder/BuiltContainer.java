@@ -55,7 +55,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
     private final ArrayList<MutableTriple<LongSupplier, LongConsumer, Long>> longValues;
-    private final ArrayList<MutableTriple<Supplier, Consumer, FluidStack>> fluidStackValues;
+    private final ArrayList<MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack>> fluidStackValues;
     private final ArrayList<MutableTriple<Supplier, Consumer, Object>> objectValues;
     private List<Consumer<InventoryCrafting>> craftEvents;
     private Integer[] integerParts;
@@ -94,8 +94,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
         this.integerParts = new Integer[this.integerValues.size()];
     }
 
-    public void addFluidStackSync(final List<Pair<Supplier, Consumer>> syncables) {
-        for (final Pair<Supplier, Consumer> syncable : syncables)
+    public void addFluidStackSync(final List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> syncables) {
+        for (final Pair<Supplier<FluidStack>, Consumer<FluidStack>> syncable : syncables)
             this.fluidStackValues.add(MutableTriple.of(syncable.getLeft(), syncable.getRight(), null));
         this.fluidStackValues.trimToSize();
     }
@@ -184,11 +184,11 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
             if (!this.fluidStackValues.isEmpty()) {
                 int fluidStacks = 0;
-                for (final MutableTriple<Supplier, Consumer, FluidStack> value : this.fluidStackValues) {
-                    final FluidStack supplied = (FluidStack) value.getLeft();
-                    if (((Supplier) supplied).get() != value.getRight()) {
-                        sendFluidStack(listener, this, fluidStacks, (FluidStack) ((Supplier) supplied).get());
-                        value.setRight((FluidStack) ((Supplier) supplied).get());
+                for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidStackValues) {
+                    final FluidStack supplied = value.getLeft().get();
+                    if (supplied != value.getRight()) {
+                        sendFluidStack(listener, this, fluidStacks, supplied);
+                        value.setRight(supplied);
                     }
                     fluidStacks++;
                 }
@@ -244,8 +244,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
         if (!this.fluidStackValues.isEmpty()) {
             int fluidStacks = 0;
-            for (final MutableTriple<Supplier, Consumer, FluidStack> value : this.fluidStackValues) {
-                final FluidStack supplied = (FluidStack) value.getLeft().get();
+            for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidStackValues) {
+                final FluidStack supplied = value.getLeft().get();
                 sendFluidStack(listener, this, fluidStacks, supplied);
                 value.setRight(supplied);
                 fluidStacks++;

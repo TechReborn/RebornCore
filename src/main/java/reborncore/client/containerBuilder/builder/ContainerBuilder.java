@@ -33,6 +33,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
+
+import net.minecraftforge.fluids.FluidStack;
+
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.tile.TileLegacyMachineBase;
@@ -53,7 +56,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> shortValues;
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<LongSupplier, LongConsumer>> longValues;
-	final List<Pair<Supplier, Consumer>> fluidStackValues;
+	final List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> fluidStackValues;
 	final List<Pair<Supplier, Consumer>> objectValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;

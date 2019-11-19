@@ -85,7 +85,7 @@ public class PacketSendFluidStack implements INetworkPacket<PacketSendFluidStack
         if(gui instanceof GuiContainer){
             Container container = ((GuiContainer) gui).inventorySlots;
             if(container instanceof IExtendedContainerListener){
-                ((IExtendedContainerListener) container).handleObject(id, value);
+                ((IExtendedContainerListener) container).handleFluidStack(id, value);
             }
         }
     }
