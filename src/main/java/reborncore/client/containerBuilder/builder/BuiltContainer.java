@@ -1,7 +1,5 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
- *
- * Copyright (c) 2018 TechReborn
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,16 +8,16 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 package reborncore.client.containerBuilder.builder;
@@ -37,7 +35,6 @@ import reborncore.client.gui.slots.SlotFake;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.ItemUtils;
 
-import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -51,6 +48,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
     private final String name;
 
     private final Predicate<EntityPlayer> canInteract;
+
 
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Short>> shortValues;
     private final ArrayList<MutableTriple<IntSupplier, IntConsumer, Integer>> integerValues;
@@ -186,10 +184,12 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
                 int fluidStacks = 0;
                 for (final MutableTriple<Supplier<FluidStack>, Consumer<FluidStack>, FluidStack> value : this.fluidStackValues) {
                     final FluidStack supplied = value.getLeft().get();
-                    if (supplied != value.getRight()) {
-                        sendFluidStack(listener, this, fluidStacks, supplied);
-                        value.setRight(supplied);
-                    }
+                    sendFluidStack(listener, this, fluidStacks, supplied);
+//                        if (listener instanceof EntityPlayerMP) {
+//                            PacketHandler.sendTo(new VariableMessage(VariableMessage.Type.GUI, this.tile.getWorld().provider.getDimension(),
+//                                    this.tile.getPos(), supplied.writeToNBT(new NBTTagCompound())), (EntityPlayerMP) listener);
+//                        }
+                    value.setRight(supplied);
                     fluidStacks++;
                 }
             }

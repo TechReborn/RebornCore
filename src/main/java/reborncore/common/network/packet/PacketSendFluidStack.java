@@ -1,7 +1,5 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
- *
- * Copyright (c) 2018 TechReborn
+ * Copyright (c) 2018 modmuss50 and Gigabit101
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,23 +8,22 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 package reborncore.common.network.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -34,7 +31,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
+import reborncore.client.containerBuilder.builder.BuiltContainer;
+import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 
@@ -80,13 +78,11 @@ public class PacketSendFluidStack implements INetworkPacket<PacketSendFluidStack
     }
 
     @SideOnly(Side.CLIENT)
-    public void handle(){
+    public void handle() {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
-        if(gui instanceof GuiContainer){
-            Container container = ((GuiContainer) gui).inventorySlots;
-            if(container instanceof IExtendedContainerListener){
-                ((IExtendedContainerListener) container).handleFluidStack(id, value);
-            }
+        if (gui instanceof GuiBase){
+            BuiltContainer container = ((GuiBase) gui).container;
+            if (container != null) container.handleFluidStack(id, value);
         }
     }
 

@@ -1,8 +1,6 @@
 /*
  * Copyright (c) 2018 modmuss50 and Gigabit101
  *
- *
- *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -10,12 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- *
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
- *
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -29,6 +23,7 @@
 package reborncore;
 
 import net.minecraft.util.ResourceLocation;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -37,6 +32,7 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+
 import reborncore.api.ToolManager;
 import reborncore.client.gui.ManualGuiHandler;
 import reborncore.common.IModInfo;
@@ -57,7 +53,6 @@ import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.registration.RegistrationManager;
 import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
-import reborncore.common.scriba.TileRegistrationManager;
 import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
 import reborncore.shields.RebornCoreShields;
@@ -70,7 +65,7 @@ public class RebornCore implements IModInfo {
 
 	public static final String MOD_NAME = "Reborn Core";
 	public static final String MOD_ID = "reborncore";
-	public static final String MOD_VERSION = "@MODVERSION@";
+	public static final String MOD_VERSION = "3.16.2"; //"@MODVERSION@";
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
 	public static LogHelper logHelper;
@@ -121,8 +116,6 @@ public class RebornCore implements IModInfo {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new ResourceLocation("redstonearsenal:tool.wrench_flux"), false));
 
 		PowerSystem.EnergySystem.FE.enabled = () -> RebornCoreConfig.enableFE;
-
-		TileRegistrationManager.INSTANCE.registerReferencedTiles();
 	}
 
 	@Mod.EventHandler
