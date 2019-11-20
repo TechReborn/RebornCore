@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author estebes
  */
 public class TileRegistrationManager {
-    private TileRegistrationManager(String domain) {
+    public TileRegistrationManager(String domain) {
         if (StringUtils.isBlank(domain)) throw new IllegalArgumentException("The domain cannot be blank");
 
         this.domain = domain;
