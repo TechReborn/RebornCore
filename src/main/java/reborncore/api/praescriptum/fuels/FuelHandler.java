@@ -27,8 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import reborncore.api.praescriptum.Utils.IngredientUtils;
-import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
@@ -36,17 +34,14 @@ import reborncore.api.praescriptum.ingredients.input.OreDictionaryInputIngredien
 import reborncore.common.util.ItemUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author estebes
@@ -56,6 +51,7 @@ public class FuelHandler {
         if (StringUtils.isBlank(name)) throw new IllegalArgumentException("The fuel handler name cannot be blank");
 
         this.name = name;
+        logger = LogManager.getLogger("team_reborn|Praescriptum|" + name);
     }
 
     /**
@@ -81,39 +77,43 @@ public class FuelHandler {
 
         if (fuel.getEnergyOutput() <= 0.0D) throw new IllegalArgumentException("The output is 0");
 
-        ImmutableList<InputIngredient<?>> listOfSources = fuel.getInputIngredients().stream()
-                .filter(IngredientUtils.isIngredientEmpty((ingredient) ->
-                        LogUtils.LOGGER.warn(String.format("The %s %s is invalid. Skipping...", ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
-                .collect(ImmutableList.toImmutableList());
-
-        boolean canBeSkipped = listOfSources.stream()
-                .filter(ingredient -> ingredient instanceof OreDictionaryInputIngredient)
-                .anyMatch(ingredient -> OreDictionary.getOres(((OreDictionaryInputIngredient) ingredient).ingredient).isEmpty());
-
-        if (canBeSkipped) {
-            LogUtils.LOGGER.warn(String.format("Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                    listOfSources, fuel.getEnergyOutput()));
-
-            return false;
+        Queue<InputIngredient<?>> queueOfSources = new ArrayDeque<>();
+        for (InputIngredient ingredient : fuel.getInputIngredients()) {
+            if (ingredient.isEmpty())
+                logger.warn(String.format("The %s %s is invalid. Skipping...",
+                        ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
+            else
+                queueOfSources.add(ingredient);
         }
 
-        Optional<Fuel> temp = getFuel(listOfSources);
+        for (InputIngredient<?> ingredient : queueOfSources) {
+            if (ingredient instanceof OreDictionaryInputIngredient) {
+                if (OreDictionary.getOres(((OreDictionaryInputIngredient) ingredient).ingredient).isEmpty()) {
+                    logger.warn(String.format("Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
+                            queueOfSources, fuel.getEnergyOutput()));
 
-        if (temp.isPresent()) {
+                    return false;
+                }
+            }
+        }
+
+        Fuel temp = getFuel(queueOfSources);
+
+        if (temp != null) {
             if (replace) {
                 do {
-                    if (!removeFuel(listOfSources))
-                        LogUtils.LOGGER.error(String.format("Something went wrong while removing the fuel with sources %s", listOfSources));
-                } while (getFuel(listOfSources).isPresent());
+                    if (!removeFuel(queueOfSources))
+                        logger.error(String.format("Something went wrong while removing the fuel with sources %s", queueOfSources));
+                } while (getFuel(queueOfSources) != null);
             } else {
-                LogUtils.LOGGER.error(String.format("Skipping %s => %s due to duplicate source for %s (%s => %s)", listOfSources,
-                        fuel.getEnergyOutput(), listOfSources, listOfSources, fuel.getEnergyOutput()));
+                logger.error(String.format("Skipping %s => %s due to duplicate source for %s (%s => %s)", queueOfSources,
+                        fuel.getEnergyOutput(), queueOfSources, queueOfSources, fuel.getEnergyOutput()));
                 return false;
             }
         }
 
         Fuel newFuel = addFuel()
-                .fromSource(listOfSources)
+                .addSources(queueOfSources)
                 .withEnergyOutput(fuel.getEnergyOutput())
                 .withMetadata(fuel.getMetadata());
 
@@ -128,72 +128,77 @@ public class FuelHandler {
      * @param ingredients The ingredient list
      * @return The fuel if it exists or empty otherwise
      */
-    protected Optional<Fuel> getFuel(ImmutableList<InputIngredient<?>> ingredients) {
-        return fuels.stream()
-                .filter(fuel -> {
-                    final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-                    ingredients.forEach(entry ->
-                            listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+    protected Fuel getFuel(Collection<InputIngredient<?>> ingredients) {
+        for (Fuel fuel : fuels) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) continue;
 
-                    return listA.isEmpty();
-                })
-                .findAny();
+            final Queue<InputIngredient> adjusted = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (adjusted.isEmpty()) return fuel;
+        }
+
+        return null;
     }
 
     /**
      * Find a matching fuel for the provided sources
      *
      * @param itemStack Fuel source item (not modified)
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findFuel(ItemStack itemStack) {
-        if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
+    public Fuel findFuel(ItemStack itemStack) {
+        if (ItemUtils.isEmpty(itemStack)) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
-        return Optional.ofNullable(cachedFuels.get(ingredients));
+        return cachedFuels.get(Collections.singletonList(ItemStackInputIngredient.copyOf(itemStack)));
     }
 
     /**
      * Find a matching fuel for the provided sources
      *
      * @param itemStacks Fuel source items (not modified)
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findFuel(ImmutableList<ItemStack> itemStacks) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf)
-                .collect(ImmutableList.toImmutableList());
+    public Fuel findFuel(Collection<ItemStack> itemStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        return Optional.ofNullable(cachedFuels.get(ingredients));
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.copyOf(stack)); // map ItemStacks
+
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedFuels.get(ingredients);
     }
 
     /**
      * Find a matching fuel for the provided sources
      *
      * @param fluidStack Fuel source fluid (not modified)
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findFuel2(FluidStack fluidStack) {
-        if (fluidStack.amount <= 0) return Optional.empty();
+    public Fuel findFuel2(FluidStack fluidStack) {
+        if (fluidStack.amount <= 0) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
-        return Optional.ofNullable(cachedFuels.get(ingredients));
+        return cachedFuels.get(Collections.singletonList(FluidStackInputIngredient.copyOf(fluidStack)));
     }
 
     /**
      * Find a matching fuel for the provided sources
      *
      * @param fluidStacks Fuel source fluids (not modified)
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findFuel2(ImmutableList<FluidStack> fluidStacks) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
-                .collect(ImmutableList.toImmutableList());
+    public Fuel findFuel2(Collection<FluidStack> fluidStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        return Optional.ofNullable(cachedFuels.get(ingredients));
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
+
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedFuels.get(ingredients);
     }
 
     /**
@@ -201,21 +206,20 @@ public class FuelHandler {
      *
      * @param itemStacks  Fuel source items (not modified)
      * @param fluidStacks Fuel source fluids (not modified)
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findFuel3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf); // map ItemStacks
+    public Fuel findFuel3(Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.copyOf(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
 
-        return Optional.ofNullable(cachedFuels.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedFuels.get(ingredients);
     }
 
     /**
@@ -225,44 +229,43 @@ public class FuelHandler {
      * @param simulate  If true the manager will accept partially missing ingredients or
      *                  ingredients with insufficient quantities. This is primarily used to check whether a
      *                  slot/tank/etc can accept the source while trying to supply a machine with resources
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findAndApply(ItemStack itemStack, boolean simulate) {
-        if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
+    public Fuel findAndApply(ItemStack itemStack, boolean simulate) {
+        if (ItemUtils.isEmpty(itemStack)) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(ItemStackInputIngredient.of(itemStack));
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
+        Fuel fuel = cachedFuels.get(ingredients);
 
-        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-        ret.map(fuel -> {
-            // check if everything need for the source is available in the source (ingredients + quantities)
-            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
-
-            if (!listA.isEmpty()) return Optional.empty(); // the source did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(fuel);
-        });
+            return fuel;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -272,45 +275,46 @@ public class FuelHandler {
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the source while trying to supply a machine with resources
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public Fuel findAndApply(Collection<ItemStack> itemStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        ret.map(fuel -> {
-            // check if everything need for the source is available in the source (ingredients + quantities)
-            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
+        Fuel fuel = cachedFuels.get(ingredients);
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            if (!listA.isEmpty()) return Optional.empty(); // the source did not match
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(fuel);
-        });
+            return fuel;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -320,44 +324,43 @@ public class FuelHandler {
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the source while trying to supply a machine with resources
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findAndApply2(FluidStack fluidStack, boolean simulate) {
-        if (fluidStack.amount <= 0) return Optional.empty();
+    public Fuel findAndApply2(FluidStack fluidStack, boolean simulate) {
+        if (fluidStack.amount <= 0) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(FluidStackInputIngredient.of(fluidStack));
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
+        Fuel fuel = cachedFuels.get(ingredients);
 
-        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-        ret.map(fuel -> {
-            // check if everything need for the source is available in the source (ingredients + quantities)
-            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
-
-            if (!listA.isEmpty()) return Optional.empty(); // the source did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(fuel);
-        });
+            return fuel;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -367,45 +370,46 @@ public class FuelHandler {
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the source while trying to supply a machine with resources
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public Fuel findAndApply2(Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        ret.map(fuel -> {
-            // check if everything need for the source is available in the source (ingredients + quantities)
-            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
+        Fuel fuel = cachedFuels.get(ingredients);
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            if (!listA.isEmpty()) return Optional.empty(); // the source did not match
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(fuel);
-        });
+            return fuel;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -416,51 +420,49 @@ public class FuelHandler {
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the source while trying to supply a machine with resources
-     * @return Fuel result, or empty if none
+     * @return The fuel if it exists or null otherwise
      */
-    public Optional<Fuel> findAndApply3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of); // map ItemStacks
+    public Fuel findAndApply3(Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the sources are empty we can return nothing
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        Optional<Fuel> ret = Optional.ofNullable(cachedFuels.get(ingredients));
+        Fuel fuel = cachedFuels.get(ingredients);
 
-        ret.map(fuel -> {
-            // check if everything need for the source is available in the source (ingredients + quantities)
-            if (ingredients.size() != fuel.getInputIngredients().size()) return Optional.empty();
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the source did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(fuel);
-        });
+            return fuel;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -476,31 +478,36 @@ public class FuelHandler {
     public boolean apply(Fuel fuel, ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(ItemStackInputIngredient.of(itemStack));
 
-        // check if everything need for the source is available in the source (ingredients + quantities)
-        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!listA.isEmpty()) return false; // the source did not match
+            if (!queueA.isEmpty()) return false; // the inputs did not match
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -513,35 +520,42 @@ public class FuelHandler {
      *                   slot/tank/etc can accept the source while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply(Fuel fuel, ImmutableList<ItemStack> itemStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public boolean apply(Fuel fuel, Collection<ItemStack> itemStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        // check if everything need for the source is available in the source (ingredients + quantities)
-        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        if (!listA.isEmpty()) return false; // the source did not match
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -557,31 +571,36 @@ public class FuelHandler {
     public boolean apply2(Fuel fuel, FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(FluidStackInputIngredient.of(fluidStack));
 
-        // check if everything need for the source is available in the source (ingredients + quantities)
-        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!listA.isEmpty()) return false; // the source did not match
+            if (!queueA.isEmpty()) return false; // the inputs did not match
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -594,35 +613,42 @@ public class FuelHandler {
      *                    slot/tank/etc can accept the source while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply2(Fuel fuel, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public boolean apply2(Fuel fuel, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        // check if everything need for the source is available in the source (ingredients + quantities)
-        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        if (!listA.isEmpty()) return false; // the source did not match
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -636,41 +662,45 @@ public class FuelHandler {
      *                    slot/tank/etc can accept the source while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply3(Fuel fuel, ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of); // map ItemStacks
+    public boolean apply3(Fuel fuel, Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        // check if everything need for the source is available in the source (ingredients + quantities)
-        if (ingredients.size() != fuel.getInputIngredients().size()) return false;
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (fuel != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-        if (!listA.isEmpty()) return false; // the source did not match
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(fuel.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -692,8 +722,8 @@ public class FuelHandler {
      * @param ingredients The source ingredients
      * @return True if a valid fuel has been found and removed or false otherwise
      */
-    public boolean removeFuel(ImmutableList<InputIngredient<?>> ingredients) {
-        Fuel fuel = getFuel(ingredients).orElse(null);
+    public boolean removeFuel(Collection<InputIngredient<?>> ingredients) {
+        Fuel fuel = getFuel(ingredients);
         if (fuel == null) return false;
 
         cachedFuels.invalidate(ingredients); // remove from cache
@@ -705,30 +735,21 @@ public class FuelHandler {
      *
      * @return A list with all the fuels
      */
-    public List<Fuel> getFuels() {
+    public Collection<Fuel> getFuels() {
         return fuels;
     }
 
     // Fields >>
     public final String name;
 
-    protected final List<Fuel> fuels = new ArrayList<>();
+    protected final Logger logger;
 
-    protected final LoadingCache<ImmutableList<InputIngredient<?>>, Fuel> cachedFuels =
+    protected final Queue<Fuel> fuels = new ArrayDeque<>();
+
+    protected final LoadingCache<Collection<InputIngredient<?>>, Fuel> cachedFuels =
             Caffeine.newBuilder()
                     .expireAfterAccess(10, TimeUnit.MINUTES)
                     .maximumSize(100)
-                    .build(ingredients ->
-                            fuels.stream()
-                                    .filter(fuel -> {
-                                        final List<InputIngredient<?>> listA = new ArrayList<>(fuel.getInputIngredients());
-                                        ingredients.forEach(entry ->
-                                                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
-
-                                        return listA.isEmpty();
-                                    })
-                                    .findAny()
-                                    .orElse(null)
-                    );
+                    .build(this::getFuel);
     // << Fields
 }

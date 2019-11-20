@@ -24,7 +24,10 @@ package reborncore.api.praescriptum.fuels;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import reborncore.api.praescriptum.Utils.LogUtils;
@@ -35,7 +38,9 @@ import reborncore.api.praescriptum.ingredients.input.OreDictionaryInputIngredien
 import reborncore.common.util.ItemUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author estebes
@@ -45,41 +50,52 @@ public class Fuel {
         this.handler = handler;
     }
 
-    public Fuel fromSource(List<InputIngredient<?>> inputs) {
+    public Fuel addSources(Collection<InputIngredient<?>> inputs) {
         inputIngredients.addAll(inputs);
         return this;
     }
 
-    public Fuel fromSource(ItemStack itemStack) {
+    public Fuel addItemSource(ItemStack itemStack) {
         if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(ItemStackInputIngredient.of(itemStack));
         return this;
     }
 
-    public Fuel fromSource(String oreDict) {
+    public Fuel addItemSource(String oreDict) {
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict));
         return this;
     }
 
-    public Fuel fromSource(String oreDict, int amount) {
+    public Fuel addItemSource(String oreDict, int amount) {
         if (amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount));
         return this;
     }
 
-    public Fuel fromSource(String oreDict, int amount, Integer meta) {
+    public Fuel addItemSource(String oreDict, int amount, Integer meta) {
         if (amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(OreDictionaryInputIngredient.of(oreDict, amount, meta));
         return this;
     }
 
-    public Fuel fromSource(FluidStack fluidStack) {
+    public Fuel addFluidSource(FluidStack fluidStack) {
         if (fluidStack.amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
 
         inputIngredients.add(FluidStackInputIngredient.of(fluidStack));
+        return this;
+    }
+
+    public Fuel addFluidSource(Fluid fluid) {
+        return addFluidSource(fluid, 1);
+    }
+
+    public Fuel addFluidSource(Fluid fluid, int amount) {
+        if (amount <= 0) throw new IllegalArgumentException("Source cannot be empty");
+
+        inputIngredients.add(FluidStackInputIngredient.of(new FluidStack(fluid, amount)));
         return this;
     }
 
@@ -175,8 +191,83 @@ public class Fuel {
     }
     // << Getters
 
+    // Helpers >>
+    public static Fuel readFromNBT(FuelHandler fuelHandler, NBTTagCompound tag) {
+        Fuel ret = fuelHandler.addFuel();
+
+        NBTTagList inputIngredients = tag.getTagList("inputIngredients", Constants.NBT.TAG_COMPOUND);
+        for (int index = 0; index < inputIngredients.tagCount(); index++) {
+            NBTTagCompound inputIngredient = inputIngredients.getCompoundTagAt(index);
+            byte type = inputIngredient.getByte("type");
+            switch (type) {
+                case 0:
+                    ItemStack itemStack = new ItemStack(inputIngredient);
+                    inputIngredient.getBoolean("consumable");
+                    ret.addItemSource(itemStack);
+                    break;
+                case 1:
+                    String oreDictionaryEntry = inputIngredient.getString("oreDictionaryEntry");
+                    int amount = inputIngredient.getInteger("amount");
+                    int meta = inputIngredient.getInteger("meta");
+                    inputIngredient.getBoolean("consumable");
+                    ret.addItemSource(oreDictionaryEntry, amount);
+                    break;
+                case 2:
+                    FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(inputIngredient);
+                    inputIngredient.getBoolean("consumable");
+                    ret.addFluidSource(Objects.requireNonNull(fluidStack));
+                    break;
+            }
+        }
+
+        ret.withEnergyOutput(tag.getDouble("energyOutput"));
+
+        if (tag.hasKey("metadata"))
+            ret.withMetadata(tag.getCompoundTag("metadata"));
+
+        return ret;
+    }
+
+    public static NBTTagCompound writeToNBT(Fuel fuel) {
+        NBTTagCompound ret = new NBTTagCompound();
+
+        NBTTagList inputIngredients = new NBTTagList();
+        for (InputIngredient<?> inputIngredient : fuel.inputIngredients) {
+            if (inputIngredient instanceof ItemStackInputIngredient) {
+                NBTTagCompound temp = new NBTTagCompound();
+                temp.setByte("type", (byte) 0);
+                ((ItemStackInputIngredient) inputIngredient).ingredient.writeToNBT(temp);
+                temp.setBoolean("consumable", inputIngredient.consumable);
+                inputIngredients.appendTag(temp);
+            } else if (inputIngredient instanceof OreDictionaryInputIngredient) {
+                NBTTagCompound temp = new NBTTagCompound();
+                temp.setByte("type", (byte) 1);
+                temp.setString("oreDictionaryEntry", ((OreDictionaryInputIngredient) inputIngredient).ingredient);
+                temp.setInteger("amount", ((OreDictionaryInputIngredient) inputIngredient).amount);
+                temp.setInteger("meta", ((OreDictionaryInputIngredient) inputIngredient).meta);
+                temp.setBoolean("consumable", inputIngredient.consumable);
+                inputIngredients.appendTag(temp);
+            } else if (inputIngredient instanceof FluidStackInputIngredient) {
+                NBTTagCompound temp = new NBTTagCompound();
+                temp.setByte("type", (byte) 2);
+                ((FluidStackInputIngredient) inputIngredient).ingredient.writeToNBT(temp);
+                temp.setBoolean("consumable", inputIngredient.consumable);
+                inputIngredients.appendTag(temp);
+            }
+        }
+        ret.setTag("inputIngredients", inputIngredients);
+
+        ret.setDouble("energyOutput", fuel.energyOutput);
+
+        if (!fuel.metadata.hasNoTags())
+            ret.setTag("metadata", fuel.metadata);
+
+        return ret;
+    }
+    // << Helpers
+
     // Fields >>
-    private final FuelHandler handler;
+    private FuelHandler handler;
 
     private List<InputIngredient<?>> inputIngredients = new ArrayList<>();
     private double energyOutput = 0.0D;
