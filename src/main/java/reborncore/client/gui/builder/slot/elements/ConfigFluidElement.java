@@ -23,56 +23,56 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
-import reborncore.common.util.Tank;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.fluids.RebornFluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigFluidElement extends ElementBase {
-	SlotType type;
-	Tank tank;
-	public List<ElementBase> elements = new ArrayList<>();
-	boolean filter = false;
+    SlotType type;
+    RebornFluidTank tank;
+    public List<ElementBase> elements = new ArrayList<>();
+    boolean filter = false;
 
-	public ConfigFluidElement(Tank tank, SlotType type, int x, int y, GuiBase gui) {
-		super(x, y, type.getButtonSprite());
-		this.type = type;
-		this.tank = tank;
+    public ConfigFluidElement(RebornFluidTank tank, SlotType type, int x, int y, GuiBase gui) {
+        super(x, y, type.getButtonSprite());
+        this.type = type;
+        this.tank = tank;
 
-		FluidConfigPopupElement popupElement;
+        FluidConfigPopupElement popupElement;
 
-		elements.add(popupElement = new FluidConfigPopupElement(x - 22, y - 22, this));
-		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
-			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
-			return true;
-		}));
+        elements.add(popupElement = new FluidConfigPopupElement(x - 22, y - 22, this));
+        elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
+            GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
+            return true;
+        }));
 
-		elements.add(new CheckBoxElement("Pull In", 0xFFFFFFFF, x - 26, y + 42, "input", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-			checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
-			popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
-			return true;
-		}));
-		elements.add(new CheckBoxElement("Pump Out", 0xFFFFFFFF, x - 26, y + 57, "output", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-			checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
-			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
-			return true;
-		}));
+        elements.add(new CheckBoxElement("Pull In", 0xFFFFFFFF, x - 26, y + 42, "input", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+                checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
+            popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
+            return true;
+        }));
+        elements.add(new CheckBoxElement("Pump Out", 0xFFFFFFFF, x - 26, y + 57, "output", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+                checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
+            popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
+            return true;
+        }));
 
-		setWidth(85);
-		setHeight(105 + (filter ? 15 : 0));
-	}
+        setWidth(85);
+        setHeight(105 + (filter ? 15 : 0));
+    }
 
-	@Override
-	public void draw(GuiBase gui) {
-		super.draw(gui);
-		if (isHovering) {
-			drawSprite(gui, type.getButtonHoverOverlay(), x, y);
-		}
-		elements.forEach(elementBase -> elementBase.draw(gui));
-	}
+    @Override
+    public void draw(GuiBase gui) {
+        super.draw(gui);
+        if (isHovering) {
+            drawSprite(gui, type.getButtonHoverOverlay(), x, y);
+        }
+        elements.forEach(elementBase -> elementBase.draw(gui));
+    }
 
-	public SlotType getType() {
-		return type;
-	}
+    public SlotType getType() {
+        return type;
+    }
 }

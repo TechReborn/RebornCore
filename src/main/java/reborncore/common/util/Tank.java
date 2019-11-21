@@ -20,14 +20,15 @@
  * THE SOFTWARE.
  */
 
-
 package reborncore.common.util;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.tile.FluidConfiguration;
@@ -133,6 +134,7 @@ public class Tank extends FluidTank {
 	}
 
 	//TODO optimise
+	@Deprecated
 	public void compareAndUpdate() {
 		if (tile == null || tile.getWorld().isRemote) {
 			return;

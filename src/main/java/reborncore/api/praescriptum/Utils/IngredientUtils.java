@@ -22,6 +22,7 @@
 
 package reborncore.api.praescriptum.Utils;
 
+import reborncore.api.praescriptum.fuels.FuelHandler;
 import reborncore.api.praescriptum.ingredients.Ingredient;
 import reborncore.api.praescriptum.recipes.Recipe;
 import reborncore.api.praescriptum.recipes.RecipeHandler;
@@ -63,6 +64,13 @@ public class IngredientUtils {
 
     public static <T> Predicate<T> isPartOfRecipe(RecipeHandler handler) {
         return object -> handler.getRecipes().stream()
+                .anyMatch(recipe -> recipe.getInputIngredients()
+                        .stream()
+                        .anyMatch(ingredient -> ingredient.matches(object)));
+    }
+
+    public static <T> Predicate<T> isPartOfFuel(FuelHandler handler) {
+        return object -> handler.getFuels().stream()
                 .anyMatch(recipe -> recipe.getInputIngredients()
                         .stream()
                         .anyMatch(ingredient -> ingredient.matches(object)));

@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 
-
 package reborncore.common.tile;
 
 import net.minecraft.block.Block;
@@ -54,12 +53,13 @@ import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.container.RebornContainer;
+import reborncore.common.fluids.RebornFluidHandler;
+import reborncore.common.fluids.RebornFluidTank;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
-import reborncore.common.util.Tank;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -70,561 +70,555 @@ import java.util.Optional;
  */
 public class TileLegacyMachineBase extends TileEntity implements ITickable, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
-	public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
-	public SlotConfiguration slotConfiguration;
-	public FluidConfiguration fluidConfiguration;
+    public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
+    public SlotConfiguration slotConfiguration;
+    public FluidConfiguration fluidConfiguration;
 
-	/**
-	 * This is used to change the speed of the crafting operation.
-	 * <p/>
-	 * 0 = none; 0.2 = 20% speed increase 0.75 = 75% increase
-	 */
-	double speedMultiplier = 0;
-	/**
-	 * This is used to change the power of the crafting operation.
-	 * <p/>
-	 * 1 = none; 1.2 = 20% speed increase 1.75 = 75% increase 5 = uses 5 times
-	 * more power
-	 */
-	double powerMultiplier = 1;
+    /**
+     * This is used to change the speed of the crafting operation.
+     * <p/>
+     * 0 = none; 0.2 = 20% speed increase 0.75 = 75% increase
+     */
+    double speedMultiplier = 0;
+    /**
+     * This is used to change the power of the crafting operation.
+     * <p/>
+     * 1 = none; 1.2 = 20% speed increase 1.75 = 75% increase 5 = uses 5 times
+     * more power
+     */
+    double powerMultiplier = 1;
 
-	public void syncWithAll() {
-		if (!world.isRemote) {
-			NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
-		}
-	}
+    public void syncWithAll() {
+        if (!world.isRemote) {
+            NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
+        }
+    }
 
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		if (slotConfiguration == null) {
-			if (getInventoryForTile().isPresent()) {
-				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
-			} else {
-				slotConfiguration = new SlotConfiguration();
-			}
-		}
-		if(getTank() != null){
-			if(fluidConfiguration == null){
-				fluidConfiguration = new FluidConfiguration();
-			}
-		}
-	}
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (slotConfiguration == null) {
+            if (getInventoryForTile().isPresent()) {
+                slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+            } else {
+                slotConfiguration = new SlotConfiguration();
+            }
+        }
+        if (getTank() != null) {
+            if (fluidConfiguration == null) {
+                fluidConfiguration = new FluidConfiguration();
+            }
+        }
+    }
 
-	@Nullable
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
-	}
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
+    }
 
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
-		writeToNBT(compound);
-		return compound;
-	}
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
+        writeToNBT(compound);
+        return compound;
+    }
 
-	@Override
-	public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
-		super.onDataPacket(net, pkt);
-		readFromNBT(pkt.getNbtCompound());
-	}
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+        readFromNBT(pkt.getNbtCompound());
+    }
 
-	@Override
-	public void update() {
-		@Nullable
-		RecipeCrafter crafter = null;
-		if (getCrafterForTile().isPresent()) {
-			crafter = getCrafterForTile().get();
-		}
-		if (canBeUpgraded()) {
-			resetUpgrades();
-			for (int i = 0; i < getUpgradeSlotCount(); i++) {
-				ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-					((IUpgrade) stack.getItem()).process(this, stack);
-				}
-			}
-		}
-		if (!world.isRemote) {
-			if (crafter != null) {
-				crafter.updateEntity();
-			}
-			if (slotConfiguration != null) {
-				slotConfiguration.update(this);
-			}
-			if(fluidConfiguration != null){
-				fluidConfiguration.update(this);
-			}
-		}
+    @Override
+    public void update() {
+        @Nullable
+        RecipeCrafter crafter = null;
+        if (getCrafterForTile().isPresent()) {
+            crafter = getCrafterForTile().get();
+        }
+        if (canBeUpgraded()) {
+            resetUpgrades();
+            for (int i = 0; i < getUpgradeSlotCount(); i++) {
+                ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
+                    ((IUpgrade) stack.getItem()).process(this, stack);
+                }
+            }
+        }
+        if (!world.isRemote) {
+            if (crafter != null) {
+                crafter.updateEntity();
+            }
+            if (slotConfiguration != null) {
+                slotConfiguration.update(this);
+            }
+            if (fluidConfiguration != null) {
+                fluidConfiguration.update(this);
+            }
+        }
 
-	}
+    }
 
-	public void resetUpgrades() {
-		resetPowerMulti();
-		resetSpeedMulti();
-	}
+    public void resetUpgrades() {
+        resetPowerMulti();
+        resetSpeedMulti();
+    }
 
-	public int getFacingInt() {
-		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof BlockMachineBase) {
-			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
-		}
-		return 0;
-	}
+    public int getFacingInt() {
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof BlockMachineBase) {
+            return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
+        }
+        return 0;
+    }
 
-	public EnumFacing getFacingEnum() {
-		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof BlockMachineBase) {
-			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
-		}
-		return null;
-	}
+    public EnumFacing getFacingEnum() {
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof BlockMachineBase) {
+            return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
+        }
+        return null;
+    }
 
-	public void setFacing(EnumFacing enumFacing) {
-		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof BlockMachineBase) {
-			((BlockMachineBase) block).setFacing(enumFacing, world, pos);
-		}
-	}
+    public void setFacing(EnumFacing enumFacing) {
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof BlockMachineBase) {
+            ((BlockMachineBase) block).setFacing(enumFacing, world, pos);
+        }
+    }
 
-	public boolean isActive() {
-		Block block = world.getBlockState(pos).getBlock();
-		if (block instanceof BlockMachineBase) {
-			return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
-		}
-		return false;
-	}
+    public boolean isActive() {
+        Block block = world.getBlockState(pos).getBlock();
+        if (block instanceof BlockMachineBase) {
+            return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+        }
+        return false;
+    }
 
-	// This stops the tile from getting cleared when the state is
-	// updated(rotation and on/off)
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		if (oldState.getBlock() != newSate.getBlock()) {
-			return true;
-		}
-		return false;
-	}
+    // This stops the tile from getting cleared when the state is
+    // updated(rotation and on/off)
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        if (oldState.getBlock() != newSate.getBlock()) {
+            return true;
+        }
+        return false;
+    }
 
-	public Optional<Inventory> getInventoryForTile() {
-		if (this instanceof IInventoryProvider) {
-			IInventoryProvider inventory = (IInventoryProvider) this;
-			if (inventory.getInventory() == null) {
-				return Optional.empty();
-			}
-			return Optional.of((Inventory) inventory.getInventory());
-		} else {
-			return Optional.empty();
-		}
-	}
+    public Optional<Inventory> getInventoryForTile() {
+        if (this instanceof IInventoryProvider) {
+            IInventoryProvider inventory = (IInventoryProvider) this;
+            if (inventory.getInventory() == null) {
+                return Optional.empty();
+            }
+            return Optional.of((Inventory) inventory.getInventory());
+        } else {
+            return Optional.empty();
+        }
+    }
 
-	protected Optional<RecipeCrafter> getCrafterForTile() {
-		if (this instanceof IRecipeCrafterProvider) {
-			IRecipeCrafterProvider crafterProvider = (IRecipeCrafterProvider) this;
-			if (crafterProvider.getRecipeCrafter() == null) {
-				return Optional.empty();
-			}
-			return Optional.of(crafterProvider.getRecipeCrafter());
-		} else {
-			return Optional.empty();
-		}
-	}
+    protected Optional<RecipeCrafter> getCrafterForTile() {
+        if (this instanceof IRecipeCrafterProvider) {
+            IRecipeCrafterProvider crafterProvider = (IRecipeCrafterProvider) this;
+            if (crafterProvider.getRecipeCrafter() == null) {
+                return Optional.empty();
+            }
+            return Optional.of(crafterProvider.getRecipeCrafter());
+        } else {
+            return Optional.empty();
+        }
+    }
 
-	protected Optional<RebornContainer> getContainerForTile() {
-		if (this instanceof IContainerProvider) {
-			IContainerProvider containerProvider = (IContainerProvider) this;
-			if (containerProvider.getContainer() == null) {
-				return Optional.empty();
-			}
-			return Optional.of(containerProvider.getContainer());
-		} else {
-			return Optional.empty();
-		}
-	}
+    protected Optional<RebornContainer> getContainerForTile() {
+        if (this instanceof IContainerProvider) {
+            IContainerProvider containerProvider = (IContainerProvider) this;
+            if (containerProvider.getContainer() == null) {
+                return Optional.empty();
+            }
+            return Optional.of(containerProvider.getContainer());
+        } else {
+            return Optional.empty();
+        }
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound tagCompound) {
-		super.readFromNBT(tagCompound);
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().readFromNBT(tagCompound);
-		}
-		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().readFromNBT(tagCompound);
-		}
-		if (tagCompound.hasKey("slotConfig")) {
-			slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
-		} else {
-			if (getInventoryForTile().isPresent()) {
-				slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
-			} else {
-				slotConfiguration = new SlotConfiguration();
-			}
-		}
-		if(tagCompound.hasKey("fluidConfig") && getTank() != null){
-			fluidConfiguration = new FluidConfiguration(tagCompound.getCompoundTag("fluidConfig"));
-		} else if (getTank() != null && fluidConfiguration == null){
-			fluidConfiguration = new FluidConfiguration();
-		}
-		upgradeInventory.readFromNBT(tagCompound, "Upgrades");
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompound) {
+        super.readFromNBT(tagCompound);
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().readFromNBT(tagCompound);
+        }
+        if (getCrafterForTile().isPresent()) {
+            getCrafterForTile().get().readFromNBT(tagCompound);
+        }
+        if (tagCompound.hasKey("slotConfig")) {
+            slotConfiguration = new SlotConfiguration(tagCompound.getCompoundTag("slotConfig"));
+        } else {
+            if (getInventoryForTile().isPresent()) {
+                slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+            } else {
+                slotConfiguration = new SlotConfiguration();
+            }
+        }
+        if (tagCompound.hasKey("fluidConfig") && getTank() != null) {
+            fluidConfiguration = new FluidConfiguration(tagCompound.getCompoundTag("fluidConfig"));
+        } else if (getTank() != null && fluidConfiguration == null) {
+            fluidConfiguration = new FluidConfiguration();
+        }
+        upgradeInventory.readFromNBT(tagCompound, "Upgrades");
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
-		super.writeToNBT(tagCompound);
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().writeToNBT(tagCompound);
-		}
-		if (getCrafterForTile().isPresent()) {
-			getCrafterForTile().get().writeToNBT(tagCompound);
-		}
-		if (slotConfiguration != null) {
-			tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
-		}
-		if(fluidConfiguration != null){
-			tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
-		}
-		upgradeInventory.writeToNBT(tagCompound, "Upgrades");
-		return tagCompound;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
+        super.writeToNBT(tagCompound);
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().writeToNBT(tagCompound);
+        }
+        if (getCrafterForTile().isPresent()) {
+            getCrafterForTile().get().writeToNBT(tagCompound);
+        }
+        if (slotConfiguration != null) {
+            tagCompound.setTag("slotConfig", slotConfiguration.serializeNBT());
+        }
+        if (fluidConfiguration != null) {
+            tagCompound.setTag("fluidConfig", fluidConfiguration.serializeNBT());
+        }
+        upgradeInventory.writeToNBT(tagCompound, "Upgrades");
+        return tagCompound;
+    }
 
-	//Inventory Start
-	@Override
-	public int getSizeInventory() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getSizeInventory();
-		}
-		return 0;
-	}
+    //Inventory Start
+    @Override
+    public int getSizeInventory() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getSizeInventory();
+        }
+        return 0;
+    }
 
-	@Override
-	public boolean isEmpty() {
-		if (!getInventoryForTile().isPresent()) {
-			return true;
-		}
-		for (ItemStack itemstack : getInventoryForTile().get().contents) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean isEmpty() {
+        if (!getInventoryForTile().isPresent()) {
+            return true;
+        }
+        for (ItemStack itemstack : getInventoryForTile().get().contents) {
+            if (!itemstack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getStackInSlot(index);
-		}
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getStackInSlot(int index) {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getStackInSlot(index);
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().decrStackSize(index, count);
-		}
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().decrStackSize(index, count);
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().removeStackFromSlot(index);
-		}
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().removeStackFromSlot(index);
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().setInventorySlotContents(index, stack);
-		}
-	}
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack) {
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().setInventorySlotContents(index, stack);
+        }
+    }
 
-	@Override
-	public int getInventoryStackLimit() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getInventoryStackLimit();
-		}
-		return 0;
-	}
+    @Override
+    public int getInventoryStackLimit() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getInventoryStackLimit();
+        }
+        return 0;
+    }
 
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(this.pos) == this &&
-			player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
-	}
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return world.getTileEntity(this.pos) == this &&
+                player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+    }
 
-	@Override
-	public void openInventory(EntityPlayer player) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().openInventory(player);
-		}
-	}
+    @Override
+    public void openInventory(EntityPlayer player) {
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().openInventory(player);
+        }
+    }
 
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().closeInventory(player);
-		}
-	}
+    @Override
+    public void closeInventory(EntityPlayer player) {
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().closeInventory(player);
+        }
+    }
 
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(slotConfiguration == null){
-			return false;
-		}
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
-			RecipeCrafter crafter = getCrafterForTile().get();
-			if (!crafter.isStackValidInput(stack)) {
-				return false;
-			}
-		}
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().isItemValidForSlot(index, stack);
-		}
-		return false;
-	}
+    @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack) {
+        if (slotConfiguration == null) {
+            return false;
+        }
+        SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+        if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
+            RecipeCrafter crafter = getCrafterForTile().get();
+            if (!crafter.isStackValidInput(stack)) {
+                return false;
+            }
+        }
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().isItemValidForSlot(index, stack);
+        }
+        return false;
+    }
 
-	@Override
-	public int getField(int id) {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getField(id);
-		}
-		return 0;
-	}
+    @Override
+    public int getField(int id) {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getField(id);
+        }
+        return 0;
+    }
 
-	@Override
-	public void setField(int id, int value) {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().setField(id, value);
-		}
-	}
+    @Override
+    public void setField(int id, int value) {
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().setField(id, value);
+        }
+    }
 
-	@Override
-	public int getFieldCount() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getFieldCount();
-		}
-		return 0;
-	}
+    @Override
+    public int getFieldCount() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getFieldCount();
+        }
+        return 0;
+    }
 
-	@Override
-	public void clear() {
-		if (getInventoryForTile().isPresent()) {
-			getInventoryForTile().get().clear();
-		}
-	}
+    @Override
+    public void clear() {
+        if (getInventoryForTile().isPresent()) {
+            getInventoryForTile().get().clear();
+        }
+    }
 
-	@Override
-	public String getName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getName();
-		}
-		return null;
-	}
+    @Override
+    public String getName() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getName();
+        }
+        return null;
+    }
 
-	@Override
-	public boolean hasCustomName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().hasCustomName();
-		}
-		return false;
-	}
+    @Override
+    public boolean hasCustomName() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().hasCustomName();
+        }
+        return false;
+    }
 
-	@Override
-	public ITextComponent getDisplayName() {
-		if (getInventoryForTile().isPresent()) {
-			return getInventoryForTile().get().getDisplayName();
-		}
-		return null;
-	}
+    @Override
+    public ITextComponent getDisplayName() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getDisplayName();
+        }
+        return null;
+    }
 
-	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-		if(slotConfiguration == null){
-			return new int[]{}; //I think should be ok, if needed this can return all the slots
-		}
-		return slotConfiguration.getSlotsForSide(side).stream()
-			.filter(Objects::nonNull)
-			.filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
-			.mapToInt(value -> value.slotID).toArray();
-	}
+    @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        if (slotConfiguration == null) {
+            return new int[]{}; //I think should be ok, if needed this can return all the slots
+        }
+        return slotConfiguration.getSlotsForSide(side).stream()
+                .filter(Objects::nonNull)
+                .filter(slotConfig -> slotConfig.slotIO.ioConfig != SlotConfiguration.ExtractConfig.NONE)
+                .mapToInt(value -> value.slotID).toArray();
+    }
 
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isInsert()) {
-			if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
-				RecipeCrafter crafter = getCrafterForTile().get();
-				if (!crafter.isStackValidInput(itemStackIn)) {
-					return false;
-				}
-			}
-			if (getContainerForTile().isPresent()) {
-				RebornContainer container = getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					Slot slot = container.slotMap.get(index);
-					return slot.isItemValid(itemStackIn);
-				}
-			} else {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+        SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+        if (slotConfig.slotIO.ioConfig.isInsert()) {
+            if (slotConfigHolder.filter() && getCrafterForTile().isPresent()) {
+                RecipeCrafter crafter = getCrafterForTile().get();
+                if (!crafter.isStackValidInput(itemStackIn)) {
+                    return false;
+                }
+            }
+            if (getContainerForTile().isPresent()) {
+                RebornContainer container = getContainerForTile().get();
+                if (container.slotMap.containsKey(index)) {
+                    Slot slot = container.slotMap.get(index);
+                    return slot.isItemValid(itemStackIn);
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
-		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
-		if (slotConfig.slotIO.ioConfig.isExtact()) {
-			if (getContainerForTile().isPresent()) {
-				RebornContainer container = getContainerForTile().get();
-				if (container.slotMap.containsKey(index)) {
-					BaseSlot slot = container.slotMap.get(index);
-					return slot.canWorldBlockRemove();
-				}
-			} else {
-				return true;
-			}
-		}
-		return false;
-	}
-	//Inventory end
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
+        SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
+        SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
+        if (slotConfig.slotIO.ioConfig.isExtact()) {
+            if (getContainerForTile().isPresent()) {
+                RebornContainer container = getContainerForTile().get();
+                if (container.slotMap.containsKey(index)) {
+                    BaseSlot slot = container.slotMap.get(index);
+                    return slot.canWorldBlockRemove();
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+    //Inventory end
 
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return true;
-		}
-		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
-				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if(!fluidConfig.getIoConfig().isEnabled()){
-					return false;
-				}
-			}
-			return true;
-		}
-		return super.hasCapability(capability, facing);
-	}
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
-		}
-		if(getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			if(fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null){
-				FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				if(!fluidConfig.getIoConfig().isEnabled()){
-					return null;
-				}
-			}
-			getTank().setSide(facing);
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getTank());
-		}
-		return super.getCapability(capability, facing);
-	}
+        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
+                FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				return fluidConfig.getIoConfig().isEnabled();
+            }
 
-	@Override
-	public ISidedInventory getUpgradeInventory() {
-		return upgradeInventory;
-	}
+            return true;
+        }
 
-	@Override
-	public int getUpgradeSlotCount() {
-		return 4;
-	}
+        return super.hasCapability(capability, facing);
+    }
 
-	public EnumFacing getFacing() {
-		return getFacingEnum();
-	}
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
+        }
 
-	@Override
-	public void rotate(Rotation rotationIn) {
-		setFacing(rotationIn.rotate(getFacing()));
-	}
+        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return (T) new RebornFluidHandler(this, facing);
+        }
 
-	@Override
-	public void resetSpeedMulti() {
-		speedMultiplier = 0;
-	}
+        return super.getCapability(capability, facing);
+    }
 
-	@Override
-	public double getSpeedMultiplier() {
-		return speedMultiplier;
-	}
+    @Override
+    public ISidedInventory getUpgradeInventory() {
+        return upgradeInventory;
+    }
 
-	@Override
-	public void addPowerMulti(double amount) {
-		powerMultiplier = powerMultiplier * (1f + amount);
-	}
+    @Override
+    public int getUpgradeSlotCount() {
+        return 4;
+    }
 
-	@Override
-	public void resetPowerMulti() {
-		powerMultiplier = 1;
-	}
+    public EnumFacing getFacing() {
+        return getFacingEnum();
+    }
 
-	@Override
-	public double getPowerMultiplier() {
-		return powerMultiplier;
-	}
+    @Override
+    public void rotate(Rotation rotationIn) {
+        setFacing(rotationIn.rotate(getFacing()));
+    }
 
-	@Override
-	public double getEuPerTick(double baseEu) {
-		return baseEu * powerMultiplier;
-	}
+    @Override
+    public void resetSpeedMulti() {
+        speedMultiplier = 0;
+    }
 
-	@Override
-	public void addSpeedMulti(double amount) {
-		if(RebornCoreConfig.exponentialMachineSpeedScaling) {
-			// Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed)^NumberOfOverclockers
+    @Override
+    public double getSpeedMultiplier() {
+        return speedMultiplier;
+    }
 
-			// Convert speed reductions into percentages of original speed.
-			// Example: A 30% speed reduction means 70% of original speed, since 100% - 30% = 70%.
-			double percentSpeedToApply = 1.0 - amount;
-			double percentSpeedCurrent = 1.0 - speedMultiplier;
+    @Override
+    public void addPowerMulti(double amount) {
+        powerMultiplier = powerMultiplier * (1f + amount);
+    }
 
-			// Apply the speed scaling amount to the current percent speed.
-			double newPercentSpeed = percentSpeedToApply*percentSpeedCurrent;
+    @Override
+    public void resetPowerMulti() {
+        powerMultiplier = 1;
+    }
 
-			// Convert back from percentage of original speed to speed reduction amount
-			speedMultiplier = 1.0 - newPercentSpeed;
-		} else {
-			// Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed*NumberOfOverclockers)
+    @Override
+    public double getPowerMultiplier() {
+        return powerMultiplier;
+    }
 
-			if (speedMultiplier + amount <= 0.99) {
-				speedMultiplier += amount;
-			} else {
-				speedMultiplier = 0.99;
-			}
-		}
-	}
+    @Override
+    public double getEuPerTick(double baseEu) {
+        return baseEu * powerMultiplier;
+    }
 
-	public boolean hasSlotConfig(){
-		return true;
-	}
+    @Override
+    public void addSpeedMulti(double amount) {
+        if (RebornCoreConfig.exponentialMachineSpeedScaling) {
+            // Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed)^NumberOfOverclockers
 
-	@Nullable
-	public Tank getTank(){
-		return null;
-	}
+            // Convert speed reductions into percentages of original speed.
+            // Example: A 30% speed reduction means 70% of original speed, since 100% - 30% = 70%.
+            double percentSpeedToApply = 1.0 - amount;
+            double percentSpeedCurrent = 1.0 - speedMultiplier;
 
-	public boolean showTankConfig(){
-		return getTank() != null;
-	}
+            // Apply the speed scaling amount to the current percent speed.
+            double newPercentSpeed = percentSpeedToApply * percentSpeedCurrent;
 
-	//The amount of ticks between a slot tranfer atempt, less is faster
-	public int slotTransferSpeed(){
-		return 4;
-	}
+            // Convert back from percentage of original speed to speed reduction amount
+            speedMultiplier = 1.0 - newPercentSpeed;
+        } else {
+            // Algorithm: ProcessingTimePercentage = (1 - OverclockerSpeed*NumberOfOverclockers)
 
-	//The amount of fluid transfured each tick buy the fluid config
-	public int fluidTransferAmount(){
-		return 250;
-	}
+            if (speedMultiplier + amount <= 0.99) {
+                speedMultiplier += amount;
+            } else {
+                speedMultiplier = 0.99;
+            }
+        }
+    }
+
+    public boolean hasSlotConfig() {
+        return true;
+    }
+
+    @Nullable
+    public RebornFluidTank getTank() {
+        return null;
+    }
+
+    public boolean showTankConfig() {
+        return getTank() != null;
+    }
+
+    //The amount of ticks between a slot tranfer atempt, less is faster
+    public int slotTransferSpeed() {
+        return 4;
+    }
+
+    //The amount of fluid transfured each tick buy the fluid config
+    public int fluidTransferAmount() {
+        return 250;
+    }
 
 }
