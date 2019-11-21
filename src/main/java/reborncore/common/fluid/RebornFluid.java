@@ -1,10 +1,7 @@
 package reborncore.common.fluid;
 
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -35,7 +32,6 @@ public abstract class RebornFluid extends BaseFluid {
 		this.bucketItemSuppler = bucketItemSuppler;
 		this.flowingSuppler = flowingSuppler;
 		this.stillSuppler = stillSuppler;
-		BlockRenderLayerMap.INSTANCE.putFluid(this, RenderLayer.getTranslucent());
 	}
 
 	public FluidSettings getFluidSettings() {
