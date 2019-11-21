@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Lazy;
+import reborncore.client.RenderUtil;
 
 import java.util.stream.Stream;
 
@@ -20,9 +21,8 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback {
 	private static void setupFluidRenderer(RebornFluid fluid){
 		//Done lazy as we want to ensure we get the sprite at the correct time, but also dont want to be making these calls every time its required.
 		Lazy<Sprite[]> sprites = new Lazy<>(() -> {
-			SpriteAtlasTexture spriteAtlas = MinecraftClient.getInstance().getSpriteAtlas();
 			FluidSettings fluidSettings = fluid.getFluidSettings();
-			return new Sprite[]{spriteAtlas.getSprite(fluidSettings.getStillTexture()), spriteAtlas.getSprite(fluidSettings.getFlowingTexture())};
+			return new Sprite[]{RenderUtil.getSprite(fluidSettings.getStillTexture()), RenderUtil.getSprite(fluidSettings.getFlowingTexture())};
 		});
 
 		FluidRenderHandlerRegistry.INSTANCE.register(fluid, (extendedBlockView, blockPos, fluidState) -> sprites.get());

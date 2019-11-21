@@ -28,6 +28,7 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
+import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
@@ -58,7 +59,7 @@ public class SpriteSlot extends FilteredSlot {
 	@Override
 	@Nullable
 	@Environment(EnvType.CLIENT)
-	public String getBackgroundSprite() {
-		return this.spriteName.toString();
+	public Pair<Identifier, Identifier> getBackgroundSprite() {
+		return Pair.of(new Identifier(this.spriteName.toString()), new Identifier(this.spriteName.toString()));
 	}
 }

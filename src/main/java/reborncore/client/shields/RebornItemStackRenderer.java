@@ -105,13 +105,13 @@ public class RebornItemStackRenderer extends BuiltinModelItemRenderer {
 							customTextureMap.put(location.getPath(), texture);
 							final Identifier resourceLocation = location;
 							THREAD_POOL.submit(() -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
-							MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
+							MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
 						}
 					} else {
-						MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
+						MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
 					}
 				} else {
-					MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.field_21557);
+					MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
 				}
 			} else {
 				renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);
@@ -120,7 +120,7 @@ public class RebornItemStackRenderer extends BuiltinModelItemRenderer {
 			RenderSystem.pushMatrix();
 			RenderSystem.scalef(1.0F, -1.0F, -1.0F);
 			VertexConsumer vertexConsumer = ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, this.modelShield.getLayer(SpriteAtlasTexture.BLOCK_ATLAS_TEX), false, stack.hasEnchantmentGlint());
-			modelShield.render(matrix, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F);
+			modelShield.render(matrix, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			RenderSystem.popMatrix();
 			return;
 		}

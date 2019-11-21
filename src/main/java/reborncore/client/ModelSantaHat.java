@@ -185,26 +185,25 @@ public class ModelSantaHat extends EntityModel<AbstractClientPlayerEntity> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, VertexConsumer vertexConsumer, int light, int overlay, float r, float g, float b) {
-		final Sprite sprite = null;
-		hatband1.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatband2.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatband3.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatband4.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatbase1.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatband5.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatband6.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatbase2.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatextension1.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatextension2.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatextension3.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatextension4.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball1.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball2.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball3.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball4.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball5.render(matrixStack, vertexConsumer, light, overlay, sprite);
-		hatball6.render(matrixStack, vertexConsumer, light, overlay, sprite);
+	public void render(MatrixStack matrixStack, VertexConsumer vertexConsumer, int light, int overlay, float r, float g, float b, float f) {
+		hatband1.render(matrixStack, vertexConsumer, light, overlay);
+		hatband2.render(matrixStack, vertexConsumer, light, overlay);
+		hatband3.render(matrixStack, vertexConsumer, light, overlay);
+		hatband4.render(matrixStack, vertexConsumer, light, overlay);
+		hatbase1.render(matrixStack, vertexConsumer, light, overlay);
+		hatband5.render(matrixStack, vertexConsumer, light, overlay);
+		hatband6.render(matrixStack, vertexConsumer, light, overlay);
+		hatbase2.render(matrixStack, vertexConsumer, light, overlay);
+		hatextension1.render(matrixStack, vertexConsumer, light, overlay);
+		hatextension2.render(matrixStack, vertexConsumer, light, overlay);
+		hatextension3.render(matrixStack, vertexConsumer, light, overlay);
+		hatextension4.render(matrixStack, vertexConsumer, light, overlay);
+		hatball1.render(matrixStack, vertexConsumer, light, overlay);
+		hatball2.render(matrixStack, vertexConsumer, light, overlay);
+		hatball3.render(matrixStack, vertexConsumer, light, overlay);
+		hatball4.render(matrixStack, vertexConsumer, light, overlay);
+		hatball5.render(matrixStack, vertexConsumer, light, overlay);
+		hatball6.render(matrixStack, vertexConsumer, light, overlay);
 	}
 
 	private void setRotation(ModelPart model, float x, float y, float z) {
@@ -217,4 +216,5 @@ public class ModelSantaHat extends EntityModel<AbstractClientPlayerEntity> {
 	public void accept(ModelPart modelPart) {
 
 	}
+
 }

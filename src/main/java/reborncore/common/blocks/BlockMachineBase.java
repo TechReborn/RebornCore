@@ -81,7 +81,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		this.hasCustomStates = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
-				this.stateFactory.getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
+				this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
 		}
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}

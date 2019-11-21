@@ -64,9 +64,9 @@ public class HolidayRenderManager {
 			float yaw = player.prevYaw + (player.yaw - player.prevYaw) * tickDelta - (player.prevBodyYaw + (player.bodyYaw - player.prevBodyYaw) * tickDelta);
 			float pitch = player.prevPitch + (player.pitch - player.prevPitch) * tickDelta;
 
-			matrixStack.multiply(Vector3f.POSITIVE_Y.getRotationQuaternion(yaw));
-			matrixStack.multiply(Vector3f.POSITIVE_X.getRotationQuaternion(pitch));
-			santaHat.render(matrixStack, vertexConsumer, i, LivingEntityRenderer.method_23622(player, 0.0F), 1F, 1F, 1F);
+			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(yaw));
+			matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(pitch));
+			santaHat.render(matrixStack, vertexConsumer, i, LivingEntityRenderer.method_23622(player, 0.0F), 1F, 1F, 1F, 1F);
 			matrixStack.pop();
 		}
 	}
