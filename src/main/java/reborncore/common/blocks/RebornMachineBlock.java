@@ -129,6 +129,22 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
 
 		return tile.getBlockState();
 	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		int facing = state.getValue(facingProperty).ordinal();
+		int active = state.getValue(activeProperty) ? 1 : 0;
+
+		return  (byte) facing << 8 | (byte) active;
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		int facing = meta >> 8;
+		int active = meta & 0xFF;
+
+		return super.getStateFromMeta(meta);
+	}
 	// << Block
 
 	// ITileEntityProvider >>
@@ -163,6 +179,22 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
 		return tile.setFacing(newFacing);
 	}
 	// << IWrenchable
+
+	// RebornMachineBlock >>
+	public boolean isActive(World world, BlockPos pos) {
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return false;
+
+		return tile.isActive();
+	}
+
+	public void setActive(boolean active, World world, BlockPos pos) {
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return;
+
+		tile.setActive(active);
+	}
+	// << RebornMachineBlock
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {	
