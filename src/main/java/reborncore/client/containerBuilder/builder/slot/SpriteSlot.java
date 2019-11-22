@@ -31,6 +31,7 @@ package reborncore.client.containerBuilder.builder.slot;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.Identifier;
 
@@ -60,6 +61,6 @@ public class SpriteSlot extends FilteredSlot {
 	@Nullable
 	@Environment(EnvType.CLIENT)
 	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(new Identifier(this.spriteName.toString()), new Identifier(this.spriteName.toString()));
+		return Pair.of(SpriteAtlasTexture.BLOCK_ATLAS_TEX, spriteName);
 	}
 }
