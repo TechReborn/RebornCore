@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import reborncore.client.containerBuilder.IRightClickHandler;
 import reborncore.client.gui.slots.SlotFake;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.ItemUtils;
 
 import org.apache.commons.lang3.tuple.MutableTriple;
@@ -58,9 +58,9 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
     private List<Consumer<InventoryCrafting>> craftEvents;
     private Integer[] integerParts;
 
-    private final TileLegacyMachineBase tile;
+    private final RebornMachineTile tile;
 
-    public BuiltContainer(final String name, final Predicate<EntityPlayer> canInteract, TileLegacyMachineBase tile) {
+    public BuiltContainer(final String name, final Predicate<EntityPlayer> canInteract, RebornMachineTile tile) {
         this.name = name;
 
         this.canInteract = canInteract;

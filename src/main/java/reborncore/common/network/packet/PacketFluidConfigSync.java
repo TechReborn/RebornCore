@@ -30,7 +30,7 @@ import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import java.io.IOException;
 
@@ -67,7 +67,7 @@ public class PacketFluidConfigSync implements INetworkPacket<PacketFluidConfigSy
 		if (!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)) {
 			return;
 		}
-		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+		RebornMachineTile machineBase = (RebornMachineTile) RebornCore.proxy.getClientWorld().getTileEntity(pos);
 		if (machineBase == null || machineBase.fluidConfiguration == null || fluidConfiguration == null) {
 			RebornCore.logHelper.error("Failed to sync fluid config data to " + pos);
 		}

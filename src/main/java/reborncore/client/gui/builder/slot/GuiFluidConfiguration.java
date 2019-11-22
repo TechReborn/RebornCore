@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.lwjgl.input.Keyboard;
 
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigFluidElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
@@ -142,15 +142,15 @@ public class GuiFluidConfiguration {
     }
 
     @Nullable
-    private static TileLegacyMachineBase getMachine() {
+    private static RebornMachineTile getMachine() {
         if (!(Minecraft.getMinecraft().currentScreen instanceof GuiBase)) {
             return null;
         }
         GuiBase base = (GuiBase) Minecraft.getMinecraft().currentScreen;
-        if (!(base.tile instanceof TileLegacyMachineBase)) {
+        if (!(base.tile instanceof RebornMachineTile)) {
             return null;
         }
-        TileLegacyMachineBase machineBase = (TileLegacyMachineBase) base.tile;
+        RebornMachineTile machineBase = (RebornMachineTile) base.tile;
         return machineBase;
     }
 

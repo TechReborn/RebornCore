@@ -24,7 +24,7 @@
 package reborncore.common.util;
 
 import net.minecraft.util.EnumFacing;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 public enum  MachineFacing {
 	FRONT,
@@ -34,7 +34,7 @@ public enum  MachineFacing {
 	LEFT,
 	RIGHT;
 
-	public EnumFacing getFacing(TileLegacyMachineBase machineBase){
+	public EnumFacing getFacing(RebornMachineTile machineBase){
 		if(this == FRONT){
 			return machineBase.getFacing();
 		}

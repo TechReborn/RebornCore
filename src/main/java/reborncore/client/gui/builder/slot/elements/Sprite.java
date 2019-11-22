@@ -27,7 +27,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 public class Sprite implements ISprite {
 	public static final Sprite EMPTY = new Sprite(ElementBase.MECH_ELEMENTS, 0, 0, 0, 0);
@@ -102,7 +102,7 @@ public class Sprite implements ISprite {
 	}
 
 	@Override
-	public Sprite getSprite(TileLegacyMachineBase provider) {
+	public Sprite getSprite(RebornMachineTile provider) {
 		return this;
 	}
 

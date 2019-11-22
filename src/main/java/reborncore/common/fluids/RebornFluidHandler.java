@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  * @author estebes
  */
 public class RebornFluidHandler implements IFluidHandler {
-    public RebornFluidHandler(TileLegacyMachineBase tile, EnumFacing side) {
+    public RebornFluidHandler(RebornMachineTile tile, EnumFacing side) {
         this.tile = tile;
         this.side = side;
     }
@@ -113,7 +113,7 @@ public class RebornFluidHandler implements IFluidHandler {
     // << IFluidHandler
 
     // Fields >>
-    private final TileLegacyMachineBase tile;
+    private final RebornMachineTile tile;
     private final EnumFacing side;
     // << Fields
 }

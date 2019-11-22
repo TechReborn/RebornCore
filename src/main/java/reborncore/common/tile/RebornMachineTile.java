@@ -24,6 +24,7 @@ package reborncore.common.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
@@ -35,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -51,7 +53,7 @@ import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.blocks.RebornBlock;
+import reborncore.common.blocks.RebornMachineBlock;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.fluids.RebornFluidHandler;
 import reborncore.common.fluids.RebornFluidTank;
@@ -60,15 +62,17 @@ import reborncore.common.network.packet.CustomDescriptionPacket;
 import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.Inventory;
+import reborncore.common.util.Utils;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by modmuss50 on 04/11/2016.
  */
-public class TileLegacyMachineBase extends TileEntity implements ITickable, ISidedInventory, IUpgradeable, IUpgradeHandler {
+public class RebornMachineTile extends TileEntity implements ITickable, ISidedInventory, IUpgradeable, IUpgradeHandler {
 
     public Inventory upgradeInventory = new Inventory(getUpgradeSlotCount(), "upgrades", 1, this);
     public SlotConfiguration slotConfiguration;
@@ -167,33 +171,18 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
 
     public int getFacingInt() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof RebornBlock) {
-            return ((RebornBlock) block).getFacing(world, pos).getIndex();
+        if (block instanceof RebornMachineBlock) {
+            return ((RebornMachineBlock) block).getFacing(world, pos).getIndex();
         }
         return 0;
     }
 
     public EnumFacing getFacingEnum() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof RebornBlock) {
-            return ((RebornBlock) block).getFacing(world, pos);
+        if (block instanceof RebornMachineBlock) {
+            return ((RebornMachineBlock) block).getFacing(world, pos);
         }
         return null;
-    }
-
-    public void setFacing(EnumFacing enumFacing) {
-        Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof RebornBlock) {
-            ((RebornBlock) block).setFacing(world, pos, enumFacing, null);
-        }
-    }
-
-    public boolean isActive() {
-        Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof RebornBlock) {
-            return world.getBlockState(pos).getValue(RebornBlock.activeProperty);
-        }
-        return false;
     }
 
     // This stops the tile from getting cleared when the state is
@@ -245,6 +234,19 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
+
+        if (!supportedFacings.isEmpty()) {
+            byte facingValue = tagCompound.getByte("facing");
+            if (facingValue >= 0 && facingValue < EnumFacing.VALUES.length && supportedFacings.contains(EnumFacing.VALUES[facingValue]))
+                facing = facingValue;
+            else if (!supportedFacings.isEmpty())
+                facing = (byte) supportedFacings.iterator().next().ordinal();
+            else
+                facing = (byte) EnumFacing.DOWN.ordinal();
+        }
+
+        active = tagCompound.getBoolean("active");
+
         if (getInventoryForTile().isPresent()) {
             getInventoryForTile().get().readFromNBT(tagCompound);
         }
@@ -271,6 +273,12 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
         super.writeToNBT(tagCompound);
+
+        if (!supportedFacings.isEmpty())
+            tagCompound.setByte("facing", facing);
+
+        tagCompound.setBoolean("active", active);
+
         if (getInventoryForTile().isPresent()) {
             getInventoryForTile().get().writeToNBT(tagCompound);
         }
@@ -533,9 +541,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
         return 4;
     }
 
-    public EnumFacing getFacing() {
-        return getFacingEnum();
-    }
+
 
     @Override
     public void rotate(Rotation rotationIn) {
@@ -621,4 +627,81 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
         return 250;
     }
 
+
+
+
+
+
+    public void onPlaced(EntityLivingBase placer, ItemStack stack) {
+        EnumFacing newFacing = getFacingForPlacement(placer);
+        if (newFacing != getFacing()) setFacing(newFacing);
+    }
+
+    public EnumFacing getFacing() {
+        return EnumFacing.values()[facing];
+    }
+
+    public boolean canSetFacing(EnumFacing facing) {
+        return facing != getFacing() && supportedFacings.contains(facing);
+    }
+
+    public boolean setFacing(EnumFacing facing) {
+        if (!canSetFacing(facing)) return false;
+
+        this.facing = (byte) facing.ordinal();
+        syncWithAll();
+        notifyBlockUpdate();
+
+        return true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        if (this.active == active) return;
+
+        this.active = active;
+        syncWithAll();
+        notifyBlockUpdate();
+    }
+
+    public IBlockState getBlockState() {
+        return world.getBlockState(pos).getBlock().getDefaultState()
+                .withProperty(RebornMachineBlock.facingProperty, getFacing())
+                .withProperty(RebornMachineBlock.activeProperty, active);
+    }
+
+    // Helpers >>
+    protected void notifyBlockUpdate() {
+        IBlockState state = getBlockState();
+        world.notifyBlockUpdate(pos, state, state, 2);
+    }
+
+    protected EnumFacing getFacingForPlacement(EntityLivingBase placer) {
+        if (supportedFacings.isEmpty()) return EnumFacing.DOWN;
+
+        if (placer == null) return EnumFacing.DOWN;
+
+        EnumFacing bestFacing = null;
+        double bestScore = Double.NEGATIVE_INFINITY;
+        Vec3d dir = placer.getLookVec();
+        for (EnumFacing entry : supportedFacings) {
+            double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
+            if (score > bestScore) {
+                bestScore = score;
+                bestFacing = entry;
+            }
+        }
+
+        return bestFacing;
+    }
+    // << Helpers
+
+    // Fields >>
+    protected Set<EnumFacing> supportedFacings = Utils.HORIZONTAL_FACINGS;
+	protected boolean active = false;
+	protected byte facing = 0;
+    // << Fields
 }

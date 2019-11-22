@@ -69,7 +69,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
         toEdit.ioConfig = config.ioConfig;
     }
 
-    public void update(TileLegacyMachineBase machineBase) {
+    public void update(RebornMachineTile machineBase) {
         if (!input && !output) {
             return;
         }
@@ -96,7 +96,7 @@ public class FluidConfiguration implements INBTSerializable<NBTTagCompound> {
         }
     }
 
-    private IFluidHandler getFluidHandler(TileLegacyMachineBase machine, EnumFacing facing) {
+    private IFluidHandler getFluidHandler(RebornMachineTile machine, EnumFacing facing) {
         BlockPos pos = machine.getPos().offset(facing);
         TileEntity tileEntity = machine.getWorld().getTileEntity(pos);
 		return tileEntity == null ? null

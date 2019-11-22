@@ -36,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.common.container.RebornContainer;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.StringUtils;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
@@ -336,8 +336,8 @@ public class GuiBase extends GuiContainer {
 	}
 
 	@Nullable
-	public TileLegacyMachineBase getMachine(){
-		return (TileLegacyMachineBase) tile;
+	public RebornMachineTile getMachine(){
+		return (RebornMachineTile) tile;
 	}
 	
 	/**
@@ -371,6 +371,6 @@ public class GuiBase extends GuiContainer {
 	}
 
 	public boolean isConfigEnabled(){
-		return tile instanceof TileLegacyMachineBase && container != null;
+		return tile instanceof RebornMachineTile && container != null;
 	}
 }

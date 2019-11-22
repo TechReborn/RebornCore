@@ -40,7 +40,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -54,28 +53,29 @@ import reborncore.api.tile.IWrenchable;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.fluids.RebornFluidTank;
 import reborncore.common.items.WrenchHelper;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.InventoryHelper;
 import reborncore.common.util.Utils;
 
 import java.util.Set;
 
-public abstract class RebornBlock extends Block implements ITileEntityProvider, IWrenchable {
+public abstract class RebornMachineBlock extends Block implements ITileEntityProvider, IWrenchable {
 	public static ItemStack basicFrameStack;
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStates;
 
-	public RebornBlock() {
+	public RebornMachineBlock() {
 		this(false);
 	}
 
-	public RebornBlock(boolean hasCustomStates) {
+	public RebornMachineBlock(boolean hasCustomStates) {
 		this(hasCustomStates, Utils.HORIZONTAL_FACINGS);
 	}
 
-	public RebornBlock(boolean hasCustomStates, Set<EnumFacing> supportedFacings) {
+	public RebornMachineBlock(boolean hasCustomStates, Set<EnumFacing> supportedFacings) {
 		super(Material.IRON);
-		setHardness(2f);
+
+		setHardness(2.0F);
 		setSoundType(SoundType.METAL);
 
 		if (!hasCustomStates) {
@@ -83,8 +83,6 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 					.withProperty(facingProperty, EnumFacing.NORTH)
 					.withProperty(activeProperty, false));
 		}
-
-		this.supportedFacings = supportedFacings;
 
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
@@ -96,11 +94,21 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 	}
 
 	@Override
+	public boolean hasTileEntity() {
+		return true;
+	}
+
+	@Override
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		EnumFacing facing = getFacingForPlacement(placer, placer.getHorizontalFacing());
-		currentFacing = (byte) facing.ordinal();
-		IBlockState newState = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, facing);
-		world.setBlockState(pos, newState, 3);
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return;
+
+		tile.onPlaced(placer, stack);
 	}
 
 	@Override
@@ -109,23 +117,17 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 	}
 
 	@Override
-	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
-		EnumFacing current = EnumFacing.values()[currentFacing];
-		EnumFacing target = current.rotateAround(axis.getAxis());
-		if (supportedFacings.contains(target) && current != target) {
-			currentFacing = (byte) target.ordinal();
-			IBlockState state = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, target);
-			world.setBlockState(pos, state, 3);
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		InventoryHelper.dropInventoryItems(worldIn, pos);
 		super.breakBlock(worldIn, pos, state);
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return state;
+
+		return tile.getBlockState();
 	}
 	// << Block
 
@@ -139,25 +141,26 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 	// IWrenchable >>
 	@Override
 	public EnumFacing getFacing(World world, BlockPos pos) {
-		return world.getBlockState(pos).getValue(facingProperty);
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return EnumFacing.DOWN;
+
+		return tile.getFacing();
 	}
 
 	@Override
 	public boolean canSetFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
-		if (EnumFacing.values()[currentFacing] == newFacing) return false;
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return false;
 
-		return supportedFacings.contains(newFacing);
+		return tile.canSetFacing(newFacing);
 	}
 
 	@Override
 	public boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
-		if (!canSetFacing(world, pos, newFacing, player)) return false;
+		RebornMachineTile tile = getTileEntity(world, pos);
+		if (tile == null) return false;
 
-		currentFacing = (byte) newFacing.ordinal();
-		IBlockState state = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, newFacing);
-		world.setBlockState(pos, state, 3);
-
-		return true;
+		return tile.setFacing(newFacing);
 	}
 	// << IWrenchable
 
@@ -191,8 +194,8 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 			return false;
 		}
 
-		if(tileEntity instanceof TileLegacyMachineBase){
-			RebornFluidTank tank = ((TileLegacyMachineBase) tileEntity).getTank();
+		if(tileEntity instanceof RebornMachineTile){
+			RebornFluidTank tank = ((RebornMachineTile) tileEntity).getTank();
 			if (tank != null && FluidUtil.interactWithFluidHandler(playerIn, hand, tank)) {
 				return true;
 			}
@@ -224,81 +227,17 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider, 
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
 	}
 
-
-
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		int facing = currentFacing;
-		int active = isActive ? 0 : 4;
-		return facing + active;
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		boolean active = false;
-		int facingInt = meta;
-		if (facingInt >= 4) {
-			active = true;
-			facingInt = facingInt - 4;
-		}
-		isActive = active;
-		currentFacing = (byte) facingInt;
-		EnumFacing facing = EnumFacing.values()[facingInt];
-		return this.getDefaultState().withProperty(facingProperty, facing).withProperty(activeProperty, active);
-	}
-
-
 	public abstract IMachineGuiHandler getGui();
 
-	// BlockTileEntity >>
-	public boolean isActive(IBlockState state) {
-		return state.getValue(activeProperty);
-	}
-
-	public void setActive(boolean active, World world, BlockPos pos) {
-		isActive = active;
-		EnumFacing facing = EnumFacing.values()[currentFacing];
-		IBlockState state = world.getBlockState(pos).withProperty(activeProperty, active).withProperty(facingProperty, facing);
-		world.setBlockState(pos, state, 3);
-	}
-	// << BlockTileEntity
-
 	// Helpers >>
-	protected static TileLegacyMachineBase getTileEntity(IBlockAccess world, BlockPos pos) {
+	protected static RebornMachineTile getTileEntity(IBlockAccess world, BlockPos pos) {
 		TileEntity tileEntity = world.getTileEntity(pos);
-		return tileEntity instanceof TileLegacyMachineBase ? (TileLegacyMachineBase) tileEntity : null;
-	}
-
-	protected EnumFacing getFacingForPlacement(EntityLivingBase placer, EnumFacing facing) {
-		if (supportedFacings.isEmpty()) return EnumFacing.DOWN;
-
-		if (placer == null) {
-			return facing != null && supportedFacings.contains(facing.getOpposite())
-					? facing.getOpposite()
-					: supportedFacings.iterator().next();
-		}
-
-		EnumFacing bestFacing = null;
-		double bestScore = Double.NEGATIVE_INFINITY;
-		Vec3d dir = placer.getLookVec();
-		for (EnumFacing entry : supportedFacings) {
-			double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
-			if (score > bestScore) {
-				bestScore = score;
-				bestFacing = entry;
-			}
-		}
-
-		return bestFacing;
+		return tileEntity instanceof RebornMachineTile ? (RebornMachineTile) tileEntity : null;
 	}
 	// << Helpers
 
 	// Fields >>
 	public static final IProperty<EnumFacing> facingProperty = PropertyDirection.create("facing");
 	public static final IProperty<Boolean> activeProperty = PropertyBool.create("active");
-
-	protected Set<EnumFacing> supportedFacings = Utils.HORIZONTAL_FACINGS;
-	protected boolean isActive = false;
-	protected byte currentFacing = 0;
 	// << Fields
 }

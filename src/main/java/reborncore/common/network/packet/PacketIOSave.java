@@ -29,7 +29,7 @@ import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import java.io.IOException;
 
@@ -73,7 +73,7 @@ public class PacketIOSave implements INetworkPacket<PacketIOSave> {
 
 	@Override
 	public void processData(PacketIOSave message, MessageContext context) {
-		TileLegacyMachineBase legacyMachineBase = (TileLegacyMachineBase) context.getServerHandler().player.world.getTileEntity(pos);
+		RebornMachineTile legacyMachineBase = (RebornMachineTile) context.getServerHandler().player.world.getTileEntity(pos);
 		SlotConfiguration.SlotConfigHolder holder = legacyMachineBase.slotConfiguration.getSlotDetails(slotID);
 		if(holder == null){
 			return;

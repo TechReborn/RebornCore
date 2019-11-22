@@ -61,7 +61,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 		}
 	}
 
-	public void update(TileLegacyMachineBase machineBase){
+	public void update(RebornMachineTile machineBase){
 		if(inventory == null && machineBase.getInventoryForTile().isPresent()){
 			inventory = machineBase.getInventoryForTile().get();
 		}
@@ -166,7 +166,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			toEdit.slotIO = config.slotIO;
 		}
 
-		private void handleItemIO(TileLegacyMachineBase machineBase){
+		private void handleItemIO(RebornMachineTile machineBase){
 			if(!input && !output){
 				return;
 			}
@@ -267,7 +267,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			return slotID;
 		}
 
-		private void handleItemInput(TileLegacyMachineBase machineBase){
+		private void handleItemInput(RebornMachineTile machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
 			ItemStack targetStack = inventory.getStackInSlot(slotID);
 			if(targetStack.getMaxStackSize() == targetStack.getCount()){
@@ -307,7 +307,7 @@ public class SlotConfiguration implements INBTSerializable<NBTTagCompound>{
 			}
 		}
 
-		private void handleItemOutput(TileLegacyMachineBase machineBase){
+		private void handleItemOutput(RebornMachineTile machineBase){
 			Inventory inventory = machineBase.getInventoryForTile().get();
 			ItemStack sourceStack = inventory.getStackInSlot(slotID);
 			if(sourceStack.isEmpty()){

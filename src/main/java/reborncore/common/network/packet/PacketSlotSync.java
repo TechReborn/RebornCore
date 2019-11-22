@@ -30,7 +30,7 @@ import reborncore.RebornCore;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import reborncore.common.tile.SlotConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import java.io.IOException;
 
@@ -67,7 +67,7 @@ public class  PacketSlotSync implements INetworkPacket<PacketSlotSync> {
 		if(!RebornCore.proxy.getClientWorld().isBlockLoaded(pos, false)){
 			return;
 		}
-		TileLegacyMachineBase machineBase = (TileLegacyMachineBase) RebornCore.proxy.getClientWorld().getTileEntity(pos);
+		RebornMachineTile machineBase = (RebornMachineTile) RebornCore.proxy.getClientWorld().getTileEntity(pos);
 		if(machineBase == null || machineBase.slotConfiguration == null || slotConfig == null || slotConfig.getSlotDetails() == null){
 			RebornCore.logHelper.error("Failed to sync slot data to " + pos);
 		}

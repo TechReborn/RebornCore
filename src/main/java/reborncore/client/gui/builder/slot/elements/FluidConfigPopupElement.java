@@ -38,7 +38,7 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.packet.PacketFluidConfigSave;
 import reborncore.common.network.packet.PacketFluidIOSave;
 import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.MachineFacing;
 import reborncore.client.gui.builder.GuiBase;
 
@@ -60,7 +60,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
 		super.draw(gui);
 
-		TileLegacyMachineBase machine = ((TileLegacyMachineBase) gui.tile);
+		RebornMachineTile machine = ((RebornMachineTile) gui.tile);
 		IBlockAccess blockAccess = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		IBlockState state = blockAccess.getBlockState(pos);
@@ -84,7 +84,7 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onRelease(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onRelease(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		if (isInBox(23, 4, 16, 16, mouseX, mouseY, gui)) {
 			cyleConfig(MachineFacing.UP.getFacing(provider), gui);
 		} else if (isInBox(23, 23, 16, 16, mouseX, mouseY, gui)) {
@@ -129,13 +129,13 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public boolean onHover(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onHover(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		lastMousex = mouseX;
 		lastMousey = mouseY;
 		return super.onHover(provider, gui, mouseX, mouseY);
 	}
 
-	private void drawSateColor(TileLegacyMachineBase machineBase, EnumFacing side, int inx, int iny, GuiBase gui) {
+	private void drawSateColor(RebornMachineTile machineBase, EnumFacing side, int inx, int iny, GuiBase gui) {
 		iny += 4;
 		int sx = inx + getX() + gui.guiLeft;
 		int sy = iny + getY() + gui.guiTop;

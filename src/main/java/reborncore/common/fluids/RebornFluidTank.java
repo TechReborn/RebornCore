@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import reborncore.common.tile.FluidConfiguration;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import java.util.function.Predicate;
 
@@ -84,8 +84,8 @@ public class RebornFluidTank extends FluidTank {
     }
 
     public boolean canFill(EnumFacing side) {
-        if (tile instanceof TileLegacyMachineBase) {
-            TileLegacyMachineBase machine = (TileLegacyMachineBase) tile;
+        if (tile instanceof RebornMachineTile) {
+            RebornMachineTile machine = (RebornMachineTile) tile;
 
             if (machine.fluidConfiguration != null) {
                 FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);
@@ -97,8 +97,8 @@ public class RebornFluidTank extends FluidTank {
     }
 
     public boolean canDrain(EnumFacing side) {
-        if (tile instanceof TileLegacyMachineBase) {
-            TileLegacyMachineBase machine = (TileLegacyMachineBase) tile;
+        if (tile instanceof RebornMachineTile) {
+            RebornMachineTile machine = (RebornMachineTile) tile;
 
             if (machine.fluidConfiguration != null) {
                 FluidConfiguration.FluidConfig fluidConfig = machine.fluidConfiguration.getSideDetail(side);

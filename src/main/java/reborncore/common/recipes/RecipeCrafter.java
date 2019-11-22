@@ -32,7 +32,7 @@ import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.recipe.IBaseRecipeType;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.api.recipe.RecipeHandler;
-import reborncore.common.blocks.RebornBlock;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.Inventory;
 import reborncore.common.util.ItemUtils;
 
@@ -365,15 +365,9 @@ public class RecipeCrafter implements IUpgradeHandler {
 	}
 
 	public void setIsActive() {
-		if (parentTile.getWorld().getBlockState(parentTile.getPos()).getBlock() instanceof RebornBlock) {
-			RebornBlock rebornBlock = (RebornBlock) parentTile.getWorld()
-				.getBlockState(parentTile.getPos()).getBlock();
-			boolean isActive = isActive() || canCraftAgain();
-			rebornBlock.setActive(isActive, parentTile.getWorld(), parentTile.getPos());
+		if (parentTile instanceof RebornMachineTile) {
+			((RebornMachineTile) parentTile).setActive(isActive());
 		}
-		parentTile.getWorld().notifyBlockUpdate(parentTile.getPos(),
-			parentTile.getWorld().getBlockState(parentTile.getPos()),
-			parentTile.getWorld().getBlockState(parentTile.getPos()), 3);
 	}
 
 	public void setCurrentRecipe(IBaseRecipeType recipe) {

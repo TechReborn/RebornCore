@@ -31,14 +31,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.power.*;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.common.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class TilePowerAcceptor extends TileLegacyMachineBase implements
+public abstract class TilePowerAcceptor extends RebornMachineTile implements
 	IEnergyInterfaceTile, IListInfoProvider // TechReborn
 {
 	private EnumPowerTier tier;

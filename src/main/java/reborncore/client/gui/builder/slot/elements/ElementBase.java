@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import reborncore.client.guibuilder.GuiBuilder;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 import reborncore.client.gui.builder.GuiBase;
 
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class ElementBase {
 		return container;
 	}
 
-	public void adjustDimensions(TileLegacyMachineBase provider) {
+	public void adjustDimensions(RebornMachineTile provider) {
 		if (container.offsetSprites != null) {
 			for (OffsetSprite offsetSprite : container.offsetSprites) {
 				if (offsetSprite.getSprite().getSprite(provider).width + offsetSprite.getOffsetX(provider) > this.width) {
@@ -172,12 +172,12 @@ public class ElementBase {
 		return this;
 	}
 
-	public int getWidth(TileLegacyMachineBase provider) {
+	public int getWidth(RebornMachineTile provider) {
 		adjustDimensions(provider);
 		return width;
 	}
 
-	public int getHeight(TileLegacyMachineBase provider) {
+	public int getHeight(RebornMachineTile provider) {
 		adjustDimensions(provider);
 		return height;
 	}
@@ -215,28 +215,28 @@ public class ElementBase {
 		return this;
 	}
 
-	public boolean onHover(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onHover(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		for (ElementBase.Action action : hoverActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !hoverActions.isEmpty();
 	}
 
-	public boolean onDrag(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onDrag(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		for (ElementBase.Action action : dragActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !dragActions.isEmpty();
 	}
 
-	public boolean onStartPress(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onStartPress(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		for (ElementBase.Action action : startPressActions) {
 			action.execute(this, gui, provider, mouseX, mouseY);
 		}
 		return !startPressActions.isEmpty();
 	}
 
-	public boolean onRelease(TileLegacyMachineBase provider, GuiBase gui, int mouseX, int mouseY) {
+	public boolean onRelease(RebornMachineTile provider, GuiBase gui, int mouseX, int mouseY) {
 		for (ElementBase.Action action : releaseActions) {
 			if(action.execute(this, gui, provider, mouseX, mouseY)){
 				return true;
@@ -251,7 +251,7 @@ public class ElementBase {
 	}
 
 	public interface Action {
-		boolean execute(ElementBase element, GuiBase gui, TileLegacyMachineBase provider, int mouseX, int mouseY);
+		boolean execute(ElementBase element, GuiBase gui, RebornMachineTile provider, int mouseX, int mouseY);
 	}
 
 	public interface UpdateAction {

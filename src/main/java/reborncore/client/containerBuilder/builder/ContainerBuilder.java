@@ -33,7 +33,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
-import reborncore.common.tile.TileLegacyMachineBase;
+import reborncore.common.tile.RebornMachineTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +121,7 @@ public class ContainerBuilder {
 		return built;
 	}
 
-	public BuiltContainer create(final TileLegacyMachineBase tile) {
+	public BuiltContainer create(final RebornMachineTile tile) {
 		final BuiltContainer built = new BuiltContainer(this.name, this.canInteract, tile);
 		if (!this.shortValues.isEmpty())
 			built.addShortSync(this.shortValues);
