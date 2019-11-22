@@ -27,12 +27,12 @@ public interface IWrenchable {
      *
      * @param world World containing the block.
      * @param pos The block's current position in the world.
-     * @param newDirection The face to try, see {@link #getFacing(World, BlockPos)}
+     * @param newFacing The face to try, see {@link #getFacing(World, BlockPos)}
      * @param player Player potentially causing the rotation, may be <code>null</code>
      *
      * @return If {@link #setFacing(World, BlockPos, EnumFacing, EntityPlayer)} with the same parameters would succeed
      */
-    default boolean canSetFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
+    default boolean canSetFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
         return true;
     }
 
@@ -44,9 +44,9 @@ public interface IWrenchable {
      *
      * @param world World containing the block.
      * @param pos The block's current position in the world.
-     * @param newDirection Requested facing, see {@link #getFacing}.
+     * @param newFacing Requested facing, see {@link #getFacing}.
      * @param player Player causing the action, may be null.
      * @return true if successful, false otherwise.
      */
-    boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player);
+    boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player);
 }

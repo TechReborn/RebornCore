@@ -50,6 +50,7 @@ import reborncore.api.ToolManager;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
+import reborncore.api.tile.IWrenchable;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.fluids.RebornFluidTank;
 import reborncore.common.items.WrenchHelper;
@@ -59,7 +60,7 @@ import reborncore.common.util.Utils;
 
 import java.util.Set;
 
-public abstract class RebornBlock extends Block implements ITileEntityProvider {
+public abstract class RebornBlock extends Block implements ITileEntityProvider, IWrenchable {
 	public static ItemStack basicFrameStack;
 	public static ItemStack advancedFrameStack;
 	boolean hasCustomStates;
@@ -97,7 +98,9 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		EnumFacing facing = getFacingForPlacement(placer, placer.getHorizontalFacing());
-		setFacing(facing, world, pos);
+		currentFacing = (byte) facing.ordinal();
+		IBlockState newState = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, facing);
+		world.setBlockState(pos, newState, 3);
 	}
 
 	@Override
@@ -110,7 +113,9 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 		EnumFacing current = EnumFacing.values()[currentFacing];
 		EnumFacing target = current.rotateAround(axis.getAxis());
 		if (supportedFacings.contains(target) && current != target) {
-			setFacing(target, world, pos);
+			currentFacing = (byte) target.ordinal();
+			IBlockState state = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, target);
+			world.setBlockState(pos, state, 3);
 			return true;
 		}
 
@@ -130,6 +135,31 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 		return null;
 	}
 	// << ITileEntityProvider
+
+	// IWrenchable >>
+	@Override
+	public EnumFacing getFacing(World world, BlockPos pos) {
+		return world.getBlockState(pos).getValue(facingProperty);
+	}
+
+	@Override
+	public boolean canSetFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
+		if (EnumFacing.values()[currentFacing] == newFacing) return false;
+
+		return supportedFacings.contains(newFacing);
+	}
+
+	@Override
+	public boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
+		if (!canSetFacing(world, pos, newFacing, player)) return false;
+
+		currentFacing = (byte) newFacing.ordinal();
+		IBlockState state = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, newFacing);
+		world.setBlockState(pos, state, 3);
+
+		return true;
+	}
+	// << IWrenchable
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {	
@@ -229,16 +259,6 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 		isActive = active;
 		EnumFacing facing = EnumFacing.values()[currentFacing];
 		IBlockState state = world.getBlockState(pos).withProperty(activeProperty, active).withProperty(facingProperty, facing);
-		world.setBlockState(pos, state, 3);
-	}
-
-	public EnumFacing getFacing(IBlockState state) {
-		return state.getValue(facingProperty);
-	}
-
-	public void setFacing(EnumFacing facing, World world, BlockPos pos) {
-		currentFacing = (byte) facing.ordinal();
-		IBlockState state = world.getBlockState(pos).withProperty(activeProperty, isActive).withProperty(facingProperty, facing);
 		world.setBlockState(pos, state, 3);
 	}
 	// << BlockTileEntity
