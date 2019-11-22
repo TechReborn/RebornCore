@@ -75,6 +75,10 @@ public class RebornFluidTank extends FluidTank {
         return getFluid() != null ? getFluid().getFluid() : null;
     }
 
+    public void setFluidAmount(int amount) {
+        if (fluid != null) fluid.amount = amount;
+    }
+
     public boolean acceptsFluid(Fluid fluid) {
         return acceptedFluids.test(fluid);
     }

@@ -22,8 +22,13 @@
 
 package reborncore.api.praescriptum.Utils;
 
+import net.minecraftforge.fluids.Fluid;
+
+import reborncore.api.praescriptum.fuels.Fuel;
 import reborncore.api.praescriptum.fuels.FuelHandler;
 import reborncore.api.praescriptum.ingredients.Ingredient;
+import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
+import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.recipes.Recipe;
 import reborncore.api.praescriptum.recipes.RecipeHandler;
 
@@ -62,17 +67,39 @@ public class IngredientUtils {
         };
     }
 
-    public static <T> Predicate<T> isPartOfRecipe(RecipeHandler handler) {
-        return object -> handler.getRecipes().stream()
-                .anyMatch(recipe -> recipe.getInputIngredients()
-                        .stream()
-                        .anyMatch(ingredient -> ingredient.matches(object)));
+    public static <T> Predicate<T> isPartOfRecipe(RecipeHandler recipeHandler) {
+        return object -> {
+            for (Recipe recipe : recipeHandler.getRecipes()) {
+                for (InputIngredient ingredient : recipe.getInputIngredients())
+                    return ingredient.matches(object);
+            }
+
+            return false;
+        };
     }
 
-    public static <T> Predicate<T> isPartOfFuel(FuelHandler handler) {
-        return object -> handler.getFuels().stream()
-                .anyMatch(recipe -> recipe.getInputIngredients()
-                        .stream()
-                        .anyMatch(ingredient -> ingredient.matches(object)));
+    public static <T> Predicate<T> isPartOfFuel(FuelHandler fuelHandler) {
+        return object -> {
+            for (Fuel fuel : fuelHandler.getFuels()) {
+                for (InputIngredient ingredient : fuel.getInputIngredients())
+                    return ingredient.matches(object);
+            }
+
+            return false;
+        };
+    }
+
+    public static <T extends Fluid> Predicate<T> isFluidPartOfFuel(FuelHandler fuelHandler) {
+        return object -> {
+            for (Fuel fuel : fuelHandler.getFuels()) {
+                for (InputIngredient ingredient : fuel.getInputIngredients()) {
+                    if (ingredient instanceof FluidStackInputIngredient
+                            && ((FluidStackInputIngredient) ingredient).ingredient.getFluid() == object)
+                        return true;
+                }
+            }
+
+            return false;
+        };
     }
 }
