@@ -74,9 +74,13 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 		super(Material.IRON);
 		setHardness(2f);
 		setSoundType(SoundType.METAL);
-		setDefaultState(blockState.getBaseState()
-				.withProperty(facingProperty, EnumFacing.NORTH)
-				.withProperty(activeProperty, false));
+
+		if (!hasCustomStates) {
+			setDefaultState(blockState.getBaseState()
+					.withProperty(facingProperty, EnumFacing.NORTH)
+					.withProperty(activeProperty, false));
+		}
+
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
 
