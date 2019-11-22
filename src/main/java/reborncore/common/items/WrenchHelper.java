@@ -32,9 +32,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import reborncore.api.IToolDrop;
 import reborncore.api.ToolManager;
-import reborncore.common.blocks.RebornBlock;
+import reborncore.api.tile.IWrenchable;
 import reborncore.common.misc.ModSounds;
 import reborncore.common.util.InventoryHelper;
 
@@ -72,8 +73,8 @@ public class WrenchHelper {
 			} 
 			else {
 				Block block = world.getBlockState(pos).getBlock();
-				if (block instanceof RebornBlock)
-					((RebornBlock) block).setFacing(side, world, pos);
+				if (block instanceof IWrenchable)
+					((IWrenchable) block).setFacing(world, pos, side, playerIn);
 				else
 					block.rotateBlock(world, pos, side);
 			}

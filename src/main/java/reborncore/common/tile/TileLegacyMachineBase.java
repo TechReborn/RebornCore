@@ -168,7 +168,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
     public int getFacingInt() {
         Block block = world.getBlockState(pos).getBlock();
         if (block instanceof RebornBlock) {
-            return ((RebornBlock) block).getFacing(world.getBlockState(pos)).getIndex();
+            return ((RebornBlock) block).getFacing(world, pos).getIndex();
         }
         return 0;
     }
@@ -176,7 +176,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
     public EnumFacing getFacingEnum() {
         Block block = world.getBlockState(pos).getBlock();
         if (block instanceof RebornBlock) {
-            return ((RebornBlock) block).getFacing(world.getBlockState(pos));
+            return ((RebornBlock) block).getFacing(world, pos);
         }
         return null;
     }
@@ -184,7 +184,7 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
     public void setFacing(EnumFacing enumFacing) {
         Block block = world.getBlockState(pos).getBlock();
         if (block instanceof RebornBlock) {
-            ((RebornBlock) block).setFacing(enumFacing, world, pos);
+            ((RebornBlock) block).setFacing(world, pos, enumFacing, null);
         }
     }
 
