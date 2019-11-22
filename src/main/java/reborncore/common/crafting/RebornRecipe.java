@@ -32,9 +32,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
+import io.github.cottonmc.libcd.api.CustomOutputRecipe;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
@@ -53,10 +55,12 @@ import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.util.DefaultedListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class RebornRecipe implements Recipe<Inventory> {
+public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 
 	private final RebornRecipeType<?> type;
 	private final Identifier name;
@@ -246,5 +250,14 @@ public class RebornRecipe implements Recipe<Inventory> {
 	void makeDummy() {
 		this.ingredients.add(new DummyIngredient());
 		this.dummy = true;
+	}
+
+	@Override
+	public Collection<Item> getOutputItems() {
+		List<Item> items = new ArrayList<>();
+		for (ItemStack stack : outputs) {
+			items.add(stack.getItem());
+		}
+		return items;
 	}
 }
