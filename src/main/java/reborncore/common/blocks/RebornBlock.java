@@ -55,10 +55,8 @@ import reborncore.common.fluids.RebornFluidTank;
 import reborncore.common.items.WrenchHelper;
 import reborncore.common.tile.TileLegacyMachineBase;
 import reborncore.common.util.InventoryHelper;
+import reborncore.common.util.Utils;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Set;
 
 public abstract class RebornBlock extends Block implements ITileEntityProvider {
@@ -71,6 +69,10 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 	}
 
 	public RebornBlock(boolean hasCustomStates) {
+		this(hasCustomStates, Utils.HORIZONTAL_FACINGS);
+	}
+
+	public RebornBlock(boolean hasCustomStates, Set<EnumFacing> supportedFacings) {
 		super(Material.IRON);
 		setHardness(2f);
 		setSoundType(SoundType.METAL);
@@ -80,6 +82,8 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 					.withProperty(facingProperty, EnumFacing.NORTH)
 					.withProperty(activeProperty, false));
 		}
+
+		this.supportedFacings = supportedFacings;
 
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
@@ -207,6 +211,8 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 			active = true;
 			facingInt = facingInt - 4;
 		}
+		isActive = active;
+		currentFacing = (byte) facingInt;
 		EnumFacing facing = EnumFacing.values()[facingInt];
 		return this.getDefaultState().withProperty(facingProperty, facing).withProperty(activeProperty, active);
 	}
@@ -271,7 +277,7 @@ public abstract class RebornBlock extends Block implements ITileEntityProvider {
 	public static final IProperty<EnumFacing> facingProperty = PropertyDirection.create("facing");
 	public static final IProperty<Boolean> activeProperty = PropertyBool.create("active");
 
-	protected Set<EnumFacing> supportedFacings = Collections.unmodifiableSet(EnumSet.copyOf(Arrays.asList(EnumFacing.HORIZONTALS)));
+	protected Set<EnumFacing> supportedFacings = Utils.HORIZONTAL_FACINGS;
 	protected boolean isActive = false;
 	protected byte currentFacing = 0;
 	// << Fields
