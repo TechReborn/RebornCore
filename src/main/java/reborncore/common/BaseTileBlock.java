@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 
-
 package reborncore.common;
 
 import net.minecraft.block.Block;

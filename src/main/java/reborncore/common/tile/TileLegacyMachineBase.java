@@ -51,7 +51,7 @@ import reborncore.api.tile.IUpgrade;
 import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.RebornCoreConfig;
-import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.blocks.RebornBlock;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.fluids.RebornFluidHandler;
 import reborncore.common.fluids.RebornFluidTank;
@@ -167,31 +167,31 @@ public class TileLegacyMachineBase extends TileEntity implements ITickable, ISid
 
     public int getFacingInt() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof BlockMachineBase) {
-            return ((BlockMachineBase) block).getFacing(world.getBlockState(pos)).getIndex();
+        if (block instanceof RebornBlock) {
+            return ((RebornBlock) block).getFacing(world.getBlockState(pos)).getIndex();
         }
         return 0;
     }
 
     public EnumFacing getFacingEnum() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof BlockMachineBase) {
-            return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
+        if (block instanceof RebornBlock) {
+            return ((RebornBlock) block).getFacing(world.getBlockState(pos));
         }
         return null;
     }
 
     public void setFacing(EnumFacing enumFacing) {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof BlockMachineBase) {
-            ((BlockMachineBase) block).setFacing(enumFacing, world, pos);
+        if (block instanceof RebornBlock) {
+            ((RebornBlock) block).setFacing(enumFacing, world, pos);
         }
     }
 
     public boolean isActive() {
         Block block = world.getBlockState(pos).getBlock();
-        if (block instanceof BlockMachineBase) {
-            return world.getBlockState(pos).getValue(BlockMachineBase.ACTIVE);
+        if (block instanceof RebornBlock) {
+            return world.getBlockState(pos).getValue(RebornBlock.activeProperty);
         }
         return false;
     }
