@@ -71,7 +71,7 @@ public class IngredientUtils {
         return object -> {
             for (Recipe recipe : recipeHandler.getRecipes()) {
                 for (InputIngredient ingredient : recipe.getInputIngredients())
-                    return ingredient.matches(object);
+                    if (ingredient.matches(object)) return true;
             }
 
             return false;
