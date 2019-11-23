@@ -128,11 +128,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         return compound;
     }
 
-    @Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
-        super.onDataPacket(net, pkt);
-        readFromNBT(pkt.getNbtCompound());
-    }
+
 
     @Override
     public void update() {
@@ -631,6 +627,15 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
 
 
 
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+
+        if (world.isRemote) {
+            IBlockState state = getWorld().getBlockState(getPos());
+            getWorld().notifyBlockUpdate(getPos(), state, state, 3);
+        }
+    }
 
     public void onPlaced(EntityLivingBase placer, ItemStack stack) {
         EnumFacing newFacing = getFacingForPlacement(placer);
@@ -670,13 +675,13 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
     public IBlockState getBlockState() {
         return world.getBlockState(pos).getBlock().getDefaultState()
                 .withProperty(RebornMachineBlock.facingProperty, getFacing())
-                .withProperty(RebornMachineBlock.activeProperty, active);
+                .withProperty(RebornMachineBlock.activeProperty, isActive());
     }
 
     // Helpers >>
     protected void notifyBlockUpdate() {
         IBlockState state = getBlockState();
-        world.notifyBlockUpdate(pos, state, state, 2);
+        getWorld().notifyBlockUpdate(pos, state, state, 2);
     }
 
     protected EnumFacing getFacingForPlacement(EntityLivingBase placer) {
@@ -701,7 +706,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
 
     // Fields >>
     protected Set<EnumFacing> supportedFacings = Utils.HORIZONTAL_FACINGS;
+    protected byte facing = 0;
 	protected boolean active = false;
-	protected byte facing = 0;
     // << Fields
 }
