@@ -27,8 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import reborncore.api.praescriptum.Utils.IngredientUtils;
-import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
@@ -37,17 +35,14 @@ import reborncore.api.praescriptum.ingredients.output.OutputIngredient;
 import reborncore.common.util.ItemUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author estebes
@@ -57,6 +52,7 @@ public class RecipeHandler {
         if (StringUtils.isBlank(name)) throw new IllegalArgumentException("The recipe handler name cannot be blank");
 
         this.name = name;
+        logger = LogManager.getLogger("team_reborn|Praescriptum|" + name);
     }
 
     /**
@@ -84,47 +80,53 @@ public class RecipeHandler {
 
         if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
 
-        ImmutableList<InputIngredient<?>> listOfInputs = recipe.getInputIngredients().stream()
-                .filter(IngredientUtils.isIngredientEmpty((ingredient) ->
-                        LogUtils.LOGGER.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
-                                ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
-                .collect(ImmutableList.toImmutableList());
-
-        ImmutableList<OutputIngredient<?>> listOfOutputs = recipe.getOutputIngredients().stream()
-                .filter(IngredientUtils.isIngredientEmpty((ingredient) ->
-                        LogUtils.LOGGER.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
-                                ingredient.getClass().getSimpleName(), ingredient.toFormattedString()))))
-                .collect(ImmutableList.toImmutableList());
-
-        boolean canBeSkipped = listOfInputs.stream()
-                .filter(ingredient -> ingredient instanceof OreDictionaryInputIngredient)
-                .anyMatch(ingredient -> OreDictionary.getOres(((OreDictionaryInputIngredient) ingredient).ingredient).isEmpty());
-
-        if (canBeSkipped) {
-            LogUtils.LOGGER.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                    name, listOfInputs, listOfOutputs));
-
-            return false;
+        Queue<InputIngredient<?>> queueOfInputs = new ArrayDeque<>();
+        for (InputIngredient<?> ingredient : recipe.getInputIngredients()) {
+            if (ingredient.isEmpty())
+                logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
+                        ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
+            else
+                queueOfInputs.add(ingredient);
         }
 
-        Optional<Recipe> temp = getRecipe(listOfInputs);
+        Queue<OutputIngredient<?>> queueOfOutputs = new ArrayDeque<>();
+        for (OutputIngredient<?> ingredient : recipe.getOutputIngredients()) {
+            if (ingredient.isEmpty())
+                logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
+                        ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
+            else
+                queueOfOutputs.add(ingredient);
+        }
 
-        if (temp.isPresent()) {
+        for (InputIngredient<?> inputIngredient : queueOfInputs) {
+            if (inputIngredient instanceof OreDictionaryInputIngredient) {
+                if (OreDictionary.getOres(((OreDictionaryInputIngredient) inputIngredient).ingredient).isEmpty()) {
+                    logger.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
+                            name, queueOfInputs, queueOfOutputs));
+
+                    return false;
+                }
+            }
+        }
+
+        Recipe temp = getRecipe(queueOfInputs);
+
+        if (temp != null) {
             if (replace) {
                 do {
-                    if (!removeRecipe(listOfInputs))
-                        LogUtils.LOGGER.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, listOfInputs));
-                } while (getRecipe(listOfInputs).isPresent());
+                    if (!removeRecipe(queueOfInputs))
+                        logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, queueOfInputs));
+                } while (getRecipe(queueOfInputs) != null);
             } else {
-                LogUtils.LOGGER.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", listOfInputs,
-                        name, listOfOutputs, listOfInputs, listOfInputs, listOfOutputs));
+                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", queueOfInputs,
+                        name, queueOfOutputs, queueOfInputs, queueOfInputs, queueOfOutputs));
                 return false;
             }
         }
 
         Recipe newRecipe = createRecipe()
-                .withInput(listOfInputs)
-                .withOutput(listOfOutputs)
+                .withInput(queueOfInputs)
+                .withOutput(queueOfOutputs)
                 .withMetadata(recipe.getMetadata());
 
         recipes.add(newRecipe);
@@ -136,90 +138,79 @@ public class RecipeHandler {
      * Get the recipe for the given ingredients.
      *
      * @param ingredients The ingredient list
-     * @return The recipe if it exists or empty otherwise
+     * @return The recipe if it exists or null otherwise
      */
-    protected Optional<Recipe> getRecipe(ImmutableList<InputIngredient<?>> ingredients) {
-        return recipes.stream()
-                .filter(recipe -> {
-                    final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-                    ingredients.forEach(entry ->
-                            listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+    protected Recipe getRecipe(Collection<InputIngredient<?>> ingredients) {
+        for (Recipe recipe : recipes) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) continue;
 
-                    return listA.isEmpty();
-                })
-                .findAny();
-    }
+            final Queue<InputIngredient> adjusted = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-    /**
-     * Get the recipe for given outputs
-     *
-     * @param output List of outputs
-     * @return The recipe if it exists or empty otherwise
-     */
-    public Optional<Recipe> getRecipeByOutput(ImmutableList<OutputIngredient<?>> output) {
-        return this.recipes.stream().filter((recipe) -> {
-            List<OutputIngredient<?>> listA = new ArrayList<>(recipe.getOutputIngredients());
-            output.forEach((entry) ->
-                    listA.removeIf((temp) -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            if (adjusted.isEmpty()) return recipe;
+        }
 
-            return listA.isEmpty();
-        }).findAny();
+        return null;
     }
 
     /**
      * Find a matching recipe for the provided inputs
      *
      * @param itemStack Recipe input item (not modified)
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findRecipe(ItemStack itemStack) {
-        if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
+    public Recipe findRecipe(ItemStack itemStack) {
+        if (ItemUtils.isEmpty(itemStack)) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.copyOf(itemStack));
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return cachedRecipes.get(Collections.singletonList(ItemStackInputIngredient.copyOf(itemStack)));
     }
 
     /**
      * Find a matching recipe for the provided inputs
      *
      * @param itemStacks Recipe input items (not modified)
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findRecipe(ImmutableList<ItemStack> itemStacks) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf)
-                .collect(ImmutableList.toImmutableList());
+    public Recipe findRecipe(Collection<ItemStack> itemStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.copyOf(stack)); // map ItemStacks
+
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedRecipes.get(ingredients);
     }
 
     /**
      * Find a matching recipe for the provided inputs
      *
      * @param fluidStack Recipe input fluid (not modified)
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findRecipe2(FluidStack fluidStack) {
-        if (fluidStack.amount <= 0) return Optional.empty();
+    public Recipe findRecipe2(FluidStack fluidStack) {
+        if (fluidStack.amount <= 0) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.copyOf(fluidStack));
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        return cachedRecipes.get(Collections.singletonList(FluidStackInputIngredient.copyOf(fluidStack)));
     }
 
     /**
      * Find a matching recipe for the provided inputs
      *
      * @param fluidStacks Recipe input fluids (not modified)
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findRecipe2(ImmutableList<FluidStack> fluidStacks) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf)
-                .collect(ImmutableList.toImmutableList());
+    public Recipe findRecipe2(Collection<FluidStack> fluidStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
+
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedRecipes.get(ingredients);
     }
 
     /**
@@ -227,21 +218,20 @@ public class RecipeHandler {
      *
      * @param itemStacks  Recipe input items (not modified)
      * @param fluidStacks Recipe input fluids (not modified)
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findRecipe3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::copyOf); // map ItemStacks
+    public Recipe findRecipe3(Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::copyOf); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.copyOf(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
 
-        return Optional.ofNullable(cachedRecipes.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+
+        return cachedRecipes.get(ingredients);
     }
 
     /**
@@ -251,44 +241,43 @@ public class RecipeHandler {
      * @param simulate  If true the manager will accept partially missing ingredients or
      *                  ingredients with insufficient quantities. This is primarily used to check whether a
      *                  slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findAndApply(ItemStack itemStack, boolean simulate) {
-        if (ItemUtils.isEmpty(itemStack)) return Optional.empty();
+    public Recipe findAndApply(ItemStack itemStack, boolean simulate) {
+        if (ItemUtils.isEmpty(itemStack)) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(ItemStackInputIngredient.of(itemStack));
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
+        Recipe recipe = cachedRecipes.get(ingredients);
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
-
-        ret.map(recipe -> {
+        if (recipe != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the input did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(recipe);
-        });
+            return recipe;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -298,45 +287,46 @@ public class RecipeHandler {
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findAndApply(ImmutableList<ItemStack> itemStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public Recipe findAndApply(Collection<ItemStack> itemStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        ret.map(recipe -> {
+        Recipe recipe = cachedRecipes.get(ingredients);
+
+        if (recipe != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the input did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(recipe);
-        });
+            return recipe;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -346,44 +336,43 @@ public class RecipeHandler {
      * @param simulate   If true the manager will accept partially missing ingredients or
      *                   ingredients with insufficient quantities. This is primarily used to check whether a
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findAndApply2(FluidStack fluidStack, boolean simulate) {
-        if (fluidStack.amount <= 0) return Optional.empty();
+    public Recipe findAndApply2(FluidStack fluidStack, boolean simulate) {
+        if (fluidStack.amount <= 0) return null;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(FluidStackInputIngredient.of(fluidStack));
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
+        Recipe recipe = cachedRecipes.get(ingredients);
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
-
-        ret.map(recipe -> {
+        if (recipe != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the input did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(recipe);
-        });
+            return recipe;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -393,45 +382,46 @@ public class RecipeHandler {
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findAndApply2(ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public Recipe findAndApply2(Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        ret.map(recipe -> {
+        Recipe recipe = cachedRecipes.get(ingredients);
+
+        if (recipe != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the input did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(recipe);
-        });
+            return recipe;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -442,51 +432,49 @@ public class RecipeHandler {
      * @param simulate    If true the manager will accept partially missing ingredients or
      *                    ingredients with insufficient quantities. This is primarily used to check whether a
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
-     * @return Recipe result, or empty if none
+     * @return The recipe if it exists or null otherwise
      */
-    public Optional<Recipe> findAndApply3(ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of); // map ItemStacks
+    public Recipe findAndApply3(Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return Optional.empty(); // if the inputs are empty we can return nothing
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
 
-        Optional<Recipe> ret = Optional.ofNullable(cachedRecipes.get(ingredients));
+        Recipe recipe = cachedRecipes.get(ingredients);
 
-        ret.map(recipe -> {
+        if (recipe != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
-            if (ingredients.size() != recipe.getInputIngredients().size()) return Optional.empty();
+            if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-            if (!listA.isEmpty()) return Optional.empty(); // the input did not match
+            if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-                ingredients.forEach(entry ->
-                        listB.removeIf(temp -> {
-                            if (temp.matches(entry.ingredient)) {
-                                entry.shrink(temp.getCount()); // adjust the quantity
-                                return true;
-                            }
-                            return false;
-                        })
-                );
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
+                            entry.shrink(temp.getCount()); // adjust the quantity
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }
             }
 
-            return Optional.of(recipe);
-        });
+            return recipe;
+        }
 
-        return ret;
+        return null;
     }
 
     /**
@@ -502,31 +490,36 @@ public class RecipeHandler {
     public boolean apply(Recipe recipe, ItemStack itemStack, boolean simulate) {
         if (ItemUtils.isEmpty(itemStack)) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(ItemStackInputIngredient.of(itemStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(ItemStackInputIngredient.of(itemStack));
 
-        // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (recipe != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!listA.isEmpty()) return false; // the input did not match
+            if (!queueA.isEmpty()) return false; // the inputs did not match
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -539,35 +532,42 @@ public class RecipeHandler {
      *                   slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply(Recipe recipe, ImmutableList<ItemStack> itemStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public boolean apply(Recipe recipe, Collection<ItemStack> itemStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        if (!listA.isEmpty()) return false; // the input did not match
+        if (recipe != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -583,31 +583,36 @@ public class RecipeHandler {
     public boolean apply2(Recipe recipe, FluidStack fluidStack, boolean simulate) {
         if (fluidStack.amount <= 0) return false;
 
-        ImmutableList<InputIngredient<?>> ingredients = ImmutableList.of(FluidStackInputIngredient.of(fluidStack));
+        List<InputIngredient<?>> ingredients = Collections.singletonList(FluidStackInputIngredient.of(fluidStack));
 
-        // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (recipe != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!listA.isEmpty()) return false; // the input did not match
+            if (!queueA.isEmpty()) return false; // the inputs did not match
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -620,35 +625,42 @@ public class RecipeHandler {
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply2(Recipe recipe, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        ImmutableList<InputIngredient<?>> ingredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of)
-                .collect(ImmutableList.toImmutableList());
+    public boolean apply2(Recipe recipe, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        if (!listA.isEmpty()) return false; // the input did not match
+        if (recipe != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -662,41 +674,45 @@ public class RecipeHandler {
      *                    slot/tank/etc can accept the input while trying to supply a machine with resources
      * @return True if the operation was successful or false otherwise
      */
-    public boolean apply3(Recipe recipe, ImmutableList<ItemStack> itemStacks, ImmutableList<FluidStack> fluidStacks, boolean simulate) {
-        Stream<ItemStackInputIngredient> itemIngredients = itemStacks.stream()
-                .filter(stack -> !ItemUtils.isEmpty(stack))
-                .map(ItemStackInputIngredient::of); // map ItemStacks
+    public boolean apply3(Recipe recipe, Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
+        Queue<InputIngredient> ingredients = new ArrayDeque<>();
 
-        Stream<FluidStackInputIngredient> fluidIngredients = fluidStacks.stream()
-                .filter(stack -> stack.amount <= 0)
-                .map(FluidStackInputIngredient::of); // map FluidStacks
+        for (ItemStack stack : itemStacks)
+            if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        ImmutableList<InputIngredient<?>> ingredients = Stream.concat(itemIngredients, fluidIngredients)
-                .collect(ImmutableList.toImmutableList());
+        for (FluidStack stack : fluidStacks)
+            if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        // check if everything need for the input is available in the input (ingredients + quantities)
-        if (ingredients.size() != recipe.getInputIngredients().size()) return false;
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
 
-        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-        ingredients.forEach(entry ->
-                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
+        if (recipe != null) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-        if (!listA.isEmpty()) return false; // the input did not match
+            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient entry : ingredients)
+                queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
-        if (!simulate) {
-            final List<InputIngredient<?>> listB = new ArrayList<>(recipe.getInputIngredients());
-            ingredients.forEach(entry ->
-                    listB.removeIf(temp -> {
-                        if (temp.matches(entry.ingredient)) {
+            if (!queueA.isEmpty()) return false; // the inputs did not match
+
+            if (!simulate) {
+                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient entry : ingredients) {
+                    queueB.removeIf(temp -> {
+                        if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
                             return true;
                         }
+
                         return false;
-                    })
-            );
+                    });
+                }
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -718,8 +734,8 @@ public class RecipeHandler {
      * @param ingredients The input ingredients
      * @return True if a valid recipe has been found and removed or false otherwise
      */
-    public boolean removeRecipe(ImmutableList<InputIngredient<?>> ingredients) {
-        Recipe recipe = getRecipe(ingredients).orElse(null);
+    public boolean removeRecipe(Collection<InputIngredient<?>> ingredients) {
+        Recipe recipe = getRecipe(ingredients);
         if (recipe == null) return false;
 
         cachedRecipes.invalidate(ingredients); // remove from cache
@@ -731,30 +747,22 @@ public class RecipeHandler {
      *
      * @return A list with all the recipes
      */
-    public List<Recipe> getRecipes() {
+    public Collection<Recipe> getRecipes() {
         return recipes;
     }
 
     // Fields >>
+    // Fields >>
     public final String name;
 
-    protected final List<Recipe> recipes = new ArrayList<>();
+    protected final Logger logger;
 
-    protected final LoadingCache<ImmutableList<InputIngredient<?>>, Recipe> cachedRecipes =
+    protected final Queue<Recipe> recipes = new ArrayDeque<>();
+
+    protected final LoadingCache<Collection<InputIngredient<?>>, Recipe> cachedRecipes =
             Caffeine.newBuilder()
                     .expireAfterAccess(10, TimeUnit.MINUTES)
                     .maximumSize(100)
-                    .build(ingredients ->
-                            recipes.stream()
-                                    .filter(recipe -> {
-                                        final List<InputIngredient<?>> listA = new ArrayList<>(recipe.getInputIngredients());
-                                        ingredients.forEach(entry ->
-                                                listA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()));
-
-                                        return listA.isEmpty();
-                                    })
-                                    .findAny()
-                                    .orElse(null)
-                    );
+                    .build(this::getRecipe);
     // << Fields
 }

@@ -126,7 +126,7 @@ public class FuelHandler {
      * Get the fuel for the given ingredients.
      *
      * @param ingredients The ingredient list
-     * @return The fuel if it exists or empty otherwise
+     * @return The fuel if it exists or null otherwise
      */
     protected Fuel getFuel(Collection<InputIngredient<?>> ingredients) {
         for (Fuel fuel : fuels) {
@@ -167,7 +167,7 @@ public class FuelHandler {
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.copyOf(stack)); // map ItemStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         return cachedFuels.get(ingredients);
     }
@@ -196,7 +196,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         return cachedFuels.get(ingredients);
     }
@@ -217,7 +217,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.copyOf(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         return cachedFuels.get(ingredients);
     }
@@ -283,7 +283,7 @@ public class FuelHandler {
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         Fuel fuel = cachedFuels.get(ingredients);
 
@@ -378,7 +378,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         Fuel fuel = cachedFuels.get(ingredients);
 
@@ -431,7 +431,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching recipe
+        if (ingredients.isEmpty()) return null; // if the inputs are empty the is no matching fuel
 
         Fuel fuel = cachedFuels.get(ingredients);
 
@@ -526,7 +526,7 @@ public class FuelHandler {
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
 
-        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the fuel
 
         if (fuel != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
@@ -619,7 +619,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the fuel
 
         if (fuel != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)
@@ -671,7 +671,7 @@ public class FuelHandler {
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
 
-        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the recipe
+        if (ingredients.isEmpty()) return false; // if the inputs are empty we cannot apply the fuel
 
         if (fuel != null) {
             // check if everything need for the input is available in the input (ingredients + quantities)

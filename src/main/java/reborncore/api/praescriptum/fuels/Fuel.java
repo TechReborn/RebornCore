@@ -30,7 +30,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
@@ -168,7 +167,7 @@ public class Fuel {
 
     public void register(boolean replace) {
         boolean success = handler.addFuel(this, replace);
-        if (!success) LogUtils.LOGGER.warn("Registration failed for input " + this);
+        if (!success) handler.logger.warn("Registration failed for input " + this);
     }
 
     // Getters >>

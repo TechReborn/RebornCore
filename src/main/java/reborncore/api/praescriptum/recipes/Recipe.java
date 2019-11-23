@@ -27,7 +27,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import reborncore.api.praescriptum.Utils.LogUtils;
 import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
@@ -37,8 +36,11 @@ import reborncore.api.praescriptum.ingredients.output.ItemStackOutputIngredient;
 import reborncore.api.praescriptum.ingredients.output.OutputIngredient;
 import reborncore.common.util.ItemUtils;
 
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,7 +51,7 @@ public class Recipe implements Serializable {
         this.handler = handler;
     }
 
-    public Recipe withInput(List<InputIngredient<?>> inputs) {
+    public Recipe withInput(Collection<InputIngredient<?>> inputs) {
         inputIngredients.addAll(inputs);
         return this;
     }
@@ -87,7 +89,7 @@ public class Recipe implements Serializable {
         return this;
     }
 
-    public Recipe withOutput(List<OutputIngredient<?>> outputs) {
+    public Recipe withOutput(Collection<OutputIngredient<?>> outputs) {
         outputIngredients.addAll(outputs);
         return this;
     }
@@ -185,7 +187,7 @@ public class Recipe implements Serializable {
 
     public void register(boolean replace) {
         boolean success = handler.addRecipe(this, replace);
-        if (!success) LogUtils.LOGGER.warn("Registration failed for input " + this);
+        if (!success) handler.logger.warn("Registration failed for input " + this);
     }
 
     // Getters >>
