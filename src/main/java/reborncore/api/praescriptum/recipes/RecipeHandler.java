@@ -80,53 +80,53 @@ public class RecipeHandler {
 
         if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
 
-        Queue<InputIngredient<?>> queueOfInputs = new ArrayDeque<>();
+        List<InputIngredient<?>> listOfInputs = new ArrayList<>();
         for (InputIngredient<?> ingredient : recipe.getInputIngredients()) {
             if (ingredient.isEmpty())
                 logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
             else
-                queueOfInputs.add(ingredient);
+                listOfInputs.add(ingredient);
         }
 
-        Queue<OutputIngredient<?>> queueOfOutputs = new ArrayDeque<>();
+        List<OutputIngredient<?>> listOfOutputs = new ArrayList<>();
         for (OutputIngredient<?> ingredient : recipe.getOutputIngredients()) {
             if (ingredient.isEmpty())
                 logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
             else
-                queueOfOutputs.add(ingredient);
+                listOfOutputs.add(ingredient);
         }
 
-        for (InputIngredient<?> inputIngredient : queueOfInputs) {
+        for (InputIngredient<?> inputIngredient : listOfInputs) {
             if (inputIngredient instanceof OreDictionaryInputIngredient) {
                 if (OreDictionary.getOres(((OreDictionaryInputIngredient) inputIngredient).ingredient).isEmpty()) {
                     logger.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                            name, queueOfInputs, queueOfOutputs));
+                            name, listOfInputs, listOfOutputs));
 
                     return false;
                 }
             }
         }
 
-        Recipe temp = getRecipe(queueOfInputs);
+        Recipe temp = getRecipe(listOfInputs);
 
         if (temp != null) {
             if (replace) {
                 do {
-                    if (!removeRecipe(queueOfInputs))
-                        logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, queueOfInputs));
-                } while (getRecipe(queueOfInputs) != null);
+                    if (!removeRecipe(listOfInputs))
+                        logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, listOfInputs));
+                } while (getRecipe(listOfInputs) != null);
             } else {
-                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", queueOfInputs,
-                        name, queueOfOutputs, queueOfInputs, queueOfInputs, queueOfOutputs));
+                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", listOfInputs,
+                        name, listOfOutputs, listOfInputs, listOfInputs, listOfOutputs));
                 return false;
             }
         }
 
         Recipe newRecipe = createRecipe()
-                .withInput(queueOfInputs)
-                .withOutput(queueOfOutputs)
+                .withInput(listOfInputs)
+                .withOutput(listOfOutputs)
                 .withMetadata(recipe.getMetadata());
 
         recipes.add(newRecipe);
