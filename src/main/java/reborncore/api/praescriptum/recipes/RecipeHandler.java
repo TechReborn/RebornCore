@@ -80,53 +80,53 @@ public class RecipeHandler {
 
         if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
 
-        List<InputIngredient<?>> listOfInputs = new ArrayList<>();
+        Queue<InputIngredient<?>> queueOfInputs = new ArrayDeque<>();
         for (InputIngredient<?> ingredient : recipe.getInputIngredients()) {
             if (ingredient.isEmpty())
                 logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
             else
-                listOfInputs.add(ingredient);
+                queueOfInputs.add(ingredient);
         }
 
-        List<OutputIngredient<?>> listOfOutputs = new ArrayList<>();
+        Queue<OutputIngredient<?>> queueOfOutputs = new ArrayDeque<>();
         for (OutputIngredient<?> ingredient : recipe.getOutputIngredients()) {
             if (ingredient.isEmpty())
                 logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
             else
-                listOfOutputs.add(ingredient);
+                queueOfOutputs.add(ingredient);
         }
 
-        for (InputIngredient<?> inputIngredient : listOfInputs) {
+        for (InputIngredient<?> inputIngredient : queueOfInputs) {
             if (inputIngredient instanceof OreDictionaryInputIngredient) {
                 if (OreDictionary.getOres(((OreDictionaryInputIngredient) inputIngredient).ingredient).isEmpty()) {
                     logger.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                            name, listOfInputs, listOfOutputs));
+                            name, queueOfInputs, queueOfOutputs));
 
                     return false;
                 }
             }
         }
 
-        Recipe temp = getRecipe(listOfInputs);
+        Recipe temp = getRecipe(queueOfInputs);
 
         if (temp != null) {
             if (replace) {
                 do {
-                    if (!removeRecipe(listOfInputs))
-                        logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, listOfInputs));
-                } while (getRecipe(listOfInputs) != null);
+                    if (!removeRecipe(queueOfInputs))
+                        logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, queueOfInputs));
+                } while (getRecipe(queueOfInputs) != null);
             } else {
-                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", listOfInputs,
-                        name, listOfOutputs, listOfInputs, listOfInputs, listOfOutputs));
+                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", queueOfInputs,
+                        name, queueOfOutputs, queueOfInputs, queueOfInputs, queueOfOutputs));
                 return false;
             }
         }
 
         Recipe newRecipe = createRecipe()
-                .withInput(listOfInputs)
-                .withOutput(listOfOutputs)
+                .withInput(queueOfInputs)
+                .withOutput(queueOfOutputs)
                 .withMetadata(recipe.getMetadata());
 
         recipes.add(newRecipe);
@@ -135,18 +135,39 @@ public class RecipeHandler {
     }
 
     /**
-     * Get the recipe for the given ingredients.
+     * Get the recipe for the given input ingredients.
      *
      * @param ingredients The ingredient list
      * @return The recipe if it exists or null otherwise
      */
-    protected Recipe getRecipe(Collection<InputIngredient<?>> ingredients) {
+    public Recipe getRecipe(Collection<InputIngredient<?>> ingredients) {
         for (Recipe recipe : recipes) {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) continue;
 
-            final Queue<InputIngredient> adjusted = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
+                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (adjusted.isEmpty()) return recipe;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the recipe for the given output ingredients.
+     *
+     * @param ingredients The ingredient list
+     * @return The recipe if it exists or null otherwise
+     */
+    public Recipe getRecipeByOutput(Collection<OutputIngredient<?>> ingredients) {
+        for (Recipe recipe : recipes) {
+            // check if everything need for the output is available in the output (ingredients + quantities)
+            if (ingredients.size() != recipe.getOutputIngredients().size()) continue;
+
+            final Queue<OutputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getOutputIngredients());
+            for (OutputIngredient<?> entry : ingredients)
                 adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (adjusted.isEmpty()) return recipe;
