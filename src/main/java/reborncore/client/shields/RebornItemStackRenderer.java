@@ -105,13 +105,13 @@ public class RebornItemStackRenderer extends BuiltinModelItemRenderer {
 							customTextureMap.put(location.getPath(), texture);
 							final Identifier resourceLocation = location;
 							THREAD_POOL.submit(() -> MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().getTextureManager().registerTexture(resourceLocation, texture)));
-							MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
+							MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.getTextureId());
 						}
 					} else {
-						MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
+						MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.getTextureId());
 					}
 				} else {
-					MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.method_24147());
+					MinecraftClient.getInstance().getTextureManager().bindTexture(ModelLoader.SHIELD_BASE.getTextureId());
 				}
 			} else {
 				renderer.render(stack, matrix, vertexConsumerProvider, light, overlay);

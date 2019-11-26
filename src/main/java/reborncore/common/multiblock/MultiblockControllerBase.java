@@ -172,7 +172,7 @@ public abstract class MultiblockControllerBase {
 		if (this.referenceCoord == null) {
 			referenceCoord = coord;
 			part.becomeMultiblockSaveDelegate();
-		} else if (coord.method_10265(referenceCoord) < 0) {
+		} else if (coord.compareTo(referenceCoord) < 0) {
 			BlockEntity te = this.worldObj.getBlockEntity(referenceCoord);
 			((IMultiblockPart) te).forfeitMultiblockSaveDelegate();
 
@@ -466,7 +466,7 @@ public abstract class MultiblockControllerBase {
 	 */
 	public void assimilate(MultiblockControllerBase other) {
 		BlockPos otherReferenceCoord = other.getReferenceCoord();
-		if (otherReferenceCoord != null && getReferenceCoord().method_10265(otherReferenceCoord) >= 0) {
+		if (otherReferenceCoord != null && getReferenceCoord().compareTo(otherReferenceCoord) >= 0) {
 			throw new IllegalArgumentException(
 				"The controller with the lowest minimum-coord value must consume the one with the higher coords");
 		}
@@ -560,7 +560,7 @@ public abstract class MultiblockControllerBase {
 					for (int z = minChunkZ; z <= maxChunkZ; z++) {
 						// Ensure that we save our data, even if the our save
 						// delegate is in has no TEs.
-						WorldChunk chunkToSave = this.worldObj.method_8497(x, z);
+						WorldChunk chunkToSave = this.worldObj.getChunk(x, z);
 						chunkToSave.markDirty();
 					}
 				}
@@ -825,7 +825,7 @@ public abstract class MultiblockControllerBase {
 		if (theirCoord == null) {
 			return -1;
 		} else {
-			return myCoord.method_10265(theirCoord);
+			return myCoord.compareTo(theirCoord);
 		}
 	}
 
@@ -908,7 +908,7 @@ public abstract class MultiblockControllerBase {
 			if (referenceCoord == null) {
 				referenceCoord = pos;
 				referencePart = part;
-			} else if (pos.method_10265(referenceCoord) < 0) {
+			} else if (pos.compareTo(referenceCoord) < 0) {
 				referenceCoord = pos;
 				referencePart = part;
 			}
@@ -1026,7 +1026,7 @@ public abstract class MultiblockControllerBase {
 				continue;
 			}
 
-			if (referenceCoord == null || referenceCoord.method_10265(pos) > 0) {
+			if (referenceCoord == null || referenceCoord.compareTo(pos) > 0) {
 				referenceCoord = pos;
 				theChosenOne = part;
 			}

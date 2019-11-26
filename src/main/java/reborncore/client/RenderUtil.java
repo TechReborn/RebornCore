@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.minecraft.class_4730;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -69,7 +68,7 @@ public class RenderUtil {
 	}
 
 	public static Sprite getSprite(Identifier identifier) {
-		return new class_4730(SpriteAtlasTexture.BLOCK_ATLAS_TEX, identifier).method_24148();
+		return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(identifier);
 	}
 
 	public static Sprite getStillTexture(Fluid fluid) {

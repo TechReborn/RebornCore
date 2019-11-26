@@ -92,7 +92,7 @@ public class ChunkLoaderManager implements DataAttachment {
 		LoadedChunk loadedChunk = new LoadedChunk(chunkPos, getWorldName(world), player, chunkLoader);
 		loadedChunks.add(loadedChunk);
 
-		final ServerChunkManager serverChunkManager = ((ServerWorld) world).method_14178();
+		final ServerChunkManager serverChunkManager = ((ServerWorld) world).getChunkManager();
 		serverChunkManager.addTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
 
 	}
@@ -110,7 +110,7 @@ public class ChunkLoaderManager implements DataAttachment {
 		loadedChunks.remove(loadedChunk);
 
 		if(!isChunkLoaded(world, loadedChunk.getChunk())){
-			final ServerChunkManager serverChunkManager = ((ServerWorld) world).method_14178();
+			final ServerChunkManager serverChunkManager = ((ServerWorld) world).getChunkManager();
 			serverChunkManager.removeTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
 		}
 	}

@@ -63,7 +63,7 @@ public class WorldUtils {
 			itemStack.copy());
 
 		if (itemStack.hasTag()) {
-			entityItem.getStack().setTag(itemStack.getTag().method_10553());
+			entityItem.getStack().setTag(itemStack.getTag().copy());
 		}
 
 		float factor = 0.05F;
