@@ -54,6 +54,7 @@ import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.api.blockentity.InventoryProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
+import reborncore.client.multiblock.Multiblock;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
@@ -75,6 +76,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
 	private SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
+
+	public Multiblock renderMultiblock;
 
 	private int ticktime = 0;
 

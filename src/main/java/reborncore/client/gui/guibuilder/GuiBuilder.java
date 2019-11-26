@@ -246,7 +246,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		if (RebornCoreClient.multiblockRenderEvent.currentMultiblock == null) {
+		if (gui.getMachine().renderMultiblock == null) {
 			gui.blit(x, y, 174, 50, 20, 12);
 		} else {
 			gui.blit(x, y, 174, 62, 20, 12);

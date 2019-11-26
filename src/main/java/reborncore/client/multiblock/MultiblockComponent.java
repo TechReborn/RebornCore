@@ -37,34 +37,34 @@
 
 package reborncore.client.multiblock;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-/**
- * A set of Multiblock objects for various rotations.
- */
-public class MultiblockSet {
+public class MultiblockComponent {
 
-	private final Multiblock[] mbs;
+	public BlockPos relPos;
+	public final BlockState state;
 
-	public MultiblockSet(Multiblock[] mbs) {
-		this.mbs = mbs;
+	public MultiblockComponent(BlockPos relPos, BlockState state) {
+		this.relPos = relPos;
+		this.state = state;
 	}
 
-	public MultiblockSet(Multiblock mb) {
-		this(mb.createRotations());
+	public BlockPos getRelativePosition() {
+		return relPos;
 	}
 
-	public Multiblock getForEntity(Entity e) {
-		return getForRotation(e.yaw);
+	public Block getBlock() {
+		return state.getBlock();
 	}
 
-	public Multiblock getForRotation(double rotation) {
-		int facing = MathHelper.floor(rotation * 4.0 / 360.0 + 0.5) & 3;
-		return getForIndex(facing);
+	public BlockState getState() {
+		return state;
 	}
 
-	public Multiblock getForIndex(int index) {
-		return mbs[index];
+	public MultiblockComponent copy() {
+		return new MultiblockComponent(relPos, state);
 	}
 }
