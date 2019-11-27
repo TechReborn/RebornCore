@@ -31,22 +31,17 @@ import reborncore.api.praescriptum.ingredients.input.FluidStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.OreDictionaryInputIngredient;
-import reborncore.api.praescriptum.ingredients.output.FluidStackOutputIngredient;
-import reborncore.api.praescriptum.ingredients.output.ItemStackOutputIngredient;
-import reborncore.api.praescriptum.ingredients.output.OutputIngredient;
 import reborncore.common.util.ItemUtils;
 
-import org.apache.logging.log4j.Logger;
-
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @author estebes
  */
-public class Recipe implements Serializable {
+public class Recipe {
     public Recipe(RecipeHandler handler) {
         this.handler = handler;
     }
@@ -89,32 +84,31 @@ public class Recipe implements Serializable {
         return this;
     }
 
-    public Recipe withOutput(Collection<OutputIngredient<?>> outputs) {
-        outputIngredients.addAll(outputs);
-        return this;
-    }
-
+    // Outputs >>
     public Recipe withOutput(ItemStack itemStack) {
         if (ItemUtils.isEmpty(itemStack)) throw new IllegalArgumentException("Output cannot be empty");
 
-        outputIngredients.add(ItemStackOutputIngredient.of(itemStack));
+        itemOutputs = Arrays.copyOf(itemOutputs, itemOutputs.length + 1);
+        itemOutputs[itemOutputs.length - 1] = itemStack;
         return this;
     }
 
     public Recipe withOutput(FluidStack fluidStack) {
         if (fluidStack.amount <= 0) throw new IllegalArgumentException("Output cannot be empty");
 
-        outputIngredients.add(FluidStackOutputIngredient.of(fluidStack));
+        fluidOutputs = Arrays.copyOf(fluidOutputs, fluidOutputs.length + 1);
+        fluidOutputs[fluidOutputs.length - 1] = fluidStack;
         return this;
     }
+    // << Outputs
 
+    // Extra information >>
     public Recipe withEnergyCostPerTick(int energyCostPerTick) {
         if (energyCostPerTick < 0) throw new IllegalArgumentException("Energy cost per tick cannot be less than 0");
 
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setInteger("energyCostPerTick", energyCostPerTick);
-
         return this;
     }
 
@@ -124,7 +118,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setInteger("operationDuration", operationDuration);
-
         return this;
     }
 
@@ -137,7 +130,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setInteger(key, value);
-
         return this;
     }
 
@@ -145,7 +137,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setShort(key, value);
-
         return this;
     }
 
@@ -153,7 +144,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setByte(key, value);
-
         return this;
     }
 
@@ -161,7 +151,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setFloat(key, value);
-
         return this;
     }
 
@@ -169,7 +158,6 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setDouble(key, value);
-
         return this;
     }
 
@@ -177,10 +165,46 @@ public class Recipe implements Serializable {
         if (metadata == null) metadata = new NBTTagCompound();
 
         metadata.setBoolean(key, value);
+        return this;
+    }
+    // << Extra information
 
+
+    // For internal use >>
+//    protected Recipe withInput(ItemStack[] itemInputs) {
+//        this.itemInputs = itemInputs;
+//        return this;
+//    }
+//
+//    protected Recipe withInput(FluidStack[] fluidInputs) {
+//        this.fluidInputs = fluidInputs;
+//        return this;
+//    }
+//
+//    protected Recipe withInput(ItemStack[] itemInputs, FluidStack[] fluidInputs) {
+//        this.itemInputs = itemInputs;
+//        this.fluidOutputs = fluidInputs;
+//        return this;
+//    }
+
+    protected Recipe withOutput(ItemStack[] itemOutputs) {
+        this.itemOutputs = itemOutputs;
         return this;
     }
 
+    protected Recipe withOutput(FluidStack[] fluidOutputs) {
+        this.fluidOutputs = fluidOutputs;
+        return this;
+    }
+
+    protected Recipe withOutput(ItemStack[] itemOutputs, FluidStack[] fluidOutputs) {
+        this.itemOutputs = itemOutputs;
+        this.fluidOutputs = fluidOutputs;
+        return this;
+    }
+    // << For internal use
+
+    // Recipe handler >>
     public void register() {
         register(false);
     }
@@ -189,14 +213,19 @@ public class Recipe implements Serializable {
         boolean success = handler.addRecipe(this, replace);
         if (!success) handler.logger.warn("Registration failed for input " + this);
     }
+    // << Recipe handler
 
     // Getters >>
     public List<InputIngredient<?>> getInputIngredients() {
         return inputIngredients;
     }
 
-    public List<OutputIngredient<?>> getOutputIngredients() {
-        return outputIngredients;
+    public ItemStack[] getItemOutputs() {
+        return itemOutputs;
+    }
+
+    public FluidStack[] getFluidOutputs() {
+        return fluidOutputs;
     }
 
     public int getEnergyCostPerTick() {
@@ -220,7 +249,12 @@ public class Recipe implements Serializable {
     private final RecipeHandler handler;
 
     private List<InputIngredient<?>> inputIngredients = new ArrayList<>();
-    private List<OutputIngredient<?>> outputIngredients = new ArrayList<>();
+
+    // Outputs
+    private ItemStack[] itemOutputs = new ItemStack[0];
+    private FluidStack[] fluidOutputs = new FluidStack[0];
+
+    // Extra information
     private NBTTagCompound metadata;
     // << Fields
 }

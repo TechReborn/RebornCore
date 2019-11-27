@@ -32,6 +32,7 @@ import reborncore.api.praescriptum.ingredients.input.InputIngredient;
 import reborncore.api.praescriptum.ingredients.input.ItemStackInputIngredient;
 import reborncore.api.praescriptum.ingredients.input.OreDictionaryInputIngredient;
 import reborncore.api.praescriptum.ingredients.output.OutputIngredient;
+import reborncore.common.util.FluidUtils;
 import reborncore.common.util.ItemUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,34 +77,42 @@ public class RecipeHandler {
 
         if (recipe.getInputIngredients().size() <= 0) throw new IllegalArgumentException("No inputs");
 
-        Objects.requireNonNull(recipe.getOutputIngredients(), "The output is null");
-
-        if (recipe.getOutputIngredients().size() <= 0) throw new IllegalArgumentException("No outputs");
+        if (recipe.getItemOutputs().length <= 0 && recipe.getFluidOutputs().length <= 0)
+            throw new IllegalArgumentException("No outputs");
 
         Queue<InputIngredient<?>> queueOfInputs = new ArrayDeque<>();
         for (InputIngredient<?> ingredient : recipe.getInputIngredients()) {
-            if (ingredient.isEmpty())
+            if (ingredient.isEmpty()) {
                 logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
-            else
+                return false;
+            } else {
                 queueOfInputs.add(ingredient);
+            }
         }
 
-        Queue<OutputIngredient<?>> queueOfOutputs = new ArrayDeque<>();
-        for (OutputIngredient<?> ingredient : recipe.getOutputIngredients()) {
-            if (ingredient.isEmpty())
-                logger.warn(String.format("%s: The %s %s is invalid. Skipping...", name,
-                        ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
-            else
-                queueOfOutputs.add(ingredient);
+        for (ItemStack itemOutput : recipe.getItemOutputs()) {
+            if (ItemUtils.isEmpty(itemOutput)) {
+                logger.warn(String.format("%s: The ItemStack %s is invalid. Skipping...", name,
+                        ItemUtils.toFormattedString(itemOutput)));
+                return false;
+            }
+        }
+
+        for (FluidStack fluidOutput : recipe.getFluidOutputs()) {
+            if (fluidOutput.getFluid() == null || fluidOutput.amount <=0) {
+                logger.warn(String.format("%s: The FluidStack %s is invalid. Skipping...", name,
+                        FluidUtils.toFormattedString(fluidOutput)));
+                return false;
+            }
         }
 
         for (InputIngredient<?> inputIngredient : queueOfInputs) {
             if (inputIngredient instanceof OreDictionaryInputIngredient) {
                 if (OreDictionary.getOres(((OreDictionaryInputIngredient) inputIngredient).ingredient).isEmpty()) {
-                    logger.warn(String.format("%s: Skipping %s => %s due to the non existence of items that are registered to a provided ore type",
-                            name, queueOfInputs, queueOfOutputs));
-
+                    logger.warn(String.format("%s: Skipping a recipe with input %s " +
+                                    "due to the non existence of items that are registered to a provided ore type",
+                            name, inputIngredient.ingredient));
                     return false;
                 }
             }
@@ -118,15 +127,14 @@ public class RecipeHandler {
                         logger.error(String.format("%s: Something went wrong while removing the recipe with inputs %s", name, queueOfInputs));
                 } while (getRecipe(queueOfInputs) != null);
             } else {
-                logger.error(String.format("%s: Skipping %s => %s due to duplicate input for %s (%s => %s)", queueOfInputs,
-                        name, queueOfOutputs, queueOfInputs, queueOfInputs, queueOfOutputs));
+                logger.error(String.format("%s: Skipping recipe with input %s due to the existence of an equal input", name, queueOfInputs));
                 return false;
             }
         }
 
         Recipe newRecipe = createRecipe()
                 .withInput(queueOfInputs)
-                .withOutput(queueOfOutputs)
+                .withOutput(recipe.getItemOutputs(), recipe.getFluidOutputs())
                 .withMetadata(recipe.getMetadata());
 
         recipes.add(newRecipe);
@@ -162,16 +170,16 @@ public class RecipeHandler {
      * @return The recipe if it exists or null otherwise
      */
     public Recipe getRecipeByOutput(Collection<OutputIngredient<?>> ingredients) {
-        for (Recipe recipe : recipes) {
-            // check if everything need for the output is available in the output (ingredients + quantities)
-            if (ingredients.size() != recipe.getOutputIngredients().size()) continue;
-
-            final Queue<OutputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getOutputIngredients());
-            for (OutputIngredient<?> entry : ingredients)
-                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
-
-            if (adjusted.isEmpty()) return recipe;
-        }
+//        for (Recipe recipe : recipes) {
+//            // check if everything need for the output is available in the output (ingredients + quantities)
+//            if (ingredients.size() != recipe.getOutputIngredients().size()) continue;
+//
+//            final Queue<OutputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getOutputIngredients());
+//            for (OutputIngredient<?> entry : ingredients)
+//                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
+//
+//            if (adjusted.isEmpty()) return recipe;
+//        }
 
         return null;
     }
