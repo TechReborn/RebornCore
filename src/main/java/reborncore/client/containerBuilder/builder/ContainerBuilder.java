@@ -39,7 +39,9 @@ import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ContainerBuilder {
 
@@ -50,8 +52,6 @@ public class ContainerBuilder {
 	final List<Slot> slots;
 	final List<Range<Integer>> playerInventoryRanges, blockEntityInventoryRanges;
 
-	final List<Pair<IntSupplier, IntConsumer>> shortValues;
-	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<Supplier, Consumer>> objectValues;
 
 	final List<Consumer<CraftingInventory>> craftEvents;
@@ -64,8 +64,6 @@ public class ContainerBuilder {
 		this.playerInventoryRanges = new ArrayList<>();
 		this.blockEntityInventoryRanges = new ArrayList<>();
 
-		this.shortValues = new ArrayList<>();
-		this.integerValues = new ArrayList<>();
 		this.objectValues = new ArrayList<>();
 
 		this.craftEvents = new ArrayList<>();
@@ -101,12 +99,6 @@ public class ContainerBuilder {
 		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
 			this.blockEntityInventoryRanges, null);
-		if (!this.shortValues.isEmpty()) {
-			built.addShortSync(this.shortValues);
-		}
-		if (!this.integerValues.isEmpty()) {
-			built.addIntegerSync(this.integerValues);
-		}
 		if (!this.objectValues.isEmpty()) {
 			built.addObjectSync(objectValues);
 		}
@@ -124,12 +116,6 @@ public class ContainerBuilder {
 		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
 			this.blockEntityInventoryRanges, blockEntity);
-		if (!this.shortValues.isEmpty()) {
-			built.addShortSync(this.shortValues);
-		}
-		if (!this.integerValues.isEmpty()) {
-			built.addIntegerSync(this.integerValues);
-		}
 		if (!this.objectValues.isEmpty())
 			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty()) {

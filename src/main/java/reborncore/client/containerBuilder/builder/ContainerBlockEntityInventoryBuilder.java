@@ -48,7 +48,9 @@ import reborncore.common.fluid.container.ItemFluidInfo;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import team.reborn.energy.Energy;
 
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class ContainerBlockEntityInventoryBuilder {
 
@@ -131,28 +133,6 @@ public class ContainerBlockEntityInventoryBuilder {
 	}
 
 	/**
-	 * @param supplier The supplier must supply a variable holding inside a Short, it
-	 * will be truncated by force.
-	 * @param setter The setter to call when the variable has been updated.
-	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
-	 */
-	public ContainerBlockEntityInventoryBuilder syncShortValue(final IntSupplier supplier, final IntConsumer setter) {
-		this.parent.shortValues.add(Pair.of(supplier, setter));
-		return this;
-	}
-
-	/**
-	 * @param supplier The supplier it can supply a variable holding in an Integer it
-	 * will be split inside multiples shorts.
-	 * @param setter The setter to call when the variable has been updated.
-	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
-	 */
-	public ContainerBlockEntityInventoryBuilder syncIntegerValue(final IntSupplier supplier, final IntConsumer setter) {
-		this.parent.integerValues.add(Pair.of(supplier, setter));
-		return this;
-	}
-
-	/**
 	 * @param supplier The supplier it can supply a variable holding in an Object it
 	 * will be synced with a custom packet
 	 * @param setter The setter to call when the variable has been updated.
@@ -170,29 +150,26 @@ public class ContainerBlockEntityInventoryBuilder {
 
 	public ContainerBlockEntityInventoryBuilder syncEnergyValue() {
 		if (this.blockEntity instanceof PowerAcceptorBlockEntity) {
-			return this.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).getEnergy(),
-				((PowerAcceptorBlockEntity) this.blockEntity)::setEnergy)
-				.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).extraPowerStorage,
-					((PowerAcceptorBlockEntity) this.blockEntity)::setExtraPowerStorage)
-				.syncIntegerValue(() -> (int) ((PowerAcceptorBlockEntity) this.blockEntity).getPowerChange(),
-					((PowerAcceptorBlockEntity) this.blockEntity)::setPowerChange);
+			PowerAcceptorBlockEntity powerAcceptor = ((PowerAcceptorBlockEntity) this.blockEntity);
+
+			return this.sync(powerAcceptor::getEnergy, powerAcceptor::setEnergy)
+				.sync(() -> powerAcceptor.extraPowerStorage, powerAcceptor::setExtraPowerStorage)
+				.sync(powerAcceptor::getPowerChange, powerAcceptor::setPowerChange);
 		}
+
 		RebornCore.LOGGER.error(this.inventory + " is not an instance of TilePowerAcceptor! Energy cannot be synced.");
 		return this;
 	}
 
 	public ContainerBlockEntityInventoryBuilder syncCrafterValue() {
 		if (this.blockEntity instanceof IRecipeCrafterProvider) {
+			IRecipeCrafterProvider recipeCrafter = ((IRecipeCrafterProvider) this.blockEntity);
 			return this
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.blockEntity).getRecipeCrafter().currentTickTime,
-					(currentTickTime) -> ((IRecipeCrafterProvider) this.blockEntity)
-						.getRecipeCrafter().currentTickTime = currentTickTime)
-				.syncIntegerValue(() -> ((IRecipeCrafterProvider) this.blockEntity).getRecipeCrafter().currentNeededTicks,
-					(currentNeededTicks) -> ((IRecipeCrafterProvider) this.blockEntity)
-						.getRecipeCrafter().currentNeededTicks = currentNeededTicks);
+				.sync(() -> recipeCrafter.getRecipeCrafter().currentTickTime, (time) -> recipeCrafter.getRecipeCrafter().currentTickTime = time)
+				.sync(() -> recipeCrafter.getRecipeCrafter().currentNeededTicks, (ticks) -> recipeCrafter.getRecipeCrafter().currentNeededTicks = ticks);
 		}
-		RebornCore.LOGGER
-			.error(this.inventory + " is not an instance of IRecipeCrafterProvider! Craft progress cannot be synced.");
+
+		RebornCore.LOGGER.error(this.inventory + " is not an instance of IRecipeCrafterProvider! Craft progress cannot be synced.");
 		return this;
 	}
 
