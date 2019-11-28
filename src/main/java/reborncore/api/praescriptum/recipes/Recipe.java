@@ -221,10 +221,16 @@ public class Recipe {
     }
 
     public ItemStack[] getItemOutputs() {
-        return itemOutputs;
+        ItemStack[] ret = new ItemStack[itemOutputs.length];
+        for (int index = 0; index < ret.length; index++)
+            ret[index] = itemOutputs[index].copy();
+        return ret;
     }
 
     public FluidStack[] getFluidOutputs() {
+        FluidStack[] ret = new FluidStack[fluidOutputs.length];
+        for (int index = 0; index < ret.length; index++)
+            ret[index] = fluidOutputs[index].copy();
         return fluidOutputs;
     }
 
