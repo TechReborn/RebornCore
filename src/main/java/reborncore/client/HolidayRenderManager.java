@@ -66,7 +66,7 @@ public class HolidayRenderManager {
 
 			matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(yaw));
 			matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(pitch));
-			santaHat.render(matrixStack, vertexConsumer, i, LivingEntityRenderer.method_23622(player, 0.0F), 1F, 1F, 1F, 1F);
+			santaHat.render(matrixStack, vertexConsumer, i, LivingEntityRenderer.getOverlay(player, 0.0F), 1F, 1F, 1F, 1F);
 			matrixStack.pop();
 		}
 	}

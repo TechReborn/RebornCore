@@ -89,24 +89,24 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public void drawSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += left;
-			y += top;
+			x += this.x;
+			y += this.y;
 		}
 		builder.drawSlot(this, x - 1, y - 1);
 	}
 
 	public void drawOutputSlotBar(int x, int y, int count, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += left;
-			y += top;
+			x += this.x;
+			y += this.y;
 		}
 		builder.drawOutputSlotBar(this, x - 4, y - 4, count);
 	}
 
 	public void drawArmourSlots(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += left;
-			y += top;
+			x += this.x;
+			y += this.y;
 		}
 		builder.drawSlot(this, x - 1, y - 1);
 		builder.drawSlot(this, x - 1, y - 1 + 18);
@@ -116,8 +116,8 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public void drawOutputSlot(int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
-			x += left;
-			y += top;
+			x += this.x;
+			y += this.y;
 		}
 		builder.drawOutputSlot(this, x - 5, y - 5);
 	}
@@ -138,23 +138,23 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
 		
-		builder.drawDefaultBackground(this, left, top, xSize, ySize);
+		builder.drawDefaultBackground(this, x, y, xSize, ySize);
 		if (drawPlayerSlots()) {
-			builder.drawPlayerSlots(this, left + containerWidth / 2, top + 93, true);
+			builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
 		}
 		if (tryAddUpgrades() && be instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) be;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, left - 24, top + 6);
+				builder.drawUpgrades(this, x - 24, y + 6);
 				upgrades = true;
 			}
 		}
 		int offset = upgrades ? 86 : 6;
 		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
-			builder.drawSlotTab(this, left - 24, top + offset, wrenchStack);
+			builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
 		}
 		if (isConfigEnabled() && getMachine().showTankConfig()) {
-			builder.drawSlotTab(this, left - 24, top + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
+			builder.drawSlotTab(this, x - 24, y + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
 		}
 	}
 
@@ -237,15 +237,15 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
-			factorX = left;
-			factorY = top;
+			factorX = this.x;
+			factorY = this.y;
 		}
 		getTextRenderer().draw(string, x + factorX, y + factorY, colour);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
-		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + left, y + top, this, layer, var1 -> {});
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + this.x, y + this.y, this, layer, var1 -> {});
 		addButton(buttonHologram);
 		return buttonHologram;
 	}
@@ -369,11 +369,11 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	public int getGuiLeft(){
-		return left;
+		return x;
 	}
 
 	public int getGuiTop(){
-		return top;
+		return y;
 	}
 
 	public MinecraftClient getMinecraft(){

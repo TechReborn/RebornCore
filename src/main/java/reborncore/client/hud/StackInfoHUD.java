@@ -30,7 +30,7 @@ package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
@@ -116,7 +116,7 @@ public class StackInfoHUD {
 	private void renderStackForInfo(ItemStack stack) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(32826);
-		GuiLighting.enable();
+		DiffuseLighting.enable();
 		renderItemStack(stack, x, y - 5);
 	}
 
