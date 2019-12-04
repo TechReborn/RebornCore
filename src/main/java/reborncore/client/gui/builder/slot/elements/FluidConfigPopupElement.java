@@ -31,24 +31,27 @@ package reborncore.client.gui.builder.slot.elements;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.world.IWorld;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
-import reborncore.common.network.NetworkManager;
-import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.network.NetworkManager;
+import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.util.Color;
 import reborncore.common.util.MachineFacing;
 
@@ -76,12 +79,12 @@ public class FluidConfigPopupElement extends ElementBase {
 		BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		BakedModel model = dispatcher.getModels().getModel(state.getBlock().getDefaultState());
 		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23); //left
-		drawState(gui, world, model, actualState, pos, dispatcher, 23, -12, -90F, 1F, 0F, 0F); //top
-		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, -90F, 0F, 1F, 0F); //centre
-		drawState(gui, world, model, actualState, pos, dispatcher, 23, 42, 90F, 1F, 0F, 0F); //bottom
-		drawState(gui, world, model, actualState, pos, dispatcher, 26, 23, 180F, 0F, 1F, 0F); //right
-		drawState(gui, world, model, actualState, pos, dispatcher, 26, 42, 90F, 0F, 1F, 0F); //back
+		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23, Vector3f.POSITIVE_Y.getDegreesQuaternion(90F)); //left
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, 4, Vector3f.NEGATIVE_X.getDegreesQuaternion(90F)); //top
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, null); //centre
+		drawState(gui, world, model, actualState, pos, dispatcher, 23, 26, Vector3f.POSITIVE_X.getDegreesQuaternion(90F)); //bottom
+		drawState(gui, world, model, actualState, pos, dispatcher, 42, 23, Vector3f.POSITIVE_Y.getDegreesQuaternion(90F)); //right
+		drawState(gui, world, model, actualState, pos, dispatcher, 26, 42, Vector3f.POSITIVE_Y.getDegreesQuaternion(180F)); //back
 
 		drawSateColor(gui.getMachine(), MachineFacing.UP.getFacing(machine), 22, -1, gui);
 		drawSateColor(gui.getMachine(), MachineFacing.FRONT.getFacing(machine), 22, 18, gui);
@@ -184,52 +187,30 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	public void drawState(GuiBase<?> gui,
-	                      IWorld world,
-	                      BakedModel model,
-	                      BlockState actualState,
-	                      BlockPos pos,
-	                      BlockRenderManager dispatcher,
-	                      int x,
-	                      int y,
-	                      float rotAngle,
-	                      float rotX,
-	                      float rotY,
-	                      float rotZ) {
+						  IWorld world,
+						  BakedModel model,
+						  BlockState actualState,
+						  BlockPos pos,
+						  BlockRenderManager dispatcher,
+						  int x,
+						  int y,
+						  Quaternion quaternion) {
 
-		RenderSystem.pushMatrix();
-		RenderSystem.enableDepthTest();
-		RenderSystem.translatef(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
-		RenderSystem.scalef(16F, 16F, 16F);
-		RenderSystem.translatef(0.5F, 0.5F, 0.5F);
-		RenderSystem.scalef(-1, -1, -1);
-		if (rotAngle != 0) {
-			RenderSystem.rotatef(rotAngle, rotX, rotY, rotZ);
+		MatrixStack matrixStack = new MatrixStack();
+		matrixStack.push();
+		matrixStack.translate(8 + gui.getGuiLeft() + this.x + x, 8 + gui.getGuiTop() + this.y + y, 512);
+		matrixStack.scale(16F, 16F, 16F);
+		matrixStack.translate(0.5F, 0.5F, 0.5F);
+		matrixStack.scale(-1, -1, -1);
+
+		if(quaternion != null) {
+			matrixStack.multiply(quaternion);
 		}
 
 		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		MatrixStack matrixStack = new MatrixStack();
-		matrixStack.push();
-		dispatcher.getModelRenderer().render(matrixStack.peek(), immediate.getBuffer(RenderLayers.getEntityBlockLayer(actualState)), actualState, model, 1F, 1F, 1F, 1,1);
+		dispatcher.getModelRenderer().render(matrixStack.peek(), immediate.getBuffer(RenderLayer.getSolid()), actualState, model, 1F, 1F, 1F, OverlayTexture.getU(15F), OverlayTexture.DEFAULT_UV);
+		immediate.draw();
 		matrixStack.pop();
-
-		RenderSystem.disableDepthTest();
-		RenderSystem.popMatrix();
-
-/*		GlStateManager.pushMatrix();
-		GlStateManager.enableDepth();
-		//		GlStateManager.translate(8 + gui.xFactor + this.x + x, 8 + gui.yFactor + this.y + y, 1000);
-		GlStateManager.translate(gui.xFactor + this.x + x, gui.yFactor + this.y + y, 512);
-		if (rotAngle != 0) {
-			GlStateManager.rotate(rotAngle, rotX, rotY, rotZ);
-		}
-		GlStateManager.scale(16F, 16F, 16F);
-		GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-		GlStateManager.scale(-1, -1, -1);
-		GlStateManager.disableDepth();
-		GlStateManager.popMatrix();*/
 	}
 
-	public void drawState(GuiBase<?> gui, IWorld world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
-		drawState(gui, world, model, actualState, pos, dispatcher, x, y, 0, 0, 0, 0);
-	}
 }
