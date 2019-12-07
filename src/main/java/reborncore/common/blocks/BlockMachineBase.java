@@ -33,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.container.Container;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -244,5 +245,15 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 			((MachineBaseBlockEntity) blockEntity).onBreak(world, playerEntity, blockPos, blockState);
 		}
 		super.onBreak(world, blockPos, blockState, playerEntity);
+	}
+
+	@Override
+	public boolean hasComparatorOutput(BlockState state) {
+		return true;
+	}
+
+	@Override
+	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+		return Container.calculateComparatorOutput(getInventory(state, world, pos));
 	}
 }

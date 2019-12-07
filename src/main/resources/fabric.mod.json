@@ -24,7 +24,7 @@
     "reborncore.client.mixins.json",
     "reborncore.common.mixins.json"
   ],
-  "requires": {
+  "depends": {
     "fabricloader": ">=0.6.3",
     "fabric": "*"
   },
