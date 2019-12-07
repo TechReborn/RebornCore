@@ -36,6 +36,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import reborncore.api.IListInfoProvider;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.StringUtils;
@@ -44,6 +45,7 @@ import team.reborn.energy.EnergySide;
 import team.reborn.energy.EnergyStorage;
 import team.reborn.energy.EnergyTier;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity implements EnergyStorage, IListInfoProvider // TechReborn
@@ -261,6 +263,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		if(checkOverfill){
 			this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 		}
+		markDirty();
 	}
 
 	public void setEnergy(double energy) {
@@ -401,6 +404,22 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		}
 
 		super.addInfo(info, isReal, hasData);
+	}
+
+	/**
+	 * Calculates the comparator output of a powered BE with the formula
+	 * {@code ceil(blockEntity.getEnergy() * 15.0 / storage.getMaxPower())}.
+	 *
+	 * @param blockEntity the powered BE
+	 * @return the calculated comparator output or 0 if {@code blockEntity} is not a {@code PowerAcceptorBlockEntity}
+	 */
+	public static int calculateComparatorOutputFromEnergy(@Nullable BlockEntity blockEntity) {
+		if (blockEntity instanceof PowerAcceptorBlockEntity) {
+			PowerAcceptorBlockEntity storage = (PowerAcceptorBlockEntity) blockEntity;
+			return MathHelper.ceil(storage.getEnergy() * 15.0 / storage.getMaxPower());
+		} else {
+			return 0;
+		}
 	}
 
 }
