@@ -263,6 +263,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		if(checkOverfill){
 			this.energy = Math.max(Math.min(energy, getMaxPower()), 0);
 		}
+		markDirty();
 	}
 
 	public void setEnergy(double energy) {
