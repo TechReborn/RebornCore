@@ -283,15 +283,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -332,15 +332,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -378,15 +378,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -427,15 +427,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -480,15 +480,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -525,15 +525,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -562,7 +562,7 @@ public class RecipeHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply(Recipe recipe, Collection<ItemStack> itemStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
@@ -573,15 +573,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -618,15 +618,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -655,7 +655,7 @@ public class RecipeHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply2(Recipe recipe, Collection<FluidStack> fluidStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
@@ -666,15 +666,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -704,7 +704,7 @@ public class RecipeHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply3(Recipe recipe, Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
@@ -718,15 +718,15 @@ public class RecipeHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != recipe.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(recipe.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(recipe.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(recipe.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity

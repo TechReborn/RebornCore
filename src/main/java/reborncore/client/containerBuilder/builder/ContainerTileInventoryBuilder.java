@@ -173,7 +173,7 @@ public class ContainerTileInventoryBuilder {
      * @param setter   The setter to call when the variable has been updated.
      * @return ContainerTileInventoryBuilder Inventory which will do the sync
      */
-    public <T> ContainerTileInventoryBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
+    public ContainerTileInventoryBuilder sync(final Supplier<Object> supplier, final Consumer<Object> setter) {
         this.parent.objectValues.add(Pair.of(supplier, setter));
         return this;
     }

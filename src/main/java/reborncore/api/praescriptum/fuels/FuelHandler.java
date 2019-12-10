@@ -78,7 +78,7 @@ public class FuelHandler {
         if (fuel.getEnergyOutput() <= 0.0D) throw new IllegalArgumentException("The output is 0");
 
         Queue<InputIngredient<?>> queueOfSources = new ArrayDeque<>();
-        for (InputIngredient ingredient : fuel.getInputIngredients()) {
+        for (InputIngredient<?> ingredient : fuel.getInputIngredients()) {
             if (ingredient.isEmpty())
                 logger.warn(String.format("The %s %s is invalid. Skipping...",
                         ingredient.getClass().getSimpleName(), ingredient.toFormattedString()));
@@ -133,8 +133,8 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) continue;
 
-            final Queue<InputIngredient> adjusted = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> adjusted = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (adjusted.isEmpty()) return fuel;
@@ -242,15 +242,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -291,15 +291,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -337,15 +337,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -386,15 +386,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -439,15 +439,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return null;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return null; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -484,15 +484,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -521,7 +521,7 @@ public class FuelHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply(Fuel fuel, Collection<ItemStack> itemStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
@@ -532,15 +532,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -577,15 +577,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -614,7 +614,7 @@ public class FuelHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply2(Fuel fuel, Collection<FluidStack> fluidStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (FluidStack stack : fluidStacks)
             if (stack.amount <= 0) ingredients.add(FluidStackInputIngredient.of(stack)); // map FluidStacks
@@ -625,15 +625,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity
@@ -663,7 +663,7 @@ public class FuelHandler {
      * @return True if the operation was successful or false otherwise
      */
     public boolean apply3(Fuel fuel, Collection<ItemStack> itemStacks, Collection<FluidStack> fluidStacks, boolean simulate) {
-        Queue<InputIngredient> ingredients = new ArrayDeque<>();
+        Queue<InputIngredient<?>> ingredients = new ArrayDeque<>();
 
         for (ItemStack stack : itemStacks)
             if (!ItemUtils.isEmpty(stack)) ingredients.add(ItemStackInputIngredient.of(stack)); // map ItemStacks
@@ -677,15 +677,15 @@ public class FuelHandler {
             // check if everything need for the input is available in the input (ingredients + quantities)
             if (ingredients.size() != fuel.getInputIngredients().size()) return false;
 
-            final Queue<InputIngredient> queueA = new ArrayDeque<>(fuel.getInputIngredients());
-            for (InputIngredient entry : ingredients)
+            final Queue<InputIngredient<?>> queueA = new ArrayDeque<>(fuel.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
                 queueA.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
 
             if (!queueA.isEmpty()) return false; // the inputs did not match
 
             if (!simulate) {
-                final Queue<InputIngredient> queueB = new ArrayDeque<>(fuel.getInputIngredients());
-                for (InputIngredient entry : ingredients) {
+                final Queue<InputIngredient<?>> queueB = new ArrayDeque<>(fuel.getInputIngredients());
+                for (InputIngredient<?> entry : ingredients) {
                     queueB.removeIf(temp -> {
                         if (temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount()) {
                             entry.shrink(temp.getCount()); // adjust the quantity

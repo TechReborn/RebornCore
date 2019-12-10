@@ -52,7 +52,7 @@ public class ContainerBuilder {
 	final List<Pair<IntSupplier, IntConsumer>> integerValues;
 	final List<Pair<LongSupplier, LongConsumer>> longValues;
 	final List<Pair<Supplier<FluidStack>, Consumer<FluidStack>>> fluidStackValues;
-	final List<Pair<Supplier, Consumer>> objectValues;
+	final List<Pair<Supplier<Object>, Consumer<Object>>> objectValues;
 
 	final List<Consumer<InventoryCrafting>> craftEvents;
 

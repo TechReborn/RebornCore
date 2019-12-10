@@ -45,7 +45,7 @@ public class IngredientUtils {
      * @param <T> Type of the ingredient to be checked
      * @return A simple isEmpty() predicate
      */
-    public static <T extends Ingredient> Predicate<T> isIngredientEmpty() {
+    public static <T extends Ingredient<?>> Predicate<T> isIngredientEmpty() {
         return Ingredient::isEmpty;
     }
 
@@ -58,7 +58,7 @@ public class IngredientUtils {
      * @param <T>    Type of the ingredient to be checked
      * @return A simple isEmpty() predicate that also executes the provided action
      */
-    public static <T extends Ingredient> Predicate<T> isIngredientEmpty(Consumer<T> action) {
+    public static <T extends Ingredient<?>> Predicate<T> isIngredientEmpty(Consumer<T> action) {
         return ingredient -> {
             boolean isEmpty = ingredient.isEmpty();
             if (isEmpty)
@@ -70,7 +70,7 @@ public class IngredientUtils {
     public static <T> Predicate<T> isPartOfRecipe(RecipeHandler recipeHandler) {
         return object -> {
             for (Recipe recipe : recipeHandler.getRecipes()) {
-                for (InputIngredient ingredient : recipe.getInputIngredients())
+                for (InputIngredient<?> ingredient : recipe.getInputIngredients())
                     if (ingredient.matches(object)) return true;
             }
 
@@ -81,7 +81,7 @@ public class IngredientUtils {
     public static <T> Predicate<T> isPartOfFuel(FuelHandler fuelHandler) {
         return object -> {
             for (Fuel fuel : fuelHandler.getFuels()) {
-                for (InputIngredient ingredient : fuel.getInputIngredients())
+                for (InputIngredient<?> ingredient : fuel.getInputIngredients())
                     return ingredient.matches(object);
             }
 
@@ -92,7 +92,7 @@ public class IngredientUtils {
     public static <T extends Fluid> Predicate<T> isFluidPartOfFuel(FuelHandler fuelHandler) {
         return object -> {
             for (Fuel fuel : fuelHandler.getFuels()) {
-                for (InputIngredient ingredient : fuel.getInputIngredients()) {
+                for (InputIngredient<?> ingredient : fuel.getInputIngredients()) {
                     if (ingredient instanceof FluidStackInputIngredient
                             && ((FluidStackInputIngredient) ingredient).ingredient.getFluid() == object)
                         return true;
