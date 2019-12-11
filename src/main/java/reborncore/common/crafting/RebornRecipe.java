@@ -125,7 +125,7 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 				stackObject.addProperty("count", stack.getCount());
 			}
 			if(stack.hasTag()){
-				jsonObject.add("tag", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, stack.getTag()));
+				stackObject.add("nbt", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, stack.getTag()));
 			}
 			resultsArray.add(stackObject);
 		}
