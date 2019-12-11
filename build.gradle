@@ -6,10 +6,7 @@ buildscript {
 			url = "http://files.minecraftforge.net/maven"
 		}
 		maven {
-			name = "Modmuss50"
-			url = "http://maven.modmuss50.me/"
-		}
-		maven {
+			// Licenser
 			url "https://plugins.gradle.org/m2/"
 		}
 	}
@@ -34,13 +31,6 @@ repositories {
 	}
 }
 
-repositories {
-	maven {
-		name = "Modmuss50"
-		url = "http://maven.modmuss50.me/"
-	}
-}
-
 configurations {
 	shade
 	compile.extendsFrom shade
@@ -54,7 +44,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 minecraft {
-	version = "1.12.2-14.23.5.2838"
+	version = "1.12.2-14.23.5.2847"
 	mappings = "snapshot_20171003"
 	replace "@MODVERSION@", project.version
 	runDir = "run"
