@@ -4,6 +4,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import reborncore.common.fluid.FluidValue;
 
 /*
 
@@ -33,36 +34,35 @@ public interface GenericFluidContainer<T> {
 	@NonNull
 	FluidInstance getFluidInstance(T type);
 
-	int getCapacity(T type);
-
+	FluidValue getCapacity(T type);
 
 	default boolean canHold(T type, Fluid fluid){
 		return true;
 	}
 
-	default int getCurrentFluidAmount(T type) {
+	default FluidValue getCurrentFluidAmount(T type) {
 		return getFluidInstance(type).getAmount();
 	}
 
-	default boolean canInsertFluid(T type, @NonNull Fluid fluid, int amount){
+	default boolean canInsertFluid(T type, @NonNull Fluid fluid, FluidValue amount){
 		if(!canHold(type, fluid)){
 			return false;
 		}
 		FluidInstance currentFluid = getFluidInstance(type);
-		return currentFluid.isEmpty() || currentFluid.getFluid() == fluid && currentFluid.getAmount() + amount < getCapacity(type);
+		return currentFluid.isEmpty() || currentFluid.getFluid() == fluid && currentFluid.getAmount().add(amount).lessThan(getCapacity(type));
 	}
 
-	default boolean canExtractFluid(T type, @NonNull Fluid fluid, int amount){
-		return getFluidInstance(type).getFluid() == fluid && amount <= getFluidInstance(type).getAmount();
+	default boolean canExtractFluid(T type, @NonNull Fluid fluid, FluidValue amount){
+		return getFluidInstance(type).getFluid() == fluid && amount.lessThanOrEqual(getFluidInstance(type).getAmount());
 	}
 
-	default void insertFluid(T type, @NonNull Fluid fluid, int amount){
+	default void insertFluid(T type, @NonNull Fluid fluid, FluidValue amount){
 		if(canInsertFluid(type, fluid, amount)){
 			setFluid(type, getFluidInstance(type).addAmount(amount));
 		}
 	}
 
-	default void extractFluid(T type, @NonNull Fluid fluid, int amount){
+	default void extractFluid(T type, @NonNull Fluid fluid, FluidValue amount){
 		if(canExtractFluid(type, fluid, amount)){
 			setFluid(type, getFluidInstance(type).subtractAmount(amount));
 		}

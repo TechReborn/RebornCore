@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import reborncore.common.crafting.ingredient.RebornIngredient;
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
@@ -41,12 +42,12 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 			Identifier identifier = new Identifier(JsonHelper.getString(tank, "fluid"));
 			Fluid fluid = Registry.FLUID.get(identifier);
 
-			int amount = 1000;
+			FluidValue value = FluidValue.BUCKET;
 			if(tank.has("amount")){
-				amount = JsonHelper.getInt(tank, "amount");
+				value = FluidValue.parseFluidValue(tank.get("amount"));
 			}
 
-			fluidInstance = new FluidInstance(fluid, amount);
+			fluidInstance = new FluidInstance(fluid, value);
 		}
 	}
 
@@ -63,7 +64,7 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 			return false;
 		}
 		if (tankFluid.getFluid().equals(recipeFluid.getFluid())) {
-			if (tankFluid.getAmount() >= recipeFluid.getAmount()) {
+			if (tankFluid.getAmount().equalOrMoreThan(recipeFluid.getAmount())) {
 				return true;
 			}
 		}
@@ -81,7 +82,7 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 			return false;
 		}
 		if (tankFluid.getFluid().equals(recipeFluid.getFluid())) {
-			if (tankFluid.getAmount() >= recipeFluid.getAmount()) {
+			if (tankFluid.getAmount().equalOrMoreThan(recipeFluid.getAmount())) {
 				tankFluid.subtractAmount(recipeFluid.getAmount());
 				return true;
 			}

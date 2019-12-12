@@ -5,6 +5,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.util.NBTSerializable;
 
 public class FluidInstance implements NBTSerializable {
@@ -12,19 +13,19 @@ public class FluidInstance implements NBTSerializable {
     public static final String AMOUNT_KEY = "Amount";
     public static final String TAG_KEY = "Tag";
 
-    public static final FluidInstance EMPTY = new FluidInstance(Fluids.EMPTY, 0);
+    public static final FluidInstance EMPTY = new FluidInstance(Fluids.EMPTY, FluidValue.EMPTY);
 
     protected Fluid fluid;
-    protected int amount;
+    protected FluidValue amount;
     protected CompoundTag tag;
 
-    public FluidInstance(Fluid fluid, int amount) {
+    public FluidInstance(Fluid fluid, FluidValue amount) {
         this.fluid = fluid;
         this.amount = amount;
     }
 
     public FluidInstance(Fluid fluid) {
-        this(fluid, 0);
+        this(fluid, FluidValue.EMPTY);
     }
 
     public FluidInstance() {
@@ -40,7 +41,7 @@ public class FluidInstance implements NBTSerializable {
         return fluid;
     }
 
-    public int getAmount() {
+    public FluidValue getAmount() {
         return amount;
     }
 
@@ -53,27 +54,18 @@ public class FluidInstance implements NBTSerializable {
         return this;
     }
 
-    public FluidInstance setAmount(int amount) {
-        this.amount = amount;
-	    if(this.amount <= 0){
-		    this.fluid = Fluids.EMPTY;
-	    }
+    public FluidInstance setAmount(FluidValue value) {
+        this.amount = value;
         return this;
     }
 
-    public FluidInstance subtractAmount(int amount) {
-        this.amount -= amount;
-	    if(this.amount <= 0){
-		    this.fluid = Fluids.EMPTY;
-	    }
+    public FluidInstance subtractAmount(FluidValue amount) {
+        this.amount = this.amount.subtract(amount);
         return this;
     }
 
-    public FluidInstance addAmount(int amount) {
-        this.amount += amount;
-	    if(this.amount <= 0){
-		    this.fluid = Fluids.EMPTY;
-	    }
+    public FluidInstance addAmount(FluidValue amount) {
+        this.amount = this.amount.add(amount);
         return this;
     }
 
@@ -82,7 +74,7 @@ public class FluidInstance implements NBTSerializable {
     }
 
     public boolean isEmpty() {
-        return this.getFluid() == Fluids.EMPTY || this.getAmount() == 0;
+        return this.getFluid() == Fluids.EMPTY || this.getAmount().isEmpty();
     }
 
     public FluidInstance copy() {
@@ -93,7 +85,7 @@ public class FluidInstance implements NBTSerializable {
     public CompoundTag write() {
     	CompoundTag tag = new CompoundTag();
         tag.putString(FLUID_KEY, Registry.FLUID.getId(fluid).toString());
-        tag.putInt(AMOUNT_KEY, amount);
+        tag.putInt(AMOUNT_KEY, amount.getRawValue());
         if (this.tag != null && !this.tag.isEmpty()) {
             tag.put(TAG_KEY, this.tag);
         }
@@ -103,7 +95,7 @@ public class FluidInstance implements NBTSerializable {
     @Override
     public void read(CompoundTag tag) {
         fluid = Registry.FLUID.get(new Identifier(tag.getString(FLUID_KEY)));
-        amount = tag.getInt(AMOUNT_KEY);
+        amount = FluidValue.fromRaw(tag.getInt(AMOUNT_KEY));
         if (tag.contains(TAG_KEY)) {
             this.tag = tag.getCompound(TAG_KEY);
         }
@@ -111,7 +103,7 @@ public class FluidInstance implements NBTSerializable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FluidInstance && fluid == ((FluidInstance) obj).getFluid() && amount == ((FluidInstance) obj).getAmount();
+        return obj instanceof FluidInstance && fluid == ((FluidInstance) obj).getFluid() && amount.equals(((FluidInstance) obj).getAmount());
     }
 
     public boolean isFluidEqual(FluidInstance instance) {

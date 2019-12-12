@@ -31,6 +31,7 @@ package reborncore.common.network;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
+import reborncore.common.fluid.FluidValue;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -71,6 +72,12 @@ public enum ObjectBufferUtils {
 		buffer.writeString(string);
 	}, buffer -> {
 		return new Identifier(buffer.readString(buffer.readInt()));
+	}),
+
+	FLUID_VALUE(FluidValue.class, (value, buffer) -> {
+		buffer.writeInt(value.getRawValue());
+	}, buffer -> {
+		return FluidValue.fromRaw(buffer.readInt());
 	}),
 
 	BIG_INT(BigInteger.class, (pos, buffer) -> {

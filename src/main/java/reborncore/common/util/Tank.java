@@ -28,6 +28,7 @@
 
 package reborncore.common.util;
 
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -52,14 +53,14 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	private final String name;
 	@NonNull
 	private FluidInstance fluidInstance = new FluidInstance();
-	private final int capacity;
+	private final FluidValue capacity;
 
 	@Nullable
 	private Direction side = null;
 
 	private final MachineBaseBlockEntity blockEntity;
 
-	public Tank(String name, int capacity, MachineBaseBlockEntity blockEntity) {
+	public Tank(String name, FluidValue capacity, MachineBaseBlockEntity blockEntity) {
 		super();
 		this.name = name;
 		this.capacity = capacity;
@@ -76,16 +77,16 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return getFluidInstance().getFluid();
 	}
 
-	public int getCapacity(){
+	public FluidValue getCapacity(){
 		return capacity;
 	}
 
-	public int getFreeSpace(){
-		return getCapacity() - getFluidAmount();
+	public FluidValue getFreeSpace(){
+		return getCapacity().subtract(getFluidAmount());
 	}
 
-	public boolean canFit(Fluid fluid, int amount) {
-		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace() > amount;
+	public boolean canFit(Fluid fluid, FluidValue amount) {
+		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace().moreThan(amount);
 	}
 
 	public boolean isEmpty() {
@@ -93,7 +94,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public boolean isFull() {
-		return !getFluidInstance().isEmpty() && getFluidInstance().getAmount() >= getCapacity();
+		return !getFluidInstance().isEmpty() && getFluidInstance().getAmount().equalOrMoreThan(getCapacity());
 	}
 
 	public final CompoundTag write(CompoundTag nbt) {
@@ -102,7 +103,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return nbt;
 	}
 
-	public void setFluidAmount(int amount) {
+	public void setFluidAmount(FluidValue amount) {
 		if (!fluidInstance.isEmpty()) {
 			fluidInstance.setAmount(amount);
 		}
@@ -137,11 +138,11 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 
 	@Override
 	public void getSyncPair(List<Pair<Supplier, Consumer>> pairList) {
-		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((Integer) o)));
+		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((FluidValue) o)));
 		pairList.add(Pair.of(() -> Registry.FLUID.getId(fluidInstance.getFluid()).toString(), (Consumer<String>) o -> fluidInstance.setFluid(Registry.FLUID.get(new Identifier(o)))));
 	}
 
-	public int getFluidAmount() {
+	public FluidValue getFluidAmount() {
 		return getFluidInstance().getAmount();
 	}
 
@@ -157,7 +158,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	@Override
-	public int getCapacity(@Nullable Direction type) {
+	public FluidValue getCapacity(@Nullable Direction type) {
 		return capacity;
 	}
 

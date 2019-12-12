@@ -43,6 +43,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.util.Tank;
 
@@ -83,9 +84,9 @@ public class RenderUtil {
 		renderGuiTank(tank.getFluidInstance(), tank.getCapacity(), tank.getFluidAmount(), x, y, zLevel, width, height);
 	}
 
-	public static void renderGuiTank(FluidInstance fluid, int capacity, int amount, double x, double y, double zLevel,
+	public static void renderGuiTank(FluidInstance fluid, FluidValue capacity, FluidValue amount, double x, double y, double zLevel,
 	                                 double width, double height) {
-		if (fluid == null || fluid.getFluid() == null || fluid.getAmount() <= 0) {
+		if (fluid == null || fluid.getFluid() == null || fluid.getAmount().lessThanOrEqual(FluidValue.EMPTY)) {
 			return;
 		}
 
@@ -94,7 +95,7 @@ public class RenderUtil {
 			return;
 		}
 
-		int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
+		int renderAmount = (int) Math.max(Math.min(height, amount.getRawValue() * height / capacity.getRawValue()), 1);
 		int posY = (int) (y + height - renderAmount);
 
 		RenderUtil.bindBlockTexture();

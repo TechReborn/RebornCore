@@ -30,6 +30,7 @@ package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -621,7 +622,7 @@ public class GuiBuilder {
 	 * @param isTankEmpty boolean True if tank is empty
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, int maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
+	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
 		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
 			return;
 		}
@@ -631,15 +632,15 @@ public class GuiBuilder {
 		}
 
 		int percentage = 0;
-		int amount = 0;
+		FluidValue amount = FluidValue.EMPTY;
 		if (!isTankEmpty) {
 			amount = fluid.getAmount();
-			percentage = percentage(maxCapacity, amount);
+			percentage = percentage(maxCapacity.getRawValue(), amount.getRawValue());
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 194, 26, 22, 56);
 		if (!isTankEmpty) {
-			drawFluid(gui, fluid, x + 4, y + 4, 14, 48, maxCapacity);
+			drawFluid(gui, fluid, x + 4, y + 4, 14, 48, maxCapacity.getRawValue());
 		}
 		gui.blit(x + 3, y + 3, 194, 82, 16, 50);
 
@@ -648,7 +649,7 @@ public class GuiBuilder {
 			if (isTankEmpty) {
 				list.add(Formatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
 			} else {
-				list.add(Formatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_amount", amount, maxCapacity) + " " + FluidUtil.getFluidName(fluid));
+				list.add(Formatting.GOLD + String.format("%s / %s", amount, maxCapacity) + " " + FluidUtil.getFluidName(fluid));
 			}
 			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + Formatting.GRAY + " "
 				+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
@@ -682,7 +683,7 @@ public class GuiBuilder {
 		final Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidSprites(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState())[0];
 		int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidColor(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState());
 
-		final int drawHeight = (int) (fluid.getAmount() / (maxCapacity * 1F) * height);
+		final int drawHeight = (int) (fluid.getAmount().getRawValue() / (maxCapacity * 1F) * height);
 		final int iconHeight = sprite.getHeight();
 		int offsetHeight = drawHeight;
 
