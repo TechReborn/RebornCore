@@ -37,13 +37,13 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import reborncore.client.containerBuilder.builder.Syncable;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import net.minecraft.fluid.Fluid;
 import reborncore.common.fluid.container.GenericFluidContainer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -51,7 +51,7 @@ import java.util.function.Supplier;
 public class Tank implements GenericFluidContainer<Direction>, Syncable {
 
 	private final String name;
-	@NonNull
+	@Nonnull
 	private FluidInstance fluidInstance = new FluidInstance();
 	private final FluidValue capacity;
 
@@ -67,12 +67,12 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		this.blockEntity = blockEntity;
 	}
 
-	@NonNull
+	@Nonnull
 	public FluidInstance getFluidInstance(){
 		return getFluidInstance(side);
 	}
 
-	@NonNull
+	@Nonnull
 	public Fluid getFluid(){
 		return getFluidInstance().getFluid();
 	}
@@ -120,7 +120,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return this;
 	}
 
-	public void setFluid(@NonNull Fluid f) {
+	public void setFluid(@Nonnull Fluid f) {
 		Validate.notNull(f);
 		fluidInstance.setFluid(f);
 	}
@@ -147,11 +147,11 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	@Override
-	public void setFluid(@Nullable Direction type, @NonNull FluidInstance instance) {
+	public void setFluid(@Nullable Direction type, @Nonnull FluidInstance instance) {
 		fluidInstance = instance;
 	}
 
-	@NonNull
+	@Nonnull
 	@Override
 	public FluidInstance getFluidInstance(@Nullable Direction type) {
 		return fluidInstance;

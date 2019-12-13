@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.Validate;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.RebornCore;
 import reborncore.api.items.InventoryUtils;
 import reborncore.common.util.ItemUtils;
@@ -119,7 +118,7 @@ public class SlotConfiguration implements NBTSerializable {
 		return slotDetails.stream().map(slotConfigHolder -> slotConfigHolder.getSideDetail(facing)).collect(Collectors.toList());
 	}
 
-	@NonNull
+	@Nonnull
 	@Override
 	public CompoundTag write() {
 		CompoundTag tagCompound = new CompoundTag();
@@ -131,7 +130,7 @@ public class SlotConfiguration implements NBTSerializable {
 	}
 
 	@Override
-	public void read(@NonNull CompoundTag nbt) {
+	public void read(@Nonnull CompoundTag nbt) {
 		int size = nbt.getInt("size");
 		for (int i = 0; i < size; i++) {
 			CompoundTag tagCompound = nbt.getCompound("slot_" + i);
@@ -218,7 +217,7 @@ public class SlotConfiguration implements NBTSerializable {
 			this.filter = filter;
 		}
 
-		@NonNull
+		@Nonnull
 		@Override
 		public CompoundTag write() {
 			CompoundTag compound = new CompoundTag();
@@ -231,7 +230,7 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void read(@NonNull CompoundTag nbt) {
+		public void read(@Nonnull CompoundTag nbt) {
 			sideMap.clear();
 			slotID = nbt.getInt("slotID");
 			Arrays.stream(Direction.values()).forEach(facing -> {
@@ -340,7 +339,7 @@ public class SlotConfiguration implements NBTSerializable {
 			inventory.setInvStack(slotID, stack);
 		}
 
-		@NonNull
+		@Nonnull
 		@Override
 		public CompoundTag write() {
 			CompoundTag tagCompound = new CompoundTag();
@@ -351,7 +350,7 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void read(@NonNull CompoundTag nbt) {
+		public void read(@Nonnull CompoundTag nbt) {
 			side = Direction.values()[nbt.getInt("side")];
 			slotIO = new SlotIO(nbt.getCompound("config"));
 			slotID = nbt.getInt("slot");
@@ -373,7 +372,7 @@ public class SlotConfiguration implements NBTSerializable {
 			return ioConfig;
 		}
 
-		@NonNull
+		@Nonnull
 		@Override
 		public CompoundTag write() {
 			CompoundTag compound = new CompoundTag();
@@ -382,7 +381,7 @@ public class SlotConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void read(@NonNull CompoundTag nbt) {
+		public void read(@Nonnull CompoundTag nbt) {
 			ioConfig = ExtractConfig.values()[nbt.getInt("config")];
 		}
 	}

@@ -13,12 +13,12 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.util.NBTSerializable;
 import reborncore.common.world.DataAttachment;
 import reborncore.common.world.DataAttachmentProvider;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,8 @@ public class ChunkLoaderManager implements DataAttachment {
 	private final List<LoadedChunk> loadedChunks = new ArrayList<>();
 
 	@Override
-	public @NonNull CompoundTag write() {
+	public @Nonnull
+	CompoundTag write() {
 		CompoundTag tag = new CompoundTag();
 		ListTag listTag = new ListTag();
 
@@ -45,7 +46,7 @@ public class ChunkLoaderManager implements DataAttachment {
 	}
 
 	@Override
-	public void read(@NonNull CompoundTag tag) {
+	public void read(@Nonnull CompoundTag tag) {
 		loadedChunks.clear();
 		ListTag listTag = tag.getList("loadedchunks", tag.getType());
 
@@ -157,7 +158,7 @@ public class ChunkLoaderManager implements DataAttachment {
 		}
 
 		@Override
-		public @NonNull CompoundTag write() {
+		public @Nonnull CompoundTag write() {
 			CompoundTag tag = new CompoundTag();
 			tag.putLong("chunk", chunk.toLong());
 			tag.putString("world", world.toString());
@@ -167,7 +168,7 @@ public class ChunkLoaderManager implements DataAttachment {
 		}
 
 		@Override
-		public void read(@NonNull CompoundTag tag) {
+		public void read(@Nonnull CompoundTag tag) {
 			chunk = new ChunkPos(tag.getLong("chunk"));
 			world = new Identifier(tag.getString("world"));
 			player = tag.getString("player");

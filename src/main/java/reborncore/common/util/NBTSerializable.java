@@ -1,13 +1,14 @@
 package reborncore.common.util;
 
 import net.minecraft.nbt.CompoundTag;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javax.annotation.Nonnull;
 
 public interface NBTSerializable {
 
-	@NonNull
+	@Nonnull
 	CompoundTag write();
 
-	void read(@NonNull CompoundTag tag);
+	void read(@Nonnull CompoundTag tag);
 
 }

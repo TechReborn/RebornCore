@@ -2,9 +2,10 @@ package reborncore.common.fluid.container;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import reborncore.common.fluid.FluidValue;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /*
 
@@ -21,7 +22,7 @@ import reborncore.common.fluid.FluidValue;
 public interface GenericFluidContainer<T> {
 
 	@Nullable
-	static GenericFluidContainer<ItemStack> fromStack(@NonNull ItemStack itemStack){
+	static GenericFluidContainer<ItemStack> fromStack(@Nonnull ItemStack itemStack){
 		if(itemStack.getItem() instanceof GenericFluidContainer){
 			//noinspection unchecked
 			return (GenericFluidContainer<ItemStack>) itemStack.getItem();
@@ -29,9 +30,9 @@ public interface GenericFluidContainer<T> {
 		return null;
 	}
 
-	void setFluid(T type, @NonNull FluidInstance instance);
+	void setFluid(T type, @Nonnull FluidInstance instance);
 
-	@NonNull
+	@Nonnull
 	FluidInstance getFluidInstance(T type);
 
 	FluidValue getCapacity(T type);
@@ -44,7 +45,7 @@ public interface GenericFluidContainer<T> {
 		return getFluidInstance(type).getAmount();
 	}
 
-	default boolean canInsertFluid(T type, @NonNull Fluid fluid, FluidValue amount){
+	default boolean canInsertFluid(T type, @Nonnull Fluid fluid, FluidValue amount){
 		if(!canHold(type, fluid)){
 			return false;
 		}
@@ -52,17 +53,17 @@ public interface GenericFluidContainer<T> {
 		return currentFluid.isEmpty() || currentFluid.getFluid() == fluid && currentFluid.getAmount().add(amount).lessThan(getCapacity(type));
 	}
 
-	default boolean canExtractFluid(T type, @NonNull Fluid fluid, FluidValue amount){
+	default boolean canExtractFluid(T type, @Nonnull Fluid fluid, FluidValue amount){
 		return getFluidInstance(type).getFluid() == fluid && amount.lessThanOrEqual(getFluidInstance(type).getAmount());
 	}
 
-	default void insertFluid(T type, @NonNull Fluid fluid, FluidValue amount){
+	default void insertFluid(T type, @Nonnull Fluid fluid, FluidValue amount){
 		if(canInsertFluid(type, fluid, amount)){
 			setFluid(type, getFluidInstance(type).addAmount(amount));
 		}
 	}
 
-	default void extractFluid(T type, @NonNull Fluid fluid, FluidValue amount){
+	default void extractFluid(T type, @Nonnull Fluid fluid, FluidValue amount){
 		if(canExtractFluid(type, fluid, amount)){
 			setFluid(type, getFluidInstance(type).subtractAmount(amount));
 		}

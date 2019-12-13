@@ -44,9 +44,7 @@ dependencies {
 	//Fabric api
 	modCompile "net.fabricmc.fabric-api:fabric-api:0.4.23+build.276-1.15"
 
-	compileOnly "com.google.code.findbugs:jsr305:+"
-
-	compile 'org.checkerframework:checker-qual:2.10.0'
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
 	compile 'teamreborn:energy:0.0.8'
 	include 'teamreborn:energy:0.0.8'

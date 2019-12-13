@@ -48,7 +48,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.api.IListInfoProvider;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
@@ -63,6 +62,7 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.RebornInventory;
 import reborncore.common.util.Tank;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
@@ -445,7 +445,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		}
 	}
 
-	@NonNull
+	@Nonnull
 	public SlotConfiguration getSlotConfiguration() {
 		Validate.notNull(slotConfiguration, "slotConfiguration cannot be null");
 		return slotConfiguration;

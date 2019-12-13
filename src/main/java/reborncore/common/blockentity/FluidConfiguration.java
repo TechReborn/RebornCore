@@ -30,9 +30,9 @@ package reborncore.common.blockentity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.util.NBTSerializable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -120,7 +120,7 @@ public class FluidConfiguration implements NBTSerializable {
 		this.output = output;
 	}
 
-	@NonNull
+	@Nonnull
 	@Override
 	public CompoundTag write() {
 		CompoundTag compound = new CompoundTag();
@@ -131,7 +131,7 @@ public class FluidConfiguration implements NBTSerializable {
 	}
 
 	@Override
-	public void read(@NonNull CompoundTag nbt) {
+	public void read(@Nonnull CompoundTag nbt) {
 		sideMap.clear();
 		Arrays.stream(Direction.values()).forEach(facing -> {
 			CompoundTag compound = nbt.getCompound("side_" + facing.ordinal());
@@ -168,7 +168,7 @@ public class FluidConfiguration implements NBTSerializable {
 			return ioConfig;
 		}
 
-		@NonNull
+		@Nonnull
 		@Override
 		public CompoundTag write() {
 			CompoundTag tagCompound = new CompoundTag();
@@ -178,7 +178,7 @@ public class FluidConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void read(@NonNull CompoundTag nbt) {
+		public void read(@Nonnull CompoundTag nbt) {
 			side = Direction.values()[nbt.getInt("side")];
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInt("config")];
 		}

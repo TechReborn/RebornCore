@@ -7,8 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import reborncore.common.util.Tank;
+
+import javax.annotation.Nonnull;
 
 
 public class FluidUtil {
@@ -28,11 +29,11 @@ public class FluidUtil {
 		return null;
 	}
 
-	public static String getFluidName(@NonNull FluidInstance fluidInstance){
+	public static String getFluidName(@Nonnull FluidInstance fluidInstance){
 		return getFluidName(fluidInstance.getFluid());
 	}
 
-	public static String getFluidName(@NonNull Fluid fluid){
+	public static String getFluidName(@Nonnull Fluid fluid){
 		return StringUtils.capitalize(Registry.FLUID.getId(fluid).getPath());
 	}
 }
