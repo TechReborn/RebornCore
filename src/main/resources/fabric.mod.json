@@ -29,6 +29,7 @@
     "fabric": "*"
   },
   "authors": [
+    "Team Reborn",
     "modmuss50",
     "drcrazy"
   ],
@@ -40,5 +41,8 @@
     "Ourten",
     "coderbot",
     "estebes"
-  ]
+  ],
+  "custom": {
+    "modmenu:api": true
+  }
 }
