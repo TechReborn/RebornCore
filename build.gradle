@@ -16,6 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'java-library'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -39,14 +40,14 @@ configurations {
 dependencies {
 	minecraft "com.mojang:minecraft:1.15"
 	mappings "net.fabricmc:yarn:1.15+build.2:v2"
-	modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
+	modImplementation "net.fabricmc:fabric-loader:0.7.2+build.174"
 
 	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.4.24+build.279-1.15"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.4.24+build.279-1.15"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-	compile 'teamreborn:energy:0.0.8'
+	api 'teamreborn:energy:0.0.8'
 	include 'teamreborn:energy:0.0.8'
 
 	ctRuntime "CurseTools:CurseTools:+"
