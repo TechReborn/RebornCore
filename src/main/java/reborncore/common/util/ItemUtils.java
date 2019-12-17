@@ -56,6 +56,9 @@ public class ItemUtils {
 
 	public static boolean isItemEqual(ItemStack a, ItemStack b, boolean matchNBT,
 	                                  boolean useTags) {
+		if (a.isEmpty() && b.isEmpty()) {
+			return true;
+		}
 		if (isItemEqual(a, b, matchNBT)) {
 			return true;
 		}
