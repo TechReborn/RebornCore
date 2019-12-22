@@ -37,6 +37,7 @@ import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import reborncore.RebornCore;
+import reborncore.api.blockentity.UnloadHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,7 +49,7 @@ import java.util.Set;
  * machines should derive from this and implement their game logic in certain
  * abstract methods.
  */
-public abstract class MultiblockBlockEntityBase extends IMultiblockPart implements Tickable {
+public abstract class MultiblockBlockEntityBase extends IMultiblockPart implements Tickable, UnloadHandler {
 	private MultiblockControllerBase controller;
 	private boolean visited;
 
@@ -139,26 +140,20 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 		return data;
 	}
 
-	/**
-	 * Called when a block is removed by game actions, such as a player breaking
-	 * the block or the block being changed into another block.
-	 *
-	 */
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void markRemoved() {
 		detachSelf(false);
+		super.markRemoved();
 	}
 
 	/**
 	 * Called from Minecraft's blockEntity entity loop, after all blockEntity entities have
 	 * been ticked, as the chunk in which this blockEntity entity is contained is
-	 * unloading. Happens before the Forge TickEnd event.
+	 * unloading.
 	 *
 	 */
 	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
+	public void onUnload() {
 		detachSelf(true);
 	}
 

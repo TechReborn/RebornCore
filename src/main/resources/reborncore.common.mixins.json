@@ -12,7 +12,8 @@
     "MixinWorldSaveHandler",
     "MixinItemStack",
     "MixinIngredient",
-    "MixinPlayerEntity"
+    "MixinPlayerEntity",
+    "MixinWorld"
   ],
   "injectors": {
     "defaultRequire": 1

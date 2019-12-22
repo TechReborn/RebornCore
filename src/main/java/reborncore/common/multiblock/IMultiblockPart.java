@@ -265,7 +265,4 @@ public abstract class IMultiblockPart extends BlockEntity {
 		return false;
 	}
 
-	public void invalidate() {}
-
-	public void onChunkUnload() {}
 }
