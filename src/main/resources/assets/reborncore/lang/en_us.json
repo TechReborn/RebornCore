@@ -7,6 +7,7 @@
 	"reborncore.tooltip.energy.outputRate": "Output Rate",
 	"reborncore.tooltip.energy.tier": "Tier",
 	"reborncore.tooltip.energy.change": "Energy Change",
+	"reborncore.tooltip.energy": "Energy Stored",
 	
 	"reborncore.gui.heat": "Heat",
 	"reborncore.gui.missingmultiblock": "Incomplete Multiblock",
