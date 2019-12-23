@@ -30,6 +30,9 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import reborncore.common.recipes.IRecipeInput;
 import team.reborn.energy.Energy;
 
@@ -48,10 +51,7 @@ public class ItemUtils {
 		if (a.getItem() != b.getItem()) {
 			return false;
 		}
-		if (matchNBT && !ItemStack.areTagsEqual(a, b)) {
-			return false;
-		}
-		return true;
+		return !matchNBT || ItemStack.areTagsEqual(a, b);
 	}
 
 	public static boolean isItemEqual(ItemStack a, ItemStack b, boolean matchNBT,
@@ -78,7 +78,7 @@ public class ItemUtils {
 		if (input instanceof ItemStack) {
 			return isItemEqual((ItemStack) input, other, matchNBT, useTags);
 		} else if (input instanceof String) {
-
+			//TODO tags
 		} else if (input instanceof IRecipeInput) {
 			List<ItemStack> inputs = ((IRecipeInput) input).getAllStacks();
 			for (ItemStack stack : inputs) {
@@ -117,9 +117,14 @@ public class ItemUtils {
 	}
 
 	public static boolean isActive(ItemStack stack) {
-		if (!stack.isEmpty() && stack.getTag() != null && stack.getTag().getBoolean("isActive")) {
-			return true;
+		return !stack.isEmpty() && stack.getTag() != null && stack.getTag().getBoolean("isActive");
+	}
+
+	public static void buildActiveTooltip(ItemStack stack, List<Text> tooltip){
+		if (!ItemUtils.isActive(stack)) {
+			tooltip.add(new TranslatableText("reborncore.message.inactive").formatted(Formatting.RED));
+		} else {
+			tooltip.add(new TranslatableText("reborncore.message.active").formatted(Formatting.GREEN));
 		}
-		return false;
 	}
 }
