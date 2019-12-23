@@ -31,6 +31,7 @@ package reborncore.common.blockentity;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
@@ -298,6 +299,11 @@ public class SlotConfiguration implements NBTSerializable {
 				return;
 			}
 			Inventory sourceInv = (Inventory) blockEntity;
+			SidedInventory sidedInventory = null;
+			if (sourceInv instanceof SidedInventory) {
+				sidedInventory = (SidedInventory) sourceInv;
+			}
+
 			for (int i = 0; i < sourceInv.getInvSize(); i++) {
 				ItemStack sourceStack = sourceInv.getInvStack(i);
 				if (sourceStack.isEmpty()) {
@@ -306,6 +312,11 @@ public class SlotConfiguration implements NBTSerializable {
 				if(!canInsertItem(slotID, sourceStack, side, machineBase)){
 					continue;
 				}
+
+				if (sidedInventory != null && !sidedInventory.canExtractInvStack(i, sourceStack, side.getOpposite())) {
+					continue;
+				}
+
 				//Checks if we are going to merge stacks that the items are the same
 				if (!targetStack.isEmpty()) {
 					if (!ItemUtils.isItemEqual(sourceStack, targetStack, true, false)) {
