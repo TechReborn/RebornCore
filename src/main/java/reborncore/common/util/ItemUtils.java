@@ -30,6 +30,7 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -118,6 +119,21 @@ public class ItemUtils {
 
 	public static boolean isActive(ItemStack stack) {
 		return !stack.isEmpty() && stack.getTag() != null && stack.getTag().getBoolean("isActive");
+	}
+
+	public static void checkActive(ItemStack stack, int cost, boolean isClient, int messageId) {
+		if (!ItemUtils.isActive(stack)) {
+			return;
+		}
+		if (Energy.of(stack).getEnergy() >= cost) {
+			return;
+		}
+		if (isClient) {
+			ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
+					Formatting.GRAY + StringUtils.t("reborncore.message.energyError") + " "
+							+ Formatting.GOLD + StringUtils.t("reborncore.message.deactivating")));
+		}
+		stack.getOrCreateTag().putBoolean("isActive", false);
 	}
 
 	public static void buildActiveTooltip(ItemStack stack, List<Text> tooltip){
