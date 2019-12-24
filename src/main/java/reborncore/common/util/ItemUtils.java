@@ -117,10 +117,24 @@ public class ItemUtils {
 		return Energy.of(stack).getEnergy() / Energy.of(stack).getMaxStored();
 	}
 
+	/**
+	 * Checks if powered item is active
+	 *
+	 * @param stack ItemStack ItemStack to check
+	 * @return True if powered item is active
+	 */
 	public static boolean isActive(ItemStack stack) {
 		return !stack.isEmpty() && stack.getTag() != null && stack.getTag().getBoolean("isActive");
 	}
 
+	/**
+	 * Check if powered item has enough energy to continue being in active state
+	 *
+	 * @param stack ItemStack ItemStack to check
+	 * @param cost int Cost of operation performed by tool
+	 * @param isClient boolean Client side
+	 * @param messageId int MessageID for sending no spam message
+	 */
 	public static void checkActive(ItemStack stack, int cost, boolean isClient, int messageId) {
 		if (!ItemUtils.isActive(stack)) {
 			return;
@@ -136,6 +150,40 @@ public class ItemUtils {
 		stack.getOrCreateTag().putBoolean("isActive", false);
 	}
 
+	/**
+	 * Switch active\inactive state for powered item
+	 *
+	 * @param stack ItemStack ItemStack to work on
+	 * @param cost int Cost of operation performed by tool
+	 * @param isClient boolean Are we on client side
+	 * @param messageId MessageID for sending no spam message
+	 */
+	public static void switchActive(ItemStack stack, int cost, boolean isClient, int messageId){
+		ItemUtils.checkActive(stack, cost, isClient, messageId);
+
+		if (!ItemUtils.isActive(stack)) {
+			stack.getOrCreateTag().putBoolean("isActive", true);
+			if (isClient) {
+				ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
+						Formatting.GRAY + StringUtils.t("reborncore.message.setTo") + " "
+								+ Formatting.GOLD + StringUtils.t("reborncore.message.active")));
+			}
+		} else {
+			stack.getOrCreateTag().putBoolean("isActive", false);
+			if (isClient) {
+				ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
+						Formatting.GRAY + StringUtils.t("reborncore.message.setTo") + " "
+								+ Formatting.GOLD + StringUtils.t("reborncore.message.inactive")));
+			}
+		}
+	}
+
+	/**
+	 * Adds active\inactive state to powered item tooltip
+	 *
+	 * @param stack ItemStack ItemStack to check
+	 * @param tooltip List Tooltip strings
+	 */
 	public static void buildActiveTooltip(ItemStack stack, List<Text> tooltip){
 		if (!ItemUtils.isActive(stack)) {
 			tooltip.add(new TranslatableText("reborncore.message.inactive").formatted(Formatting.RED));

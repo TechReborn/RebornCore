@@ -3,6 +3,7 @@
 	"reborncore.message.inactive": "Inactive",
 	"reborncore.message.energyError": "Not Enough Energy:",
 	"reborncore.message.deactivating": "Deactivating",
+	"reborncore.message.setTo": "Set to",
 	
 	"reborncore.tooltip.energy.maxEnergy": "Max Energy",
 	"reborncore.tooltip.energy.inputRate": "Input Rate",
