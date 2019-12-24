@@ -5,9 +5,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import reborncore.common.chunkloading.ChunkLoaderManager;
@@ -39,23 +40,22 @@ public class ClientChunkManager {
 			.anyMatch(loadedChunk -> loadedChunk.getWorld().equals(Registry.DIMENSION.getId(MinecraftClient.getInstance().world.getDimension().getType())));
 	}
 
-	public static void render() {
-		if(loadedChunks.size() == 0){
+	public static void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double x, double y, double z) {
+		if (loadedChunks.size() == 0){
 			return;
 		}
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
+		final MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-		Camera camera = minecraftClient.gameRenderer.getCamera();
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		RenderSystem.enableDepthTest();
+		RenderSystem.shadeModel(7425);
+		RenderSystem.enableAlphaTest();
+		RenderSystem.defaultAlphaFunc();
 
-		double x = camera.getPos().x;
-		double y = camera.getPos().y;
-		double z = camera.getPos().z;
+		final Tessellator tessellator = Tessellator.getInstance();
+		final BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 		RenderSystem.disableTexture();
 		RenderSystem.disableBlend();
-
 		RenderSystem.lineWidth(5.0F);
 
 		bufferBuilder.begin(3, VertexFormats.POSITION_COLOR);
@@ -63,12 +63,13 @@ public class ClientChunkManager {
 		loadedChunks.stream()
 			.filter(loadedChunk -> loadedChunk.getWorld().equals(Registry.DIMENSION.getId(minecraftClient.world.getDimension().getType())))
 			.forEach(loadedChunk -> {
-			double chunkX = (double) loadedChunk.getChunk().getStartX() - x;
-			double chunkY = (double) loadedChunk.getChunk().getStartZ() - z;
-			bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
-			bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
-			bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
+				double chunkX = (double) loadedChunk.getChunk().getStartX() - x;
+				double chunkY = (double) loadedChunk.getChunk().getStartZ() - z;
+
+				bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
+				bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
+				bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
+				bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
 		});
 
 		tessellator.draw();

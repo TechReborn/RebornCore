@@ -150,7 +150,7 @@ public class ChunkLoaderManager implements DataAttachment {
 			this.world = world;
 			this.player = player;
 			this.chunkLoader = chunkLoader;
-			Validate.isTrue(!StringUtils.isBlank(player), "Player cannot be null");
+			Validate.isTrue(!StringUtils.isBlank(player), "Player cannot be blank");
 		}
 
 		public LoadedChunk(CompoundTag tag) {
