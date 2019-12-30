@@ -151,7 +151,13 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		}
 		int offset = upgrades ? 86 : 6;
 		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
-			builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
+//			if (slotConfigType == SlotConfigType.ITEMS ) {
+//				builder.drawSlotTabExpanded(this, x - 24, y + offset, mouseX, mouseY, upgrades, wrenchStack);
+//			}
+//			else {
+				builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
+//			}
+
 		}
 		if (isConfigEnabled() && getMachine().showTankConfig()) {
 			builder.drawSlotTab(this, x - 24, y + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
@@ -376,8 +382,12 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		return y;
 	}
 
-	public MinecraftClient getMinecraft(){
-		return minecraft;
+	public MinecraftClient getMinecraft() {
+		// Just to stop complains from IDEA
+		if (minecraft == null){
+			throw new NullPointerException("Minecraft client is null.");
+		}
+		return this.minecraft;
 	}
 
 	public TextRenderer getTextRenderer(){

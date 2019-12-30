@@ -29,16 +29,18 @@
 package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import reborncore.common.fluid.FluidValue;
-import reborncore.common.fluid.container.FluidInstance;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluids;
@@ -47,11 +49,14 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.widget.GuiButtonSimple;
 import reborncore.common.fluid.FluidUtil;
+import reborncore.common.fluid.FluidValue;
+import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
@@ -97,7 +102,7 @@ public class GuiBuilder {
 		gui.blit(x + 1, y + height - draw - 1, 14, height + 150 - draw, 12, draw);
 
 		if (gui.isPointInRect(x, y, 14, height, mouseX, mouseY)) {
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
 			gui.renderTooltip(list, mouseX, mouseY);
 		}
@@ -414,50 +419,123 @@ public class GuiBuilder {
 
 	// This stuff is WIP
 	public void drawSlotTabExpanded(GuiBase<?> gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
-		int offset = -1;
-		if (!upgrades) {
-			offset = 80;
-		}
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(posX - 79, posY + 84 - offset, 0, 0, 80, 4);
-		gui.blit(posX - 79, posY + 88 - offset, 0, 4, 80, 72);
-		gui.blit(posX - 79, posY + 160 - offset, 0, 146, 80, 4);
+		gui.blit(posX - 56, posY, 0, 0, 80, 4);
+		gui.blit(posX - 56, posY + 4, 0, 4, 80, 72);
+		gui.blit(posX - 56, posY + 4 + 72, 0, 146, 80, 4);
 		RenderSystem.color4f(1, 1, 1, 1);
 
-		//		renderItemStack(stack, posX - 19, posY + 92 - offset);
-		List<String> tips = new ArrayList<String>();
+		//gui.getMinecraft().getItemRenderer().renderGuiItem(stack, posX - 19, posY + 92 - offset);
+		List<String> tips = new ArrayList<>();
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side"));
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy"));
-		TipsList explanation = new TipsList(gui, 75, 76, posY + 108 - offset, posY + 182 - offset, posX - 75, 10, tips);
+		TipsListWidget explanation = new TipsListWidget(gui, 75, 76, posY + 2, posY + 2 + 70, 9 * 4 + 4, tips);
+		explanation.setLeftPos(posX - 56);
 		explanation.render(mouseX, mouseY, 1.0f);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
 
-	// This stuff is WIP
-	@SuppressWarnings("rawtypes")
-	private class TipsList extends AlwaysSelectedEntryListWidget {
 
-		@SuppressWarnings("unused")
+	private class TipsListWidget extends EntryListWidget<TipsListWidget.TipsListEntry> {
+
 		private Screen gui;
-		@SuppressWarnings("unused")
-		private List<String> tips = null;
 
-		public TipsList(GuiBase<?> gui, int width, int height, int top, int bottom, int left, int entryHeight, List<String> tips) {
-			super(gui.getMinecraft(), width, height, top, bottom, left);
+		public TipsListWidget(GuiBase<?> gui, int width, int height, int top, int bottom, int entryHeight, List<String> tips) {
+			super(gui.getMinecraft(), width, height, top, bottom, entryHeight);
 			this.gui = gui;
-			this.tips = tips;
+			for (String tip : tips){
+				this.addEntry(new TipsListEntry(tip));
+			}
 		}
 
-//		@Override
-//		protected boolean isSelected(int index) {
-//			return false;
-//		}
-//
-//		@Override
-//		protected void drawBackground() {
-//		}
+		@Override
+		public int getRowWidth() {
+			return 76;
+		}
 
+		@Override
+		public int getRowTop(int index) {
+			return top + 2 - (int)this.getScrollAmount() + index * this.itemHeight;
+		}
+
+		@Override
+		protected int getRowLeft() {
+			return this.left + 4;
+		}
+
+		@Override
+		protected int getScrollbarPosition() {
+			return this.left + 75;
+		}
+
+		private int getMaxScroll() {
+			return Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4));
+		}
+
+		@Override
+		protected void renderHoleBackground(int top, int bottom, int alphaTop, int alphaBottom){}
+
+
+
+		public void render(int mouseX, int mouseY, float delta) {
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
+			int widgetX = this.getRowLeft() + 4;
+			int widgetY = this.top + 4 - (int) this.getScrollAmount();
+			this.renderList(widgetX, widgetY, mouseX, mouseY, delta);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
+			RenderSystem.disableAlphaTest();
+			RenderSystem.shadeModel(7425);
+			RenderSystem.disableTexture();
+			int n = this.getMaxScroll();
+			if (n > 0) {
+				int o = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
+				o = MathHelper.clamp(o, 32, this.bottom - this.top - 8);
+				int p = (int) this.getScrollAmount() * (this.bottom - this.top - o) / n + this.top;
+				if (p < this.top) {
+					p = this.top;
+				}
+				int i = this.getScrollbarPosition();
+				int j = i + 6;
+				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+				bufferBuilder.vertex((double) i, (double) this.bottom, 0.0D).color(0, 0, 0, 255).texture(0.0F, 1.0F).next();
+				bufferBuilder.vertex((double) j, (double) this.bottom, 0.0D).color(0, 0, 0, 255).texture(1.0F, 1.0F).next();
+				bufferBuilder.vertex((double) j, (double) this.top, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();
+				bufferBuilder.vertex((double) i, (double) this.top, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
+				tessellator.draw();
+				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+				bufferBuilder.vertex((double) i, (double) (p + o), 0.0D).color(128, 128, 128, 255).texture(0.0F, 1.0F).next();
+				bufferBuilder.vertex((double) j, (double) (p + o), 0.0D).color(128, 128, 128, 255).texture(1.0F, 1.0F).next();
+				bufferBuilder.vertex((double) j, (double) p, 0.0D).color(128, 128, 128, 255).texture(1.0F, 0.0F).next();
+				bufferBuilder.vertex((double) i, (double) p, 0.0D).color(128, 128, 128, 255).texture(0.0F, 0.0F).next();
+				tessellator.draw();
+				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+				bufferBuilder.vertex((double) i, (double) (p + o - 1), 0.0D).color(192, 192, 192, 255).texture(0.0F, 1.0F).next();
+				bufferBuilder.vertex((double) (j - 1), (double) (p + o - 1), 0.0D).color(192, 192, 192, 255).texture(1.0F, 1.0F).next();
+				bufferBuilder.vertex((double) (j - 1), (double) p, 0.0D).color(192, 192, 192, 255).texture(1.0F, 0.0F).next();
+				bufferBuilder.vertex((double) i, (double) p, 0.0D).color(192, 192, 192, 255).texture(0.0F, 0.0F).next();
+				tessellator.draw();
+			}
+			RenderSystem.enableTexture();
+			RenderSystem.shadeModel(7424);
+			RenderSystem.enableAlphaTest();
+			RenderSystem.disableBlend();
+		}
+
+		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {
+			private String tip;
+
+			public TipsListEntry(String tip){
+				this.tip = tip;
+			}
+
+			@Override
+			public void render(int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
+				MinecraftClient.getInstance().textRenderer.drawTrimmed(tip, x, y, width, 11184810);
+			}
+		}
 	}
 
 	/**
