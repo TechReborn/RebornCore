@@ -29,6 +29,9 @@
 	"reborncore.gui.tooltip.upgrades": "Machine upgrades",
 	
 	"reborncore.gui.slotconfigtip.slot": "Click on slot to configure.",
-	"reborncore.gui.slotconfigtip.side": "Orange side means output, blue side means input.",
-	"reborncore.gui.slotconfigtip.copy": "Ctrl+C to copy slot config, Ctrl+V to paste slot config."
+	"reborncore.gui.slotconfigtip.side1": "Orange side means output.",
+    "reborncore.gui.slotconfigtip.side2": "Blue side means input.",
+  "reborncore.gui.slotconfigtip.side3": "Green side means both.",
+	"reborncore.gui.slotconfigtip.copy1": "Ctrl+C to copy slot config.",
+    "reborncore.gui.slotconfigtip.copy2": "Ctrl+V to paste slot config."
 }

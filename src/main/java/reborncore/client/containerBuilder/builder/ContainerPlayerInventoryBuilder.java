@@ -28,13 +28,13 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.container.Slot;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.Range;
 import reborncore.client.IconSupplier;
+import reborncore.client.containerBuilder.builder.slot.PlayerInventorySlot;
 import reborncore.client.containerBuilder.builder.slot.SpriteSlot;
 
 public final class ContainerPlayerInventoryBuilder {
@@ -54,7 +54,7 @@ public final class ContainerPlayerInventoryBuilder {
 		final int startIndex = this.parent.slots.size();
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
-				this.parent.slots.add(new Slot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
+				this.parent.slots.add(new PlayerInventorySlot(this.player, j + i * 9 + 9, xStart + j * 18, yStart + i * 18));
 			}
 		}
 		this.main = Range.between(startIndex, this.parent.slots.size() - 1);
@@ -64,7 +64,7 @@ public final class ContainerPlayerInventoryBuilder {
 	public ContainerPlayerInventoryBuilder hotbar(final int xStart, final int yStart) {
 		final int startIndex = this.parent.slots.size();
 		for (int i = 0; i < 9; ++i) {
-			this.parent.slots.add(new Slot(this.player, i, xStart + i * 18, yStart));
+			this.parent.slots.add(new PlayerInventorySlot(this.player, i, xStart + i * 18, yStart));
 		}
 		this.hotbar = Range.between(startIndex, this.parent.slots.size() - 1);
 		return this;

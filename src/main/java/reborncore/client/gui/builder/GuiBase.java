@@ -38,6 +38,7 @@ import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.container.Container;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -46,6 +47,7 @@ import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
+import reborncore.client.containerBuilder.builder.slot.PlayerInventorySlot;
 import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
 import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
@@ -137,10 +139,11 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	protected void drawBackground(float lastFrameDuration, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
-		
+		boolean drawPlayerSlots = (slotConfigType != SlotConfigType.ITEMS && slotConfigType != SlotConfigType.FLUIDS) && drawPlayerSlots();
+        updateSlotDraw(drawPlayerSlots);
 		builder.drawDefaultBackground(this, x, y, xSize, ySize);
-		if (drawPlayerSlots()) {
-			builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
+		if (drawPlayerSlots) {
+		    builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
 		}
 		if (tryAddUpgrades() && be instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) be;
@@ -151,19 +154,30 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		}
 		int offset = upgrades ? 86 : 6;
 		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
-//			if (slotConfigType == SlotConfigType.ITEMS ) {
-//				builder.drawSlotTabExpanded(this, x - 24, y + offset, mouseX, mouseY, upgrades, wrenchStack);
-//			}
-//			else {
-				builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
-//			}
-
+            builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
+			if (slotConfigType == SlotConfigType.ITEMS ) {
+				builder.drawSlotConfigTips(this, x + containerWidth / 2, y + 93, mouseX, mouseY);
+			}
 		}
 		if (isConfigEnabled() && getMachine().showTankConfig()) {
 			builder.drawSlotTab(this, x - 24, y + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
-		}
+            if (slotConfigType == SlotConfigType.FLUIDS ) {
+                builder.drawSlotConfigTips(this, x + containerWidth / 2, y + 93, mouseX, mouseY);
+            }
+
+        }
 	}
 
+	private void updateSlotDraw(boolean doDraw){
+	    if (builtContainer == null){
+	        return;
+        }
+	    for (Slot slot : builtContainer.slotList){
+            if (slot instanceof PlayerInventorySlot) {
+                ((PlayerInventorySlot) slot).doDraw = doDraw;
+            }
+        }
+    }
 
 	public boolean drawPlayerSlots() {
 		return true;
@@ -216,14 +230,12 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		Iterator<AbstractButtonWidget> buttonsList = buttons.iterator();
-		while (buttonsList.hasNext()) {
-			AbstractButtonWidget abstractButtonWidget = (AbstractButtonWidget) buttonsList.next();
-			if (abstractButtonWidget.isHovered()) {
-				abstractButtonWidget.renderToolTip(mouseX, mouseY);
-				break;
-			}
-		}
+        for (AbstractButtonWidget abstractButtonWidget : buttons) {
+            if (abstractButtonWidget.isHovered()) {
+                abstractButtonWidget.renderToolTip(mouseX, mouseY);
+                break;
+            }
+        }
 		super.drawMouseoverTooltip(mouseX, mouseY);
 	}
 
@@ -367,7 +379,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	public interface FluidCellProvider {
-		public ItemStack provide(Fluid fluid);
+		ItemStack provide(Fluid fluid);
 	}
 
 	public boolean isConfigEnabled() {

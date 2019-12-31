@@ -29,7 +29,6 @@
 package reborncore.client.gui.guibuilder;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -38,9 +37,6 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluids;
@@ -49,7 +45,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -151,29 +146,6 @@ public class GuiBuilder {
 	public void drawOutputSlot(GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.blit(x, y, 174, 0, 26, 26);
-	}
-
-	public void drawInfoButton(int x, int y, List<ButtonWidget> buttonList) {
-		buttonList.add(new GuiButtonSimple(x, y, 20, 20, "i", new ButtonWidget.PressAction() {
-			@Override
-			public void onPress(ButtonWidget var1) {
-
-			}
-		}));
-	}
-
-	public void handleInfoButtonClick(int buttonID, List<ButtonWidget> buttonList) {
-		// buttonList.get(buttonID).
-	}
-
-	public void drawInfo(Screen gui, int x, int y, int height, int width, boolean draw) {
-		if (draw) {
-			MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-			gui.blit(x, y, 0, 0, width / 2, height / 2);
-			gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-			gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-			gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
-		}
 	}
 
 	/**
@@ -418,20 +390,16 @@ public class GuiBuilder {
 	}
 
 	// This stuff is WIP
-	public void drawSlotTabExpanded(GuiBase<?> gui, int posX, int posY, int mouseX, int mouseY, boolean upgrades, ItemStack stack) {
-		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(posX - 56, posY, 0, 0, 80, 4);
-		gui.blit(posX - 56, posY + 4, 0, 4, 80, 72);
-		gui.blit(posX - 56, posY + 4 + 72, 0, 146, 80, 4);
-		RenderSystem.color4f(1, 1, 1, 1);
-
-		//gui.getMinecraft().getItemRenderer().renderGuiItem(stack, posX - 19, posY + 92 - offset);
+	public void drawSlotConfigTips(GuiBase<?> gui, int posX, int posY, int mouseX, int mouseY) {
 		List<String> tips = new ArrayList<>();
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
-		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side"));
-		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy"));
-		TipsListWidget explanation = new TipsListWidget(gui, 75, 76, posY + 2, posY + 2 + 70, 9 * 4 + 4, tips);
-		explanation.setLeftPos(posX - 56);
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side1"));
+        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side2"));
+        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side3"));
+		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy1"));
+        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy2"));
+		TipsListWidget explanation = new TipsListWidget(gui, gui.getContainerWidth() - 14, 54, posY, posY + 76, 9 + 2, tips);
+		explanation.setLeftPos(posX - 81);
 		explanation.render(mouseX, mouseY, 1.0f);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
@@ -439,11 +407,8 @@ public class GuiBuilder {
 
 	private class TipsListWidget extends EntryListWidget<TipsListWidget.TipsListEntry> {
 
-		private Screen gui;
-
 		public TipsListWidget(GuiBase<?> gui, int width, int height, int top, int bottom, int entryHeight, List<String> tips) {
 			super(gui.getMinecraft(), width, height, top, bottom, entryHeight);
-			this.gui = gui;
 			for (String tip : tips){
 				this.addEntry(new TipsListEntry(tip));
 			}
@@ -451,78 +416,11 @@ public class GuiBuilder {
 
 		@Override
 		public int getRowWidth() {
-			return 76;
-		}
-
-		@Override
-		public int getRowTop(int index) {
-			return top + 2 - (int)this.getScrollAmount() + index * this.itemHeight;
-		}
-
-		@Override
-		protected int getRowLeft() {
-			return this.left + 4;
-		}
-
-		@Override
-		protected int getScrollbarPosition() {
-			return this.left + 75;
-		}
-
-		private int getMaxScroll() {
-			return Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4));
+			return 162;
 		}
 
 		@Override
 		protected void renderHoleBackground(int top, int bottom, int alphaTop, int alphaBottom){}
-
-
-
-		public void render(int mouseX, int mouseY, float delta) {
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			int widgetX = this.getRowLeft() + 4;
-			int widgetY = this.top + 4 - (int) this.getScrollAmount();
-			this.renderList(widgetX, widgetY, mouseX, mouseY, delta);
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-			RenderSystem.disableAlphaTest();
-			RenderSystem.shadeModel(7425);
-			RenderSystem.disableTexture();
-			int n = this.getMaxScroll();
-			if (n > 0) {
-				int o = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
-				o = MathHelper.clamp(o, 32, this.bottom - this.top - 8);
-				int p = (int) this.getScrollAmount() * (this.bottom - this.top - o) / n + this.top;
-				if (p < this.top) {
-					p = this.top;
-				}
-				int i = this.getScrollbarPosition();
-				int j = i + 6;
-				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
-				bufferBuilder.vertex((double) i, (double) this.bottom, 0.0D).color(0, 0, 0, 255).texture(0.0F, 1.0F).next();
-				bufferBuilder.vertex((double) j, (double) this.bottom, 0.0D).color(0, 0, 0, 255).texture(1.0F, 1.0F).next();
-				bufferBuilder.vertex((double) j, (double) this.top, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();
-				bufferBuilder.vertex((double) i, (double) this.top, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
-				tessellator.draw();
-				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
-				bufferBuilder.vertex((double) i, (double) (p + o), 0.0D).color(128, 128, 128, 255).texture(0.0F, 1.0F).next();
-				bufferBuilder.vertex((double) j, (double) (p + o), 0.0D).color(128, 128, 128, 255).texture(1.0F, 1.0F).next();
-				bufferBuilder.vertex((double) j, (double) p, 0.0D).color(128, 128, 128, 255).texture(1.0F, 0.0F).next();
-				bufferBuilder.vertex((double) i, (double) p, 0.0D).color(128, 128, 128, 255).texture(0.0F, 0.0F).next();
-				tessellator.draw();
-				bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
-				bufferBuilder.vertex((double) i, (double) (p + o - 1), 0.0D).color(192, 192, 192, 255).texture(0.0F, 1.0F).next();
-				bufferBuilder.vertex((double) (j - 1), (double) (p + o - 1), 0.0D).color(192, 192, 192, 255).texture(1.0F, 1.0F).next();
-				bufferBuilder.vertex((double) (j - 1), (double) p, 0.0D).color(192, 192, 192, 255).texture(1.0F, 0.0F).next();
-				bufferBuilder.vertex((double) i, (double) p, 0.0D).color(192, 192, 192, 255).texture(0.0F, 0.0F).next();
-				tessellator.draw();
-			}
-			RenderSystem.enableTexture();
-			RenderSystem.shadeModel(7424);
-			RenderSystem.enableAlphaTest();
-			RenderSystem.disableBlend();
-		}
 
 		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {
 			private String tip;
