@@ -43,7 +43,7 @@ import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.Color;
-import reborncore.mixin.extensions.SlotExtensions;
+import reborncore.mixin.common.AccessorSlot;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -70,9 +70,9 @@ public class GuiSlotConfiguration {
 			if (guiBase.be != slot.inventory) {
 				continue;
 			}
-			SlotExtensions slotExtensions = (SlotExtensions) slot;
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), slotExtensions.getInvSlot(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(slotExtensions.getInvSlot(), slotElement);
+			AccessorSlot accessorSlot = (AccessorSlot) slot;
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), accessorSlot.getInvSlot(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(accessorSlot.getInvSlot(), slotElement);
 		}
 
 	}
@@ -171,8 +171,8 @@ public class GuiSlotConfiguration {
 					continue;
 				}
 				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
-					SlotExtensions slotExtensions = (SlotExtensions) slot;
-					selectedSlot = slotExtensions.getInvSlot();
+					AccessorSlot accessorSlot = (AccessorSlot) slot;
+					selectedSlot = accessorSlot.getInvSlot();
 					return true;
 				}
 			}

@@ -42,7 +42,7 @@ import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemUtils;
-import reborncore.mixin.extensions.ContainerExtensions;
+import reborncore.mixin.common.AccessorContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +127,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ContainerListener listener : ContainerExtensions.get(this).getListeners()) {
+		for (final ContainerListener listener : ((AccessorContainer)(this)).getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
