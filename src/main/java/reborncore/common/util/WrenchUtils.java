@@ -29,11 +29,13 @@
 package reborncore.common.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -77,8 +79,7 @@ public class WrenchUtils {
 							ItemHandlerUtils.dropContainedItems(worldIn, pos);
 						}
 						if (!drop.isEmpty()) {
-							net.minecraft.util.ItemScatterer.spawn(worldIn, (double) pos.getX(),
-								(double) pos.getY(), (double) pos.getZ(), drop);
+							net.minecraft.util.ItemScatterer.spawn(worldIn, pos.getX(), pos.getY(), pos.getZ(), drop);
 						}
 						worldIn.removeBlockEntity(pos);
 						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
@@ -87,7 +88,21 @@ public class WrenchUtils {
 						SoundCategory.BLOCKS, 0.6F, 1F);
 				}
 			} else {
-				worldIn.getBlockState(pos).getBlock().rotate(worldIn.getBlockState(pos), BlockRotation.CLOCKWISE_90);
+				BlockState oldState = worldIn.getBlockState(pos);
+				BlockState newState;
+				if (oldState.contains(Properties.FACING)) {
+					// Machine can face all 6 directions. Let's move face to hit side.
+						newState = oldState.with(Properties.FACING, side);
+				}
+				else {
+					newState = oldState.rotate(BlockRotation.CLOCKWISE_90);
+				}
+
+				if (!newState.canPlaceAt(worldIn, pos)){
+					return false;
+				}
+				worldIn.setBlockState(pos, newState);
+				worldIn.updateNeighbor(pos, newState.getBlock(), pos);
 			}
 			return true;
 		}
