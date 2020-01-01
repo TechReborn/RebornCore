@@ -88,21 +88,6 @@ public class GuiBuilder {
 			height / 2);
 	}
 
-	public void drawEnergyBar(GuiBase<?> gui, int x, int y, int height, int energyStored, int maxEnergyStored, int mouseX, int mouseY, String powerType) {
-		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-
-		gui.blit(x, y, 0, 150, 14, height);
-		gui.blit(x, y + height - 1, 0, 255, 14, 1);
-		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (height - 2));
-		gui.blit(x + 1, y + height - draw - 1, 14, height + 150 - draw, 12, draw);
-
-		if (gui.isPointInRect(x, y, 14, height, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			list.add(energyStored + " / " + maxEnergyStored + " " + powerType);
-			gui.renderTooltip(list, mouseX, mouseY);
-		}
-	}
-
 	public void drawPlayerSlots(Screen gui, int posX, int posY, boolean center) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 
@@ -389,8 +374,16 @@ public class GuiBuilder {
 		gui.getMinecraft().getItemRenderer().renderGuiItem(stack, x + 5, y + 4);
 	}
 
-	// This stuff is WIP
-	public void drawSlotConfigTips(GuiBase<?> gui, int posX, int posY, int mouseX, int mouseY) {
+
+    /**
+     * Draws Slot Configuration tips instead of player inventory
+     * @param gui GuiBase GUI to draw on
+     * @param x int Top left corner where to place tips list
+     * @param y int Top left corner where to place tips list
+     * @param mouseX int Mouse cursor position
+     * @param mouseY int Mouse cursor position
+     */
+	public void drawSlotConfigTips(GuiBase<?> gui, int x, int y, int mouseX, int mouseY) {
 		List<String> tips = new ArrayList<>();
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side1"));
@@ -398,8 +391,8 @@ public class GuiBuilder {
         tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side3"));
 		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy1"));
         tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy2"));
-		TipsListWidget explanation = new TipsListWidget(gui, gui.getContainerWidth() - 14, 54, posY, posY + 76, 9 + 2, tips);
-		explanation.setLeftPos(posX - 81);
+		TipsListWidget explanation = new TipsListWidget(gui, gui.getContainerWidth() - 14, 54, y, y + 76, 9 + 2, tips);
+		explanation.setLeftPos(x - 81);
 		explanation.render(mouseX, mouseY, 1.0f);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}

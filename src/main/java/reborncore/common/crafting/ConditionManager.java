@@ -36,7 +36,7 @@ public final class ConditionManager {
 	}
 
 	private static boolean registryContains(SimpleRegistry<?> registry, Identifier ident) {
-		return registry.get(ident) != null;
+		return registry.containsId(ident);
 	}
 
 	public static <T> void register(String name, Class<T> type, RecipeCondition<T> recipeCondition){

@@ -42,7 +42,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +66,7 @@ import reborncore.common.util.WrenchUtils;
 
 public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
-	public static DirectionProperty FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
+	public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
 
 	boolean hasCustomStates;
@@ -87,19 +89,37 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
 
-
-	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
-		ACTIVE = BooleanProperty.of("active");
-		builder.add(FACING, ACTIVE);
+	public void setFacing(Direction facing, World world, BlockPos pos) {
+		if (hasCustomStates) {
+			return;
+		}
+		world.setBlockState(pos, world.getBlockState(pos).with(FACING, facing));
 	}
 
-	@Override
-	public BlockEntity createBlockEntity(BlockView worldIn) {
-		return null;
+	public Direction getFacing(BlockState state) {
+		return state.get(FACING);
 	}
 
+	public void setActive(Boolean active, World world, BlockPos pos) {
+		if (hasCustomStates) {
+			return;
+		}
+		Direction facing = world.getBlockState(pos).get(FACING);
+		BlockState state = world.getBlockState(pos).with(ACTIVE, active).with(FACING, facing);
+		world.setBlockState(pos, state, 3);
+	}
+
+	public boolean isActive(BlockState state) {
+		return state.get(ACTIVE);
+	}
+
+	public boolean isAdvanced() {
+		return false;
+	}
+
+	public abstract IMachineGuiHandler getGui();
+
+	// BaseBlockEntityProvider
 	@Override
 	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		super.onPlaced(worldIn, pos, state, placer, stack);
@@ -112,10 +132,25 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	}
 
 	@Override
+	public BlockEntity createBlockEntity(BlockView worldIn) {
+		return null;
+	}
+
+	// Block
+	@Override
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+		FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
+		ACTIVE = BooleanProperty.of("active");
+		builder.add(FACING, ACTIVE);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
 	public boolean allowsSpawning(BlockState state, BlockView world, BlockPos pos, EntityType<?> entityType_1) {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onBlockRemoved(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
@@ -124,15 +159,32 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		}
 	}
 
+	@Override
+	public void onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
+		BlockEntity blockEntity = world.getBlockEntity(blockPos);
+		if(blockEntity instanceof MachineBaseBlockEntity){
+			((MachineBaseBlockEntity) blockEntity).onBreak(world, playerEntity, blockPos, blockState);
+		}
+		super.onBreak(world, blockPos, blockState, playerEntity);
+	}
 
-	public boolean isAdvanced() {
-		return false;
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean hasComparatorOutput(BlockState state) {
+		return true;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+		return Container.calculateComparatorOutput(getInventory(state, world, pos));
 	}
 
 	/*
 	 *  Right-click should open GUI for all non-wrench items
 	 *  Shift-Right-click should apply special action, like fill\drain bucket, install behavior, etc.
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockHitResult hitResult) {
 
@@ -177,6 +229,13 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		return super.onUse(state, worldIn, pos, playerIn, hand, hitResult);
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public BlockState rotate(BlockState state, BlockRotation rotation) {
+		return state.with(FACING, rotation.rotate(state.get(FACING)));
+	}
+
+	// InventoryProvider
 	@Override
 	public SidedInventory getInventory(BlockState blockState, IWorld world, BlockPos blockPos) {
 		BlockEntity blockEntity = world.getBlockEntity(blockPos);
@@ -184,76 +243,5 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 			return (MachineBaseBlockEntity)blockEntity;
 		}
 		return null;
-	}
-
-	public boolean isActive(BlockState state) {
-		return state.get(ACTIVE);
-	}
-
-	public Direction getFacing(BlockState state) {
-		return state.get(FACING);
-	}
-
-	public void setFacing(Direction facing, World world, BlockPos pos) {
-		if (hasCustomStates) {
-			return;
-		}
-		world.setBlockState(pos, world.getBlockState(pos).with(FACING, facing));
-	}
-
-	public void setActive(Boolean active, World world, BlockPos pos) {
-		if (hasCustomStates) {
-			return;
-		}
-		Direction facing = world.getBlockState(pos).get(FACING);
-		BlockState state = world.getBlockState(pos).with(ACTIVE, active).with(FACING, facing);
-		world.setBlockState(pos, state, 3);
-	}
-
-	public Direction getSideFromint(int i) {
-		if (i == 0) {
-			return Direction.NORTH;
-		} else if (i == 1) {
-			return Direction.SOUTH;
-		} else if (i == 2) {
-			return Direction.EAST;
-		} else if (i == 3) {
-			return Direction.WEST;
-		}
-		return Direction.NORTH;
-	}
-
-	public int getSideFromEnum(Direction facing) {
-		if (facing == Direction.NORTH) {
-			return 0;
-		} else if (facing == Direction.SOUTH) {
-			return 1;
-		} else if (facing == Direction.EAST) {
-			return 2;
-		} else if (facing == Direction.WEST) {
-			return 3;
-		}
-		return 0;
-	}
-
-	public abstract IMachineGuiHandler getGui();
-
-	@Override
-	public void onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
-		BlockEntity blockEntity = world.getBlockEntity(blockPos);
-		if(blockEntity instanceof MachineBaseBlockEntity){
-			((MachineBaseBlockEntity) blockEntity).onBreak(world, playerEntity, blockPos, blockState);
-		}
-		super.onBreak(world, blockPos, blockState, playerEntity);
-	}
-
-	@Override
-	public boolean hasComparatorOutput(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return Container.calculateComparatorOutput(getInventory(state, world, pos));
 	}
 }
