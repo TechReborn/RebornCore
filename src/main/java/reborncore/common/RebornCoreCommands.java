@@ -1,16 +1,21 @@
 package reborncore.common;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.minecraft.command.arguments.EntityArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.world.chunk.ChunkStatus;
 import reborncore.common.crafting.RecipeManager;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +56,17 @@ public class RebornCoreCommands {
 									.executes(RebornCoreCommands::generate)
 							)
 					)
+
+					.then(
+						literal("flyspeed")
+							.requires(source -> source.hasPermissionLevel(3))
+							.then(argument("speed", integer(1, 10))
+									.executes(ctx -> flySpeed(ctx, ImmutableList.of(ctx.getSource().getPlayer())))
+									.then(CommandManager.argument("players", EntityArgumentType.players())
+											.executes(ctx -> flySpeed(ctx, EntityArgumentType.getPlayers(ctx, "players")))
+									)
+							)
+					)
 		);
 	}
 
@@ -73,6 +89,15 @@ public class RebornCoreCommands {
 						);
 			}
 		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int flySpeed(CommandContext<ServerCommandSource> ctx, Collection<ServerPlayerEntity> players) {
+		final int speed = getInteger(ctx, "speed");
+		players.stream()
+				.peek(player -> player.abilities.setFlySpeed(speed / 20F))
+				.forEach(ServerPlayerEntity::sendAbilitiesUpdate);
+
 		return Command.SINGLE_SUCCESS;
 	}
 }
