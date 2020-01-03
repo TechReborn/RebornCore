@@ -30,7 +30,6 @@ package reborncore.common.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
@@ -42,18 +41,21 @@ public class TorchHelper {
 
 	public static ActionResult placeTorch(ItemUsageContext itemUsageContext) {
 		PlayerEntity player = itemUsageContext.getPlayer();
+		if (player == null){
+			return ActionResult.FAIL;
+		}
 
 		for (int i = 0; i < player.inventory.main.size(); i++) {
 			ItemStack torchStack = player.inventory.getInvStack(i);
 			if (torchStack.isEmpty() || !torchStack.getTranslationKey().toLowerCase(Locale.ROOT).contains("torch")) {
 				continue;
 			}
-			Item item = torchStack.getItem();
-			if (!(item instanceof BlockItem)) {
+			if (!(torchStack.getItem() instanceof BlockItem)) {
 				continue;
 			}
+
 			int oldSize = torchStack.getCount();
-			ItemUsageContext context = new ItemUsageContext(player, itemUsageContext.getHand(), new BlockHitResult(itemUsageContext.getHitPos(), itemUsageContext.getSide(), itemUsageContext.getBlockPos(), true));
+			ItemUsageContext context = new ItemUsageContextCustomStack(itemUsageContext.getWorld(), player, itemUsageContext.getHand(), torchStack, new BlockHitResult(itemUsageContext.getHitPos(), itemUsageContext.getSide(), itemUsageContext.getBlockPos(), true));
 			ActionResult result = torchStack.useOnBlock(context);
 			if (player.isCreative()) {
 				torchStack.setCount(oldSize);
