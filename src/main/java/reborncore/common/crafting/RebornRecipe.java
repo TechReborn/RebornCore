@@ -30,7 +30,7 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
 import io.github.cottonmc.libcd.api.CustomOutputRecipe;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.datafixers.NbtOps;
+import net.minecraft.datafixer.NbtOps;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
