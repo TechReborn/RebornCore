@@ -1,13 +1,18 @@
 buildscript {
 	repositories {
 		jcenter()
+		mavenCentral()
         maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath "net.fabricmc:fabric-loom:0.2.7-SNAPSHOT"
+		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
 	}
 }
 
@@ -17,6 +22,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'java-library'
+apply plugin: net.minecrell.gradle.licenser.Licenser
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -32,6 +38,12 @@ group = 'RebornCore'
 def ENV = System.getenv()
 def build_number = ENV.BUILD_NUMBER ?: "local"
 version = "${version}+build.$build_number"
+
+license {
+	header file('HEADER')
+	include '**/*.java'
+	ignoreFailures = true //Stops the build from failing if a file does not have a license header
+}
 
 configurations {
 	ctRuntime {}
