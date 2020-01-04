@@ -43,12 +43,14 @@ import java.util.Random;
 
 public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockEntityRenderer<T> {
 
+	private static final BlockPos OUT_OF_WORLD_POS = new BlockPos(0, 260, 0); //such a shitty hack to make local lighting not affect this, but it works for now
+
 	public MultiblockRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
 		super(blockEntityRenderDispatcher);
 	}
 
 	@Override
-	public void render(T blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
+	public void render(T blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
 		if (blockEntity.renderMultiblock != null) {
 			for (MultiblockComponent comp : blockEntity.renderMultiblock.getComponents()) {
 				renderModel(blockEntity, blockEntity.getWorld(), comp.getRelativePosition(), comp.state, matrixStack, vertexConsumerProvider);
@@ -56,26 +58,24 @@ public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockE
 		}
 	}
 
-	private void renderModel(T blockEntity, World world, BlockPos pos, BlockState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
-		final BlockRenderManager blockRendererDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
+	private void renderModel(T blockEntity, World world, BlockPos relativePos, BlockState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
+		final BlockPos blockEntityPos = blockEntity.getPos();
+		final BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
 		matrixStack.push();
-		matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
-		matrixStack.scale(0.25F, 0.25F, 0.25F);
-		matrixStack.translate(1.5, 1.5, 1.5);
+		matrixStack.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
+		matrixStack.translate(0.5, 0.5, 0.5);
+		float scale = 0.4F;
+		matrixStack.scale(scale, scale, scale);
+		matrixStack.translate(-0.5, -0.5, -0.5);
 
-		if(state.getBlock() instanceof FluidBlock){
-			//TODO nope
-//			FluidBlockExtensions fluidBlockExtensions = (FluidBlockExtensions) state.getBlock();
-//			FluidState fluidState = fluidBlockExtensions.getFluid().getStill().getDefaultState();
-//			blockRendererDispatcher.renderFluid(pos.add(blockEntity.getPos()), world, vertexConsumerProvider.getBuffer(RenderLayers.getFluidLayer(fluidState)), fluidState);
+		if (state.getBlock() instanceof FluidBlock) {
+			//TODO nope (edit: nope again on 4-Jan-20)
+			//FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
+			//blockRenderManager.renderFluid(new BlockPos(0, 260, 0), world, vertexConsumerProvider.getBuffer(RenderLayers.getFluidLayer(fluidState)), fluidState);
 		} else {
-			VertexConsumer consumer = vertexConsumerProvider.getBuffer(RenderLayer.getSolid()); //Tried using getTranslucent here
-			//TODO why doesnt this work
-			consumer = consumer.color(0.5F, 1F, 1F, 0.5F);
-
-			blockRendererDispatcher.renderBlock(state, pos, world, matrixStack, consumer, false, new Random());
+			VertexConsumer consumer = vertexConsumerProvider.getBuffer(RenderLayer.getSolid());
+			blockRenderManager.renderBlock(state, OUT_OF_WORLD_POS, world, matrixStack, consumer, false, new Random());
 		}
-
 		matrixStack.pop();
 	}
 
