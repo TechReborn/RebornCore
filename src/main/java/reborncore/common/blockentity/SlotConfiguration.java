@@ -25,7 +25,6 @@
 package reborncore.common.blockentity;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
@@ -290,14 +289,9 @@ public class SlotConfiguration implements NBTSerializable {
 			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
 			}
-			BlockEntity blockEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
-			if (!(blockEntity instanceof net.minecraft.inventory.Inventory)) {
+			Inventory sourceInv = InventoryUtils.getInventoryAt(machineBase.getWorld(), machineBase.getPos().offset(side));
+			if (sourceInv == null) {
 				return;
-			}
-			Inventory sourceInv = (Inventory) blockEntity;
-			SidedInventory sidedInventory = null;
-			if (sourceInv instanceof SidedInventory) {
-				sidedInventory = (SidedInventory) sourceInv;
 			}
 
 			for (int i = 0; i < sourceInv.getInvSize(); i++) {
@@ -309,7 +303,7 @@ public class SlotConfiguration implements NBTSerializable {
 					continue;
 				}
 
-				if (sidedInventory != null && !sidedInventory.canExtractInvStack(i, sourceStack, side.getOpposite())) {
+				if (sourceInv instanceof SidedInventory && !((SidedInventory) sourceInv).canExtractInvStack(i, sourceStack, side.getOpposite())) {
 					continue;
 				}
 
@@ -340,9 +334,12 @@ public class SlotConfiguration implements NBTSerializable {
 			if (sourceStack.isEmpty()) {
 				return;
 			}
-			BlockEntity blockEntity = machineBase.getWorld().getBlockEntity(machineBase.getPos().offset(side));
+			Inventory destInventory = InventoryUtils.getInventoryAt(machineBase.getWorld(), machineBase.getPos().offset(side));
+			if (destInventory == null) {
+				return;
+			}
 
-			ItemStack stack = InventoryUtils.insertItem(sourceStack, blockEntity, side.getOpposite());
+			ItemStack stack = InventoryUtils.insertItem(sourceStack, destInventory, side.getOpposite());
 			inventory.setInvStack(slotID, stack);
 		}
 
