@@ -83,7 +83,9 @@ public class InventoryUtils {
 			return stack;
 		} else {
 			for (int i = 0; i < inventory.getInvSize() & !stack.isEmpty(); i++) {
-				stack = insertIntoInv(inventory, i, stack);
+				if (inventory.isValidInvStack(i, stack)) {
+					stack = insertIntoInv(inventory, i, stack);
+				}
 			}
 		}
 		return stack;
