@@ -24,12 +24,21 @@
 
 package reborncore.api.items;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import reborncore.common.util.ItemUtils;
+
+import javax.annotation.Nullable;
 
 public class InventoryUtils {
 
@@ -58,13 +67,13 @@ public class InventoryUtils {
 		return stack;
 	}
 
-	public static ItemStack insertItem(ItemStack input, BlockEntity blockEntity, Direction direction){
+	public static ItemStack insertItem(ItemStack input, Inventory inventory, Direction direction) {
 		ItemStack stack = input.copy();
 
-		if(blockEntity instanceof SidedInventory){
-			SidedInventory sidedInventory = (SidedInventory) blockEntity;
-			for(int slot : sidedInventory.getInvAvailableSlots(direction)){
-				if(sidedInventory.canInsertInvStack(slot, stack, direction)){
+		if (inventory instanceof SidedInventory) {
+			SidedInventory sidedInventory = (SidedInventory) inventory;
+			for (int slot : sidedInventory.getInvAvailableSlots(direction)) {
+				if (sidedInventory.canInsertInvStack(slot, stack, direction)) {
 					stack = insertIntoInv(sidedInventory, slot, stack);
 					if(stack.isEmpty()){
 						break;
@@ -72,15 +81,34 @@ public class InventoryUtils {
 				}
 			}
 			return stack;
-		} else if(blockEntity instanceof Inventory){
-			Inventory inventory = (Inventory) blockEntity;
+		} else {
 			for (int i = 0; i < inventory.getInvSize() & !stack.isEmpty(); i++) {
-				stack = insertIntoInv(inventory, i, stack);
+				if (inventory.isValidInvStack(i, stack)) {
+					stack = insertIntoInv(inventory, i, stack);
+				}
 			}
 		}
 		return stack;
 	}
 
+	@Nullable
+	public static Inventory getInventoryAt(World world, BlockPos blockPos) {
+		Inventory inventory = null;
+		BlockState blockState = world.getBlockState(blockPos);
+		Block block = blockState.getBlock();
+		if (block instanceof InventoryProvider) {
+			inventory = ((InventoryProvider) block).getInventory(blockState, world, blockPos);
+		} else if (block.hasBlockEntity()) {
+			BlockEntity blockEntity = world.getBlockEntity(blockPos);
+			if (blockEntity instanceof Inventory) {
+				inventory = (Inventory) blockEntity;
+				if (inventory instanceof ChestBlockEntity && block instanceof ChestBlock) {
+					inventory = ChestBlock.getInventory((ChestBlock) block, blockState, world, blockPos, true);
+				}
+			}
+		}
+		return inventory;
+	}
 
 	private static ItemStack insertIntoInv(Inventory inventory, int slot, ItemStack input){
 		ItemStack targetStack = inventory.getInvStack(slot);
