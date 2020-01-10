@@ -34,7 +34,7 @@ import reborncore.common.util.ItemNBTHelper;
 public class RebornCoreShields {
 
 	public static void init() {
-		ItemCraftCallback.EVENT.register((stack, playerEntity) -> {
+		ItemCraftCallback.EVENT.register((stack, inventory, playerEntity) -> {
 			if (stack.getItem() == Items.SHIELD) {
 				for (Shield shield : ShieldRegistry.shieldList) {
 					if (shield.name.equalsIgnoreCase(playerEntity.getName().toString())) {

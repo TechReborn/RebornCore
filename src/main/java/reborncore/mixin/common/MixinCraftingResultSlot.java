@@ -64,7 +64,7 @@ public abstract class MixinCraftingResultSlot {
 
 	@Inject(method = "onCrafted(Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onCraft(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;I)V", shift = At.Shift.AFTER))
 	private void onCrafted(ItemStack itemStack, CallbackInfo info){
-		ItemCraftCallback.EVENT.invoker().onCraft(itemStack, player);
+		ItemCraftCallback.EVENT.invoker().onCraft(itemStack, craftingInv, player);
 	}
 
 }
