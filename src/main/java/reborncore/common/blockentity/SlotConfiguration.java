@@ -453,7 +453,7 @@ public class SlotConfiguration implements NBTSerializable {
 					return ((SlotFilter) blockEntity).isStackValid(index, itemStackIn);
 				}
 			}
-			return true;
+			return blockEntity.isValidInvStack(index, itemStackIn);
 		}
 		return false;
 	}
