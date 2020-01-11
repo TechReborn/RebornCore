@@ -33,6 +33,7 @@ import net.minecraft.util.JsonHelper;
 public final class FluidValue {
 
 	public static final FluidValue EMPTY = new FluidValue(0);
+	public static final FluidValue BUCKET_QUARTER = new FluidValue(250);
 	public static final FluidValue BUCKET = new FluidValue(1000);
 	public static final FluidValue INFINITE = new FluidValue(Integer.MAX_VALUE);
 
@@ -52,6 +53,10 @@ public final class FluidValue {
 
 	public FluidValue subtract(FluidValue fluidValue) {
 		return fromRaw(rawValue - fluidValue.rawValue);
+	}
+
+	public FluidValue min(FluidValue fluidValue) {
+		return fromRaw(Math.min(rawValue, fluidValue.rawValue));
 	}
 
 	public boolean isEmpty() {

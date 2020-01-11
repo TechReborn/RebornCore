@@ -51,6 +51,7 @@ import reborncore.api.blockentity.InventoryProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.client.multiblock.Multiblock;
 import reborncore.common.blocks.BlockMachineBase;
+import reborncore.common.fluid.FluidValue;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.recipes.IUpgradeHandler;
@@ -354,8 +355,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	//The amount of fluid transfured each tick buy the fluid config
-	public int fluidTransferAmount() {
-		return 250;
+	public FluidValue fluidTransferAmount() {
+		return FluidValue.BUCKET_QUARTER;
 	}
 
 	@Override

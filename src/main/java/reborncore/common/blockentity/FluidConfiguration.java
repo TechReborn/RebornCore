@@ -24,9 +24,13 @@
 
 package reborncore.common.blockentity;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import reborncore.common.fluid.FluidUtil;
 import reborncore.common.util.NBTSerializable;
+import reborncore.common.util.Tank;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -77,28 +81,25 @@ public class FluidConfiguration implements NBTSerializable {
 			if (fluidConfig == null || !fluidConfig.getIoConfig().isEnabled()) {
 				continue;
 			}
-			//TODO fluids
-//			IFluidHandler fluidHandler = getFluidHandler(machineBase, facing);
-//			if (fluidHandler == null) {
-//				continue;
-//			}
-//			if (autoInput() && fluidConfig.getIoConfig().isInsert()) {
-//				FluidUtil.tryFluidTransfer(machineBase.getTank(), fluidHandler, machineBase.fluidTransferAmount(), true);
-//			}
-//			if (autoOutput() && fluidConfig.getIoConfig().isExtact()) {
-//				FluidUtil.tryFluidTransfer(fluidHandler, machineBase.getTank(), machineBase.fluidTransferAmount(), true);
-//			}
+
+			Tank tank = getTank(machineBase, facing);
+			if (autoInput() && fluidConfig.getIoConfig().isInsert()) {
+				FluidUtil.transferFluid(tank, machineBase.getTank(), machineBase.fluidTransferAmount());
+			}
+			if (autoOutput() && fluidConfig.getIoConfig().isExtact()) {
+				FluidUtil.transferFluid(machineBase.getTank(), tank, machineBase.fluidTransferAmount());
+			}
 		}
 	}
 
-//	private IFluidHandler getFluidHandler(TileMachineBase machine, Direction facing) {
-//		BlockPos pos = machine.getPos().offset(facing);
-//		BlockEntity blockEntity = machine.getWorld().getBlockEntity(pos);
-//		if (blockEntity == null) {
-//			return null;
-//		}
-//		return blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
-//	}
+	private Tank getTank(MachineBaseBlockEntity machine, Direction facing) {
+		BlockPos pos = machine.getPos().offset(facing);
+		BlockEntity blockEntity = machine.getWorld().getBlockEntity(pos);
+		if (blockEntity instanceof MachineBaseBlockEntity) {
+			return ((MachineBaseBlockEntity) blockEntity).getTank();
+		}
+		return null;
+	}
 
 	public boolean autoInput() {
 		return input;

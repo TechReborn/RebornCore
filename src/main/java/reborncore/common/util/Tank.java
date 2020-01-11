@@ -153,6 +153,10 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return fluidInstance;
 	}
 
+	public void setFluidInstance(@Nonnull FluidInstance fluidInstance) {
+		this.fluidInstance = fluidInstance;
+	}
+
 	@Override
 	public FluidValue getCapacity(@Nullable Direction type) {
 		return capacity;
