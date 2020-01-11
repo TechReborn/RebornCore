@@ -134,8 +134,8 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 
 	@Override
 	public void getSyncPair(List<Pair<Supplier, Consumer>> pairList) {
-		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((FluidValue) o)));
 		pairList.add(Pair.of(() -> Registry.FLUID.getId(fluidInstance.getFluid()).toString(), (Consumer<String>) o -> fluidInstance.setFluid(Registry.FLUID.get(new Identifier(o)))));
+		pairList.add(Pair.of(() -> fluidInstance.getAmount(), o -> fluidInstance.setAmount((FluidValue) o)));
 	}
 
 	public FluidValue getFluidAmount() {
