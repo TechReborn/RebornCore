@@ -40,7 +40,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import reborncore.common.util.DefaultedListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
-import reborncore.mixin.extensions.RecipeManagerExtensions;
+import reborncore.mixin.common.AccessorRecipeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,9 @@ import java.util.List;
 public class RecipeUtils {
 	@SuppressWarnings("unchecked")
 	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
-		RecipeManagerExtensions recipeManagerExtensions = (RecipeManagerExtensions) world.getRecipeManager();
+		AccessorRecipeManager accessorRecipeManager = (AccessorRecipeManager) world.getRecipeManager();
 		//noinspection unchecked
-		return new ArrayList<>(recipeManagerExtensions.getAll(type).values());
+		return new ArrayList<>(accessorRecipeManager.getAllOfType(type).values());
 	}
 
 	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject){
