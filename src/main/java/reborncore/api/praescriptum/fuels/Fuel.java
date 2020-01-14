@@ -258,7 +258,7 @@ public class Fuel {
 
         ret.setDouble("energyOutput", fuel.energyOutput);
 
-        if (!fuel.metadata.hasNoTags())
+        if (fuel.metadata.isEmpty())
             ret.setTag("metadata", fuel.metadata);
 
         return ret;

@@ -95,10 +95,10 @@ public class ForgePowerHandler implements ExternalPowerHandler {
 
 							for (int j = 0; j < 2; ++j) {
 								double d3 = (double) pos.getX() + world.rand.nextDouble()
-										+ (side.getFrontOffsetX() / 2);
+										+ (side.getXOffset() / 2);
 								double d8 = (double) pos.getY() + world.rand.nextDouble() + 1;
 								double d13 = (double) pos.getZ() + world.rand.nextDouble()
-										+ (side.getFrontOffsetZ() / 2);
+										+ (side.getZOffset() / 2);
 								((WorldServer) world).spawnParticle(EnumParticleTypes.SMOKE_LARGE, false, d3, d8, d13, 2, 0.0D, 0.0D, 0.0D, 0.0D);
 							}
 						} else {

@@ -40,7 +40,7 @@ public class ItemTeamRebornManual extends Item {
 	public static boolean isManualEnabled = false;
 
 	public ItemTeamRebornManual() {
-		setUnlocalizedName("reborncore:manual");
+		setTranslationKey("reborncore:manual");
 		setRegistryName(RebornCore.MOD_ID, "manual");
 		setCreativeTab(CreativeTabs.TOOLS);
 	}

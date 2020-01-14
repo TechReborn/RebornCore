@@ -46,7 +46,7 @@ public class ModelMethods {
 	}
 
 	public static void registerItemModel(Item item, String fileName, String path) {
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + "/" + item.getRegistryName().getResourcePath());
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
 		setMRL(item, 0, loc, "inventory");
 	}
 
@@ -54,7 +54,7 @@ public class ModelMethods {
 		String slash = "";
 		if (!path.isEmpty())
 			slash = "/";
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + slash + item.getRegistryName().getResourcePath());
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + item.getRegistryName().getPath());
 		setMRL(item, meta, loc, invVariant);
 	}
 
@@ -62,7 +62,7 @@ public class ModelMethods {
 		String slash = "";
 		if (!path.isEmpty())
 			slash = "/";
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + slash + fileName);
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + slash + fileName);
 		setMRL(item, meta, loc, invVariant);
 	}
 
@@ -71,7 +71,7 @@ public class ModelMethods {
 	}
 
 	public static void registerBlockState(Item item, int meta, String path, String variant) {
-		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getResourceDomain(), path + "/" + item.getRegistryName().getResourcePath());
+		ResourceLocation loc = new ResourceLocation(item.getRegistryName().getNamespace(), path + "/" + item.getRegistryName().getPath());
 		setMRL(item, meta, loc, variant);
 	}
 
@@ -84,11 +84,11 @@ public class ModelMethods {
 	}
 
 	public static void setBlockStateMapper(Block block, IProperty<?>[] ignoredProperties) {
-		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), ignoredProperties);
+		setBlockStateMapper(block, block.getRegistryName().getPath(), ignoredProperties);
 	}
 
 	public static void setBlockStateMapper(Block block, String blockstatePath, IProperty<?>[] ignoredProperties) {
-		setBlockStateMapper(block, block.getRegistryName().getResourcePath(), blockstatePath, ignoredProperties);
+		setBlockStateMapper(block, block.getRegistryName().getPath(), blockstatePath, ignoredProperties);
 	}
 
 	public static void setBlockStateMapper(Block block, String fileName, String path, IProperty<?>[] ignoredProperties) {
@@ -100,7 +100,7 @@ public class ModelMethods {
 				for (IProperty<?> iproperty : ignoredProperties) {
 					map.remove(iproperty);
 				}
-				return new ModelResourceLocation(new ResourceLocation(block.getRegistryName().getResourceDomain(), path + slash + fileName), this.getPropertyString(map));
+				return new ModelResourceLocation(new ResourceLocation(block.getRegistryName().getNamespace(), path + slash + fileName), this.getPropertyString(map));
 			}
 		});
 	}

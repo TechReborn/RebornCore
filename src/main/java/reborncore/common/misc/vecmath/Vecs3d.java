@@ -87,7 +87,7 @@ public class Vecs3d {
 
 	public Vecs3d add(EnumFacing dir) {
 
-		return add(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
+		return add(dir.getXOffset(), dir.getYOffset(), dir.getZOffset());
 	}
 
 	public Vecs3d add(Vecs3d vec) {
@@ -105,7 +105,7 @@ public class Vecs3d {
 
 	public Vecs3d sub(EnumFacing dir) {
 
-		return sub(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
+		return sub(dir.getXOffset(), dir.getYOffset(), dir.getZOffset());
 	}
 
 	public Vecs3d sub(Vecs3d vec) {
@@ -128,7 +128,7 @@ public class Vecs3d {
 
 	public Vecs3d mul(EnumFacing direction) {
 
-		return mul(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
+		return mul(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
 	}
 
 	public Vecs3d multiply(Vecs3d v) {
@@ -151,7 +151,7 @@ public class Vecs3d {
 
 	public Vecs3d div(EnumFacing direction) {
 
-		return div(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
+		return div(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
 	}
 
 	public double length() {
@@ -197,15 +197,15 @@ public class Vecs3d {
 
 	public Vecs3d getRelative(EnumFacing dir) {
 
-		return getRelative(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
+		return getRelative(dir.getXOffset(), dir.getYOffset(), dir.getZOffset());
 	}
 
 	public EnumFacing getDirectionTo(Vecs3d vec) {
 
 		for (EnumFacing d : EnumFacing.VALUES)
-			if (getBlockX() + d.getFrontOffsetX() == vec.getBlockX()
-				&& getBlockY() + d.getFrontOffsetY() == vec.getBlockY()
-				&& getBlockZ() + d.getFrontOffsetZ() == vec.getBlockZ())
+			if (getBlockX() + d.getXOffset() == vec.getBlockX()
+				&& getBlockY() + d.getYOffset() == vec.getBlockY()
+				&& getBlockZ() + d.getZOffset() == vec.getBlockZ())
 				return d;
 		return null;
 	}

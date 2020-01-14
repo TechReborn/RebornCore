@@ -76,7 +76,7 @@ public class PacketFluidConfigSave implements INetworkPacket<PacketFluidConfigSa
 			//We update the block to allow pipes that are connecting to detctect the update and change their connection status if needed
 			World world = legacyMachineBase.getWorld();
 			IBlockState blockState = world.getBlockState(legacyMachineBase.getPos());
-			world.markAndNotifyBlock(legacyMachineBase.getPos(), world.getChunkFromBlockCoords(legacyMachineBase.getPos()), blockState, blockState, 3);
+			world.markAndNotifyBlock(legacyMachineBase.getPos(), world.getChunk(legacyMachineBase.getPos()), blockState, blockState, 3);
 			return null;
 		});
 

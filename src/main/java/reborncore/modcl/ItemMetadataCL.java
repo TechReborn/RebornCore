@@ -70,11 +70,11 @@ public class ItemMetadataCL extends ItemCL {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
+	public String getTranslationKey(ItemStack itemStack) {
 		int meta = itemStack.getItemDamage();
 		if (meta < 0 || meta >= types.size()) {
 			meta = 0;
 		}
-		return super.getUnlocalizedName() + "." + types.get(meta);
+		return super.getTranslationKey() + "." + types.get(meta);
 	}
 }

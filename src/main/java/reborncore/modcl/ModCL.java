@@ -76,7 +76,7 @@ public abstract class ModCL {
 		}
 
 		@Override
-		public ItemStack getTabIconItem() {
+		public ItemStack createIcon() {
 			return mod.getTabStack();
 		}
 	}

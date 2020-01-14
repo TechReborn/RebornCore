@@ -61,6 +61,6 @@ public class Functions {
 				metaDataToSet = 5;
 				break;
 		}
-		return EnumFacing.getFront(metaDataToSet);
+		return EnumFacing.byIndex(metaDataToSet);
 	}
 }

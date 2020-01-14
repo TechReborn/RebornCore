@@ -83,11 +83,11 @@ public class RebornItemStackRenderer extends TileEntityItemStackRenderer {
 				ShieldTexture shieldTexture = ShieldTextureStore.getTexture(str);
 				if (shieldTexture != null) {
 					if (shieldTexture.getState() == DownloadState.DOWNLOADED) {
-						if (customTextureMap.containsKey(location.getResourcePath())) {
+						if (customTextureMap.containsKey(location.getPath())) {
 							Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 						} else {
 							AbstractTexture texture = shieldTexture.getTexture();
-							customTextureMap.put(location.getResourcePath(), texture);
+							customTextureMap.put(location.getPath(), texture);
 							final ResourceLocation resourceLocation = location;
 							THREAD_POOL.submit((Runnable) () -> Minecraft.getMinecraft().addScheduledTask((Runnable) () -> Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, texture)));
 							Minecraft.getMinecraft().getTextureManager().bindTexture(BannerTextures.SHIELD_BASE_TEXTURE);

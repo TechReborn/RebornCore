@@ -56,7 +56,7 @@ public class BlockCL extends Block {
 	private void setInfo(ModCL mod, String name) {
 		this.mod = mod;
 		this.name = name;
-		setUnlocalizedName(mod.getPrefix() + name);
+		setTranslationKey(mod.getPrefix() + name);
 		setRegistryName(mod.getModID(), name);
 		setCreativeTab(mod.getTab());
 	}

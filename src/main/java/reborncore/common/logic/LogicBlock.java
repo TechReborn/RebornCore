@@ -70,7 +70,7 @@ public class LogicBlock extends BlockContainer {
 	public LogicBlock(LogicController logicController) {
 		super(Material.IRON);
 		this.logicController = logicController;
-		this.setUnlocalizedName(logicController.getName());
+		this.setTranslationKey(logicController.getName());
 		this.logicController.initBlock(this);
 		this.setHardness(logicController.getHardness());
 		if (logicController.hasRotation())

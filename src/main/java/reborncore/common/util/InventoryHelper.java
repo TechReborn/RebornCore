@@ -229,9 +229,9 @@ public class InventoryHelper {
 
 	public static IInventory getInventory(World world, int x, int y, int z, EnumFacing direction) {
 		if (direction != null) {
-			x += direction.getFrontOffsetX();
-			y += direction.getFrontOffsetY();
-			z += direction.getFrontOffsetZ();
+			x += direction.getXOffset();
+			y += direction.getYOffset();
+			z += direction.getZOffset();
 		}
 		return getInventory(world, x, y, z);
 

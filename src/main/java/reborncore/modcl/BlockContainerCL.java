@@ -59,7 +59,7 @@ public abstract class BlockContainerCL extends BlockContainer {
 		this.mod = mod;
 		this.name = name;
 		this.tileEntity = tileEntity;
-		setUnlocalizedName(mod.getPrefix() + name);
+		setTranslationKey(mod.getPrefix() + name);
 		setRegistryName(mod.getModID(), name);
 		setCreativeTab(mod.getTab());
 	}
