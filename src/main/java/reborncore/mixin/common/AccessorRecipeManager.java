@@ -38,5 +38,5 @@ import java.util.Map;
 public interface AccessorRecipeManager {
 
 	@Invoker(value = "getAllOfType")
-	<C extends Inventory, T extends Recipe<C>> Map<Identifier, Recipe<C>> getAllOfType(RecipeType<T> type);
+	<C extends Inventory, T extends Recipe<C>> Map<Identifier, Recipe<C>> getAll(RecipeType<T> type);
 }

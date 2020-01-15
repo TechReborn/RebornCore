@@ -50,7 +50,7 @@ public class RecipeUtils {
 	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
 		AccessorRecipeManager accessorRecipeManager = (AccessorRecipeManager) world.getRecipeManager();
 		//noinspection unchecked
-		return new ArrayList<>(accessorRecipeManager.getAllOfType(type).values());
+		return new ArrayList<>(accessorRecipeManager.getAll(type).values());
 	}
 
 	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject){
