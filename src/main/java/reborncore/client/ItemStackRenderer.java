@@ -76,8 +76,9 @@ public class ItemStackRenderer {
 
 			RenderSystem.enableRescaleNormal();
 			RenderSystem.enableAlphaTest();
-			RenderSystem.alphaFunc(516, 0.1F);
+			RenderSystem.defaultAlphaFunc();
 			RenderSystem.enableBlend();
+			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			MatrixStack matrixStack = new MatrixStack();
@@ -96,6 +97,8 @@ public class ItemStackRenderer {
 			itemRenderer.renderItem(stack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
 			immediate.draw();
 
+			RenderSystem.enableDepthTest();
+
 			if (disableDepth) {
 				DiffuseLighting.enableGuiDepthLighting();
 			}
@@ -103,6 +106,8 @@ public class ItemStackRenderer {
 			RenderSystem.disableAlphaTest();
 			RenderSystem.disableRescaleNormal();
 		}
+
+		RenderSystem.popMatrix();
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.popMatrix();
 		RenderSystem.matrixMode(GL11.GL_MODELVIEW);
