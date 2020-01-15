@@ -27,32 +27,48 @@ package reborncore.common;
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.arguments.EntityArgumentType;
+import net.minecraft.command.arguments.ItemStackArgumentType;
+import net.minecraft.item.Item;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.ChunkStatus;
+import reborncore.client.ItemStackRenderManager;
 import reborncore.common.crafting.RecipeManager;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class RebornCoreCommands {
 
 	private final static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+	private final static SuggestionProvider<ServerCommandSource> MOD_SUGGESTIONS = (context, builder) ->
+			CommandSource.suggestMatching(FabricLoader.getInstance().getAllMods().stream().map(modContainer -> modContainer.getMetadata().getId()), builder);
 
 	public static void setup() {
 		CommandRegistry.INSTANCE.register(false, RebornCoreCommands::addCommands);
@@ -91,6 +107,25 @@ public class RebornCoreCommands {
 									)
 							)
 					)
+
+					.then(
+						literal("render")
+							.then(
+								literal("mod")
+									.then(
+										argument("modid", word())
+										.suggests(MOD_SUGGESTIONS)
+										.executes(RebornCoreCommands::renderMod)
+									)
+							)
+							.then(
+								literal("item")
+									.then(
+										argument("item", ItemStackArgumentType.itemStack())
+										.executes(RebornCoreCommands::itemRenderer)
+									)
+							)
+					)
 		);
 	}
 
@@ -123,5 +158,31 @@ public class RebornCoreCommands {
 				.forEach(ServerPlayerEntity::sendAbilitiesUpdate);
 
 		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int renderMod(CommandContext<ServerCommandSource> ctx) {
+		String modid = StringArgumentType.getString(ctx, "modid");
+
+		List<Identifier> list = Registry.ITEM.getIds().stream()
+				.filter(identifier -> identifier.getNamespace().equals(modid))
+				.collect(Collectors.toList());
+
+		queueRender(list);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static int itemRenderer(CommandContext<ServerCommandSource> ctx) {
+		Item item = ItemStackArgumentType.getItemStackArgument(ctx, "item").getItem();
+		queueRender(Collections.singletonList(Registry.ITEM.getId(item)));
+
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static void queueRender(List<Identifier> identifiers) {
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+			System.out.println("Render item only works on the client!");
+			return;
+		}
+		ItemStackRenderManager.RENDER_QUEUE.addAll(identifiers);
 	}
 }
