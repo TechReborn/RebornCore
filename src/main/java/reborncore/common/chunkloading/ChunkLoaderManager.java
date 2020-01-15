@@ -142,7 +142,7 @@ public class ChunkLoaderManager implements DataAttachment {
 
 	public static Identifier getWorldName(World world){
 		Validate.isTrue(world instanceof ServerWorld, "world must be a ServerWorld");
-		return Registry.DIMENSION.getId(world.getDimension().getType());
+		return Registry.DIMENSION_TYPE.getId(world.getDimension().getType());
 	}
 
 	public void syncChunkLoaderToClient(ServerPlayerEntity serverPlayerEntity, BlockPos chunkLoader){
