@@ -272,7 +272,7 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
     // << Helpers
 
     // Fields >>
-    public static final IProperty<EnumFacing> facingProperty = PropertyDirection.create("facing");
+    public static final IProperty<EnumFacing> facingProperty = PropertyDirection.create("facing", Utils.HORIZONTAL_FACINGS);
     public static final IProperty<Boolean> activeProperty = PropertyBool.create("active");
     // << Fields
 }
