@@ -66,7 +66,7 @@ public interface IRegistryFactory {
 	 *
 	 * @param clazz the class
 	 */
-	public default void handleClass(Class clazz) {
+	public default void handleClass(Class<?> clazz) {
 	}
 
 	/**

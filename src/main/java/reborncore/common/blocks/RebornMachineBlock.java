@@ -243,9 +243,9 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
             } else if (stack.getItem() instanceof IUpgrade && tileEntity instanceof IUpgradeable) {
                 IUpgradeable upgradeableEntity = (IUpgradeable) tileEntity;
                 if (upgradeableEntity.canBeUpgraded()) {
-                    if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInvetory(), stack,
+                    if (InventoryHelper.testInventoryInsertion(upgradeableEntity.getUpgradeInventory(), stack,
                             null) > 0) {
-                        InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInvetory(), stack);
+                        InventoryHelper.insertItemIntoInventory(upgradeableEntity.getUpgradeInventory(), stack);
                         playerIn.setHeldItem(EnumHand.MAIN_HAND, stack);
                         return true;
                     }

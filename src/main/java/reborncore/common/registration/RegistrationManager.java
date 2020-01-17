@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 public class RegistrationManager {
 
 	static List<IRegistryFactory> factoryList = new ArrayList<>();
-	static List<Class> registryClasses = new ArrayList<>();
+	static List<Class<?>> registryClasses = new ArrayList<>();
 
 	public static void init(FMLPreInitializationEvent event) {
 		long start = System.currentTimeMillis();
@@ -70,7 +70,7 @@ public class RegistrationManager {
 				if(!isValidOnSide(data, asmDataTable)){
 					continue;
 				}
-				Class clazz = Class.forName(data.getClassName());
+				Class<?> clazz = Class.forName(data.getClassName());
 				if(isEarlyReg(data)){
 					handleClass(clazz, null, factoryList);
 					continue;
@@ -185,7 +185,7 @@ public class RegistrationManager {
 
 		List<IRegistryFactory> factoryList = getFactorysForSate(event.getClass());
 		if (!factoryList.isEmpty()) {
-			for (Class clazz : registryClasses) {
+			for (Class<?> clazz : registryClasses) {
 				handleClass(clazz, activeMod, factoryList);
 			}
 			factoryList.forEach(IRegistryFactory::factoryComplete);
@@ -195,7 +195,7 @@ public class RegistrationManager {
 		RebornCore.logHelper.info("Loaded registrys for " + event.getClass().getName() + " in " + (System.currentTimeMillis() - start) + "ms");
 	}
 
-	private static void handleClass(Class clazz, ModContainer activeMod, List<IRegistryFactory> factories){
+	private static void handleClass(Class<?> clazz, ModContainer activeMod, List<IRegistryFactory> factories){
 		RebornRegistry annotation = (RebornRegistry) getAnnoation(clazz.getAnnotations(), RebornRegistry.class);
 		if (annotation != null) {
 			if (activeMod != null && !activeMod.getModId().equals(annotation.modID())) {
@@ -241,7 +241,7 @@ public class RegistrationManager {
 		return null;
 	}
 
-	public static Annotation getAnnoation(Annotation[] annotations, Class annoation) {
+	public static Annotation getAnnoation(Annotation[] annotations, Class<?> annoation) {
 		for (Annotation annotation : annotations) {
 			if (annotation.annotationType() == annoation) {
 				return annotation;
@@ -254,7 +254,7 @@ public class RegistrationManager {
 		Set<ASMDataTable.ASMData> asmDataSet = dataTable.getAll(IRegistryFactory.RegistryFactory.class.getName());
 		for (ASMDataTable.ASMData data : asmDataSet) {
 			try {
-				Class clazz = Class.forName(data.getClassName());
+				Class<?> clazz = Class.forName(data.getClassName());
 				IRegistryFactory.RegistryFactory registryFactory = (IRegistryFactory.RegistryFactory) getAnnoation(clazz.getAnnotations(), IRegistryFactory.RegistryFactory.class);
 				if (!registryFactory.side().canExcetue()) {
 					continue;

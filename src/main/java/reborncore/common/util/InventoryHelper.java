@@ -282,7 +282,7 @@ public class InventoryHelper {
 			}
 		}
 		if (tileEntity instanceof IUpgradeable) {
-			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, ((IUpgradeable) tileEntity).getUpgradeInvetory());
+			net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, ((IUpgradeable) tileEntity).getUpgradeInventory());
 		}
 	}
 

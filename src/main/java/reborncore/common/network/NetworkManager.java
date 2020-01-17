@@ -47,32 +47,32 @@ public class NetworkManager {
 
 	public static ArrayList<PacketDetails> packetList = new ArrayList<>();
 
-	public static void sendToServer(INetworkPacket packet) {
+	public static void sendToServer(INetworkPacket<?> packet) {
 		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToServer(new PacketWrapper(packet));
 	}
 
-	public static void sendToAllAround(INetworkPacket packet, NetworkRegistry.TargetPoint point) {
+	public static void sendToAllAround(INetworkPacket<?> packet, NetworkRegistry.TargetPoint point) {
 		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToAllAround(new PacketWrapper(packet), point);
 	}
 
-	public static void sendToAll(INetworkPacket packet) {
+	public static void sendToAll(INetworkPacket<?> packet) {
 		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToAll(new PacketWrapper(packet));
 	}
 
-	public static void sendToPlayer(INetworkPacket packet, EntityPlayerMP playerMP) {
+	public static void sendToPlayer(INetworkPacket<?> packet, EntityPlayerMP playerMP) {
 		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendTo(new PacketWrapper(packet), playerMP);
 	}
 
-	public static void sendToWorld(INetworkPacket packet, World world) {
+	public static void sendToWorld(INetworkPacket<?> packet, World world) {
 		checkPacket(packet);
 		getWrapperForPacket(packet.getClass()).sendToDimension(new PacketWrapper(packet), world.provider.getDimension());
 	}
 
-	public static void checkPacket(INetworkPacket packet){
+	public static void checkPacket(INetworkPacket<?> packet){
 		if (getPacketDetails(packet.getClass()) == null) {
 			throw new RuntimeException("Packet " + packet.getClass().getName() + " has not been registered");
 		}

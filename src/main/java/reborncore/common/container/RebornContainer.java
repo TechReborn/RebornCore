@@ -63,18 +63,18 @@ public abstract class RebornContainer extends Container {
         return createContainer(clazz, tileEntity, RebornCore.proxy.getPlayer());
     }
 
-    public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player) {
+	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player) {
         if (player == null && containerMap.containsKey(clazz.getCanonicalName())) {
             return containerMap.get(clazz.getCanonicalName());
         } else {
             try {
                 RebornContainer container = null;
-                for (Constructor constructor : clazz.getConstructors()) {
+                for (Constructor<?> constructor : clazz.getConstructors()) {
                     if (constructor.getParameterCount() == 0) {
                         container = clazz.newInstance();
                         if (container instanceof IContainerLayout) {
                             ((IContainerLayout) container).setTile(tileEntity);
-                            ((IContainerLayout) container).addInventorySlots();
+                            ((IContainerLayout<?>) container).addInventorySlots();
                         }
                         continue;
                     } else if (constructor.getParameterCount() == 2) {

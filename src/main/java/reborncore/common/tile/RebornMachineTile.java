@@ -97,69 +97,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
             NetworkManager.sendToAllAround(new CustomDescriptionPacket(this.pos, this.writeToNBT(new NBTTagCompound())), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 64));
         }
     }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (slotConfiguration == null) {
-            if (getInventoryForTile().isPresent()) {
-                slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
-            } else {
-                slotConfiguration = new SlotConfiguration();
-            }
-        }
-        if (getTank() != null) {
-            if (fluidConfiguration == null) {
-                fluidConfiguration = new FluidConfiguration();
-            }
-        }
-    }
-
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
-        writeToNBT(compound);
-        return compound;
-    }
-
-
-
-    @Override
-    public void update() {
-        @Nullable
-        RecipeCrafter crafter = null;
-        if (getCrafterForTile().isPresent()) {
-            crafter = getCrafterForTile().get();
-        }
-        if (canBeUpgraded()) {
-            resetUpgrades();
-            for (int i = 0; i < getUpgradeSlotCount(); i++) {
-                ItemStack stack = getUpgradeInvetory().getStackInSlot(i);
-                if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
-                    ((IUpgrade) stack.getItem()).process(this, stack);
-                }
-            }
-        }
-        if (!world.isRemote) {
-            if (crafter != null) {
-                crafter.updateEntity();
-            }
-            if (slotConfiguration != null) {
-                slotConfiguration.update(this);
-            }
-            if (fluidConfiguration != null) {
-                fluidConfiguration.update(this);
-            }
-        }
-
-    }
-
+    
     public void resetUpgrades() {
         resetPowerMulti();
         resetSpeedMulti();
@@ -180,17 +118,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         }
         return null;
     }
-
-    // This stops the tile from getting cleared when the state is
-    // updated(rotation and on/off)
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        if (oldState.getBlock() != newSate.getBlock()) {
-            return true;
-        }
-        return false;
-    }
-
+    
     public Optional<Inventory> getInventoryForTile() {
         if (this instanceof IInventoryProvider) {
             IInventoryProvider inventory = (IInventoryProvider) this;
@@ -225,6 +153,152 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         } else {
             return Optional.empty();
         }
+    }
+    
+    public boolean hasSlotConfig() {
+        return true;
+    }
+
+    @Nullable
+    public RebornFluidTank getTank() {
+        return null;
+    }
+
+    public boolean showTankConfig() {
+        return getTank() != null;
+    }
+
+    //The amount of ticks between a slot transfer attempt, less is faster
+    public int slotTransferSpeed() {
+        return 4;
+    }
+
+    //The amount of fluid transfured each tick buy the fluid config
+    public int fluidTransferAmount() {
+        return 250;
+    }
+    
+    public void onPlaced(EntityLivingBase placer, ItemStack stack) {
+        EnumFacing newFacing = getFacingForPlacement(placer);
+        if (newFacing != getFacing()) setFacing(newFacing);
+    }
+
+    public EnumFacing getFacing() {
+        return EnumFacing.values()[facing];
+    }
+
+    public boolean canSetFacing(EnumFacing facing) {
+        return facing != getFacing() && supportedFacings.contains(facing);
+    }
+
+    public boolean setFacing(EnumFacing facing) {
+        if (!canSetFacing(facing)) return false;
+
+        this.facing = (byte) facing.ordinal();
+        syncWithAll();
+        notifyBlockUpdate();
+
+        return true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        if (this.active == active) return;
+
+        this.active = active;
+        syncWithAll();
+        notifyBlockUpdate();
+    }
+
+    public IBlockState getBlockState() {
+        return world.getBlockState(pos).getBlock().getDefaultState()
+                .withProperty(RebornMachineBlock.FACING, getFacing())
+                .withProperty(RebornMachineBlock.activeProperty, isActive());
+    }
+    
+    // Helpers >>
+    protected void notifyBlockUpdate() {
+        IBlockState state = getBlockState();
+        getWorld().notifyBlockUpdate(pos, state, state, 2);
+    }
+
+    protected EnumFacing getFacingForPlacement(EntityLivingBase placer) {
+        if (supportedFacings.isEmpty()) return EnumFacing.DOWN;
+
+        if (placer == null) return EnumFacing.DOWN;
+
+        EnumFacing bestFacing = null;
+        double bestScore = Double.NEGATIVE_INFINITY;
+        Vec3d dir = placer.getLookVec();
+        for (EnumFacing entry : supportedFacings) {
+            double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
+            if (score > bestScore) {
+                bestScore = score;
+                bestFacing = entry;
+            }
+        }
+
+        return bestFacing;
+    }
+    // << Helpers
+
+    // TileEntity
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (slotConfiguration == null) {
+            if (getInventoryForTile().isPresent()) {
+                slotConfiguration = new SlotConfiguration(getInventoryForTile().get());
+            } else {
+                slotConfiguration = new SlotConfiguration();
+            }
+        }
+        if (getTank() != null) {
+            if (fluidConfiguration == null) {
+                fluidConfiguration = new FluidConfiguration();
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = super.writeToNBT(new NBTTagCompound());
+        writeToNBT(compound);
+        return compound;
+    }
+    
+    @Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+
+        if (world.isRemote) {
+            IBlockState state = getWorld().getBlockState(getPos());
+            getWorld().notifyBlockUpdate(getPos(), state, state, 3);
+        }
+    }
+    
+    // This stops the tile from getting cleared when the state is
+    // updated(rotation and on/off)
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        if (oldState.getBlock() != newSate.getBlock()) {
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public void rotate(Rotation rotationIn) {
+        setFacing(rotationIn.rotate(getFacing()));
     }
 
     @Override
@@ -290,8 +364,76 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         upgradeInventory.writeToNBT(tagCompound, "Upgrades");
         return tagCompound;
     }
+    
+    @Override
+    public ITextComponent getDisplayName() {
+        if (getInventoryForTile().isPresent()) {
+            return getInventoryForTile().get().getDisplayName();
+        }
+        return null;
+    }
 
-    //Inventory Start
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
+
+        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
+                FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
+				return fluidConfig.getIoConfig().isEnabled();
+            }
+
+            return true;
+        }
+
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
+        }
+
+        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        	return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new RebornFluidHandler(this, facing));
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
+    // ITIckable
+    @Override
+    public void update() {
+        @Nullable
+        RecipeCrafter crafter = null;
+        if (getCrafterForTile().isPresent()) {
+            crafter = getCrafterForTile().get();
+        }
+        if (canBeUpgraded()) {
+            resetUpgrades();
+            for (int i = 0; i < getUpgradeSlotCount(); i++) {
+            	ItemStack stack = getUpgradeInventory().getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
+                    ((IUpgrade) stack.getItem()).process(this, stack);
+                }
+            }
+        }
+        if (!world.isRemote) {
+            if (crafter != null) {
+                crafter.updateEntity();
+            }
+            if (slotConfiguration != null) {
+                slotConfiguration.update(this);
+            }
+            if (fluidConfiguration != null) {
+                fluidConfiguration.update(this);
+            }
+        }
+
+    }
+
+    //ISidedInventory
     @Override
     public int getSizeInventory() {
         if (getInventoryForTile().isPresent()) {
@@ -437,14 +579,6 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        if (getInventoryForTile().isPresent()) {
-            return getInventoryForTile().get().getDisplayName();
-        }
-        return null;
-    }
-
-    @Override
     public int[] getSlotsForFace(EnumFacing side) {
         if (slotConfiguration == null) {
             return new int[]{}; //I think should be ok, if needed this can return all the slots
@@ -498,35 +632,8 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
     }
     //Inventory end
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
 
-        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            if (fluidConfiguration != null && fluidConfiguration.getSideDetail(facing) != null) {
-                FluidConfiguration.FluidConfig fluidConfig = fluidConfiguration.getSideDetail(facing);
-				return fluidConfig.getIoConfig().isEnabled();
-            }
-
-            return true;
-        }
-
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(new SidedInvWrapper(this, facing));
-        }
-
-        if (getTank() != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			return (T) new RebornFluidHandler(this, facing);
-        }
-
-        return super.getCapability(capability, facing);
-    }
-
+    // IUpgradable
     @Override
     public ISidedInventory getUpgradeInventory() {
         return upgradeInventory;
@@ -537,13 +644,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         return 4;
     }
 
-
-
-    @Override
-    public void rotate(Rotation rotationIn) {
-        setFacing(rotationIn.rotate(getFacing()));
-    }
-
+    // IUpgradeHandler
     @Override
     public void resetSpeedMulti() {
         speedMultiplier = 0;
@@ -599,110 +700,6 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
             }
         }
     }
-
-    public boolean hasSlotConfig() {
-        return true;
-    }
-
-    @Nullable
-    public RebornFluidTank getTank() {
-        return null;
-    }
-
-    public boolean showTankConfig() {
-        return getTank() != null;
-    }
-
-    //The amount of ticks between a slot tranfer atempt, less is faster
-    public int slotTransferSpeed() {
-        return 4;
-    }
-
-    //The amount of fluid transfured each tick buy the fluid config
-    public int fluidTransferAmount() {
-        return 250;
-    }
-
-
-
-
-
-    @Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
-        super.onDataPacket(net, pkt);
-
-        if (world.isRemote) {
-            IBlockState state = getWorld().getBlockState(getPos());
-            getWorld().notifyBlockUpdate(getPos(), state, state, 3);
-        }
-    }
-
-    public void onPlaced(EntityLivingBase placer, ItemStack stack) {
-        EnumFacing newFacing = getFacingForPlacement(placer);
-        if (newFacing != getFacing()) setFacing(newFacing);
-    }
-
-    public EnumFacing getFacing() {
-        return EnumFacing.values()[facing];
-    }
-
-    public boolean canSetFacing(EnumFacing facing) {
-        return facing != getFacing() && supportedFacings.contains(facing);
-    }
-
-    public boolean setFacing(EnumFacing facing) {
-        if (!canSetFacing(facing)) return false;
-
-        this.facing = (byte) facing.ordinal();
-        syncWithAll();
-        notifyBlockUpdate();
-
-        return true;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        if (this.active == active) return;
-
-        this.active = active;
-        syncWithAll();
-        notifyBlockUpdate();
-    }
-
-    public IBlockState getBlockState() {
-        return world.getBlockState(pos).getBlock().getDefaultState()
-                .withProperty(RebornMachineBlock.FACING, getFacing())
-                .withProperty(RebornMachineBlock.activeProperty, isActive());
-    }
-
-    // Helpers >>
-    protected void notifyBlockUpdate() {
-        IBlockState state = getBlockState();
-        getWorld().notifyBlockUpdate(pos, state, state, 2);
-    }
-
-    protected EnumFacing getFacingForPlacement(EntityLivingBase placer) {
-        if (supportedFacings.isEmpty()) return EnumFacing.DOWN;
-
-        if (placer == null) return EnumFacing.DOWN;
-
-        EnumFacing bestFacing = null;
-        double bestScore = Double.NEGATIVE_INFINITY;
-        Vec3d dir = placer.getLookVec();
-        for (EnumFacing entry : supportedFacings) {
-            double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
-            if (score > bestScore) {
-                bestScore = score;
-                bestFacing = entry;
-            }
-        }
-
-        return bestFacing;
-    }
-    // << Helpers
 
     // Fields >>
     protected Set<EnumFacing> supportedFacings = Utils.HORIZONTAL_FACINGS;

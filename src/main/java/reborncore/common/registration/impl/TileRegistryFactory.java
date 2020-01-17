@@ -23,6 +23,7 @@
 
 package reborncore.common.registration.impl;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.common.registration.IRegistryFactory;
 import reborncore.common.registration.RegistrationManager;
@@ -40,10 +41,11 @@ public class TileRegistryFactory implements IRegistryFactory {
 		return TileRegistry.class;
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
-	public void handleClass(Class clazz) {
+	public void handleClass(Class<?> clazz) {
 		TileRegistry tileRegistry = (TileRegistry) RegistrationManager.getAnnoationFromArray(clazz.getAnnotations(), this);
-		GameRegistry.registerTileEntity(clazz, tileRegistry.name());
+		GameRegistry.registerTileEntity((Class<? extends TileEntity>) clazz, tileRegistry.name());
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class LogicControllerRegistryFactory implements IRegistryFactory {
 
 	@Override
 	public void handleField(Field field) {
-		Class clazz = field.getType();
+		Class<?> clazz = field.getType();
 		if (!Modifier.isStatic(field.getModifiers())) {
 			throw new RuntimeException("Field must be static when used with RebornBlockRegistry");
 		}
