@@ -17,7 +17,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.io.FileUtils;
@@ -36,8 +35,6 @@ public class ItemStackRenderer implements HudRenderCallback {
 			ItemStack itemStack = new ItemStack(item);
 			export(itemStack, 512, identifier);
 		}
-		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-		itemRenderer.renderGuiItem(new ItemStack(Items.IRON_INGOT), 0, 0);
 	}
 
 	private void export(ItemStack stack, int size, Identifier identifier) {
