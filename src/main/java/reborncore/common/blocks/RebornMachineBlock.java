@@ -22,13 +22,12 @@
 
 package reborncore.common.blocks;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -59,7 +58,7 @@ import reborncore.common.util.Utils;
 
 import java.util.Set;
 
-public abstract class RebornMachineBlock extends Block implements ITileEntityProvider, IWrenchable {
+public abstract class RebornMachineBlock extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
     public static ItemStack basicFrameStack;
     public static ItemStack advancedFrameStack;
     boolean hasCustomStates;
@@ -73,14 +72,14 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
     }
 
     public RebornMachineBlock(boolean hasCustomStates, Set<EnumFacing> supportedFacings) {
-        super(Material.IRON);
+    	super(Material.IRON);
 
         setHardness(2.0F);
         setSoundType(SoundType.METAL);
 
         if (!hasCustomStates) {
             setDefaultState(blockState.getBaseState()
-                    .withProperty(facingProperty, EnumFacing.NORTH)
+                    .withProperty(FACING, EnumFacing.NORTH)
                     .withProperty(activeProperty, false));
         }
 
@@ -90,7 +89,7 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
     // Block >>
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, facingProperty, activeProperty);
+        return new BlockStateContainer(this, FACING, activeProperty);
     }
 
     @Override
@@ -132,8 +131,8 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        int facing = state.getValue(facingProperty).ordinal();
-        int active = state.getValue(activeProperty) ? 6 : 0;
+        int facing = state.getValue(FACING).ordinal();
+        int active = state.getValue(activeProperty) ? 1 : 0;
 
         return facing + active;
     }
@@ -141,12 +140,12 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
     @Override
     public IBlockState getStateFromMeta(int meta) {
         boolean active = false;
-        if (meta >= EnumFacing.values().length) {
+        if (meta >= FACING.getAllowedValues().size()) {
             active = true;
-            meta -= EnumFacing.values().length;
+            meta -= FACING.getAllowedValues().size();
         }
 
-        return getDefaultState().withProperty(facingProperty, EnumFacing.values()[meta])
+        return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta))
                 .withProperty(activeProperty, active);
     }
     // << Block
@@ -272,7 +271,6 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
     // << Helpers
 
     // Fields >>
-    public static final IProperty<EnumFacing> facingProperty = PropertyDirection.create("facing", Utils.HORIZONTAL_FACINGS);
     public static final IProperty<Boolean> activeProperty = PropertyBool.create("active");
     // << Fields
 }
