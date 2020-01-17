@@ -54,9 +54,4 @@ public class MixinGameRenderer {
 		return playerSpeed;
 	}
 
-	@Inject(method = "render", at = @At("RETURN"))
-	public void render(float tickDelta, long startTime, boolean tick, CallbackInfo info) {
-		ItemStackRenderer.process();
-	}
-
 }

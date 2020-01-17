@@ -2,6 +2,7 @@ package reborncore.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
@@ -14,9 +15,9 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.io.FileUtils;
@@ -25,18 +26,21 @@ import org.lwjgl.opengl.GL11;
 import java.io.File;
 
 //Very broken, roughly ported from a 1.14 project, ive forgotten where the ordinal code came from (let me know and ill credit you or remove it)
-public class ItemStackRenderer {
+public class ItemStackRenderer implements HudRenderCallback {
 
-	public static void process() {
+	@Override
+	public void onHudRender(float v) {
 		if (!ItemStackRenderManager.RENDER_QUEUE.isEmpty()) {
 			Identifier identifier = ItemStackRenderManager.RENDER_QUEUE.poll();
 			Item item = Registry.ITEM.get(identifier);
 			ItemStack itemStack = new ItemStack(item);
 			export(itemStack, 512, identifier);
 		}
+		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+		itemRenderer.renderGuiItem(new ItemStack(Items.IRON_INGOT), 0, 0);
 	}
 
-	private static void export(ItemStack stack, int size, Identifier identifier) {
+	private void export(ItemStack stack, int size, Identifier identifier) {
 		File dir = new File(FabricLoader.getInstance().getGameDirectory(), "item_renderer/" + identifier.getNamespace());
 		if (!dir.exists()) {
 			dir.mkdir();
@@ -65,7 +69,6 @@ public class ItemStackRenderer {
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
-		RenderSystem.scalef(1.0F, -1.0F, 1.0F);
 		RenderSystem.matrixMode(GL11.GL_MODELVIEW);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
@@ -78,6 +81,7 @@ public class ItemStackRenderer {
 			RenderSystem.enableAlphaTest();
 			RenderSystem.defaultAlphaFunc();
 			RenderSystem.enableBlend();
+			RenderSystem.enableDepthTest();
 			RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -85,21 +89,18 @@ public class ItemStackRenderer {
 
 			matrixStack.scale(2F, 2F, 1F);
 
-			VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-
-			boolean disableDepth = !model.method_24304();
-			if (disableDepth) {
+			boolean disableGuiLight = !model.method_24304();
+			if (disableGuiLight) {
 				DiffuseLighting.disableGuiDepthLighting();
 			}
 
-			matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180));
-
+			VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 			itemRenderer.renderItem(stack, ModelTransformation.Mode.GUI, false, matrixStack, immediate, 15728880, OverlayTexture.DEFAULT_UV, model);
 			immediate.draw();
 
 			RenderSystem.enableDepthTest();
 
-			if (disableDepth) {
+			if (disableGuiLight) {
 				DiffuseLighting.enableGuiDepthLighting();
 			}
 
@@ -130,5 +131,4 @@ public class ItemStackRenderer {
 		}
 		framebuffer.delete();
 	}
-
 }
