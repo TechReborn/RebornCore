@@ -66,19 +66,14 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 		final BakedModel model = itemRenderer.getHeldItemModel(stack, minecraft.world, minecraft.player);
-
-		boolean block = stack.getItem() instanceof BlockItem && model.method_24304();
-
+		
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
-		if (block)
-			RenderSystem.scaled(1, -1, 1);
+		RenderSystem.ortho(-1, 1, 1, -1, -100.0, 100.0);
 		RenderSystem.matrixMode(GL11.GL_MODELVIEW);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
-		if (block)
-			RenderSystem.rotatef(180, 1, 0, 0);
 
 		{
 			minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
@@ -94,7 +89,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			MatrixStack matrixStack = new MatrixStack();
 
-			matrixStack.scale(2F, 2F, 1F);
+			matrixStack.scale(2F, -2F, 1F);
 
 			boolean disableGuiLight = !model.method_24304();
 			if (disableGuiLight) {
