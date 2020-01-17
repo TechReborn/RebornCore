@@ -29,6 +29,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
@@ -36,6 +37,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.command.arguments.ItemStackArgumentType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
@@ -56,6 +58,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
@@ -125,6 +128,10 @@ public class RebornCoreCommands {
 										.executes(RebornCoreCommands::itemRenderer)
 									)
 							)
+							.then(
+								literal("hand")
+								.executes(RebornCoreCommands::handRenderer)
+							)
 					)
 		);
 	}
@@ -163,8 +170,10 @@ public class RebornCoreCommands {
 	private static int renderMod(CommandContext<ServerCommandSource> ctx) {
 		String modid = StringArgumentType.getString(ctx, "modid");
 
-		List<Identifier> list = Registry.ITEM.getIds().stream()
+		List<ItemStack> list = Registry.ITEM.getIds().stream()
 				.filter(identifier -> identifier.getNamespace().equals(modid))
+				.map(Registry.ITEM::get)
+				.map(ItemStack::new)
 				.collect(Collectors.toList());
 
 		queueRender(list);
@@ -173,16 +182,27 @@ public class RebornCoreCommands {
 
 	private static int itemRenderer(CommandContext<ServerCommandSource> ctx) {
 		Item item = ItemStackArgumentType.getItemStackArgument(ctx, "item").getItem();
-		queueRender(Collections.singletonList(Registry.ITEM.getId(item)));
+		queueRender(Collections.singletonList(new ItemStack(item)));
 
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private static void queueRender(List<Identifier> identifiers) {
+	private static int handRenderer(CommandContext<ServerCommandSource> ctx) {
+		try {
+			queueRender(Collections.singletonList(ctx.getSource().getPlayer().inventory.getMainHandStack()));
+		} catch (CommandSyntaxException e) {
+			e.printStackTrace();
+			return 0;
+		}
+
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private static void queueRender(List<ItemStack> stacks) {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 			System.out.println("Render item only works on the client!");
 			return;
 		}
-		ItemStackRenderManager.RENDER_QUEUE.addAll(identifiers);
+		ItemStackRenderManager.RENDER_QUEUE.addAll(stacks);
 	}
 }

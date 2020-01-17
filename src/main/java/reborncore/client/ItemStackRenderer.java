@@ -15,7 +15,7 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -24,16 +24,20 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 
-//Very broken, roughly ported from a 1.14 project, ive forgotten where the ordinal code came from (let me know and ill credit you or remove it)
+/**
+ * Initially take from https://github.com/JamiesWhiteShirt/developer-mode/tree/experimental-item-render and then ported to 1.15
+ * Thanks 2xsaiko for fixing the lighting + odd issues above
+ */
 public class ItemStackRenderer implements HudRenderCallback {
 
 	@Override
 	public void onHudRender(float v) {
 		if (!ItemStackRenderManager.RENDER_QUEUE.isEmpty()) {
-			Identifier identifier = ItemStackRenderManager.RENDER_QUEUE.poll();
-			Item item = Registry.ITEM.get(identifier);
-			ItemStack itemStack = new ItemStack(item);
-			export(itemStack, 512, identifier);
+
+			MinecraftClient.getInstance().textRenderer.draw("Rendering " + ItemStackRenderManager.RENDER_QUEUE.size() + " items left", 5, 5, -1);
+
+			ItemStack itemStack = ItemStackRenderManager.RENDER_QUEUE.poll();
+			export(itemStack, 512, Registry.ITEM.getId(itemStack.getItem()));
 		}
 	}
 
@@ -63,12 +67,18 @@ public class ItemStackRenderer implements HudRenderCallback {
 		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 		final BakedModel model = itemRenderer.getHeldItemModel(stack, minecraft.world, minecraft.player);
 
+		boolean block = stack.getItem() instanceof BlockItem && model.method_24304();
+
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
+		if (block)
+			RenderSystem.scaled(1, -1, 1);
 		RenderSystem.matrixMode(GL11.GL_MODELVIEW);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
+		if (block)
+			RenderSystem.rotatef(180, 1, 0, 0);
 
 		{
 			minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
