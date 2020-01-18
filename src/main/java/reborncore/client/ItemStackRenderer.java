@@ -66,7 +66,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 		final BakedModel model = itemRenderer.getHeldItemModel(stack, minecraft.world, minecraft.player);
-		
+
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
@@ -91,8 +91,8 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 			matrixStack.scale(2F, -2F, 1F);
 
-			boolean disableGuiLight = !model.method_24304();
-			if (disableGuiLight) {
+			boolean frontLit = !model.isSideLit();
+			if (frontLit) {
 				DiffuseLighting.disableGuiDepthLighting();
 			}
 
@@ -102,7 +102,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 			RenderSystem.enableDepthTest();
 
-			if (disableGuiLight) {
+			if (frontLit) {
 				DiffuseLighting.enableGuiDepthLighting();
 			}
 
