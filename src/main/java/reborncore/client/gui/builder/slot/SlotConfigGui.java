@@ -35,9 +35,9 @@ import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigSlotElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
-import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.Color;
 import reborncore.mixin.common.AccessorSlot;
 
@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuiSlotConfiguration {
+public class SlotConfigGui {
 
 	static HashMap<Integer, ConfigSlotElement> slotElementMap = new HashMap<>();
 
@@ -138,7 +138,7 @@ public class GuiSlotConfiguration {
 		return machineBase;
 	}
 
-	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
+	public static boolean mouseClicked(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {
 				for (ElementBase element : configSlotElement.elements) {
@@ -199,7 +199,7 @@ public class GuiSlotConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
+	public static boolean mouseReleased(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigSlotElement configSlotElement : getVisibleElements()) {

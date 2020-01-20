@@ -45,7 +45,7 @@ public class ConfigFluidElement extends ElementBase {
 
 		elements.add(popupElement = new FluidConfigPopupElement(x - 22, y - 22, this));
 		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
-			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
+			gui.closeSelectedTab();
 			return true;
 		}));
 

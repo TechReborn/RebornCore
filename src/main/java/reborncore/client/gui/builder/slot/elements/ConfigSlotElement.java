@@ -31,7 +31,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import reborncore.client.gui.builder.GuiBase;
-import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
+import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.blockentity.SlotConfiguration;
 
@@ -66,8 +66,8 @@ public class ConfigSlotElement extends ElementBase {
 
 		elements.add(popupElement = new SlotConfigPopupElement(this.id, x - 22, y - 22, this, inputEnabled));
 		elements.add(new ButtonElement(x + 37, y - 25, Sprite.EXIT_BUTTON).addReleaseAction((element, gui1, provider, mouseX, mouseY) -> {
-			GuiSlotConfiguration.selectedSlot = -1;
-			GuiBase.slotConfigType = GuiBase.SlotConfigType.NONE;
+			SlotConfigGui.selectedSlot = -1;
+			gui.closeSelectedTab();
 			return true;
 		}));
 

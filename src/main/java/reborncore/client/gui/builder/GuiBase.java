@@ -39,13 +39,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.containerBuilder.builder.slot.PlayerInventorySlot;
-import reborncore.client.gui.builder.slot.GuiFluidConfiguration;
-import reborncore.client.gui.builder.slot.GuiSlotConfiguration;
+import reborncore.client.gui.builder.slot.FluidConfigGui;
+import reborncore.client.gui.builder.slot.GuiTab;
+import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -53,8 +56,10 @@ import reborncore.common.util.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Prospector
@@ -62,15 +67,61 @@ import java.util.List;
 
 public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
+	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
+	public static ItemStack wrenchStack = ItemStack.EMPTY;
+
+	private List<GuiTab.Builder> tabBuilders = Util.make(new ArrayList<>(), builders -> {
+		builders.add(GuiTab.Builder.builder()
+				.name("reborncore.gui.tooltip.config_slots")
+				.enabled(guiTab -> guiTab.machine().hasSlotConfig())
+				.stack(guiTab -> wrenchStack)
+				.draw(SlotConfigGui::draw)
+				.click(SlotConfigGui::mouseClicked)
+				.mouseReleased(SlotConfigGui::mouseReleased)
+				.keyPressed((guiBase, keyCode, scanCode, modifiers) -> {
+					if (hasControlDown() && keyCode == GLFW.GLFW_KEY_C) {
+						SlotConfigGui.copyToClipboard();
+						return true;
+					} else if (hasControlDown() && keyCode == GLFW.GLFW_KEY_V) {
+						SlotConfigGui.pasteFromClipboard();
+						return true;
+					}
+					return false;
+				})
+				.tips(tips -> {
+					tips.add("reborncore.gui.slotconfigtip.slot");
+					tips.add("reborncore.gui.slotconfigtip.side1");
+					tips.add("reborncore.gui.slotconfigtip.side2");
+					tips.add("reborncore.gui.slotconfigtip.side3");
+					tips.add("reborncore.gui.slotconfigtip.copy1");
+					tips.add("reborncore.gui.slotconfigtip.copy2");
+				})
+		);
+
+		builders.add(GuiTab.Builder.builder()
+				.name("reborncore.gui.tooltip.config_fluids")
+				.enabled(guiTab -> guiTab.machine().showTankConfig())
+				.stack(guiTab -> GuiBase.fluidCellProvider.provide(Fluids.LAVA))
+				.draw(FluidConfigGui::draw)
+				.click(FluidConfigGui::mouseClicked)
+				.mouseReleased(FluidConfigGui::mouseReleased)
+		);
+
+		builders.add(GuiTab.Builder.builder()
+				.name("reborncore.gui.tooltip.config_redstone")
+				.stack(guiTab -> new ItemStack(Items.REDSTONE))
+		);
+	});
+
 	public GuiBuilder builder = new GuiBuilder();
 	public BlockEntity be;
 	@Nullable
 	public BuiltContainer builtContainer;
-	public static SlotConfigType slotConfigType = SlotConfigType.NONE;
-	public static ItemStack wrenchStack = ItemStack.EMPTY;
-	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	private int xSize = 176;
 	private int ySize = 176;
+
+	private GuiTab selectedTab;
+	private List<GuiTab> tabs;
 
 	public boolean upgrades;
 
@@ -78,9 +129,17 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		super(container, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
 		this.be = blockEntity;
 		this.builtContainer = (BuiltContainer) container;
-		slotConfigType = SlotConfigType.NONE;
+		selectedTab = null;
+		populateSlots();
 	}
-	
+
+	private void populateSlots() {
+		tabs = tabBuilders.stream()
+				.map(builder -> builder.build(getMachine(), this))
+				.filter(GuiTab::enabled)
+				.collect(Collectors.toList());
+	}
+
 	public int getContainerWidth() {
 		return containerWidth;
 	}
@@ -124,10 +183,10 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	public void init() {
 		super.init();
 		if (isConfigEnabled()) {
-			GuiSlotConfiguration.init(this);
+			SlotConfigGui.init(this);
 		}
 		if (isConfigEnabled() && getMachine().getTank() != null && getMachine().showTankConfig()) {
-			GuiFluidConfiguration.init(this);
+			FluidConfigGui.init(this);
 		}
 	}
 
@@ -135,7 +194,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	protected void drawBackground(float lastFrameDuration, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
-		boolean drawPlayerSlots = (slotConfigType != SlotConfigType.ITEMS && slotConfigType != SlotConfigType.FLUIDS) && drawPlayerSlots();
+		boolean drawPlayerSlots = selectedTab == null && drawPlayerSlots();
         updateSlotDraw(drawPlayerSlots);
 		builder.drawDefaultBackground(this, x, y, xSize, ySize);
 		if (drawPlayerSlots) {
@@ -149,19 +208,16 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			}
 		}
 		int offset = upgrades ? 86 : 6;
-		if (isConfigEnabled() && getMachine().hasSlotConfig()) {
-            builder.drawSlotTab(this, x - 24, y + offset, wrenchStack);
-			if (slotConfigType == SlotConfigType.ITEMS ) {
-				builder.drawSlotConfigTips(this, x + containerWidth / 2, y + 93, mouseX, mouseY);
+		for (GuiTab slot : tabs) {
+			if (slot.enabled()) {
+				builder.drawSlotTab(this, x - 24, y + offset, slot.stack());
+				offset += 24;
 			}
 		}
-		if (isConfigEnabled() && getMachine().showTankConfig()) {
-			builder.drawSlotTab(this, x - 24, y + 24 + offset, fluidCellProvider.provide(Fluids.LAVA));
-            if (slotConfigType == SlotConfigType.FLUIDS ) {
-                builder.drawSlotConfigTips(this, x + containerWidth / 2, y + 93, mouseX, mouseY);
-            }
 
-        }
+		final GuiBase<T> gui = this;
+		getTab().ifPresent(guiTab -> builder.drawSlotConfigTips(gui, x + containerWidth / 2, y + 93, mouseX, mouseY, guiTab));
+
 	}
 
 	private void updateSlotDraw(boolean doDraw){
@@ -187,13 +243,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	@Override
 	protected void drawForeground(int mouseX, int mouseY) {
 		drawTitle();
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
-			GuiSlotConfiguration.draw(this, mouseX, mouseY);
-		}
-
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
-			GuiFluidConfiguration.draw(this, mouseX, mouseY);
-		}
+		getTab().ifPresent(guiTab -> guiTab.draw(mouseX, mouseY));
 	}
 
 	@Override
@@ -211,21 +261,16 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		int offset = upgrades ? 81 : 0;
-		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset, 24, 24, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.t("reborncore.gui.tooltip.config_slots"));
-			renderTooltip(list, mouseX, mouseY);
-			RenderSystem.disableLighting();
-			RenderSystem.color4f(1, 1, 1, 1);
+		int offset = upgrades ? 82 : 0;
+		for (GuiTab tab : tabs) {
+			if (isPointWithinBounds(-26, 6 + offset, 24, 23, mouseX, mouseY)) {
+				renderTooltip(Collections.singletonList(StringUtils.t(tab.name())), mouseX, mouseY);
+				RenderSystem.disableLighting();
+				RenderSystem.color4f(1, 1, 1, 1);
+			}
+			offset += 24;
 		}
-		if (isConfigEnabled() && isPointWithinBounds(-26, 6 + offset + 25, 24, 24, mouseX, mouseY) && getMachine().showTankConfig()) {
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.t("reborncore.gui.tooltip.config_fluids"));
-			renderTooltip(list, mouseX, mouseY);
-			RenderSystem.disableLighting();
-			RenderSystem.color4f(1, 1, 1, 1);
-		}
+
         for (AbstractButtonWidget abstractButtonWidget : buttons) {
             if (abstractButtonWidget.isHovered()) {
                 abstractButtonWidget.renderToolTip(mouseX, mouseY);
@@ -266,15 +311,10 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
-			if (GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
-				return true;
-			}
-		}
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
-			if (GuiFluidConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)) {
-				return true;
-			}
+		getTab().ifPresent(guiTab -> guiTab.click(mouseX, mouseY, mouseButton));
+
+		if (getTab().map(guiTab -> guiTab.click(mouseX, mouseY, mouseButton)).orElse(false)) {
+			return true;
 		}
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
@@ -296,53 +336,36 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		if (!upgrades) {
 			offset = 80;
 		}
-		if (isConfigEnabled() && isPointWithinBounds(-26, 84 - offset, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			if (slotConfigType != SlotConfigType.ITEMS) {
-				slotConfigType = SlotConfigType.ITEMS;
-			} else {
-				slotConfigType = SlotConfigType.NONE;
+		for (GuiTab tab : tabs) {
+			if (isPointWithinBounds(-26, 84 - offset, 30, 23, mouseX, mouseY)) {
+				if (selectedTab == tab) {
+					closeSelectedTab();
+				} else {
+					selectedTab = tab;
+				}
+				SlotConfigGui.reset();
+				break;
 			}
-			if (slotConfigType == SlotConfigType.ITEMS) {
-				GuiSlotConfiguration.reset();
-			}
+			offset -= 24;
 		}
-		if (isConfigEnabled() && isPointWithinBounds(-26, 84 - offset + 27, 30, 30, mouseX, mouseY) && getMachine().hasSlotConfig()) {
-			if (slotConfigType != SlotConfigType.FLUIDS) {
-				slotConfigType = SlotConfigType.FLUIDS;
-			} else {
-				slotConfigType = SlotConfigType.NONE;
-			}
-		}
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS && getMachine().hasSlotConfig()) {
-			if (GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
-				return true;
-			}
-		}
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.FLUIDS && getMachine().showTankConfig()) {
-			if (GuiFluidConfiguration.mouseReleased(mouseX, mouseY, state, this)) {
-				return true;
-			}
+
+		if (getTab().map(guiTab -> guiTab.mouseReleased(mouseX, mouseY, state)).orElse(false)){
+			return true;
 		}
 		return super.mouseReleased(mouseX, mouseY, state);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-		if (isConfigEnabled() && slotConfigType == SlotConfigType.ITEMS) {
-			if (hasControlDown() && keyCode == GLFW.GLFW_KEY_C) {
-				GuiSlotConfiguration.copyToClipboard();
-				return true;
-			} else if (hasControlDown() && keyCode == GLFW.GLFW_KEY_V) {
-				GuiSlotConfiguration.pasteFromClipboard();
-				return true;
-			}
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (getTab().map(guiTab -> guiTab.keyPress(keyCode, scanCode, modifiers)).orElse(false)){
+			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
 	public void onClose() {
-		slotConfigType = SlotConfigType.NONE;
+		closeSelectedTab();
 		super.onClose();
 	}
 
@@ -366,12 +389,6 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public enum Layer {
 		BACKGROUND, FOREGROUND
-	}
-
-	public enum SlotConfigType {
-		NONE,
-		ITEMS,
-		FLUIDS
 	}
 
 	public interface FluidCellProvider {
@@ -400,6 +417,21 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	public TextRenderer getTextRenderer(){
 		return this.font;
+	}
+
+	public Optional<GuiTab> getTab() {
+		if (!isConfigEnabled()) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(selectedTab);
+	}
+
+	public boolean isTabOpen() {
+		return selectedTab != null;
+	}
+
+	public void closeSelectedTab() {
+		selectedTab = null;
 	}
 
 	@Override

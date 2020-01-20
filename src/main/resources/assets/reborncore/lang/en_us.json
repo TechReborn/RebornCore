@@ -15,8 +15,9 @@
 	"reborncore.gui.heat": "Heat",
 	"reborncore.gui.missingmultiblock": "Incomplete Multiblock",
 	
-	"reborncore.gui.tooltip.config_slots": "Configure slots",
+	"reborncore.gui.tooltip.config_slots": "Configure Slots",
 	"reborncore.gui.tooltip.config_fluids": "Configure Fluids",
+	"reborncore.gui.tooltip.config_redstone": "Configure Redstone (Coming soon)",
 	"reborncore.gui.tooltip.hologram": "Toggle Multiblock Hologram",
 	"reborncore.gui.tooltip.lock_items": "Lock Items",
 	"reborncore.gui.tooltip.power_charged": "Charged",

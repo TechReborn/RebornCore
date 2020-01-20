@@ -43,9 +43,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 
 	@Override
 	public void renderButton(int mouseX, int mouseY, float partialTicks) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:

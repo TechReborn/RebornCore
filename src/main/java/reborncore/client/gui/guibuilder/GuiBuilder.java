@@ -31,7 +31,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -44,7 +43,7 @@ import net.minecraft.util.Identifier;
 import reborncore.api.IListInfoProvider;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
-import reborncore.client.gui.builder.widget.GuiButtonSimple;
+import reborncore.client.gui.builder.slot.GuiTab;
 import reborncore.common.fluid.FluidUtil;
 import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
@@ -54,6 +53,7 @@ import reborncore.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Gigabit101 on 08/08/2016.
@@ -138,9 +138,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawJEIButton(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (FabricLoader.getInstance().isModLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
 				x += gui.getGuiLeft();
@@ -163,9 +161,7 @@ public class GuiBuilder {
 	 * @param locked boolean Set to true if it is in locked state
 	 */
 	public void drawLockButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -196,9 +192,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawHologramButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -233,9 +227,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigHeatBar(GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -268,9 +260,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -323,9 +313,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawMultiblockMissingBar(GuiBase<?> gui, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		int x = 0;
 		int y = 4;
 		if (layer == GuiBase.Layer.BACKGROUND) {
@@ -379,14 +367,11 @@ public class GuiBuilder {
      * @param mouseX int Mouse cursor position
      * @param mouseY int Mouse cursor position
      */
-	public void drawSlotConfigTips(GuiBase<?> gui, int x, int y, int mouseX, int mouseY) {
-		List<String> tips = new ArrayList<>();
-		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.slot"));
-		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side1"));
-        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side2"));
-        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.side3"));
-		tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy1"));
-        tips.add(StringUtils.t("reborncore.gui.slotconfigtip.copy2"));
+	public void drawSlotConfigTips(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiTab guiTab) {
+		List<String> tips = guiTab.getTips().stream()
+				.map(StringUtils::t)
+				.collect(Collectors.toList());
+
 		TipsListWidget explanation = new TipsListWidget(gui, gui.getContainerWidth() - 14, 54, y, y + 76, 9 + 2, tips);
 		explanation.setLeftPos(x - 81);
 		explanation.render(mouseX, mouseY, 1.0f);
@@ -435,9 +420,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawEnergyOutput(GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
 			+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.getTextRenderer().getStringWidth(text);
@@ -464,9 +447,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawProgressBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -525,9 +506,7 @@ public class GuiBuilder {
 	 */
 	public void drawMultiEnergyBar(GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
 			int mouseY, int buttonID, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -587,9 +566,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -682,9 +659,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBurnBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
-		if (GuiBase.slotConfigType != GuiBase.SlotConfigType.NONE) {
-			return;
-		}
+		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();

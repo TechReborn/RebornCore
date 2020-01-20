@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class GuiFluidConfiguration {
+public class FluidConfigGui {
 
 	static ConfigFluidElement fluidConfigElement;
 
@@ -52,7 +52,7 @@ public class GuiFluidConfiguration {
 		return Collections.singletonList(fluidConfigElement);
 	}
 
-	public static boolean mouseClicked(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
+	public static boolean mouseClicked(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
 				for (ElementBase element : configFluidElement.elements) {
@@ -99,7 +99,7 @@ public class GuiFluidConfiguration {
 		}
 	}
 
-	public static boolean mouseReleased(double mouseX, double mouseY, int mouseButton, GuiBase<?> guiBase) {
+	public static boolean mouseReleased(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton)  {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {
