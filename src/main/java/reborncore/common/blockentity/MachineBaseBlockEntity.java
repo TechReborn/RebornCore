@@ -73,6 +73,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	public RebornInventory<MachineBaseBlockEntity> upgradeInventory = new RebornInventory<>(getUpgradeSlotCount(), "upgrades", 1, this, (slotID, stack, face, direction, blockEntity) -> true);
 	private SlotConfiguration slotConfiguration;
 	public FluidConfiguration fluidConfiguration;
+	private RedstoneConfiguration redstoneConfiguration;
 
 	public Multiblock renderMultiblock;
 
@@ -94,6 +95,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	public MachineBaseBlockEntity(BlockEntityType<?> blockEntityTypeIn) {
 		super(blockEntityTypeIn);
+		redstoneConfiguration = new RedstoneConfiguration(this);
 	}
 
 	public void syncWithAll() {
@@ -149,13 +151,13 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			}
 		}
 		if (!world.isClient) {
-			if (crafter != null) {
+			if (crafter != null && isActive(RedstoneConfiguration.RECIPE_PROCESSING)) {
 				crafter.updateEntity();
 			}
-			if (slotConfiguration != null) {
+			if (slotConfiguration != null && isActive(RedstoneConfiguration.ITEM_IO)) {
 				slotConfiguration.update(this);
 			}
-			if (fluidConfiguration != null) {
+			if (fluidConfiguration != null && isActive(RedstoneConfiguration.FLUID_IO)) {
 				fluidConfiguration.update(this);
 			}
 		}
@@ -241,6 +243,9 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		} else if (getTank() != null && fluidConfiguration == null) {
 			fluidConfiguration = new FluidConfiguration();
 		}
+		if (tagCompound.contains("redstoneConfig")) {
+			redstoneConfiguration.read(tagCompound.getCompound("redstoneConfig"));
+		}
 		upgradeInventory.read(tagCompound, "Upgrades");
 	}
 
@@ -260,6 +265,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			tagCompound.put("fluidConfig", fluidConfiguration.write());
 		}
 		upgradeInventory.write(tagCompound, "Upgrades");
+		tagCompound.put("redstoneConfig", redstoneConfiguration.write());
 		return tagCompound;
 	}
 
@@ -491,4 +497,11 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	}
 
+	public RedstoneConfiguration getRedstoneConfiguration() {
+		return redstoneConfiguration;
+	}
+
+	public boolean isActive(RedstoneConfiguration.Element element) {
+		return redstoneConfiguration.isActive(element);
+	}
 }

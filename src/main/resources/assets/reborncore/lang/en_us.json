@@ -17,7 +17,7 @@
 	
 	"reborncore.gui.tooltip.config_slots": "Configure Slots",
 	"reborncore.gui.tooltip.config_fluids": "Configure Fluids",
-	"reborncore.gui.tooltip.config_redstone": "Configure Redstone (Coming soon)",
+	"reborncore.gui.tooltip.config_redstone": "Configure Redstone",
 	"reborncore.gui.tooltip.hologram": "Toggle Multiblock Hologram",
 	"reborncore.gui.tooltip.lock_items": "Lock Items",
 	"reborncore.gui.tooltip.power_charged": "Charged",
@@ -34,5 +34,14 @@
     "reborncore.gui.slotconfigtip.side2": "Blue side means input.",
   "reborncore.gui.slotconfigtip.side3": "Green side means both.",
 	"reborncore.gui.slotconfigtip.copy1": "Ctrl+C to copy slot config.",
-    "reborncore.gui.slotconfigtip.copy2": "Ctrl+V to paste slot config."
+    "reborncore.gui.slotconfigtip.copy2": "Ctrl+V to paste slot config.",
+
+    "reborncore.gui.fluidconfig.item_io": "Item I/O",
+	"reborncore.gui.fluidconfig.power_io": "Power I/O",
+    "reborncore.gui.fluidconfig.fluid_io": "Fluid I/O",
+    "reborncore.gui.fluidconfig.recipe_processing": "Crafting",
+
+  "reborncore.gui.fluidconfig.ignored": "Ignored",
+  "reborncore.gui.fluidconfig.enabled_on": "§cRedstone §aOn",
+  "reborncore.gui.fluidconfig.enabled_off": "§cRedstone §4Off"
 }

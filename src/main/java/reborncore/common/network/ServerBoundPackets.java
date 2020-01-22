@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.blockentity.RedstoneConfiguration;
 import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 
@@ -146,6 +147,24 @@ public class ServerBoundPackets {
 			});
 		});
 
+		NetworkManager.registerServerBoundHandler(new Identifier("reborncore", "set_redstone_state"), (packetBuffer, context) -> {
+			BlockPos pos = packetBuffer.readBlockPos();
+			String elementName = packetBuffer.readString(packetBuffer.readInt());
+			int stateId = packetBuffer.readInt();
+
+			RedstoneConfiguration.Element element = RedstoneConfiguration.getElementByName(elementName);
+			if (element == null) return;
+
+			if (stateId < 0 || stateId >= RedstoneConfiguration.State.values().length) return;
+			RedstoneConfiguration.State state = RedstoneConfiguration.State.values()[stateId];
+
+			context.getTaskQueue().execute(() -> {
+				MachineBaseBlockEntity blockEntity = (MachineBaseBlockEntity) context.getPlayer().world.getBlockEntity(pos);
+				if (blockEntity == null) return;
+
+				blockEntity.getRedstoneConfiguration().setState(element, state);
+			});
+		});
 	}
 
 
@@ -191,6 +210,15 @@ public class ServerBoundPackets {
 	public static Packet<ServerPlayPacketListener> requestChunkloaderChunks(BlockPos pos) {
 		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "chunk_loader_request"), packetBuffer -> {
 			packetBuffer.writeBlockPos(pos);
+		});
+	}
+
+	public static Packet<ServerPlayPacketListener> createPacketSetRedstoneSate(BlockPos pos, RedstoneConfiguration.Element element, RedstoneConfiguration.State state) {
+		return NetworkManager.createServerBoundPacket(new Identifier("reborncore", "set_redstone_state"), packetBuffer -> {
+			packetBuffer.writeBlockPos(pos);
+			packetBuffer.writeInt(element.getName().length());
+			packetBuffer.writeString(element.getName());
+			packetBuffer.writeInt(state.ordinal());
 		});
 	}
 }

@@ -110,6 +110,8 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 		builders.add(GuiTab.Builder.builder()
 				.name("reborncore.gui.tooltip.config_redstone")
 				.stack(guiTab -> new ItemStack(Items.REDSTONE))
+				.draw(RedstoneConfigGui::draw)
+				.click(RedstoneConfigGui::mouseClicked)
 		);
 	});
 
@@ -312,8 +314,6 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		getTab().ifPresent(guiTab -> guiTab.click(mouseX, mouseY, mouseButton));
-
 		if (getTab().map(guiTab -> guiTab.click(mouseX, mouseY, mouseButton)).orElse(false)) {
 			return true;
 		}

@@ -40,6 +40,7 @@ import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.fluid.container.ItemFluidInfo;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import team.reborn.energy.Energy;
@@ -66,6 +67,9 @@ public class ContainerBlockEntityInventoryBuilder {
 		this.rangeStart = parent.slots.size();
 		if (inventory instanceof IUpgradeable) {
 			upgradeSlots((IUpgradeable) inventory);
+		}
+		if (blockEntity instanceof MachineBaseBlockEntity) {
+			sync(((MachineBaseBlockEntity) blockEntity).getRedstoneConfiguration());
 		}
 	}
 
