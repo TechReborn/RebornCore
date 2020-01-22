@@ -207,10 +207,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		this.objectValues.get(var).getMiddle().accept(value);
 	}
 
-	@Environment(EnvType.CLIENT)
 	@Override
-	public void setProperties(final int id, final int value) {
-
+	public void setProperty(int id, int value) {
 		if (id < this.shortValues.size()) {
 			this.shortValues.get(id).getMiddle().accept((short) value);
 			this.shortValues.get(id).setRight((short) value);
@@ -220,7 +218,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 				this.integerParts[(id - this.shortValues.size()) / 2] = value;
 			} else {
 				this.integerValues.get((id - this.shortValues.size()) / 2).getMiddle().accept(
-					(this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
+						(this.integerParts[(id - this.shortValues.size()) / 2] & 0xFFFF) << 16 | value & 0xFFFF);
 			}
 		}
 	}
@@ -230,7 +228,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 
 		ItemStack originalStack = ItemStack.EMPTY;
 
-		final Slot slot = this.slotList.get(index);
+		final Slot slot = this.slots.get(index);
 
 		if (slot != null && slot.hasStack()) {
 
@@ -279,7 +277,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		boolean changed = false;
 		if (stackToShift.isStackable()) {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.slotList.get(slotIndex);
+				final Slot slot = this.slots.get(slotIndex);
 				final ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && ItemUtils.isItemEqual(stackInSlot, stackToShift, true, true)
 					&& slot.canInsert(stackToShift)) {
@@ -301,7 +299,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 		}
 		if (stackToShift.getCount() > 0) {
 			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.slotList.get(slotIndex);
+				final Slot slot = this.slots.get(slotIndex);
 				ItemStack stackInSlot = slot.getStack();
 				if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
 					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());

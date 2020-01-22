@@ -30,7 +30,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
+import net.minecraft.client.gui.screen.ingame.ContainerScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.container.Container;
@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
  * Created by Prospector
  */
 
-public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
+public class GuiBase<T extends Container> extends ContainerScreen<T> {
 
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
@@ -195,10 +195,10 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground();
 		boolean drawPlayerSlots = selectedTab == null && drawPlayerSlots();
-        updateSlotDraw(drawPlayerSlots);
+		updateSlotDraw(drawPlayerSlots);
 		builder.drawDefaultBackground(this, x, y, xSize, ySize);
 		if (drawPlayerSlots) {
-		    builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
+			builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
 		}
 		if (tryAddUpgrades() && be instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) be;
@@ -220,16 +220,16 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	}
 
-	private void updateSlotDraw(boolean doDraw){
-	    if (builtContainer == null){
-	        return;
-        }
-	    for (Slot slot : builtContainer.slotList){
-            if (slot instanceof PlayerInventorySlot) {
-                ((PlayerInventorySlot) slot).doDraw = doDraw;
-            }
-        }
-    }
+	private void updateSlotDraw(boolean doDraw) {
+		if (builtContainer == null) {
+			return;
+		}
+		for (Slot slot : builtContainer.slots) {
+			if (slot instanceof PlayerInventorySlot) {
+				((PlayerInventorySlot) slot).doDraw = doDraw;
+			}
+		}
+	}
 
 	public boolean drawPlayerSlots() {
 		return true;
@@ -271,12 +271,12 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			offset += 24;
 		}
 
-        for (AbstractButtonWidget abstractButtonWidget : buttons) {
-            if (abstractButtonWidget.isHovered()) {
-                abstractButtonWidget.renderToolTip(mouseX, mouseY);
-                break;
-            }
-        }
+		for (AbstractButtonWidget abstractButtonWidget : buttons) {
+			if (abstractButtonWidget.isHovered()) {
+				abstractButtonWidget.renderToolTip(mouseX, mouseY);
+				break;
+			}
+		}
 		super.drawMouseoverTooltip(mouseX, mouseY);
 	}
 
@@ -304,7 +304,8 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
-		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + this.x, y + this.y, this, layer, var1 -> {});
+		GuiButtonHologram buttonHologram = new GuiButtonHologram(x + this.x, y + this.y, this, layer, var1 -> {
+		});
 		addButton(buttonHologram);
 		return buttonHologram;
 	}
@@ -349,7 +350,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 			offset -= 24;
 		}
 
-		if (getTab().map(guiTab -> guiTab.mouseReleased(mouseX, mouseY, state)).orElse(false)){
+		if (getTab().map(guiTab -> guiTab.mouseReleased(mouseX, mouseY, state)).orElse(false)) {
 			return true;
 		}
 		return super.mouseReleased(mouseX, mouseY, state);
@@ -357,7 +358,7 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (getTab().map(guiTab -> guiTab.keyPress(keyCode, scanCode, modifiers)).orElse(false)){
+		if (getTab().map(guiTab -> guiTab.keyPress(keyCode, scanCode, modifiers)).orElse(false)) {
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -375,12 +376,12 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 	}
 
 	/**
-	 * @param rectX int Top left corner of region
-	 * @param rectY int Top left corner of region
-	 * @param rectWidth int Width of region
+	 * @param rectX      int Top left corner of region
+	 * @param rectY      int Top left corner of region
+	 * @param rectWidth  int Width of region
 	 * @param rectHeight int Height of region
-	 * @param pointX int Mouse pointer
-	 * @param pointY int Mouse pointer
+	 * @param pointX     int Mouse pointer
+	 * @param pointY     int Mouse pointer
 	 * @return boolean Returns true if mouse pointer is in region specified
 	 */
 	public boolean isPointInRect(int rectX, int rectY, int rectWidth, int rectHeight, double pointX, double pointY) {
@@ -399,23 +400,23 @@ public class GuiBase<T extends Container> extends AbstractContainerScreen<T> {
 		return be instanceof MachineBaseBlockEntity && builtContainer != null;
 	}
 
-	public int getGuiLeft(){
+	public int getGuiLeft() {
 		return x;
 	}
 
-	public int getGuiTop(){
+	public int getGuiTop() {
 		return y;
 	}
 
 	public MinecraftClient getMinecraft() {
 		// Just to stop complains from IDEA
-		if (minecraft == null){
+		if (minecraft == null) {
 			throw new NullPointerException("Minecraft client is null.");
 		}
 		return this.minecraft;
 	}
 
-	public TextRenderer getTextRenderer(){
+	public TextRenderer getTextRenderer() {
 		return this.font;
 	}
 

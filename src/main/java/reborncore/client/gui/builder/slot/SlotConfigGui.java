@@ -62,7 +62,7 @@ public class SlotConfigGui {
 		slotElementMap.clear();
 
 		BuiltContainer container = guiBase.builtContainer;
-		for (Slot slot : container.slotList) {
+		for (Slot slot : container.slots) {
 			if (guiBase.be != slot.inventory) {
 				continue;
 			}
@@ -75,7 +75,7 @@ public class SlotConfigGui {
 
 	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
 		BuiltContainer container = guiBase.builtContainer;
-		for (Slot slot : container.slotList) {
+		for (Slot slot : container.slots) {
 			if (guiBase.be != slot.inventory) {
 				continue;
 			}
@@ -162,7 +162,7 @@ public class SlotConfigGui {
 		BuiltContainer container = guiBase.builtContainer;
 
 		if (getVisibleElements().isEmpty()) {
-			for (Slot slot : container.slotList) {
+			for (Slot slot : container.slots) {
 				if (guiBase.be != slot.inventory) {
 					continue;
 				}
