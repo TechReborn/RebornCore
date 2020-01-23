@@ -138,7 +138,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawJEIButton(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (FabricLoader.getInstance().isModLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
 				x += gui.getGuiLeft();
@@ -161,7 +161,7 @@ public class GuiBuilder {
 	 * @param locked boolean Set to true if it is in locked state
 	 */
 	public void drawLockButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -227,7 +227,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigHeatBar(GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -260,7 +260,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -313,7 +313,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawMultiblockMissingBar(GuiBase<?> gui, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		int x = 0;
 		int y = 4;
 		if (layer == GuiBase.Layer.BACKGROUND) {
@@ -420,7 +420,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawEnergyOutput(GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
 			+ PowerSystem.getDisplayPower().abbreviation + "/t";
 		int width = gui.getTextRenderer().getStringWidth(text);
@@ -447,7 +447,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawProgressBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -506,7 +506,7 @@ public class GuiBuilder {
 	 */
 	public void drawMultiEnergyBar(GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
 			int mouseY, int buttonID, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -566,7 +566,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
@@ -659,7 +659,7 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBurnBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();

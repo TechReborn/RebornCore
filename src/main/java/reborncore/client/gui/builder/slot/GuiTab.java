@@ -60,6 +60,10 @@ public class GuiTab {
 		return tips;
 	}
 
+	public boolean hideGuiElements() {
+		return builder.hideGuiElements;
+	}
+
 	public GuiBase<?> gui() {
 		return guiBase;
 	}
@@ -74,6 +78,7 @@ public class GuiTab {
 		private MouseReleased mouseReleased = (guiBase, mouseX, mouseY, state) -> false;
 		private KeyPressed keyPressed = (guiBase, keyCode, scanCode, modifiers) -> false;
 		private Consumer<List<String>> tips = strings -> {};
+		private boolean hideGuiElements = false;
 
 		public static Builder builder() {
 			return new Builder();
@@ -116,6 +121,11 @@ public class GuiTab {
 
 		public Builder tips(Consumer<List<String>> listConsumer) {
 			this.tips = listConsumer;
+			return this;
+		}
+
+		public Builder hideGuiElements() {
+			hideGuiElements = true;
 			return this;
 		}
 

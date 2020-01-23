@@ -23,29 +23,33 @@ import java.util.stream.Collectors;
 
 public class RedstoneConfiguration implements NBTSerializable, Syncable {
 
+	//Set in TR to be a better item such as a battery or a cell
+	public static ItemStack powerStack = new ItemStack(Items.CARROT_ON_A_STICK);
+	public static ItemStack fluidStack = new ItemStack(Items.BUCKET);
+
 	private static List<Element> ELEMENTS = new ArrayList<>();
 	private static Map<String, Element> ELEMENT_MAP = new HashMap<>();
 
 	public static Element ITEM_IO = newBuilder()
 										.name("item_io")
-										.icon(new ItemStack(Blocks.HOPPER))
+										.icon(() -> new ItemStack(Blocks.HOPPER))
 										.build();
 
 	public static Element POWER_IO = newBuilder()
 										.name("power_io")
-										.icon(new ItemStack(Items.CARROT_ON_A_STICK))
+										.icon(() -> powerStack)
 										.build();
 
 	public static Element FLUID_IO = newBuilder()
 										.name("fluid_io")
 										.canApply(type -> type.getTank() != null)
-										.icon(new ItemStack(Items.BUCKET))
+										.icon(() -> fluidStack)
 										.build();
 
 	public static Element RECIPE_PROCESSING = newBuilder()
 										.name("recipe_processing")
 										.canApply(type -> type instanceof IRecipeCrafterProvider)
-										.icon(new ItemStack(Blocks.CRAFTING_TABLE))
+										.icon(() -> new ItemStack(Blocks.CRAFTING_TABLE))
 										.build();
 
 
@@ -147,9 +151,9 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 	public static class Element {
 		private final String name;
 		private final BooleanFunction<MachineBaseBlockEntity> isApplicable;
-		private final ItemStack icon;
+		private final Supplier<ItemStack> icon;
 
-		public Element(String name, BooleanFunction<MachineBaseBlockEntity> isApplicable, ItemStack icon) {
+		public Element(String name, BooleanFunction<MachineBaseBlockEntity> isApplicable, Supplier<ItemStack> icon) {
 			this.name = name;
 			this.isApplicable = isApplicable;
 			this.icon = icon;
@@ -164,14 +168,14 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 		}
 
 		public ItemStack getIcon() {
-			return icon;
+			return icon.get();
 		}
 
 		public static class Builder {
 
 			private String name;
 			private BooleanFunction<MachineBaseBlockEntity> isApplicable = (be) -> true;
-			private ItemStack icon = ItemStack.EMPTY;
+			private Supplier<ItemStack> icon = () -> ItemStack.EMPTY;
 
 			public Builder name(String name) {
 				this.name = name;
@@ -183,7 +187,7 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 				return this;
 			}
 
-			public Builder icon(ItemStack stack) {
+			public Builder icon(Supplier<ItemStack> stack) {
 				this.icon = stack;
 				return this;
 			}

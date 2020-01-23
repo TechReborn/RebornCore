@@ -43,7 +43,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 
 	@Override
 	public void renderButton(int mouseX, int mouseY, float partialTicks) {
-		if (gui.isTabOpen()) return;
+		if (gui.hideGuiElements()) return;
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:

@@ -35,6 +35,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import reborncore.api.IListInfoProvider;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.blockentity.RedstoneConfiguration;
 import reborncore.common.util.StringUtils;
 import team.reborn.energy.Energy;
 import team.reborn.energy.EnergySide;
@@ -177,7 +178,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			return;
 		}
 
-		if (getEnergy() > 0) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
+		if (getEnergy() > 0 && isActive(RedstoneConfiguration.POWER_IO)) { // Tesla or IC2 should handle this if enabled, so only do this without tesla
 			for (Direction side : Direction.values()) {
 				BlockEntity blockEntity = getWorld().getBlockEntity(getPos().offset(side));
 				if(blockEntity == null || !Energy.valid(blockEntity)){
@@ -320,6 +321,9 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 
 	@Override
 	public double getMaxOutput(EnergySide face) {
+		if (!isActive(RedstoneConfiguration.POWER_IO)) {
+			return 0;
+		}
 		if(!canProvideEnergy(fromSide(face))) {
 			return 0;
 		}
@@ -334,6 +338,9 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 
 	@Override
 	public double getMaxInput(EnergySide face) {
+		if (!isActive(RedstoneConfiguration.POWER_IO)) {
+			return 0;
+		}
 		if(!canAcceptEnergy(fromSide(face))) {
 			return 0;
 		}

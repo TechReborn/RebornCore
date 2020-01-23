@@ -29,12 +29,13 @@ public class RedstoneConfigGui {
 
 			guiBase.getTextRenderer().draw(StringUtils.t("reborncore.gui.fluidconfig." + element.getName()), x + 15, y + (i * spread), -1);
 
-			if (withinBounds(guiBase, mouseX, mouseY, x + 92, y + (i * spread) -2, 63, 15)) {
-				RenderUtil.drawGradientRect(0, x + 91, y + (i * spread) -2, x + 93 + 65, y + (i * spread) + 10, 0xFF8b8b8b, 0xFF8b8b8b);
-			}
+			boolean hovered = withinBounds(guiBase, mouseX, mouseY, x + 92, y + (i * spread) -2, 63, 15);
+			int color = hovered ? 0xFF8b8b8b : 0x668b8b8b;
+			RenderUtil.drawGradientRect(0, x + 91, y + (i * spread) -2, x + 93 + 65, y + (i * spread) + 10, color, color);
 
 			String name = StringUtils.t("reborncore.gui.fluidconfig." + configuration.getState(element).name().toLowerCase(Locale.ROOT));
-			guiBase.getTextRenderer().drawWithShadow(name, x + 92, y + (i * spread), -1);
+			guiBase.drawCentredString(name, y + (i * spread), -1, x + 37, GuiBase.Layer.FOREGROUND);
+			//guiBase.getTextRenderer().drawWithShadow(name, x + 92, y + (i * spread), -1);
 			i ++;
 		}
 

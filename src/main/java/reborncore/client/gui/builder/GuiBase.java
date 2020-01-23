@@ -78,12 +78,16 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 				.draw(SlotConfigGui::draw)
 				.click(SlotConfigGui::mouseClicked)
 				.mouseReleased(SlotConfigGui::mouseReleased)
+				.hideGuiElements()
 				.keyPressed((guiBase, keyCode, scanCode, modifiers) -> {
 					if (hasControlDown() && keyCode == GLFW.GLFW_KEY_C) {
 						SlotConfigGui.copyToClipboard();
 						return true;
 					} else if (hasControlDown() && keyCode == GLFW.GLFW_KEY_V) {
 						SlotConfigGui.pasteFromClipboard();
+						return true;
+					} else if (keyCode == GLFW.GLFW_KEY_ESCAPE && SlotConfigGui.selectedSlot != -1) {
+						SlotConfigGui.reset();
 						return true;
 					}
 					return false;
@@ -105,6 +109,7 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 				.draw(FluidConfigGui::draw)
 				.click(FluidConfigGui::mouseClicked)
 				.mouseReleased(FluidConfigGui::mouseReleased)
+				.hideGuiElements()
 		);
 
 		builders.add(GuiTab.Builder.builder()
@@ -361,6 +366,10 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 		if (getTab().map(guiTab -> guiTab.keyPress(keyCode, scanCode, modifiers)).orElse(false)) {
 			return true;
 		}
+		if (selectedTab != null && keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			closeSelectedTab();
+			return true;
+		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
@@ -429,6 +438,10 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 
 	public boolean isTabOpen() {
 		return selectedTab != null;
+	}
+
+	public boolean hideGuiElements() {
+		return selectedTab != null && selectedTab.hideGuiElements();
 	}
 
 	public void closeSelectedTab() {
