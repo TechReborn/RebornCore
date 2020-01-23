@@ -74,11 +74,25 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 				.collect(Collectors.toList());
 	}
 
+	public void refreshCache() {
+		activeElements = null;
+
+		if (stateMap != null) {
+			for (Element element : getElements()) {
+				if (!stateMap.containsKey(element)) {
+					stateMap.put(element, State.IGNORED);
+				}
+			}
+		}
+	}
+
 	public State getState(Element element) {
 		if (stateMap == null) {
 			populateStateMap();
 		}
-		return stateMap.get(element);
+		State state = stateMap.get(element);
+		Validate.notNull(state, "Unsupported element " + element.getName() + " for machine: " + blockEntity.getClass().getName());
+		return state;
 	}
 
 	public void setState(Element element, State state) {

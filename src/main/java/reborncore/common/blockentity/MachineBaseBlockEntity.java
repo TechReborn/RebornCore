@@ -115,6 +115,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 				fluidConfiguration = new FluidConfiguration();
 			}
 		}
+		redstoneConfiguration.refreshCache();
 	}
 
 	@Nullable
@@ -244,6 +245,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			fluidConfiguration = new FluidConfiguration();
 		}
 		if (tagCompound.contains("redstoneConfig")) {
+			redstoneConfiguration.refreshCache();
 			redstoneConfiguration.read(tagCompound.getCompound("redstoneConfig"));
 		}
 		upgradeInventory.read(tagCompound, "Upgrades");
