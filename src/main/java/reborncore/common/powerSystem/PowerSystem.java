@@ -70,13 +70,13 @@ public class PowerSystem {
 		return getRoundedString(eu, "", true);
 	}
 
-	private static String getRoundedString(int value, String units) {
+	private static String getRoundedString(double value, String units) {
 		return getRoundedString(value, units, false);
 	}
 
-	private static String getRoundedString(int euValue, String units, boolean doFormat) {
+	private static String getRoundedString(double euValue, String units, boolean doFormat) {
 		String ret = "";
-		float value = 0f;
+		double value = 0f;
 		int i = 0;
 		boolean showMagnitude = true;
 		if (euValue < 0) {
@@ -102,8 +102,10 @@ public class PowerSystem {
 				}
 			}
 		}
-		
-		ret += value;
+
+		String strValue = String.valueOf(value);
+		strValue = strValue.substring(0, strValue.lastIndexOf('.') + 2);
+		ret += strValue;
 
 		if (showMagnitude) {
 			ret += magnitude[i];
