@@ -103,8 +103,7 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	protected boolean method_15777(FluidState fluidState, BlockView blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
-		//TODO wat is this?
+	protected boolean canBeReplacedWith(FluidState fluidState, BlockView blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
 		return false;
 	}
 
