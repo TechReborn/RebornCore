@@ -91,7 +91,7 @@ public class PowerSystem {
 		} else if (euValue >= 1000) {
 			for (i = 0; ; i++) {
 				if (euValue < 10000 && euValue % 1000 >= 100) {
-					value = euValue / 1000;
+					value = Math.floor(euValue / 1000);
 					value += ((float) euValue % 1000) / 1000;
 					break;
 				}
