@@ -214,9 +214,14 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
     }
 
     public IBlockState getBlockState() {
-        return world.getBlockState(pos).getBlock().getDefaultState()
-                .withProperty(RebornMachineBlock.FACING, getFacing())
-                .withProperty(RebornMachineBlock.activeProperty, isActive());
+    	IBlockState blockState = world.getBlockState(pos).getBlock().getDefaultState();
+    	if (blockState.getProperties().containsKey(RebornMachineBlock.FACING)) {
+    		blockState = blockState.withProperty(RebornMachineBlock.FACING, getFacing());
+	    }
+	    if (blockState.getProperties().containsKey(RebornMachineBlock.activeProperty)) {
+		    blockState = blockState.withProperty(RebornMachineBlock.activeProperty, isActive());
+	    }
+        return blockState;
     }
     
     // Helpers >>
