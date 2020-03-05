@@ -39,7 +39,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -60,13 +59,9 @@ import reborncore.common.util.Utils;
 import java.util.Set;
 
 public abstract class RebornMachineBlock extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
-    // Fields >>
     public static ItemStack basicFrameStack;
     public static ItemStack advancedFrameStack;
     boolean hasCustomStates;
-    public static final IProperty<Boolean> ACTIVE = PropertyBool.create("active");
-    // << Fields
-    
 
     public RebornMachineBlock() {
         this(false);
@@ -78,7 +73,6 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
 
     public RebornMachineBlock(boolean hasCustomStates, Set<EnumFacing> supportedFacings) {
     	super(Material.IRON);
-    	this.hasCustomStates = hasCustomStates;
 
         setHardness(2.0F);
         setSoundType(SoundType.METAL);
@@ -86,59 +80,16 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
         if (!hasCustomStates) {
             setDefaultState(blockState.getBaseState()
                     .withProperty(FACING, EnumFacing.NORTH)
-                    .withProperty(ACTIVE, false));
+                    .withProperty(activeProperty, false));
         }
 
         BlockWrenchEventHandler.wrenableBlocks.add(this);
-    }
-    
-    public abstract IMachineGuiHandler getGui();
-    
-    protected EnumFacing getFacingForPlacement(EntityLivingBase placer) {
-        if (hasCustomStates) {
-        	return EnumFacing.NORTH;
-        }
-
-        if (placer == null) {
-        	return EnumFacing.NORTH;
-        }
-
-        EnumFacing bestFacing = null;
-        double bestScore = Double.NEGATIVE_INFINITY;
-        Vec3d dir = placer.getLookVec();
-        for (EnumFacing entry : FACING.getAllowedValues()) {
-            double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
-            if (score > bestScore) {
-                bestScore = score;
-                bestFacing = entry;
-            }
-        }
-
-        return bestFacing;
-    }
-    
-	public boolean isActive(IBlockState state) {
-    	if (hasCustomStates) {
-    		return false;
-    	}
-		return state.getValue(ACTIVE);
-	}
-	
-	public void setActive(Boolean active, World world, BlockPos pos) {
-		if (hasCustomStates) {
-			return;
-		}
-		world.setBlockState(pos, world.getBlockState(pos).withProperty(ACTIVE, active), 3);
-	}
-	
-    public boolean isAdvanced() {
-        return false;
     }
 
     // Block >>
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING, ACTIVE);
+        return new BlockStateContainer(this, FACING, activeProperty);
     }
 
     @Override
@@ -152,13 +103,11 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-		EnumFacing newFacing = getFacingForPlacement(placer); 
-		if (!canSetFacing(worldIn, pos, newFacing, null)) {
-			return;
-		}
-		setFacing(worldIn, pos, newFacing, null);
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return;
+
+        tile.onPlaced(placer, stack);
     }
 
     @Override
@@ -173,9 +122,17 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return state;
+
+        return tile.getBlockState();
+    }
+
+    @Override
     public int getMetaFromState(IBlockState state) {
         int facing = state.getValue(FACING).ordinal();
-        int active = state.getValue(ACTIVE) ? 1 : 0;
+        int active = state.getValue(activeProperty) ? 1 : 0;
 
         return facing + active;
     }
@@ -189,9 +146,59 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
         }
 
         return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta))
-                .withProperty(ACTIVE, active);
+                .withProperty(activeProperty, active);
     }
-    
+    // << Block
+
+    // ITileEntityProvider >>
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        return null;
+    }
+    // << ITileEntityProvider
+
+    // IWrenchable >>
+    @Override
+    public EnumFacing getFacing(World world, BlockPos pos) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return EnumFacing.DOWN;
+
+        return tile.getFacing();
+    }
+
+    @Override
+    public boolean canSetFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return false;
+
+        return tile.canSetFacing(newFacing);
+    }
+
+    @Override
+    public boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return false;
+
+        return tile.setFacing(newFacing);
+    }
+    // << IWrenchable
+
+    // RebornMachineBlock >>
+    public boolean isActive(World world, BlockPos pos) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return false;
+
+        return tile.isActive();
+    }
+
+    public void setActive(boolean active, World world, BlockPos pos) {
+        RebornMachineTile tile = getTileEntity(world, pos);
+        if (tile == null) return;
+
+        tile.setActive(active);
+    }
+    // << RebornMachineBlock
+
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         if (RebornCoreConfig.wrenchRequired) {
@@ -201,9 +208,13 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
         }
     }
 
+    public boolean isAdvanced() {
+        return false;
+    }
+
     /*
-     *  Right-click should apply special action for usable items, like rotate for wrench, fill\drain bucket, install upgrade, etc.
-     *  Right-click should open GUI for all non-usable items
+     *  Right-click should open GUI for all non-wrench items
+     *  Shift-Right-click should apply special action, like fill\drain bucket, install upgrade, etc.
      */
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
@@ -249,39 +260,17 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
 
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
     }
-    // << Block
-    
-    // ITileEntityProvider >>
-    @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
-        return null;
-    }
-    // << ITileEntityProvider
 
-    // IWrenchable >>
-    @Override
-    public EnumFacing getFacing(World world, BlockPos pos) {
-    	if (hasCustomStates) {
-    		return EnumFacing.NORTH;
-    	}
-        
-        return world.getBlockState(pos).getValue(FACING);
-    }
+    public abstract IMachineGuiHandler getGui();
 
-    @Override
-	public boolean canSetFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
-		if (hasCustomStates) {
-			return false;
-		}
-		return true;
-	}
-
-    @Override
-    public boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
-    	if (hasCustomStates) {
-    		return false;
-    	}
-    	return world.setBlockState(pos, world.getBlockState(pos).withProperty(FACING, newFacing));    	
+    // Helpers >>
+    protected static RebornMachineTile getTileEntity(IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        return tileEntity instanceof RebornMachineTile ? (RebornMachineTile) tileEntity : null;
     }
-    // << IWrenchable
+    // << Helpers
+
+    // Fields >>
+    public static final IProperty<Boolean> activeProperty = PropertyBool.create("active");
+    // << Fields
 }

@@ -158,7 +158,7 @@ public abstract class TilePowerAcceptor extends RebornMachineTile implements
 	}
 
 
-	// RebornMachineTile
+	// TileLegacyMachineBase
 	@Override
 	public void update() {
 		super.update();
