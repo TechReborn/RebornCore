@@ -55,8 +55,6 @@ import reborncore.common.registration.RegistryConstructionEvent;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
 import reborncore.common.util.*;
 import reborncore.modcl.manual.ItemTeamRebornManual;
-import reborncore.shields.RebornCoreShields;
-import reborncore.shields.json.ShieldJsonLoader;
 
 import java.io.File;
 
@@ -97,7 +95,6 @@ public class RebornCore implements IModInfo {
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 		proxy.preInit(event);
-		ShieldJsonLoader.load(event);
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, new LogicControllerGuiHandler());
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -124,7 +121,6 @@ public class RebornCore implements IModInfo {
 		OreUtil.scanForOres();
 		NetworkManager.load();
 
-		RebornCoreShields.init();
 		RebornPermissions.init();
 		MinecraftForge.EVENT_BUS.register(LootManager.INSTANCE);
 		//MinecraftForge.EVENT_BUS.register(InventoryCapabilityAttacher.instace);

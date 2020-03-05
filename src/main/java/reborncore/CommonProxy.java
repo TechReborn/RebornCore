@@ -49,10 +49,6 @@ public class CommonProxy {
 
 	}
 
-	public void loadShieldTextures() {
-
-	}
-
 	public World getClientWorld() {
 		return null;
 	}
