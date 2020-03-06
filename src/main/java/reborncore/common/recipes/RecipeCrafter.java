@@ -360,9 +360,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return false;
 		}
+
+		//Test with a stack with the max stack size as some independents will check the stacksize. Bit of a hack but should work.
+		ItemStack largeStack = stack.copy();
+		largeStack.setCount(largeStack.getMaxCount());
 		for (RebornRecipe recipe : recipeType.getRecipes(blockEntity.getWorld())) {
 			for (RebornIngredient ingredient : recipe.getRebornIngredients()) {
-				if (ingredient.test(stack)) {
+				if (ingredient.test(largeStack)) {
 					return true;
 				}
 			}
