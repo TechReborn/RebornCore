@@ -183,7 +183,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		if (block instanceof BlockMachineBase) {
 			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
 		}
-		return null;
+		return Direction.DOWN;
 	}
 
 	public void setFacing(Direction enumFacing) {
