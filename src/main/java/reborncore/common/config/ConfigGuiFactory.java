@@ -33,6 +33,8 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.DummyConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.common.registration.impl.ConfigRegistryFactory;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public abstract class ConfigGuiFactory implements IModGuiFactory {
 
 	public abstract String getModName();
 
+	@SideOnly(Side.CLIENT)
 	public static class ConfigGui extends GuiConfig {
 
 		public ConfigGui(GuiScreen parentScreen, String modid, String modName) {
@@ -77,6 +80,7 @@ public abstract class ConfigGuiFactory implements IModGuiFactory {
 
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void initialize(Minecraft minecraftInstance) {
 
@@ -87,11 +91,13 @@ public abstract class ConfigGuiFactory implements IModGuiFactory {
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public GuiScreen createConfigGui(GuiScreen parentScreen) {
 		return new ConfigGui(parentScreen, getModID(), getModName());
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
 		return Collections.emptySet();
