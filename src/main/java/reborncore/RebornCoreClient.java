@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import reborncore.client.IconSupplier;
 import reborncore.client.ItemStackRenderer;
+import reborncore.client.hud.StackInfoHUD;
 import reborncore.client.shields.RebornItemStackRenderer;
 import reborncore.common.fluid.RebornFluidRenderManager;
 import reborncore.common.network.ClientBoundPacketHandlers;
@@ -43,5 +44,6 @@ public class RebornCoreClient implements ClientModInitializer {
 		RebornItemStackRenderer.setup();
 		ClientBoundPacketHandlers.init();
 		HudRenderCallback.EVENT.register(new ItemStackRenderer());
+		HudRenderCallback.EVENT.register(new StackInfoHUD());
 	}
 }

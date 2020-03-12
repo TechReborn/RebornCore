@@ -25,6 +25,7 @@
 package reborncore.client.hud;
 
 import com.google.common.collect.Lists;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -42,14 +43,11 @@ import team.reborn.energy.EnergyHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.minecraft.item.ItemStack.EMPTY;
-
 /**
  * Created by Prospector
  */
-public class StackInfoHUD {
+public class StackInfoHUD implements HudRenderCallback {
 
-	public static final StackInfoHUD instance = new StackInfoHUD();
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
 	private static MinecraftClient mc = MinecraftClient.getInstance();
 	private int x = 2;
@@ -59,29 +57,18 @@ public class StackInfoHUD {
 		ELEMENTS.add(element);
 	}
 
-	//TODO needs porting
-//	@Environment(EnvType.CLIENT)
-//	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-//		if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
-//			return;
-//		}
-//
-//		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
-//			if (RebornCoreConfig.ShowStackInfoHUD) {
-//				drawStackInfoHud(MinecraftClient.getInstance().window);
-//			}
-//		}
-//	}
-
 	public void drawStackInfoHud(Window res) {
 		PlayerEntity player = mc.player;
+		if (player == null){
+			return;
+		}
 		List<ItemStack> stacks = new ArrayList<>();
+		stacks.add(player.getMainHandStack());
+		stacks.add(player.getOffHandStack());
+
 		for (ItemStack stack : player.getArmorItems()) {
 			stacks.add(stack);
 		}
-		stacks.add(player.getOffHandStack());
-		stacks.add(player.getMainHandStack());
-
 		x = RebornCoreConfig.stackInfoX;
 
 		if (RebornCoreConfig.stackInfoCorner == 2 || RebornCoreConfig.stackInfoCorner == 3) {
@@ -97,31 +84,12 @@ public class StackInfoHUD {
 		}
 	}
 
-	public void renderItemStack(ItemStack stack, int x, int y) {
-		if (stack != EMPTY) {
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-			itemRenderer.renderGuiItem(stack, x, y);
-
-			GL11.glDisable(GL11.GL_LIGHTING);
-		}
-	}
-
-	private void renderStackForInfo(ItemStack stack) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(32826);
-		DiffuseLighting.enable();
-		renderItemStack(stack, x, y - 5);
-	}
-
 	private void addInfo(ItemStack stack, Window res) {
 		if (stack == ItemStack.EMPTY) {
 			return;
 		}
 
-		String text = "";
+		String text;
 		if (stack.getItem() instanceof EnergyHolder) {
 
 			double maxCharge = Energy.of(stack).getMaxStored();
@@ -137,15 +105,15 @@ public class StackInfoHUD {
 				color = Formatting.DARK_RED;
 			}
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge)
-				+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
-				+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
+					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
+					+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
 			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
 					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
-						+ Formatting.GOLD + ")" + Formatting.GRAY;
+							+ Formatting.GOLD + ")" + Formatting.GRAY;
 				} else {
 					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
-						+ Formatting.GOLD + ")" + Formatting.GRAY;
+							+ Formatting.GOLD + ")" + Formatting.GRAY;
 				}
 			}
 
@@ -171,6 +139,35 @@ public class StackInfoHUD {
 				mc.textRenderer.drawWithShadow(element.getText(stack), x + 18, y, 0);
 				y += 20;
 			}
+		}
+	}
+
+	private void renderStackForInfo(ItemStack stack) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(32826);
+		DiffuseLighting.enable();
+		if (stack.isEmpty()) {
+			return;
+		}
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+		ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+		itemRenderer.renderGuiItem(stack, x, y - 5);
+
+		GL11.glDisable(GL11.GL_LIGHTING);
+	}
+
+	@Override
+	public void onHudRender(float tickDelta) {
+		if (mc.options.hudHidden) {
+			return;
+		}
+		if (!RebornCoreConfig.ShowStackInfoHUD) {
+			return;
+		}
+		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
+			drawStackInfoHud(mc.getWindow());
 		}
 	}
 }
