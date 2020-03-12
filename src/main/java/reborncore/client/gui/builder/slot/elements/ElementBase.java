@@ -307,7 +307,7 @@ public class ElementBase {
 	}
 
 	public void drawCenteredString(GuiBase<?> gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.getContainerWidth() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
+		drawString(gui, string, (gui.getScreenWidth() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
 	}
 
 	public void drawCenteredString(GuiBase<?> gui, String string, int x, int y, int colour) {

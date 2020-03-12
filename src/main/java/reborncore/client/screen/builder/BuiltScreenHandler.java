@@ -22,10 +22,8 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder;
+package reborncore.client.screen.builder;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
@@ -38,13 +36,13 @@ import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.ItemUtils;
-import reborncore.mixin.common.AccessorContainer;
+import reborncore.mixin.common.AccessorScreenHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
 
-public class BuiltContainer extends ScreenHandler implements IExtendedContainerListener {
+public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenHandlerListener {
 
 	private final String name;
 
@@ -60,9 +58,9 @@ public class BuiltContainer extends ScreenHandler implements IExtendedContainerL
 
 	private final MachineBaseBlockEntity blockEntity;
 
-	public BuiltContainer(int syncID, final String name, final Predicate<PlayerEntity> canInteract,
-	                      final List<Range<Integer>> playerSlotRange,
-	                      final List<Range<Integer>> blockEntitySlotRange, MachineBaseBlockEntity blockEntity) {
+	public BuiltScreenHandler(int syncID, final String name, final Predicate<PlayerEntity> canInteract,
+							  final List<Range<Integer>> playerSlotRange,
+							  final List<Range<Integer>> blockEntitySlotRange, MachineBaseBlockEntity blockEntity) {
 		super(null, syncID);
 		this.name = name;
 
@@ -123,7 +121,7 @@ public class BuiltContainer extends ScreenHandler implements IExtendedContainerL
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ScreenHandlerListener listener : ((AccessorContainer)(this)).getListeners()) {
+		for (final ScreenHandlerListener listener : ((AccessorScreenHandler)(this)).getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {

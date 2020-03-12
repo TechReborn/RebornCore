@@ -32,7 +32,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
 
 @Mixin(ScreenHandler.class)
-public interface AccessorContainer {
+public interface AccessorScreenHandler {
 
 	@Accessor
 	List<ScreenHandlerListener> getListeners();

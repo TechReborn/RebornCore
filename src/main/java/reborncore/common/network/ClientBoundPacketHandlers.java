@@ -38,7 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import reborncore.RebornCore;
 import reborncore.client.ClientChunkManager;
-import reborncore.client.containerBuilder.builder.IExtendedContainerListener;
+import reborncore.client.screen.builder.ExtendedScreenHandlerListener;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
@@ -111,9 +111,9 @@ public class ClientBoundPacketHandlers {
 			context.getTaskQueue().execute(() -> {
 				Screen gui = MinecraftClient.getInstance().currentScreen;
 				if (gui instanceof ScreenWithHandler) {
-					ScreenHandler container1 = ((ScreenWithHandler) gui).getScreenHandler();
-					if (container1 instanceof IExtendedContainerListener) {
-						((IExtendedContainerListener) container1).handleObject(id, value);
+					ScreenHandler screenHandler = ((ScreenWithHandler) gui).getScreenHandler();
+					if (screenHandler instanceof ExtendedScreenHandlerListener) {
+						((ExtendedScreenHandlerListener) screenHandler).handleObject(id, value);
 					}
 				}
 			});

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder;
+package reborncore.client.screen.builder;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class ContainerBuilder {
+public class ScreenHandlerBuilder {
 
 	private final String name;
 
@@ -52,7 +52,7 @@ public class ContainerBuilder {
 
 	final List<Consumer<CraftingInventory>> craftEvents;
 
-	public ContainerBuilder(final String name) {
+	public ScreenHandlerBuilder(final String name) {
 
 		this.name = name;
 
@@ -65,17 +65,17 @@ public class ContainerBuilder {
 		this.craftEvents = new ArrayList<>();
 	}
 
-	public ContainerBuilder interact(final Predicate<PlayerEntity> canInteract) {
+	public ScreenHandlerBuilder interact(final Predicate<PlayerEntity> canInteract) {
 		this.canInteract = canInteract;
 		return this;
 	}
 
-	public ContainerPlayerInventoryBuilder player(final PlayerInventory player) {
-		return new ContainerPlayerInventoryBuilder(this, player);
+	public PlayerScreenHandlerBuilder player(final PlayerInventory player) {
+		return new PlayerScreenHandlerBuilder(this, player);
 	}
 
-	public ContainerBlockEntityInventoryBuilder blockEntity(final BlockEntity blockEntity) {
-		return new ContainerBlockEntityInventoryBuilder(this, blockEntity);
+	public BlockEntityScreenHandlerBuilder blockEntity(final BlockEntity blockEntity) {
+		return new BlockEntityScreenHandlerBuilder(this, blockEntity);
 	}
 
 	void addPlayerInventoryRange(final Range<Integer> range) {
@@ -88,11 +88,11 @@ public class ContainerBuilder {
 
 	@Deprecated
 	/**
-	 * The container have to know if the blockEntity is still available (the block was not destroyed)
+	 * The screen handler have to know if the blockEntity is still available (the block was not destroyed)
 	 * and if the player is not to far from him to close the GUI if necessary
 	 */
-	public BuiltContainer create(int syncID) {
-		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
+	public BuiltScreenHandler create(int syncID) {
+		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
 			this.blockEntityInventoryRanges, null);
 		if (!this.objectValues.isEmpty()) {
@@ -108,8 +108,8 @@ public class ContainerBuilder {
 		return built;
 	}
 
-	public BuiltContainer create(final MachineBaseBlockEntity blockEntity, int syncID) {
-		final BuiltContainer built = new BuiltContainer(syncID, this.name, this.canInteract,
+	public BuiltScreenHandler create(final MachineBaseBlockEntity blockEntity, int syncID) {
+		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
 			this.playerInventoryRanges,
 			this.blockEntityInventoryRanges, blockEntity);
 		if (!this.objectValues.isEmpty())

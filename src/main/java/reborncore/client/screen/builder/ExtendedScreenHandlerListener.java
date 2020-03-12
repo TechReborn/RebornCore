@@ -22,41 +22,23 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder.slot;
+package reborncore.client.screen.builder;
 
-import com.mojang.datafixers.util.Pair;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.util.Identifier;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.server.network.ServerPlayerEntity;
+import reborncore.common.network.ClientBoundPackets;
+import reborncore.common.network.NetworkManager;
 
-import javax.annotation.Nullable;
+public interface ExtendedScreenHandlerListener {
 
-public class SpriteSlot extends FilteredSlot {
-
-	private final Identifier spriteName;
-	int stacksize;
-
-	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final Identifier sprite, final int stacksize) {
-		super(inventory, index, xPosition, yPosition);
-		this.spriteName = sprite;
-		this.stacksize = stacksize;
+	public default void sendObject(ScreenHandlerListener screenHandlerListener, ScreenHandler screenHandler, int var, Object value) {
+		if (screenHandlerListener instanceof ServerPlayerEntity) {
+			NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSendObject(var, value, screenHandler), (ServerPlayerEntity) screenHandlerListener);
+		}
 	}
 
-	public SpriteSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, final Identifier sprite) {
-		this(inventory, index, xPosition, yPosition, sprite, 64);
-	}
+	public default void handleObject(int var, Object value) {
 
-	@Override
-	public int getMaxStackAmount() {
-		return this.stacksize;
-	}
-
-	@Override
-	@Nullable
-	@Environment(EnvType.CLIENT)
-	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(SpriteAtlasTexture.BLOCK_ATLAS_TEX, spriteName);
 	}
 }

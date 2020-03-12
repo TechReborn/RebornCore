@@ -66,12 +66,12 @@ public class ClientBoundPackets {
 		});
 	}
 
-	public static Packet<ClientPlayPacketListener> createPacketSendObject(int id, Object value, ScreenHandler container) {
+	public static Packet<ClientPlayPacketListener> createPacketSendObject(int id, Object value, ScreenHandler screenHandler) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "send_object"), packetBuffer -> {
 			packetBuffer.writeInt(id);
 			packetBuffer.writeObject(value);
-			packetBuffer.writeInt(container.getClass().getName().length());
-			packetBuffer.writeString(container.getClass().getName());
+			packetBuffer.writeInt(screenHandler.getClass().getName().length());
+			packetBuffer.writeString(screenHandler.getClass().getName());
 		});
 	}
 

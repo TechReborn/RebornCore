@@ -29,7 +29,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
-import reborncore.client.containerBuilder.builder.BuiltContainer;
+import reborncore.client.screen.builder.BuiltScreenHandler;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigSlotElement;
@@ -61,7 +61,7 @@ public class SlotConfigGui {
 		reset();
 		slotElementMap.clear();
 
-		BuiltContainer container = guiBase.builtContainer;
+		BuiltScreenHandler container = guiBase.builtScreenHandler;
 		for (Slot slot : container.slots) {
 			if (guiBase.be != slot.inventory) {
 				continue;
@@ -74,7 +74,7 @@ public class SlotConfigGui {
 	}
 
 	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
-		BuiltContainer container = guiBase.builtContainer;
+		BuiltScreenHandler container = guiBase.builtScreenHandler;
 		for (Slot slot : container.slots) {
 			if (guiBase.be != slot.inventory) {
 				continue;
@@ -159,10 +159,10 @@ public class SlotConfigGui {
 				}
 			}
 		}
-		BuiltContainer container = guiBase.builtContainer;
+		BuiltScreenHandler screenHandler = guiBase.builtScreenHandler;
 
 		if (getVisibleElements().isEmpty()) {
-			for (Slot slot : container.slots) {
+			for (Slot slot : screenHandler.slots) {
 				if (guiBase.be != slot.inventory) {
 					continue;
 				}

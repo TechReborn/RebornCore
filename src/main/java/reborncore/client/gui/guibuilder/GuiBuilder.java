@@ -372,7 +372,7 @@ public class GuiBuilder {
 				.map(StringUtils::t)
 				.collect(Collectors.toList());
 
-		TipsListWidget explanation = new TipsListWidget(gui, gui.getContainerWidth() - 14, 54, y, y + 76, 9 + 2, tips);
+		TipsListWidget explanation = new TipsListWidget(gui, gui.getScreenWidth() - 14, 54, y, y + 76, 9 + 2, tips);
 		explanation.setLeftPos(x - 81);
 		explanation.render(mouseX, mouseY, 1.0f);
 		RenderSystem.color4f(1, 1, 1, 1);

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder;
+package reborncore.client.screen.builder;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
@@ -35,8 +35,8 @@ import reborncore.RebornCore;
 import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.client.containerBuilder.builder.slot.FilteredSlot;
-import reborncore.client.containerBuilder.builder.slot.UpgradeSlot;
+import reborncore.client.screen.builder.slot.FilteredSlot;
+import reborncore.client.screen.builder.slot.UpgradeSlot;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.client.gui.slots.SlotFake;
 import reborncore.client.gui.slots.SlotOutput;
@@ -49,14 +49,14 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class ContainerBlockEntityInventoryBuilder {
+public class BlockEntityScreenHandlerBuilder {
 
 	private final Inventory inventory;
 	private final BlockEntity blockEntity;
-	private final ContainerBuilder parent;
+	private final ScreenHandlerBuilder parent;
 	private final int rangeStart;
 
-	ContainerBlockEntityInventoryBuilder(final ContainerBuilder parent, final BlockEntity blockEntity) {
+	BlockEntityScreenHandlerBuilder(final ScreenHandlerBuilder parent, final BlockEntity blockEntity) {
 		if(blockEntity instanceof Inventory){
 			this.inventory = (Inventory) blockEntity;
 		} else {
@@ -73,57 +73,57 @@ public class ContainerBlockEntityInventoryBuilder {
 		}
 	}
 
-	public ContainerBlockEntityInventoryBuilder slot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder slot(final int index, final int x, final int y) {
 		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
+	public BlockEntityScreenHandlerBuilder slot(final int index, final int x, final int y, Predicate<ItemStack> filter) {
 		this.parent.slots.add(new BaseSlot(this.inventory, index, x, y, filter));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder outputSlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder outputSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotOutput(this.inventory, index, x, y));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder fakeSlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder fakeSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new SlotFake(this.inventory, index, x, y, false, false, Integer.MAX_VALUE));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder filterSlot(final int index, final int x, final int y,
-	                                                       final Predicate<ItemStack> filter) {
+	public BlockEntityScreenHandlerBuilder filterSlot(final int index, final int x, final int y,
+													  final Predicate<ItemStack> filter) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(filter));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder energySlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder energySlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(Energy::valid));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder fluidSlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder fluidSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(
 			stack -> stack.getItem() instanceof ItemFluidInfo));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder fuelSlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder fuelSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y).setFilter(AbstractFurnaceBlockEntity::canUseAsFuel));
 		return this;
 	}
 
 	@Deprecated
-	public ContainerBlockEntityInventoryBuilder upgradeSlot(final int index, final int x, final int y) {
+	public BlockEntityScreenHandlerBuilder upgradeSlot(final int index, final int x, final int y) {
 		this.parent.slots.add(new FilteredSlot(this.inventory, index, x, y)
 			.setFilter(stack -> stack.getItem() instanceof IUpgrade));
 		return this;
 	}
 
-	private ContainerBlockEntityInventoryBuilder upgradeSlots(IUpgradeable upgradeable) {
+	private BlockEntityScreenHandlerBuilder upgradeSlots(IUpgradeable upgradeable) {
 		if (upgradeable.canBeUpgraded()) {
 			for (int i = 0; i < upgradeable.getUpgradeSlotCount(); i++) {
 				this.parent.slots.add(new UpgradeSlot(upgradeable.getUpgradeInvetory(), i, -18, i * 18 + 12));
@@ -138,17 +138,17 @@ public class ContainerBlockEntityInventoryBuilder {
 	 * @param setter The setter to call when the variable has been updated.
 	 * @return ContainerTileInventoryBuilder Inventory which will do the sync
 	 */
-	public <T> ContainerBlockEntityInventoryBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
+	public <T> BlockEntityScreenHandlerBuilder sync(final Supplier<T> supplier, final Consumer<T> setter) {
 		this.parent.objectValues.add(Pair.of(supplier, setter));
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder sync(Syncable syncable){
+	public BlockEntityScreenHandlerBuilder sync(Syncable syncable){
 		syncable.getSyncPair(this.parent.objectValues);
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder syncEnergyValue() {
+	public BlockEntityScreenHandlerBuilder syncEnergyValue() {
 		if (this.blockEntity instanceof PowerAcceptorBlockEntity) {
 			PowerAcceptorBlockEntity powerAcceptor = ((PowerAcceptorBlockEntity) this.blockEntity);
 
@@ -161,7 +161,7 @@ public class ContainerBlockEntityInventoryBuilder {
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder syncCrafterValue() {
+	public BlockEntityScreenHandlerBuilder syncCrafterValue() {
 		if (this.blockEntity instanceof IRecipeCrafterProvider) {
 			IRecipeCrafterProvider recipeCrafter = ((IRecipeCrafterProvider) this.blockEntity);
 			return this
@@ -173,12 +173,12 @@ public class ContainerBlockEntityInventoryBuilder {
 		return this;
 	}
 
-	public ContainerBlockEntityInventoryBuilder onCraft(final Consumer<CraftingInventory> onCraft) {
+	public BlockEntityScreenHandlerBuilder onCraft(final Consumer<CraftingInventory> onCraft) {
 		this.parent.craftEvents.add(onCraft);
 		return this;
 	}
 
-	public ContainerBuilder addInventory() {
+	public ScreenHandlerBuilder addInventory() {
 		this.parent.blockEntityInventoryRanges.add(Range.between(this.rangeStart, this.parent.slots.size() - 1));
 		return this.parent;
 	}

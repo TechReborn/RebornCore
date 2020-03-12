@@ -22,25 +22,16 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder.slot;
+package reborncore.client.screen.builder;
 
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.slot.Slot;
+import org.apache.commons.lang3.tuple.Pair;
 
-/**
- * Created by drcrazy on 31-Dec-19 for TechReborn-1.15.
- */
-public class PlayerInventorySlot extends Slot {
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-    public boolean doDraw;
+public interface Syncable {
 
-    public PlayerInventorySlot(Inventory inventory, int index, int xPosition, int yPosition) {
-        super(inventory, index, xPosition, yPosition);
-        this.doDraw = true;
-    }
+	void getSyncPair(List<Pair<Supplier, Consumer>> pairList);
 
-    @Override
-    public boolean doDrawHoveringEffect() {
-        return doDraw? true : false;
-    }
 }

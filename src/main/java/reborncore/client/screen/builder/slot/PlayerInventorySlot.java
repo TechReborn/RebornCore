@@ -22,11 +22,25 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder;
+package reborncore.client.screen.builder.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import reborncore.client.containerBuilder.builder.BuiltContainer;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.slot.Slot;
 
-public interface IContainerProvider {
-	BuiltContainer createContainer(int syncID, PlayerEntity player);
+/**
+ * Created by drcrazy on 31-Dec-19 for TechReborn-1.15.
+ */
+public class PlayerInventorySlot extends Slot {
+
+    public boolean doDraw;
+
+    public PlayerInventorySlot(Inventory inventory, int index, int xPosition, int yPosition) {
+        super(inventory, index, xPosition, yPosition);
+        this.doDraw = true;
+    }
+
+    @Override
+    public boolean doDrawHoveringEffect() {
+        return doDraw? true : false;
+    }
 }

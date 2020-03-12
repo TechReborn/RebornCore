@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder;
+package reborncore.client.screen.builder;
 
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerInventory;
@@ -30,23 +30,23 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.Range;
 import reborncore.client.IconSupplier;
-import reborncore.client.containerBuilder.builder.slot.PlayerInventorySlot;
-import reborncore.client.containerBuilder.builder.slot.SpriteSlot;
+import reborncore.client.screen.builder.slot.PlayerInventorySlot;
+import reborncore.client.screen.builder.slot.SpriteSlot;
 
-public final class ContainerPlayerInventoryBuilder {
+public final class PlayerScreenHandlerBuilder {
 
 	private final PlayerInventory player;
-	private final ContainerBuilder parent;
+	private final ScreenHandlerBuilder parent;
 	private Range<Integer> main;
 	private Range<Integer> hotbar;
 	private Range<Integer> armor;
 
-	ContainerPlayerInventoryBuilder(final ContainerBuilder parent, final PlayerInventory player) {
+	PlayerScreenHandlerBuilder(final ScreenHandlerBuilder parent, final PlayerInventory player) {
 		this.player = player;
 		this.parent = parent;
 	}
 
-	public ContainerPlayerInventoryBuilder inventory(final int xStart, final int yStart) {
+	public PlayerScreenHandlerBuilder inventory(final int xStart, final int yStart) {
 		final int startIndex = this.parent.slots.size();
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -57,7 +57,7 @@ public final class ContainerPlayerInventoryBuilder {
 		return this;
 	}
 
-	public ContainerPlayerInventoryBuilder hotbar(final int xStart, final int yStart) {
+	public PlayerScreenHandlerBuilder hotbar(final int xStart, final int yStart) {
 		final int startIndex = this.parent.slots.size();
 		for (int i = 0; i < 9; ++i) {
 			this.parent.slots.add(new PlayerInventorySlot(this.player, i, xStart + i * 18, yStart));
@@ -66,19 +66,19 @@ public final class ContainerPlayerInventoryBuilder {
 		return this;
 	}
 
-	public ContainerPlayerInventoryBuilder inventory() {
+	public PlayerScreenHandlerBuilder inventory() {
 		return this.inventory(8, 94);
 	}
 
-	public ContainerPlayerInventoryBuilder hotbar() {
+	public PlayerScreenHandlerBuilder hotbar() {
 		return this.hotbar(8, 152);
 	}
 
-	public ContainerPlayerArmorInventoryBuilder armor() {
-		return new ContainerPlayerArmorInventoryBuilder(this);
+	public PlayerArmorScreenHandlerBuilder armor() {
+		return new PlayerArmorScreenHandlerBuilder(this);
 	}
 
-	public ContainerBuilder addInventory() {
+	public ScreenHandlerBuilder addInventory() {
 		if (this.hotbar != null) {
 			this.parent.addPlayerInventoryRange(this.hotbar);
 		}
@@ -92,17 +92,17 @@ public final class ContainerPlayerInventoryBuilder {
 		return this.parent;
 	}
 
-	public static final class ContainerPlayerArmorInventoryBuilder {
-		private final ContainerPlayerInventoryBuilder parent;
+	public static final class PlayerArmorScreenHandlerBuilder {
+		private final PlayerScreenHandlerBuilder parent;
 		private final int startIndex;
 
-		public ContainerPlayerArmorInventoryBuilder(final ContainerPlayerInventoryBuilder parent) {
+		public PlayerArmorScreenHandlerBuilder(final PlayerScreenHandlerBuilder parent) {
 			this.parent = parent;
 			this.startIndex = parent.parent.slots.size();
 		}
 
-		private ContainerPlayerArmorInventoryBuilder armor(final int index, final int xStart, final int yStart,
-		                                                   final EquipmentSlot slotType, final Identifier sprite) {
+		private PlayerArmorScreenHandlerBuilder armor(final int index, final int xStart, final int yStart,
+													  final EquipmentSlot slotType, final Identifier sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(this.parent.player, index, xStart, yStart, sprite, 1)
 				.setFilter(stack -> {
 					if(stack.getItem() instanceof ArmorItem){
@@ -113,28 +113,28 @@ public final class ContainerPlayerInventoryBuilder {
 			return this;
 		}
 
-		public ContainerPlayerArmorInventoryBuilder helmet(final int xStart, final int yStart) {
+		public PlayerArmorScreenHandlerBuilder helmet(final int xStart, final int yStart) {
 			return this.armor(this.parent.player.getInvSize() - 2, xStart, yStart, EquipmentSlot.HEAD, IconSupplier.armour_head_id);
 		}
 
-		public ContainerPlayerArmorInventoryBuilder chestplate(final int xStart, final int yStart) {
+		public PlayerArmorScreenHandlerBuilder chestplate(final int xStart, final int yStart) {
 			return this.armor(this.parent.player.getInvSize() - 3, xStart, yStart, EquipmentSlot.CHEST, IconSupplier.armour_chest_id);
 		}
 
-		public ContainerPlayerArmorInventoryBuilder leggings(final int xStart, final int yStart) {
+		public PlayerArmorScreenHandlerBuilder leggings(final int xStart, final int yStart) {
 			return this.armor(this.parent.player.getInvSize() - 4, xStart, yStart, EquipmentSlot.LEGS, IconSupplier.armour_legs_id);
 		}
 
-		public ContainerPlayerArmorInventoryBuilder boots(final int xStart, final int yStart) {
+		public PlayerArmorScreenHandlerBuilder boots(final int xStart, final int yStart) {
 			return this.armor(this.parent.player.getInvSize() - 5, xStart, yStart, EquipmentSlot.FEET, IconSupplier.armour_feet_id);
 		}
 
-		public ContainerPlayerArmorInventoryBuilder complete(final int xStart, final int yStart) {
+		public PlayerArmorScreenHandlerBuilder complete(final int xStart, final int yStart) {
 			return this.helmet(xStart, yStart).chestplate(xStart, yStart + 18).leggings(xStart, yStart + 18 + 18)
 				.boots(xStart, yStart + 18 + 18 + 18);
 		}
 
-		public ContainerPlayerInventoryBuilder addArmor() {
+		public PlayerScreenHandlerBuilder addArmor() {
 			this.parent.armor = Range.between(this.startIndex - 1, this.parent.parent.slots.size() - 2);
 			return this.parent;
 		}

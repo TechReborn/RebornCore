@@ -3,7 +3,7 @@
   "package": "reborncore.mixin.common",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-	"AccessorContainer",
+	"AccessorScreenHandler",
 	"AccessorFluidBlock",
 	"AccessorIngredient",
 	"AccessorRecipeManager",

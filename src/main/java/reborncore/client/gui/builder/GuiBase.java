@@ -44,8 +44,8 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.blockentity.IUpgradeable;
-import reborncore.client.containerBuilder.builder.BuiltContainer;
-import reborncore.client.containerBuilder.builder.slot.PlayerInventorySlot;
+import reborncore.client.screen.builder.BuiltScreenHandler;
+import reborncore.client.screen.builder.slot.PlayerInventorySlot;
 import reborncore.client.gui.builder.slot.FluidConfigGui;
 import reborncore.client.gui.builder.slot.GuiTab;
 import reborncore.client.gui.builder.slot.SlotConfigGui;
@@ -123,7 +123,7 @@ public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 	public GuiBuilder builder = new GuiBuilder();
 	public BlockEntity be;
 	@Nullable
-	public BuiltContainer builtContainer;
+	public BuiltScreenHandler builtScreenHandler;
 	private int xSize = 176;
 	private int ySize = 176;
 
@@ -132,10 +132,10 @@ public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 
 	public boolean upgrades;
 
-	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T container) {
-		super(container, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
+	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T screenHandler) {
+		super(screenHandler, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
 		this.be = blockEntity;
-		this.builtContainer = (BuiltContainer) container;
+		this.builtScreenHandler = (BuiltScreenHandler) screenHandler;
 		selectedTab = null;
 		populateSlots();
 	}
@@ -147,7 +147,7 @@ public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 				.collect(Collectors.toList());
 	}
 
-	public int getContainerWidth() {
+	public int getScreenWidth() {
 		return backgroundWidth;
 	}
 
@@ -228,10 +228,10 @@ public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 	}
 
 	private void updateSlotDraw(boolean doDraw) {
-		if (builtContainer == null) {
+		if (builtScreenHandler == null) {
 			return;
 		}
-		for (Slot slot : builtContainer.slots) {
+		for (Slot slot : builtScreenHandler.slots) {
 			if (slot instanceof PlayerInventorySlot) {
 				((PlayerInventorySlot) slot).doDraw = doDraw;
 			}
@@ -406,7 +406,7 @@ public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 	}
 
 	public boolean isConfigEnabled() {
-		return be instanceof MachineBaseBlockEntity && builtContainer != null;
+		return be instanceof MachineBaseBlockEntity && builtScreenHandler != null;
 	}
 
 	public int getGuiLeft() {

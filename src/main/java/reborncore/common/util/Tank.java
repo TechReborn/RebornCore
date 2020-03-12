@@ -33,7 +33,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
-import reborncore.client.containerBuilder.builder.Syncable;
+import reborncore.client.screen.builder.Syncable;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import net.minecraft.fluid.Fluid;
 import reborncore.common.fluid.container.GenericFluidContainer;

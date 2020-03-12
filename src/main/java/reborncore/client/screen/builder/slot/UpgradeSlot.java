@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder.slot;
+package reborncore.client.screen.builder.slot;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;

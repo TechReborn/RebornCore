@@ -22,16 +22,44 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder;
+package reborncore.client.screen.builder.slot;
 
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import reborncore.client.gui.slots.BaseSlot;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 
-public interface Syncable {
+public class FilteredSlot extends BaseSlot {
 
-	void getSyncPair(List<Pair<Supplier, Consumer>> pairList);
+	private Predicate<ItemStack> filter;
+	private int stackLimit = 64;
 
+	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition) {
+		super(inventory, index, xPosition, yPosition);
+	}
+
+	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, int stackLimit) {
+		super(inventory, index, xPosition, yPosition);
+		this.stackLimit = stackLimit;
+	}
+
+	public FilteredSlot setFilter(final Predicate<ItemStack> filter) {
+		this.filter = filter;
+		return this;
+	}
+
+	@Override
+	public boolean canInsert(final ItemStack stack) {
+		try {
+			return this.filter.test(stack);
+		} catch (NullPointerException e) {
+			return true;
+		}
+	}
+
+	@Override
+	public int getMaxStackAmount() {
+		return stackLimit;
+	}
 }

@@ -22,44 +22,11 @@
  * SOFTWARE.
  */
 
-package reborncore.client.containerBuilder.builder.slot;
+package reborncore.client.screen;
 
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import reborncore.client.gui.slots.BaseSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import reborncore.client.screen.builder.BuiltScreenHandler;
 
-import java.util.function.Predicate;
-
-public class FilteredSlot extends BaseSlot {
-
-	private Predicate<ItemStack> filter;
-	private int stackLimit = 64;
-
-	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition) {
-		super(inventory, index, xPosition, yPosition);
-	}
-
-	public FilteredSlot(final Inventory inventory, final int index, final int xPosition, final int yPosition, int stackLimit) {
-		super(inventory, index, xPosition, yPosition);
-		this.stackLimit = stackLimit;
-	}
-
-	public FilteredSlot setFilter(final Predicate<ItemStack> filter) {
-		this.filter = filter;
-		return this;
-	}
-
-	@Override
-	public boolean canInsert(final ItemStack stack) {
-		try {
-			return this.filter.test(stack);
-		} catch (NullPointerException e) {
-			return true;
-		}
-	}
-
-	@Override
-	public int getMaxStackAmount() {
-		return stackLimit;
-	}
+public interface BuiltScreenHandlerProvider {
+	BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player);
 }
