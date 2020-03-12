@@ -24,9 +24,9 @@
 
 package reborncore.client.gui.slots;
 
-import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import reborncore.mixin.common.AccessorSlot;
 
 import java.util.function.Predicate;

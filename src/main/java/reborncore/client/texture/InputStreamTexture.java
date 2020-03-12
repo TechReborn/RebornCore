@@ -90,7 +90,7 @@ public class InputStreamTexture extends AbstractTexture {
 			}
 		}
 		this.bindTexture();
-		TextureUtil.prepareImage(this.getGlId(), 0, image.getWidth(), image.getHeight());
+		TextureUtil.method_24959(this.getGlId(), 0, image.getWidth(), image.getHeight());
 		image.upload(0, 0, 0, true);
 	}
 }

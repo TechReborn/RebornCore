@@ -24,17 +24,17 @@
 
 package reborncore.mixin.common;
 
-import net.minecraft.container.Container;
-import net.minecraft.container.ContainerListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 
-@Mixin(Container.class)
+@Mixin(ScreenHandler.class)
 public interface AccessorContainer {
 
 	@Accessor
-	List<ContainerListener> getListeners();
+	List<ScreenHandlerListener> getListeners();
 
 }

@@ -27,7 +27,7 @@ package reborncore.client.gui.builder.slot;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.container.Slot;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import reborncore.client.containerBuilder.builder.BuiltContainer;
 import reborncore.client.gui.GuiUtil;

@@ -30,16 +30,16 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.container.Container;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
  * Created by Prospector
  */
 
-public class GuiBase<T extends Container> extends ContainerScreen<T> {
+public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
 
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
@@ -148,7 +148,7 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 	}
 
 	public int getContainerWidth() {
-		return containerWidth;
+		return backgroundWidth;
 	}
 
 	public void drawSlot(int x, int y, Layer layer) {
@@ -205,7 +205,7 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 		updateSlotDraw(drawPlayerSlots);
 		builder.drawDefaultBackground(this, x, y, xSize, ySize);
 		if (drawPlayerSlots) {
-			builder.drawPlayerSlots(this, x + containerWidth / 2, y + 93, true);
+			builder.drawPlayerSlots(this, x + backgroundWidth / 2, y + 93, true);
 		}
 		if (tryAddUpgrades() && be instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) be;
@@ -223,7 +223,7 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 		}
 
 		final GuiBase<T> gui = this;
-		getTab().ifPresent(guiTab -> builder.drawSlotConfigTips(gui, x + containerWidth / 2, y + 93, mouseX, mouseY, guiTab));
+		getTab().ifPresent(guiTab -> builder.drawSlotConfigTips(gui, x + backgroundWidth / 2, y + 93, mouseX, mouseY, guiTab));
 
 	}
 
@@ -292,11 +292,11 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 	}
 
 	public void drawCentredString(String string, int y, int colour, Layer layer) {
-		drawString(string, (containerWidth / 2 - getTextRenderer().getStringWidth(string) / 2), y, colour, layer);
+		drawString(string, (backgroundWidth / 2 - getTextRenderer().getStringWidth(string) / 2), y, colour, layer);
 	}
 
 	protected void drawCentredString(String string, int y, int colour, int modifier, Layer layer) {
-		drawString(string, (containerWidth / 2 - (getTextRenderer().getStringWidth(string)) / 2) + modifier, y, colour, layer);
+		drawString(string, (backgroundWidth / 2 - (getTextRenderer().getStringWidth(string)) / 2) + modifier, y, colour, layer);
 	}
 
 	public void drawString(String string, int x, int y, int colour, Layer layer) {
@@ -419,14 +419,14 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 
 	public MinecraftClient getMinecraft() {
 		// Just to stop complains from IDEA
-		if (minecraft == null) {
+		if (client == null) {
 			throw new NullPointerException("Minecraft client is null.");
 		}
-		return this.minecraft;
+		return this.client;
 	}
 
 	public TextRenderer getTextRenderer() {
-		return this.font;
+		return this.textRenderer;
 	}
 
 	public Optional<GuiTab> getTab() {

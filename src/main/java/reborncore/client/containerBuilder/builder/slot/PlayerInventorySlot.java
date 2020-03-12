@@ -24,8 +24,8 @@
 
 package reborncore.client.containerBuilder.builder.slot;
 
-import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.screen.slot.Slot;
 
 /**
  * Created by drcrazy on 31-Dec-19 for TechReborn-1.15.

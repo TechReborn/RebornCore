@@ -24,15 +24,15 @@
 
 package reborncore.client.containerBuilder.builder;
 
-import net.minecraft.container.Container;
-import net.minecraft.container.ContainerListener;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.server.network.ServerPlayerEntity;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
 
 public interface IExtendedContainerListener {
 
-	public default void sendObject(ContainerListener containerListener, Container containerIn, int var, Object value) {
+	public default void sendObject(ScreenHandlerListener containerListener, ScreenHandler containerIn, int var, Object value) {
 		if (containerListener instanceof ServerPlayerEntity) {
 			NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSendObject(var, value, containerIn), (ServerPlayerEntity) containerListener);
 		}

@@ -26,13 +26,13 @@ package reborncore.client.containerBuilder.builder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.container.Container;
-import net.minecraft.container.ContainerListener;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.slot.Slot;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.*;
 
-public class BuiltContainer extends Container implements IExtendedContainerListener {
+public class BuiltContainer extends ScreenHandler implements IExtendedContainerListener {
 
 	private final String name;
 
@@ -123,7 +123,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ContainerListener listener : ((AccessorContainer)(this)).getListeners()) {
+		for (final ScreenHandlerListener listener : ((AccessorContainer)(this)).getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
@@ -131,7 +131,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					final short supplied = (short) value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
 
-						listener.onContainerPropertyUpdate(this, i, supplied);
+						listener.onPropertyUpdate(this, i, supplied);
 						value.setRight(supplied);
 					}
 					i++;
@@ -143,8 +143,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 					final int supplied = value.getLeft().getAsInt();
 					if (supplied != value.getRight()) {
 
-						listener.onContainerPropertyUpdate(this, i, supplied >> 16);
-						listener.onContainerPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
+						listener.onPropertyUpdate(this, i, supplied >> 16);
+						listener.onPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
 						value.setRight(supplied);
 					}
 					i += 2;
@@ -166,7 +166,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 	}
 
 	@Override
-	public void addListener(final ContainerListener listener) {
+	public void addListener(final ScreenHandlerListener listener) {
 		super.addListener(listener);
 
 		int i = 0;
@@ -174,7 +174,7 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			for (final MutableTriple<IntSupplier, IntConsumer, Short> value : this.shortValues) {
 				final short supplied = (short) value.getLeft().getAsInt();
 
-				listener.onContainerPropertyUpdate(this, i, supplied);
+				listener.onPropertyUpdate(this, i, supplied);
 				value.setRight(supplied);
 				i++;
 			}
@@ -184,8 +184,8 @@ public class BuiltContainer extends Container implements IExtendedContainerListe
 			for (final MutableTriple<IntSupplier, IntConsumer, Integer> value : this.integerValues) {
 				final int supplied = value.getLeft().getAsInt();
 
-				listener.onContainerPropertyUpdate(this, i, supplied >> 16);
-				listener.onContainerPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
+				listener.onPropertyUpdate(this, i, supplied >> 16);
+				listener.onPropertyUpdate(this, i + 1, (short) (supplied & 0xFFFF));
 				value.setRight(supplied);
 				i += 2;
 			}

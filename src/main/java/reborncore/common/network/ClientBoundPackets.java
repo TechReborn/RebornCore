@@ -25,11 +25,11 @@
 package reborncore.common.network;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.blockentity.FluidConfiguration;
@@ -66,7 +66,7 @@ public class ClientBoundPackets {
 		});
 	}
 
-	public static Packet<ClientPlayPacketListener> createPacketSendObject(int id, Object value, Container container) {
+	public static Packet<ClientPlayPacketListener> createPacketSendObject(int id, Object value, ScreenHandler container) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "send_object"), packetBuffer -> {
 			packetBuffer.writeInt(id);
 			packetBuffer.writeObject(value);

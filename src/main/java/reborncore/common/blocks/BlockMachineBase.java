@@ -29,12 +29,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -173,7 +173,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	@SuppressWarnings("deprecation")
 	@Override
 	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return Container.calculateComparatorOutput(getInventory(state, world, pos));
+		return ScreenHandler.calculateComparatorOutput(getInventory(state, world, pos));
 	}
 
 	/*
