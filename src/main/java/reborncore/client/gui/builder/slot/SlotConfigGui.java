@@ -67,8 +67,8 @@ public class SlotConfigGui {
 				continue;
 			}
 			AccessorSlot accessorSlot = (AccessorSlot) slot;
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), accessorSlot.getInvSlot(), SlotType.NORMAL, slot.xPosition - guiBase.getGuiLeft() + 50, slot.yPosition - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(accessorSlot.getInvSlot(), slotElement);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), accessorSlot.getId(), SlotType.NORMAL, slot.x - guiBase.getGuiLeft() + 50, slot.y - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(accessorSlot.getId(), slotElement);
 		}
 
 	}
@@ -81,7 +81,7 @@ public class SlotConfigGui {
 			}
 			RenderSystem.color3f(255, 0, 0);
 			Color color = new Color(255, 0, 0, 128);
-			GuiUtil.drawGradientRect(slot.xPosition - 1, slot.yPosition - 1, 18, 18, color.getColor(), color.getColor());
+			GuiUtil.drawGradientRect(slot.x - 1, slot.y - 1, 18, 18, color.getColor(), color.getColor());
 			RenderSystem.color3f(255, 255, 255);
 		}
 
@@ -166,9 +166,9 @@ public class SlotConfigGui {
 				if (guiBase.be != slot.inventory) {
 					continue;
 				}
-				if (guiBase.isPointInRect(slot.xPosition, slot.yPosition, 18, 18, mouseX, mouseY)) {
+				if (guiBase.isPointInRect(slot.x, slot.y, 18, 18, mouseX, mouseY)) {
 					AccessorSlot accessorSlot = (AccessorSlot) slot;
-					selectedSlot = accessorSlot.getInvSlot();
+					selectedSlot = accessorSlot.getId();
 					return true;
 				}
 			}

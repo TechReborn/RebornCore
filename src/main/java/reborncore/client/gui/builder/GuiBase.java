@@ -30,7 +30,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
  * Created by Prospector
  */
 
-public class GuiBase<T extends ScreenHandler> extends ScreenWithHandler<T> {
+public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;

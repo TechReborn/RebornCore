@@ -29,7 +29,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.screen.ScreenHandler;
@@ -110,8 +110,8 @@ public class ClientBoundPacketHandlers {
 			String container = packetBuffer.readString(packetBuffer.readInt());
 			context.getTaskQueue().execute(() -> {
 				Screen gui = MinecraftClient.getInstance().currentScreen;
-				if (gui instanceof ScreenWithHandler) {
-					ScreenHandler screenHandler = ((ScreenWithHandler) gui).getScreenHandler();
+				if (gui instanceof HandledScreen) {
+					ScreenHandler screenHandler = ((HandledScreen) gui).getScreenHandler();
 					if (screenHandler instanceof ExtendedScreenHandlerListener) {
 						((ExtendedScreenHandlerListener) screenHandler).handleObject(id, value);
 					}

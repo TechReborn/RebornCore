@@ -25,6 +25,7 @@
 package reborncore.api.items;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.InventoryProvider;
@@ -98,7 +99,7 @@ public class InventoryUtils {
 		Block block = blockState.getBlock();
 		if (block instanceof InventoryProvider) {
 			inventory = ((InventoryProvider) block).getInventory(blockState, world, blockPos);
-		} else if (block.hasBlockEntity()) {
+		} else if (block instanceof BlockEntityProvider) {
 			BlockEntity blockEntity = world.getBlockEntity(blockPos);
 			if (blockEntity instanceof Inventory) {
 				inventory = (Inventory) blockEntity;

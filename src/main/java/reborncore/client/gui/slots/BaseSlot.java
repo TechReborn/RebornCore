@@ -61,6 +61,6 @@ public class BaseSlot extends Slot {
 	}
 
 	public int getSlotID(){
-		return ((AccessorSlot)this).getInvSlot();
+		return ((AccessorSlot)this).getId();
 	}
 }

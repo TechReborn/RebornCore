@@ -74,7 +74,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 				u += width;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				this.blit(this.x, this.y, u, v, width, height);
+				this.drawTexture(this.x, this.y, u, v, width, height);
 				GL11.glPopMatrix();
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -93,7 +93,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(1F, 1F, 1F, 1F);
-		blit(offsetX, offsetY, this.buttonU, this.buttonV, this.textureW, this.textureH);
+		drawTexture(offsetX, offsetY, this.buttonU, this.buttonV, this.textureW, this.textureH);
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 

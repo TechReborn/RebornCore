@@ -324,7 +324,7 @@ public class ElementBase {
 			if (sprite.hasTextureInfo()) {
 				RenderSystem.color3f(1F, 1F, 1F);
 				setTextureSheet(sprite.textureLocation);
-				gui.blit(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
+				gui.drawTexture(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
 			}
 			if (sprite.hasStack()) {
 				RenderSystem.pushMatrix();
@@ -354,9 +354,9 @@ public class ElementBase {
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
-		gui.blit(x, y, 0, 0, width / 2, height / 2);
-		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(x, y, 0, 0, width / 2, height / 2);
+		gui.drawTexture(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.drawTexture(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 	}
 }

@@ -64,7 +64,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 				v += mc.textRenderer.getStringWidth(this.NAME) + 25;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				this.blit(this.x, this.y, u, v, mc.textRenderer.getStringWidth(this.NAME) + 25, height);
+				this.drawTexture(this.x, this.y, u, v, mc.textRenderer.getStringWidth(this.NAME) + 25, height);
 				GL11.glPopMatrix();
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

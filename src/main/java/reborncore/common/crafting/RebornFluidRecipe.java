@@ -26,7 +26,6 @@ package reborncore.common.crafting;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
 import reborncore.common.crafting.ingredient.RebornIngredient;
 import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
@@ -34,6 +33,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 import reborncore.common.util.Tank;
 

@@ -32,5 +32,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AccessorSlot {
 
 	@Accessor
-	int getInvSlot();
+	int getId();
 }

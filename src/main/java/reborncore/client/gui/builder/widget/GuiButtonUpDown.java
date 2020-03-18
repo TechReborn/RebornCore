@@ -47,16 +47,16 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:
-			gui.blit(x, y, 174, 74, 12, 12);
+			gui.drawTexture(x, y, 174, 74, 12, 12);
 			break;
 		case FORWARD:
-			gui.blit(x, y, 174, 86, 12, 12);
+			gui.drawTexture(x, y, 174, 86, 12, 12);
 			break;
 		case REWIND:
-			gui.blit(x, y, 174, 98, 12, 12);
+			gui.drawTexture(x, y, 174, 98, 12, 12);
 			break;
 		case FASTREWIND:
-			gui.blit(x, y, 174, 110, 12, 12);
+			gui.drawTexture(x, y, 174, 110, 12, 12);
 			break;
 		default:
 			break;

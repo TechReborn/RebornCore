@@ -32,6 +32,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.MinecraftServer;
@@ -39,7 +40,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.function.BiConsumer;

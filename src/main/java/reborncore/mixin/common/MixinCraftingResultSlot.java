@@ -28,7 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.CraftingResultSlot;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,14 +44,14 @@ public abstract class MixinCraftingResultSlot {
 
 	@Shadow
 	@Final
-	private CraftingInventory craftingInv;
+	private CraftingInventory input;
 
 	@Shadow @Final private PlayerEntity player;
 
 	@ModifyVariable(method = "onTakeItem", at = @At(value = "INVOKE"), index = 3)
 	private DefaultedList<ItemStack> defaultedList(DefaultedList<ItemStack> list) {
-		for (int i = 0; i < craftingInv.getInvSize(); i++) {
-			ItemStack invStack = craftingInv.getInvStack(i);
+		for (int i = 0; i < input.getInvSize(); i++) {
+			ItemStack invStack = input.getInvStack(i);
 			if (invStack.getItem() instanceof ExtendedRecipeRemainder) {
 				ItemStack remainder = ((ExtendedRecipeRemainder) invStack.getItem()).getRemainderStack(invStack.copy());
 				if (!remainder.isEmpty()) {
@@ -64,7 +64,7 @@ public abstract class MixinCraftingResultSlot {
 
 	@Inject(method = "onCrafted(Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onCraft(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;I)V", shift = At.Shift.AFTER))
 	private void onCrafted(ItemStack itemStack, CallbackInfo info){
-		ItemCraftCallback.EVENT.invoker().onCraft(itemStack, craftingInv, player);
+		ItemCraftCallback.EVENT.invoker().onCraft(itemStack, input, player);
 	}
 
 }

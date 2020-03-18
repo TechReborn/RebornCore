@@ -142,12 +142,6 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean allowsSpawning(BlockState state, BlockView world, BlockPos pos, EntityType<?> entityType_1) {
-		return false;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
 	public void onBlockRemoved(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			ItemHandlerUtils.dropContainedItems(worldIn, pos);

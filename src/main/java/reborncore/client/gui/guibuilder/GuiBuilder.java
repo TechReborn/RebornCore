@@ -77,10 +77,10 @@ public class GuiBuilder {
 	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 0, 0, width / 2, height / 2);
-		gui.blit(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.blit(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.blit(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
+		gui.drawTexture(x, y, 0, 0, width / 2, height / 2);
+		gui.drawTexture(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.drawTexture(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
 			height / 2);
 	}
 
@@ -93,18 +93,18 @@ public class GuiBuilder {
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				gui.blit(posX + x * 18, posY + y * 18, 150, 0, 18, 18);
+				gui.drawTexture(posX + x * 18, posY + y * 18, 150, 0, 18, 18);
 			}
 		}
 
 		for (int x = 0; x < 9; x++) {
-			gui.blit(posX + x * 18, posY + 58, 150, 0, 18, 18);
+			gui.drawTexture(posX + x * 18, posY + 58, 150, 0, 18, 18);
 		}
 	}
 
 	public void drawSlot(Screen gui, int posX, int posY) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(posX, posY, 150, 0, 18, 18);
+		gui.drawTexture(posX, posY, 150, 0, 18, 18);
 	}
 
 	public void drawString(GuiBase<?> gui, String string, int x, int y) {
@@ -117,16 +117,16 @@ public class GuiBuilder {
 
 	public void drawProgressBar(GuiBase<?> gui, double progress, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 150, 18, 22, 15);
+		gui.drawTexture(x, y, 150, 18, 22, 15);
 		int j = (int) (progress);
 		if (j > 0) {
-			gui.blit(x, y, 150, 34, j + 1, 15);
+			gui.drawTexture(x, y, 150, 34, j + 1, 15);
 		}
 	}
 
 	public void drawOutputSlot(GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 174, 0, 26, 26);
+		gui.drawTexture(x, y, 174, 0, 26, 26);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class GuiBuilder {
 				y += gui.getGuiTop();
 			}
 			gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-			gui.blit(x, y, 202, 0, 12, 12);
+			gui.drawTexture(x, y, 202, 0, 12, 12);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
+		gui.drawTexture(x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
 			if (locked) {
@@ -199,9 +199,9 @@ public class GuiBuilder {
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		if (gui.getMachine().renderMultiblock == null) {
-			gui.blit(x, y, 174, 50, 20, 12);
+			gui.drawTexture(x, y, 174, 50, 20, 12);
 		} else {
-			gui.blit(x, y, 174, 62, 20, 12);
+			gui.drawTexture(x, y, 174, 62, 20, 12);
 		}
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
@@ -233,13 +233,13 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 26, 218, 114, 18);
+		gui.drawTexture(x, y, 26, 218, 114, 18);
 		if (value != 0) {
 			int j = (int) ((double) value / (double) max * 106);
 			if (j < 0) {
 				j = 0;
 			}
-			gui.blit(x + 4, y + 4, 26, 246, j, 10);
+			gui.drawTexture(x + 4, y + 4, 26, 246, j, 10);
 			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
 		}
 	}
@@ -270,7 +270,7 @@ public class GuiBuilder {
 		if (j < 0) {
 			j = 0;
 		}
-		gui.blit(x + 4, y + 4, 0, 236, j, 10);
+		gui.drawTexture(x + 4, y + 4, 0, 236, j, 10);
 		if (!suffix.equals("")) {
 			suffix = " " + suffix;
 		}
@@ -341,7 +341,7 @@ public class GuiBuilder {
 	 */
 	public void drawUpgrades(GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 217, 0, 24, 81);
+		gui.drawTexture(x, y, 217, 0, 24, 81);
 	}
 
 	/**
@@ -354,7 +354,7 @@ public class GuiBuilder {
 	 */
 	public void drawSlotTab(GuiBase<?> gui, int x, int y, ItemStack stack) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 217, 82, 24, 24);
+		gui.drawTexture(x, y, 217, 82, 24, 24);
 		gui.getMinecraft().getItemRenderer().renderGuiItem(stack, x + 5, y + 4);
 	}
 
@@ -430,7 +430,7 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 150, 91, 16, 16);
+		gui.drawTexture(x, y, 150, 91, 16, 16);
 	}
 
 	/**
@@ -454,7 +454,7 @@ public class GuiBuilder {
 		}
 
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, direction.x, direction.y, direction.width, direction.height);
+		gui.drawTexture(x, y, direction.x, direction.y, direction.width, direction.height);
 		int j = (int) ((double) progress / (double) maxProgress * 16);
 		if (j < 0) {
 			j = 0;
@@ -462,16 +462,16 @@ public class GuiBuilder {
 
 		switch (direction) {
 			case RIGHT:
-				gui.blit(x, y, direction.xActive, direction.yActive, j, 10);
+				gui.drawTexture(x, y, direction.xActive, direction.yActive, j, 10);
 				break;
 			case LEFT:
-				gui.blit(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
+				gui.drawTexture(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
 				break;
 			case UP:
-				gui.blit(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
+				gui.drawTexture(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
 				break;
 			case DOWN:
-				gui.blit(x, y, direction.xActive, direction.yActive, 10, j);
+				gui.drawTexture(x, y, direction.xActive, direction.yActive, 10, j);
 				break;
 			default:
 				return;
@@ -514,12 +514,12 @@ public class GuiBuilder {
 
 		EnergySystem displayPower = PowerSystem.getDisplayPower();
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
+		gui.drawTexture(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
 		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (48));
 		if (energyStored > maxEnergyStored) {
 			draw = 48;
 		}
-		gui.blit(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
+		gui.drawTexture(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
 			List<Text> list = Lists.newArrayList();
@@ -579,11 +579,11 @@ public class GuiBuilder {
 			percentage = percentage(maxCapacity.getRawValue(), amount.getRawValue());
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 194, 26, 22, 56);
+		gui.drawTexture(x, y, 194, 26, 22, 56);
 		if (!isTankEmpty) {
 			drawFluid(gui, fluid, x + 4, y + 4, 14, 48, maxCapacity.getRawValue());
 		}
-		gui.blit(x + 3, y + 3, 194, 82, 16, 50);
+		gui.drawTexture(x + 3, y + 3, 194, 82, 16, 50);
 
 		if (gui.isPointInRect(x, y, 22, 56, mouseX, mouseY)) {
 			List<String> list = new ArrayList<>();
@@ -634,7 +634,7 @@ public class GuiBuilder {
 		while (offsetHeight != 0) {
 			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
 
-			DrawableHelper.blit(x, y - offsetHeight, 0,  width, curHeight, sprite);
+			DrawableHelper.drawSprite(x, y - offsetHeight, 0,  width, curHeight, sprite);
 			offsetHeight -= curHeight;
 			iteration++;
 			if (iteration > 50) {
@@ -665,10 +665,10 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 150, 64, 13, 13);
+		gui.drawTexture(x, y, 150, 64, 13, 13);
 		int j = 13 - (int) ((double) progress / (double) maxProgress * 13);
 		if (j > 0) {
-			gui.blit(x, y + j, 150, 51 + j, 13, 13 - j);
+			gui.drawTexture(x, y + j, 150, 51 + j, 13, 13 - j);
 
 		}
 		if (gui.isPointInRect(x, y, 12, 12, mouseX, mouseY)) {
@@ -695,13 +695,13 @@ public class GuiBuilder {
 	 */
 	public void drawOutputSlotBar(GuiBase<?> gui, int x, int y, int count) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.blit(x, y, 150, 122, 3, 26);
+		gui.drawTexture(x, y, 150, 122, 3, 26);
 		x += 3;
 		for (int i = 1; i <= count; i++) {
-			gui.blit(x, y, 150 + 3, 122, 20, 26);
+			gui.drawTexture(x, y, 150 + 3, 122, 20, 26);
 			x += 20;
 		}
-		gui.blit(x, y, 150 + 23, 122, 3, 26);
+		gui.drawTexture(x, y, 150 + 23, 122, 3, 26);
 	}
 
 	protected int percentage(int MaxValue, int CurrentValue) {
