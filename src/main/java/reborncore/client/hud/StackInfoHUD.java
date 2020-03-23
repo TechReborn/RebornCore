@@ -95,15 +95,7 @@ public class StackInfoHUD implements HudRenderCallback {
 			double maxCharge = Energy.of(stack).getMaxStored();
 			double currentCharge = Energy.of(stack).getEnergy();
 
-			Formatting color = Formatting.GREEN;
-			double quarter = maxCharge / 4;
-			double half = maxCharge / 2;
-			if (currentCharge <= half) {
-				color = Formatting.YELLOW;
-			}
-			if (currentCharge <= quarter) {
-				color = Formatting.DARK_RED;
-			}
+			Formatting color = StringUtils.getPercentageColour(percentage(maxCharge, currentCharge));
 			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge)
 					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
 					+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
@@ -156,6 +148,12 @@ public class StackInfoHUD implements HudRenderCallback {
 		itemRenderer.renderGuiItem(stack, x, y - 5);
 
 		GL11.glDisable(GL11.GL_LIGHTING);
+	}
+
+	private int percentage(double MaxValue, double CurrentValue) {
+		if (CurrentValue == 0)
+			return 0;
+		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
 
 	@Override
