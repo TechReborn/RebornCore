@@ -44,8 +44,6 @@ import reborncore.common.misc.ModSounds;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.shields.RebornCoreShields;
-import reborncore.common.shields.json.ShieldJsonLoader;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
 import reborncore.common.world.DataAttachment;
@@ -84,7 +82,6 @@ public class RebornCore implements ModInitializer {
 		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
-		ShieldJsonLoader.load();
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("ic2:wrench"), true));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("forestry:wrench"), false));
@@ -98,7 +95,6 @@ public class RebornCore implements ModInitializer {
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("chiselsandbits:wrench_wood"), false));
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("redstonearsenal:tool.wrench_flux"), false));
 
-		RebornCoreShields.init();
 		ModSounds.setup();
 		BlockWrenchEventHandler.setup();
 
