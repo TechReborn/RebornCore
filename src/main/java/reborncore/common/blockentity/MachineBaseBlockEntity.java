@@ -224,8 +224,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	@Override
-	public void fromTag(CompoundTag tagCompound) {
-		super.fromTag(tagCompound);
+	public void fromTag(BlockState blockState, CompoundTag tagCompound) {
+		super.fromTag(blockState, tagCompound);
 		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().read(tagCompound);
 		}

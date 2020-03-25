@@ -67,8 +67,8 @@ public class SlotConfigGui {
 				continue;
 			}
 			AccessorSlot accessorSlot = (AccessorSlot) slot;
-			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), accessorSlot.getId(), SlotType.NORMAL, slot.x - guiBase.getGuiLeft() + 50, slot.y - guiBase.getGuiTop() - 25, guiBase);
-			slotElementMap.put(accessorSlot.getId(), slotElement);
+			ConfigSlotElement slotElement = new ConfigSlotElement(guiBase.getMachine().getOptionalInventory().get(), accessorSlot.getIndex(), SlotType.NORMAL, slot.x - guiBase.getGuiLeft() + 50, slot.y - guiBase.getGuiTop() - 25, guiBase);
+			slotElementMap.put(accessorSlot.getIndex(), slotElement);
 		}
 
 	}
@@ -168,7 +168,7 @@ public class SlotConfigGui {
 				}
 				if (guiBase.isPointInRect(slot.x, slot.y, 18, 18, mouseX, mouseY)) {
 					AccessorSlot accessorSlot = (AccessorSlot) slot;
-					selectedSlot = accessorSlot.getId();
+					selectedSlot = accessorSlot.getIndex();
 					return true;
 				}
 			}

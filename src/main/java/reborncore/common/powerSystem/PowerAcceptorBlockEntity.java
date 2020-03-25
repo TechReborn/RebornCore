@@ -24,6 +24,7 @@
 
 package reborncore.common.powerSystem;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -198,8 +199,8 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
-		super.fromTag(tag);
+	public void fromTag(BlockState blockState, CompoundTag tag) {
+		super.fromTag(blockState, tag);
 		CompoundTag data = tag.getCompound("PowerAcceptor");
 		if (shouldHanldeEnergyNBT()) {
 			this.setEnergy(data.getDouble("energy"));

@@ -59,7 +59,7 @@ public class ClientBoundPacketHandlers {
 				if (world.isChunkLoaded(pos)) {
 					BlockEntity blockentity = world.getBlockEntity(pos);
 					if (blockentity != null && tagCompound != null) {
-						blockentity.fromTag(tagCompound);
+						blockentity.fromTag(blockentity.getCachedState(), tagCompound);
 					}
 				}
 			});
