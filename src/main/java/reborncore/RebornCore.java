@@ -32,7 +32,6 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
-import reborncore.api.power.ItemPowerHolder;
 import reborncore.common.RebornCoreCommands;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
@@ -41,6 +40,7 @@ import reborncore.common.config.Configuration;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.fluid.RebornFluidManager;
 import reborncore.common.misc.ModSounds;
+import reborncore.common.misc.RebornCoreTags;
 import reborncore.common.multiblock.MultiblockRegistry;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
@@ -70,8 +70,6 @@ public class RebornCore implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		new Configuration(RebornCoreConfig.class, "reborncore");
-
-		ItemPowerHolder.setup();
 
 		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
 		if (!configDir.exists()) {
@@ -117,6 +115,7 @@ public class RebornCore implements ModInitializer {
 		RebornCoreCommands.setup();
 
 		DataAttachment.REGISTRY.register(ChunkLoaderManager.class, ChunkLoaderManager::new);
+		RebornCoreTags.WATER_EXPLOSION_ITEM.getId();
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;

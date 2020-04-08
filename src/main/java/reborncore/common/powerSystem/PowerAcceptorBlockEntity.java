@@ -186,9 +186,9 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 					continue;
 				}
 				Energy.of(this)
-					.side(EnergySide.fromMinecraft(side))
+					.side(side)
 					.into(
-						Energy.of(blockEntity).side(EnergySide.fromMinecraft(side.getOpposite()))
+						Energy.of(blockEntity).side(side.getOpposite())
 					)
 					.move();
 			}
