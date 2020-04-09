@@ -115,7 +115,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		if (!getOptionalInventory().isPresent()) {
 			return;
 		}
-		ItemStack batteryStack = getOptionalInventory().get().getInvStack(slot);
+		ItemStack batteryStack = getOptionalInventory().get().getStack(slot);
 		if (batteryStack.isEmpty()) {
 			return;
 		}
@@ -141,7 +141,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			return;
 		}
 
-		ItemStack batteryStack = getOptionalInventory().get().getInvStack(slot);
+		ItemStack batteryStack = getOptionalInventory().get().getStack(slot);
 		if(batteryStack.isEmpty()){
 			return;
 		}

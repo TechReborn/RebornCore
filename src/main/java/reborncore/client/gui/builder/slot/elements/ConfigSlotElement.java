@@ -104,7 +104,7 @@ public class ConfigSlotElement extends ElementBase {
 	@Override
 	public void draw(GuiBase<?> gui) {
 		super.draw(gui);
-		ItemStack stack = inventory.getInvStack(id);
+		ItemStack stack = inventory.getStack(id);
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
 

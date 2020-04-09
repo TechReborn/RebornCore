@@ -114,19 +114,19 @@ public final class PlayerScreenHandlerBuilder {
 		}
 
 		public PlayerArmorScreenHandlerBuilder helmet(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 2, xStart, yStart, EquipmentSlot.HEAD, IconSupplier.armour_head_id);
+			return this.armor(this.parent.player.size() - 2, xStart, yStart, EquipmentSlot.HEAD, IconSupplier.armour_head_id);
 		}
 
 		public PlayerArmorScreenHandlerBuilder chestplate(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 3, xStart, yStart, EquipmentSlot.CHEST, IconSupplier.armour_chest_id);
+			return this.armor(this.parent.player.size() - 3, xStart, yStart, EquipmentSlot.CHEST, IconSupplier.armour_chest_id);
 		}
 
 		public PlayerArmorScreenHandlerBuilder leggings(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 4, xStart, yStart, EquipmentSlot.LEGS, IconSupplier.armour_legs_id);
+			return this.armor(this.parent.player.size() - 4, xStart, yStart, EquipmentSlot.LEGS, IconSupplier.armour_legs_id);
 		}
 
 		public PlayerArmorScreenHandlerBuilder boots(final int xStart, final int yStart) {
-			return this.armor(this.parent.player.getInvSize() - 5, xStart, yStart, EquipmentSlot.FEET, IconSupplier.armour_feet_id);
+			return this.armor(this.parent.player.size() - 5, xStart, yStart, EquipmentSlot.FEET, IconSupplier.armour_feet_id);
 		}
 
 		public PlayerArmorScreenHandlerBuilder complete(final int xStart, final int yStart) {

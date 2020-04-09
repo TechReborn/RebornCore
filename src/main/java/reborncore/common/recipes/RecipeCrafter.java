@@ -225,7 +225,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		for (RebornIngredient ingredient : recipeType.getRebornIngredients()) {
 			boolean hasItem = false;
 			for (int slot : inputSlots) {
-				if (ingredient.test(inventory.getInvStack(slot))) {
+				if (ingredient.test(inventory.getStack(slot))) {
 					hasItem = true;
 				}
 			}
@@ -242,7 +242,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 		}
 		for (RebornIngredient ingredient : currentRecipe.getRebornIngredients()) {
 			for (int inputSlot : inputSlots) {// Uses all of the inputs
-				if (ingredient.test(inventory.getInvStack(inputSlot))) {
+				if (ingredient.test(inventory.getStack(inputSlot))) {
 					inventory.shrinkSlot(inputSlot, ingredient.getCount());
 					break;
 				}
@@ -254,11 +254,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		if (inventory.getInvStack(slot).isEmpty()) {
+		if (inventory.getStack(slot).isEmpty()) {
 			return true;
 		}
-		if (ItemUtils.isItemEqual(inventory.getInvStack(slot), stack, true, true)) {
-			if (stack.getCount() + inventory.getInvStack(slot).getCount() <= stack.getMaxCount()) {
+		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true, true)) {
+			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {
 				return true;
 			}
 		}
@@ -269,19 +269,19 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (stack.isEmpty()) {
 			return;
 		}
-		if (inventory.getInvStack(slot).isEmpty()) {// If the slot is empty set the contents
-			inventory.setInvStack(slot, stack);
+		if (inventory.getStack(slot).isEmpty()) {// If the slot is empty set the contents
+			inventory.setStack(slot, stack);
 			return;
 		}
-		if (ItemUtils.isItemEqual(inventory.getInvStack(slot), stack, true)) {// If the slot has stuff in
-			if (stack.getCount() + inventory.getInvStack(slot).getCount() <= stack.getMaxCount()) {// Check to see if it fits
+		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true)) {// If the slot has stuff in
+			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {// Check to see if it fits
 				ItemStack newStack = stack.copy();
-				newStack.setCount(inventory.getInvStack(slot).getCount() + stack.getCount());// Sets
+				newStack.setCount(inventory.getStack(slot).getCount() + stack.getCount());// Sets
 				// the
 				// new
 				// stack
 				// size
-				inventory.setInvStack(slot, newStack);
+				inventory.setStack(slot, newStack);
 			}
 		}
 	}

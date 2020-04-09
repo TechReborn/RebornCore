@@ -37,6 +37,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.Validate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,14 +81,14 @@ public class TagIngredient extends RebornIngredient {
 
 		if(json.has("server_sync")){
 			Identifier tagIdent = new Identifier(JsonHelper.getString(json, "tag_identifier"));
-			Tag.Builder<Item> tagBuilder = Tag.Builder.create();
+			List<Item> items = new ArrayList<>();
 			for (int i = 0; i < JsonHelper.getInt(json, "items"); i++) {
 				Identifier identifier = new Identifier(JsonHelper.getString(json, "item_" + i));
 				Item item = Registry.ITEM.get(identifier);
 				Validate.isTrue(item != Items.AIR, "item cannot be air");
-				tagBuilder.add(item);
+				items.add(item);
 			}
-			return new TagIngredient(tagIdent, tagBuilder.build(tagIdent), count);
+			return new TagIngredient(tagIdent, new SimpleTag<>(items), count);
 		}
 
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "tag"));

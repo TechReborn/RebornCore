@@ -54,22 +54,22 @@ public abstract class InventoryBase implements Inventory {
 	}
 
 	@Override
-	public int getInvSize() {
+	public int size() {
 		return size;
 	}
 
 	@Override
-	public boolean isInvEmpty() {
+	public boolean isEmpty() {
 		return stacks.stream().allMatch(ItemStack::isEmpty);
 	}
 
 	@Override
-	public ItemStack getInvStack(int i) {
+	public ItemStack getStack(int i) {
 		return stacks.get(i);
 	}
 
 	@Override
-	public ItemStack takeInvStack(int i, int i1) {
+	public ItemStack removeStack(int i, int i1) {
 		ItemStack stack = Inventories.splitStack(stacks, i, i1);
 		if (!stack.isEmpty()) {
 			this.markDirty();
@@ -78,15 +78,15 @@ public abstract class InventoryBase implements Inventory {
 	}
 
 	@Override
-	public ItemStack removeInvStack(int i) {
+	public ItemStack removeStack(int i) {
 		return Inventories.removeStack(stacks, i);
 	}
 
 	@Override
-	public void setInvStack(int i, ItemStack itemStack) {
+	public void setStack(int i, ItemStack itemStack) {
 		stacks.set(i, itemStack);
-		if (itemStack.getCount() > this.getInvMaxStackAmount()) {
-			itemStack.setCount(this.getInvMaxStackAmount());
+		if (itemStack.getCount() > this.getMaxCountPerStack()) {
+			itemStack.setCount(this.getMaxCountPerStack());
 		}
 
 		this.markDirty();
@@ -98,7 +98,7 @@ public abstract class InventoryBase implements Inventory {
 	}
 
 	@Override
-	public boolean canPlayerUseInv(PlayerEntity playerEntity) {
+	public boolean canPlayerUse(PlayerEntity playerEntity) {
 		return true;
 	}
 

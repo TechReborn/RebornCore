@@ -50,8 +50,8 @@ public abstract class MixinCraftingResultSlot {
 
 	@ModifyVariable(method = "onTakeItem", at = @At(value = "INVOKE"), index = 3)
 	private DefaultedList<ItemStack> defaultedList(DefaultedList<ItemStack> list) {
-		for (int i = 0; i < input.getInvSize(); i++) {
-			ItemStack invStack = input.getInvStack(i);
+		for (int i = 0; i < input.size(); i++) {
+			ItemStack invStack = input.getStack(i);
 			if (invStack.getItem() instanceof ExtendedRecipeRemainder) {
 				ItemStack remainder = ((ExtendedRecipeRemainder) invStack.getItem()).getRemainderStack(invStack.copy());
 				if (!remainder.isEmpty()) {

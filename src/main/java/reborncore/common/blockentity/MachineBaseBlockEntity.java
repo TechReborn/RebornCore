@@ -145,7 +145,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		if (canBeUpgraded()) {
 			resetUpgrades();
 			for (int i = 0; i < getUpgradeSlotCount(); i++) {
-				ItemStack stack = getUpgradeInvetory().getInvStack(i);
+				ItemStack stack = getUpgradeInvetory().getStack(i);
 				if (!stack.isEmpty() && stack.getItem() instanceof IUpgrade) {
 					((IUpgrade) stack.getItem()).process(this, this, stack);
 				}
@@ -373,7 +373,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 			if (getOptionalInventory().isPresent()) {
 				info.add(new LiteralText(Formatting.GOLD + "" + getOptionalInventory().get().getContents() + Formatting.GRAY + " items"));
 			}
-			if (!upgradeInventory.isInvEmpty()) {
+			if (!upgradeInventory.isEmpty()) {
 				info.add(new LiteralText(Formatting .GOLD + "" + upgradeInventory.getContents() + Formatting .GRAY + " upgrades"));
 			}
 		}
@@ -384,62 +384,62 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	@Override
-	public int getInvSize() {
+	public int size() {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().getInvSize();
+			return getOptionalInventory().get().size();
 		}
 		return 0;
 	}
 
 	@Override
-	public boolean isInvEmpty() {
+	public boolean isEmpty() {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().isInvEmpty();
+			return getOptionalInventory().get().isEmpty();
 		}
 		return true;
 	}
 
 	@Override
-	public ItemStack getInvStack(int i) {
+	public ItemStack getStack(int i) {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().getInvStack(i);
+			return getOptionalInventory().get().getStack(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack takeInvStack(int i, int i1) {
+	public ItemStack removeStack(int i, int i1) {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().takeInvStack(i, i1);
+			return getOptionalInventory().get().removeStack(i, i1);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeInvStack(int i) {
+	public ItemStack removeStack(int i) {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().removeInvStack(i);
+			return getOptionalInventory().get().removeStack(i);
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setInvStack(int i, ItemStack itemStack) {
+	public void setStack(int i, ItemStack itemStack) {
 		if(getOptionalInventory().isPresent()){
-			getOptionalInventory().get().setInvStack(i, itemStack);
+			getOptionalInventory().get().setStack(i, itemStack);
 		}
 	}
 
 	@Override
-	public boolean canPlayerUseInv(PlayerEntity playerEntity) {
+	public boolean canPlayerUse(PlayerEntity playerEntity) {
 		if(getOptionalInventory().isPresent()){
-			return getOptionalInventory().get().canPlayerUseInv(playerEntity);
+			return getOptionalInventory().get().canPlayerUse(playerEntity);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean isValidInvStack(int slot, ItemStack stack) {
+	public boolean isValid(int slot, ItemStack stack) {
 		return isItemValidForSlot(slot, stack);
 	}
 
@@ -457,7 +457,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	@Override
-	public int[] getInvAvailableSlots(Direction side) {
+	public int[] getAvailableSlots(Direction side) {
 		if(slotConfiguration == null){
 			return new int[]{}; //I think should be ok, if needed this can return all the slots
 		}
@@ -468,7 +468,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	@Override
-	public boolean canInsertInvStack(int index, ItemStack stack, @Nullable Direction direction) {
+	public boolean canInsert(int index, ItemStack stack, @Nullable Direction direction) {
 		if(direction == null){
 			return false;
 		}
@@ -485,7 +485,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	}
 
 	@Override
-	public boolean canExtractInvStack(int index, ItemStack stack, Direction direction) {
+	public boolean canExtract(int index, ItemStack stack, Direction direction) {
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		return slotConfig.getSlotIO().ioConfig.isExtact();

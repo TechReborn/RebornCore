@@ -53,7 +53,7 @@ public class SlotConfiguration implements NBTSerializable {
 	public SlotConfiguration(RebornInventory<?> inventory) {
 		this.inventory = inventory;
 
-		for (int i = 0; i < inventory.getInvSize(); i++) {
+		for (int i = 0; i < inventory.size(); i++) {
 			updateSlotDetails(new SlotConfigHolder(i));
 		}
 	}
@@ -62,8 +62,8 @@ public class SlotConfiguration implements NBTSerializable {
 		if (inventory == null && machineBase.getOptionalInventory().isPresent()) {
 			inventory = machineBase.getOptionalInventory().get();
 		}
-		if (inventory != null && slotDetails.size() != inventory.getInvSize()) {
-			for (int i = 0; i < inventory.getInvSize(); i++) {
+		if (inventory != null && slotDetails.size() != inventory.size()) {
+			for (int i = 0; i < inventory.size(); i++) {
 				SlotConfigHolder holder = getSlotDetails(i);
 				if (holder == null) {
 					RebornCore.LOGGER.debug("Fixed slot " + i + " in " + machineBase);
@@ -285,7 +285,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 		private void handleItemInput(MachineBaseBlockEntity machineBase) {
 			RebornInventory<?> inventory = machineBase.getOptionalInventory().get();
-			ItemStack targetStack = inventory.getInvStack(slotID);
+			ItemStack targetStack = inventory.getStack(slotID);
 			if (targetStack.getMaxCount() == targetStack.getCount()) {
 				return;
 			}
@@ -294,8 +294,8 @@ public class SlotConfiguration implements NBTSerializable {
 				return;
 			}
 
-			for (int i = 0; i < sourceInv.getInvSize(); i++) {
-				ItemStack sourceStack = sourceInv.getInvStack(i);
+			for (int i = 0; i < sourceInv.size(); i++) {
+				ItemStack sourceStack = sourceInv.getStack(i);
 				if (sourceStack.isEmpty()) {
 					continue;
 				}
@@ -303,7 +303,7 @@ public class SlotConfiguration implements NBTSerializable {
 					continue;
 				}
 
-				if (sourceInv instanceof SidedInventory && !((SidedInventory) sourceInv).canExtractInvStack(i, sourceStack, side.getOpposite())) {
+				if (sourceInv instanceof SidedInventory && !((SidedInventory) sourceInv).canExtract(i, sourceStack, side.getOpposite())) {
 					continue;
 				}
 
@@ -317,11 +317,11 @@ public class SlotConfiguration implements NBTSerializable {
 				if (!targetStack.isEmpty()) {
 					extract = Math.min(targetStack.getMaxCount() - targetStack.getCount(), extract);
 				}
-				ItemStack extractedStack = sourceInv.takeInvStack(i, extract);
+				ItemStack extractedStack = sourceInv.removeStack(i, extract);
 				if (targetStack.isEmpty()) {
-					inventory.setInvStack(slotID, extractedStack);
+					inventory.setStack(slotID, extractedStack);
 				} else {
-					inventory.getInvStack(slotID).increment(extractedStack.getCount());
+					inventory.getStack(slotID).increment(extractedStack.getCount());
 				}
 				inventory.setChanged();
 				break;
@@ -330,7 +330,7 @@ public class SlotConfiguration implements NBTSerializable {
 
 		private void handleItemOutput(MachineBaseBlockEntity machineBase) {
 			RebornInventory<?> inventory = machineBase.getOptionalInventory().get();
-			ItemStack sourceStack = inventory.getInvStack(slotID);
+			ItemStack sourceStack = inventory.getStack(slotID);
 			if (sourceStack.isEmpty()) {
 				return;
 			}
@@ -340,7 +340,7 @@ public class SlotConfiguration implements NBTSerializable {
 			}
 
 			ItemStack stack = InventoryUtils.insertItem(sourceStack, destInventory, side.getOpposite());
-			inventory.setInvStack(slotID, stack);
+			inventory.setStack(slotID, stack);
 		}
 
 		@Nonnull
@@ -453,7 +453,7 @@ public class SlotConfiguration implements NBTSerializable {
 					return ((SlotFilter) blockEntity).isStackValid(index, itemStackIn);
 				}
 			}
-			return blockEntity.isValidInvStack(index, itemStackIn);
+			return blockEntity.isValid(index, itemStackIn);
 		}
 		return false;
 	}

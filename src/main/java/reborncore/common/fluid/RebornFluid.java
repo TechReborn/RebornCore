@@ -88,7 +88,7 @@ public abstract class RebornFluid extends BaseFluid {
 	}
 
 	@Override
-	protected int method_15733(WorldView world) {
+	protected int getFlowSpeed(WorldView world) {
 		return 4;
 	}
 

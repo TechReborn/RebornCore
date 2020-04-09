@@ -51,8 +51,8 @@ public class ItemHandlerUtils {
 	}
 
 	public static void dropItemHandler(World world, BlockPos pos, Inventory inventory) {
-		for (int i = 0; i < inventory.getInvSize(); i++) {
-			ItemStack itemStack = inventory.getInvStack(i);
+		for (int i = 0; i < inventory.size(); i++) {
+			ItemStack itemStack = inventory.getStack(i);
 			if (itemStack.isEmpty()) {
 				continue;
 			}

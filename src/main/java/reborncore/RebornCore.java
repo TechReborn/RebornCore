@@ -115,7 +115,7 @@ public class RebornCore implements ModInitializer {
 		RebornCoreCommands.setup();
 
 		DataAttachment.REGISTRY.register(ChunkLoaderManager.class, ChunkLoaderManager::new);
-		RebornCoreTags.WATER_EXPLOSION_ITEM.getId();
+		RebornCoreTags.WATER_EXPLOSION_ITEM.toString();
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;

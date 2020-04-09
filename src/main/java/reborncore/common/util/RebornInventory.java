@@ -71,15 +71,15 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	}
 
 	@Override
-	public void setInvStack(int slot,
+	public void setStack(int slot,
 	                           @Nonnull
 		                           ItemStack stack) {
-		super.setInvStack(slot, stack);
+		super.setStack(slot, stack);
 		setChanged();
 	}
 
 	public ItemStack shrinkSlot(int slot, int count) {
-		ItemStack stack = getInvStack(slot);
+		ItemStack stack = getStack(slot);
 		stack.decrement(count);
 		setChanged();
 		return stack;
