@@ -51,6 +51,7 @@ import reborncore.api.tile.IUpgradeable;
 import reborncore.client.gui.slots.BaseSlot;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.RebornMachineBlock;
+import reborncore.common.blocks.RebornOrientableTileBlock;
 import reborncore.common.container.RebornContainer;
 import reborncore.common.fluids.RebornFluidHandler;
 import reborncore.common.fluids.RebornFluidTank;
@@ -110,6 +111,8 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         Block block = world.getBlockState(pos).getBlock();
         if (block instanceof RebornMachineBlock) {
             return ((RebornMachineBlock) block).getFacing(world, pos);
+        } else if (block instanceof RebornOrientableTileBlock) {
+	        return ((RebornOrientableTileBlock) block).getFacing(world, pos);
         }
         return null;
     }
@@ -123,6 +126,8 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
 		if (block instanceof RebornMachineBlock) {
 			world.setBlockState(pos, world.getBlockState(pos).withProperty(RebornMachineBlock.FACING, facing));
 			return true;
+		} else if (block instanceof RebornOrientableTileBlock) {
+			world.setBlockState(pos, world.getBlockState(pos).withProperty(RebornOrientableTileBlock.FACING, facing));
 		}
 		return false;
 	}
@@ -218,6 +223,10 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
                 fluidConfiguration = new FluidConfiguration();
             }
         }
+        if (upgradeFacing != null) {
+        	setFacing(upgradeFacing);
+        	upgradeFacing = null;
+        }
     }
 
     @Nullable
@@ -249,6 +258,8 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         return false;
     }
 
+    private EnumFacing upgradeFacing = null;
+
     @Override
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
@@ -256,7 +267,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         if (tagCompound.hasKey("facing")) {
         	// Upgrade from older versions of the mod
 	        byte facingValue = tagCompound.getByte("facing");
-	        setFacing(EnumFacing.VALUES[facingValue]);
+	        upgradeFacing = EnumFacing.VALUES[facingValue];
         }
 
         if (getInventoryForTile().isPresent()) {

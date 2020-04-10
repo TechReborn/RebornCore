@@ -22,12 +22,14 @@
 
 package reborncore.common.blocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -59,14 +61,14 @@ import reborncore.common.util.Utils;
 
 import java.util.Set;
 
-public abstract class RebornMachineBlock extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
+public abstract class RebornMachineBlock extends Block implements ITileEntityProvider, IWrenchable {
     // Fields >>
     public static ItemStack basicFrameStack;
     public static ItemStack advancedFrameStack;
     boolean hasCustomStates;
     public static final IProperty<Boolean> ACTIVE = PropertyBool.create("active");
+	public static final IProperty<EnumFacing> FACING = PropertyDirection.create("facing");
     // << Fields
-    
 
     public RebornMachineBlock() {
         this(false);
@@ -172,25 +174,50 @@ public abstract class RebornMachineBlock extends BlockHorizontal implements ITil
         super.breakBlock(worldIn, pos, state);
     }
 
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        int facing = state.getValue(FACING).ordinal();
-        int active = state.getValue(ACTIVE) ? 1 : 0;
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		int facingInt = getSideFromEnum(state.getValue(FACING));
+		int activeInt = state.getValue(ACTIVE) ? 0 : 4;
+		return facingInt + activeInt;
+	}
 
-        return facing + active;
-    }
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		boolean active = false;
+		int facingInt = meta;
+		if (facingInt > 4) {
+			active = true;
+			facingInt = facingInt - 4;
+		}
+		EnumFacing facing = getSideFromint(facingInt);
+		return this.getDefaultState().withProperty(FACING, facing).withProperty(ACTIVE, active);
+	}
 
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        boolean active = false;
-        if (meta >= FACING.getAllowedValues().size()) {
-            active = true;
-            meta -= FACING.getAllowedValues().size();
-        }
+	public EnumFacing getSideFromint(int i) {
+		if (i == 0) {
+			return EnumFacing.NORTH;
+		} else if (i == 1) {
+			return EnumFacing.SOUTH;
+		} else if (i == 2) {
+			return EnumFacing.EAST;
+		} else if (i == 3) {
+			return EnumFacing.WEST;
+		}
+		return EnumFacing.NORTH;
+	}
 
-        return getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta))
-                .withProperty(ACTIVE, active);
-    }
+	public int getSideFromEnum(EnumFacing facing) {
+		if (facing == EnumFacing.NORTH) {
+			return 0;
+		} else if (facing == EnumFacing.SOUTH) {
+			return 1;
+		} else if (facing == EnumFacing.EAST) {
+			return 2;
+		} else if (facing == EnumFacing.WEST) {
+			return 3;
+		}
+		return 0;
+	}
     
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {

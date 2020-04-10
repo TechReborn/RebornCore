@@ -89,15 +89,17 @@ public abstract class RebornOrientableTileBlock extends BaseTileBlock implements
 
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
 	}
-	
+
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return ((EnumFacing) state.getValue(FACING)).getIndex();
+		int facingInt = getSideFromEnum(state.getValue(FACING));
+		return facingInt;
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return this.getDefaultState().withProperty(FACING, EnumFacing.byIndex(meta));
+		EnumFacing facing = getSideFromint(meta);
+		return this.getDefaultState().withProperty(FACING, facing);
 	}
 
 	// IWrenchable
@@ -105,6 +107,10 @@ public abstract class RebornOrientableTileBlock extends BaseTileBlock implements
 	public EnumFacing getFacing(World world, BlockPos pos) {
 		return world.getBlockState(pos).getValue(FACING);
 	}
+
+	public abstract EnumFacing getSideFromint(int i);
+
+	public abstract int getSideFromEnum(EnumFacing facing);
 
 	@Override
 	public boolean setFacing(World world, BlockPos pos, EnumFacing newFacing, EntityPlayer player) {
