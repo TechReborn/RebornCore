@@ -106,7 +106,7 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         return 0;
     }
 
-    public EnumFacing getFacingEnum() {
+    public EnumFacing getFacing() {
         Block block = world.getBlockState(pos).getBlock();
         if (block instanceof RebornMachineBlock) {
             return ((RebornMachineBlock) block).getFacing(world, pos);
@@ -114,7 +114,19 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
         return null;
     }
 
-    
+	public boolean canSetFacing(EnumFacing facing) {
+		return facing != getFacing();
+	}
+
+	public boolean setFacing(EnumFacing facing) {
+		Block block = world.getBlockState(pos).getBlock();
+		if (block instanceof RebornMachineBlock) {
+			world.setBlockState(pos, world.getBlockState(pos).withProperty(RebornMachineBlock.FACING, facing));
+			return true;
+		}
+		return false;
+	}
+
     public Optional<Inventory> getInventoryForTile() {
         if (this instanceof IInventoryProvider) {
             IInventoryProvider inventory = (IInventoryProvider) this;
@@ -241,18 +253,11 @@ public class RebornMachineTile extends TileEntity implements ITickable, ISidedIn
     public void readFromNBT(NBTTagCompound tagCompound) {
         super.readFromNBT(tagCompound);
 
-
-        if (!supportedFacings.isEmpty()) {
-            byte facingValue = tagCompound.getByte("facing");
-            if (facingValue >= 0 && facingValue < EnumFacing.VALUES.length && supportedFacings.contains(EnumFacing.VALUES[facingValue]))
-                facing = facingValue;
-            else if (!supportedFacings.isEmpty())
-                facing = (byte) supportedFacings.iterator().next().ordinal();
-            else
-                facing = (byte) EnumFacing.DOWN.ordinal();
+        if (tagCompound.hasKey("facing")) {
+        	// Upgrade from older versions of the mod
+	        byte facingValue = tagCompound.getByte("facing");
+	        setFacing(EnumFacing.VALUES[facingValue]);
         }
-
-        active = tagCompound.getBoolean("active");
 
         if (getInventoryForTile().isPresent()) {
             getInventoryForTile().get().readFromNBT(tagCompound);
