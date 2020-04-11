@@ -453,4 +453,8 @@ public class GuiBase<T extends Container> extends ContainerScreen<T> {
 		//Expanded the width to allow for the upgrades
 		return super.isClickOutsideBounds(mouseX + 40, mouseY, left + 40, top, mouseButton);
 	}
+
+	public List<GuiTab> getTabs() {
+		return tabs;
+	}
 }
