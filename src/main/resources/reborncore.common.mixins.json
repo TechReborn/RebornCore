@@ -8,13 +8,14 @@
 	"AccessorIngredient",
 	"AccessorRecipeManager",
 	"AccessorSlot",
-    "MixinCraftingResultSlot",
-    "MixinBucketItem",
-    "MixinWorldSaveHandler",
-    "MixinItemStack",
-    "MixinPlayerEntity",
-    "MixinWorld",
-	"MixinItemEntity"
+	"MixinBucketItem",
+	"MixinCraftingResultSlot",
+	"MixinItemEntity",
+	"MixinItemStack",
+	"MixinPlayerEntity",
+	"MixinRecipeManager",
+	"MixinWorld",
+	"MixinWorldSaveHandler"
   ],
   "injectors": {
     "defaultRequire": 1
