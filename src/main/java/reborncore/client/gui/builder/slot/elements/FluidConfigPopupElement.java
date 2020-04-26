@@ -63,9 +63,9 @@ public class FluidConfigPopupElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase<?> gui) {
-		drawDefaultBackground(gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
-		super.draw(gui);
+	public void draw(MatrixStack matrixStack, GuiBase<?> gui) {
+		drawDefaultBackground(matrixStack, gui, adjustX(gui, getX() - 8), adjustY(gui, getY() - 7), 84, 105 + (filter ? 15 : 0));
+		super.draw(matrixStack, gui);
 
 		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.be);
 		IWorld world = machine.getWorld();

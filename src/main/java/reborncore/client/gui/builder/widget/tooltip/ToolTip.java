@@ -25,6 +25,8 @@
 package reborncore.client.gui.builder.widget.tooltip;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import reborncore.client.gui.GuiUtil;
 
 import java.util.ArrayList;
@@ -34,8 +36,8 @@ public class ToolTip {
 
 	protected ArrayList<ToolTipLine> lines = new ArrayList<>();
 
-	public ToolTip(String... textLines) {
-		for (String text : textLines) {
+	public ToolTip(Text... textLines) {
+		for (Text text : textLines) {
 			lines.add(new ToolTipLine(text));
 		}
 	}
@@ -68,13 +70,13 @@ public class ToolTip {
 
 	protected void refresh() {}
 
-	public void draw(TextRenderer font, int mouseX, int mouseY) {
+	public void draw(MatrixStack matrixStack, TextRenderer font, int mouseX, int mouseY) {
 		refresh();
 		int maxLineLength = 0;
 		int textX = mouseX + 3;
 		int textY = mouseY + 3;
 		for (ToolTipLine toolTipLine : lines) {
-			toolTipLine.draw(font, textX, textY);
+			toolTipLine.draw(matrixStack, font, textX, textY);
 			textY += (font.fontHeight + 3);
 			int lineWidth = toolTipLine.getWidth(font);
 			if (lineWidth > maxLineLength) {

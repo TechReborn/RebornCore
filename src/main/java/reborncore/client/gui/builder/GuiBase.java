@@ -33,6 +33,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -41,6 +42,8 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.blockentity.IUpgradeable;
@@ -52,7 +55,6 @@ import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
-import reborncore.common.util.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -151,39 +153,39 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 		return backgroundWidth;
 	}
 
-	public void drawSlot(int x, int y, Layer layer) {
+	public void drawSlot(MatrixStack matrixStack, int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += this.x;
 			y += this.y;
 		}
-		builder.drawSlot(this, x - 1, y - 1);
+		builder.drawSlot(matrixStack, this, x - 1, y - 1);
 	}
 
-	public void drawOutputSlotBar(int x, int y, int count, Layer layer) {
+	public void drawOutputSlotBar(MatrixStack matrixStack, int x, int y, int count, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += this.x;
 			y += this.y;
 		}
-		builder.drawOutputSlotBar(this, x - 4, y - 4, count);
+		builder.drawOutputSlotBar(matrixStack, this, x - 4, y - 4, count);
 	}
 
-	public void drawArmourSlots(int x, int y, Layer layer) {
+	public void drawArmourSlots(MatrixStack matrixStack, int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += this.x;
 			y += this.y;
 		}
-		builder.drawSlot(this, x - 1, y - 1);
-		builder.drawSlot(this, x - 1, y - 1 + 18);
-		builder.drawSlot(this, x - 1, y - 1 + 18 + 18);
-		builder.drawSlot(this, x - 1, y - 1 + 18 + 18 + 18);
+		builder.drawSlot(matrixStack, this, x - 1, y - 1);
+		builder.drawSlot(matrixStack, this, x - 1, y - 1 + 18);
+		builder.drawSlot(matrixStack, this, x - 1, y - 1 + 18 + 18);
+		builder.drawSlot(matrixStack, this, x - 1, y - 1 + 18 + 18 + 18);
 	}
 
-	public void drawOutputSlot(int x, int y, Layer layer) {
+	public void drawOutputSlot(MatrixStack matrixStack, int x, int y, Layer layer) {
 		if (layer == Layer.BACKGROUND) {
 			x += this.x;
 			y += this.y;
 		}
-		builder.drawOutputSlot(this, x - 5, y - 5);
+		builder.drawOutputSlot(matrixStack, this, x - 5, y - 5);
 	}
 
 	@Override
@@ -198,32 +200,32 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 	}
 
 	@Override
-	protected void drawBackground(float lastFrameDuration, int mouseX, int mouseY) {
+	protected void drawBackground(MatrixStack matrixStack, float lastFrameDuration, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		renderBackground();
+		renderBackground(matrixStack);
 		boolean drawPlayerSlots = selectedTab == null && drawPlayerSlots();
 		updateSlotDraw(drawPlayerSlots);
-		builder.drawDefaultBackground(this, x, y, xSize, ySize);
+		builder.drawDefaultBackground(matrixStack, this, x, y, xSize, ySize);
 		if (drawPlayerSlots) {
-			builder.drawPlayerSlots(this, x + backgroundWidth / 2, y + 93, true);
+			builder.drawPlayerSlots(matrixStack, this, x + backgroundWidth / 2, y + 93, true);
 		}
 		if (tryAddUpgrades() && be instanceof IUpgradeable) {
 			IUpgradeable upgradeable = (IUpgradeable) be;
 			if (upgradeable.canBeUpgraded()) {
-				builder.drawUpgrades(this, x - 24, y + 6);
+				builder.drawUpgrades(matrixStack, this, x - 24, y + 6);
 				upgrades = true;
 			}
 		}
 		int offset = upgrades ? 86 : 6;
 		for (GuiTab slot : tabs) {
 			if (slot.enabled()) {
-				builder.drawSlotTab(this, x - 24, y + offset, slot.stack());
+				builder.drawSlotTab(matrixStack, this, x - 24, y + offset, slot.stack());
 				offset += 24;
 			}
 		}
 
 		final GuiBase<T> gui = this;
-		getTab().ifPresent(guiTab -> builder.drawSlotConfigTips(gui, x + backgroundWidth / 2, y + 93, mouseX, mouseY, guiTab));
+		getTab().ifPresent(guiTab -> builder.drawSlotConfigTips(matrixStack, gui, x + backgroundWidth / 2, y + 93, mouseX, mouseY, guiTab));
 
 	}
 
@@ -248,30 +250,30 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	protected void drawForeground(int mouseX, int mouseY) {
-		drawTitle();
-		getTab().ifPresent(guiTab -> guiTab.draw(mouseX, mouseY));
+	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawTitle(matrixStack);
+		getTab().ifPresent(guiTab -> guiTab.draw(matrixStack, mouseX, mouseY));
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		super.render(mouseX, mouseY, partialTicks);
-		this.drawMouseoverTooltip(mouseX, mouseY);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		this.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawMouseoverTooltip(int mouseX, int mouseY) {
+	protected void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
 		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.t("reborncore.gui.tooltip.upgrades"));
-			renderTooltip(list, mouseX, mouseY);
+			List<Text> list = new ArrayList<>();
+			list.add(new TranslatableText("reborncore.gui.tooltip.upgrades"));
+			renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 82 : 0;
 		for (GuiTab tab : tabs) {
 			if (isPointWithinBounds(-26, 6 + offset, 24, 23, mouseX, mouseY)) {
-				renderTooltip(Collections.singletonList(StringUtils.t(tab.name())), mouseX, mouseY);
+				renderTooltip(matrixStack, Collections.singletonList(new TranslatableText(tab.name())), mouseX, mouseY);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1, 1, 1, 1);
 			}
@@ -280,33 +282,33 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 		for (AbstractButtonWidget abstractButtonWidget : buttons) {
 			if (abstractButtonWidget.isHovered()) {
-				abstractButtonWidget.renderToolTip(mouseX, mouseY);
+				abstractButtonWidget.renderToolTip(matrixStack, mouseX, mouseY);
 				break;
 			}
 		}
-		super.drawMouseoverTooltip(mouseX, mouseY);
+		super.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
 	}
 
-	protected void drawTitle() {
-		drawCentredString(StringUtils.t(be.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
+	protected void drawTitle(MatrixStack matrixStack) {
+		drawCentredText(matrixStack, new TranslatableText(be.getCachedState().getBlock().getTranslationKey()), 6, 4210752, Layer.FOREGROUND);
 	}
 
-	public void drawCentredString(String string, int y, int colour, Layer layer) {
-		drawString(string, (backgroundWidth / 2 - getTextRenderer().getStringWidth(string) / 2), y, colour, layer);
+	public void drawCentredText(MatrixStack matrixStack, Text text, int y, int colour, Layer layer) {
+		drawText(matrixStack, text, (backgroundWidth / 2 - getTextRenderer().getWidth(text) / 2), y, colour, layer);
 	}
 
-	protected void drawCentredString(String string, int y, int colour, int modifier, Layer layer) {
-		drawString(string, (backgroundWidth / 2 - (getTextRenderer().getStringWidth(string)) / 2) + modifier, y, colour, layer);
+	protected void drawCentredText(MatrixStack matrixStack, Text text, int y, int colour, int modifier, Layer layer) {
+		drawText(matrixStack, text, (backgroundWidth / 2 - (getTextRenderer().getWidth(text)) / 2) + modifier, y, colour, layer);
 	}
 
-	public void drawString(String string, int x, int y, int colour, Layer layer) {
+	public void drawText(MatrixStack matrixStack, Text text, int x, int y, int colour, Layer layer) {
 		int factorX = 0;
 		int factorY = 0;
 		if (layer == Layer.BACKGROUND) {
 			factorX = this.x;
 			factorY = this.y;
 		}
-		getTextRenderer().draw(string, x + factorX, y + factorY, colour);
+		getTextRenderer().draw(matrixStack, text, x + factorX, y + factorY, colour);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
 

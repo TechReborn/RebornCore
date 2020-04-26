@@ -28,8 +28,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.slots.BaseSlot;
@@ -72,14 +74,14 @@ public class ConfigSlotElement extends ElementBase {
 		}));
 
 		if(inputEnabled){
-			elements.add(new CheckBoxElement("Auto Input", 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+			elements.add(new CheckBoxElement(new LiteralText("Auto Input"), 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 			                                 checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
 				popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
 				return true;
 			}));
 		}
 
-		elements.add(new CheckBoxElement("Auto Output", 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+		elements.add(new CheckBoxElement(new LiteralText("Auto Output"), 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 			checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
 			return true;
@@ -88,7 +90,7 @@ public class ConfigSlotElement extends ElementBase {
 		if (gui.getMachine() instanceof SlotConfiguration.SlotFilter){
 			SlotConfiguration.SlotFilter slotFilter = (SlotConfiguration.SlotFilter) gui.getMachine();
 			if (Arrays.stream(slotFilter.getInputSlots()).anyMatch(value -> value == slotId)) {
-				elements.add(new CheckBoxElement("Filter Input", 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+				elements.add(new CheckBoxElement(new LiteralText("Filter Input"), 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 				                                 checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 					popupElement.updateCheckBox((CheckBoxElement) element, "filter", gui13);
 					return true;
@@ -102,8 +104,8 @@ public class ConfigSlotElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase<?> gui) {
-		super.draw(gui);
+	public void draw(MatrixStack matrixStack, GuiBase<?> gui) {
+		super.draw(matrixStack, gui);
 		ItemStack stack = inventory.getStack(id);
 		int xPos = x + 1 + gui.getGuiLeft();
 		int yPos = y + 1 + gui.getGuiTop();
@@ -119,9 +121,9 @@ public class ConfigSlotElement extends ElementBase {
 		RenderSystem.disableLighting();
 		RenderSystem.popMatrix();
 		if (isHovering) {
-			drawSprite(gui, type.getButtonHoverOverlay(), x, y);
+			drawSprite(matrixStack, gui, type.getButtonHoverOverlay(), x, y);
 		}
-		elements.forEach(elementBase -> elementBase.draw(gui));
+		elements.forEach(elementBase -> elementBase.draw(matrixStack, gui));
 	}
 
 	public SlotType getType() {

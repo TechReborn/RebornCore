@@ -27,6 +27,7 @@ package reborncore.client.gui.builder.slot;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import reborncore.client.screen.builder.BuiltScreenHandler;
@@ -73,7 +74,7 @@ public class SlotConfigGui {
 
 	}
 
-	public static void draw(GuiBase<?> guiBase, int mouseX, int mouseY) {
+	public static void draw(MatrixStack matrixStack, GuiBase<?> guiBase, int mouseX, int mouseY) {
 		BuiltScreenHandler container = guiBase.builtScreenHandler;
 		for (Slot slot : container.slots) {
 			if (guiBase.be != slot.inventory) {
@@ -87,7 +88,7 @@ public class SlotConfigGui {
 
 		if (selectedSlot != -1) {
 
-			slotElementMap.get(selectedSlot).draw(guiBase);
+			slotElementMap.get(selectedSlot).draw(matrixStack, guiBase);
 		}
 	}
 
@@ -107,7 +108,7 @@ public class SlotConfigGui {
 		}
 		String json = machine.getSlotConfiguration().toJson(machine.getClass().getCanonicalName());
 		MinecraftClient.getInstance().keyboard.setClipboard(json);
-		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration copyied to clipboard"));
+		MinecraftClient.getInstance().player.sendSystemMessage(new LiteralText("Slot configuration copyied to clipboard"));
 	}
 
 	public static void pasteFromClipboard() {
@@ -119,9 +120,9 @@ public class SlotConfigGui {
 		try {
 			machine.getSlotConfiguration().readJson(json, machine.getClass().getCanonicalName());
 			NetworkManager.sendToServer(ServerBoundPackets.createPacketConfigSave(machine.getPos(), machine.getSlotConfiguration()));
-			MinecraftClient.getInstance().player.sendMessage(new LiteralText("Slot configuration loaded from clipboard"));
+			MinecraftClient.getInstance().player.sendSystemMessage(new LiteralText("Slot configuration loaded from clipboard"));
 		} catch (UnsupportedOperationException e) {
-			MinecraftClient.getInstance().player.sendMessage(new LiteralText(e.getMessage()));
+			MinecraftClient.getInstance().player.sendSystemMessage(new LiteralText(e.getMessage()));
 		}
 	}
 

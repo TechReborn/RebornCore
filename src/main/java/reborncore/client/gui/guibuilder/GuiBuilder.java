@@ -34,10 +34,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import reborncore.api.IListInfoProvider;
@@ -51,6 +53,7 @@ import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +63,7 @@ import java.util.stream.Collectors;
  */
 public class GuiBuilder {
 	public static final Identifier defaultTextureSheet = new Identifier("reborncore", "textures/gui/guielements.png");
+	private static final Text SPACE_TEXT = new LiteralText(" ");
 	static Identifier resourceLocation;
 
 	public GuiBuilder() {
@@ -74,17 +78,17 @@ public class GuiBuilder {
 		return resourceLocation;
 	}
 
-	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
+	public void drawDefaultBackground(MatrixStack matrixStack, Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexture(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexture(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.drawTexture(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
+		gui.drawTexture(matrixStack, x, y, 0, 0, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
 			height / 2);
 	}
 
-	public void drawPlayerSlots(Screen gui, int posX, int posY, boolean center) {
+	public void drawPlayerSlots(MatrixStack matrixStack, Screen gui, int posX, int posY, boolean center) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 
 		if (center) {
@@ -93,40 +97,36 @@ public class GuiBuilder {
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				gui.drawTexture(posX + x * 18, posY + y * 18, 150, 0, 18, 18);
+				gui.drawTexture(matrixStack, posX + x * 18, posY + y * 18, 150, 0, 18, 18);
 			}
 		}
 
 		for (int x = 0; x < 9; x++) {
-			gui.drawTexture(posX + x * 18, posY + 58, 150, 0, 18, 18);
+			gui.drawTexture(matrixStack, posX + x * 18, posY + 58, 150, 0, 18, 18);
 		}
 	}
 
-	public void drawSlot(Screen gui, int posX, int posY) {
+	public void drawSlot(MatrixStack matrixStack, Screen gui, int posX, int posY) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(posX, posY, 150, 0, 18, 18);
+		gui.drawTexture(matrixStack, posX, posY, 150, 0, 18, 18);
+	}
+	
+	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
+		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
 	}
 
-	public void drawString(GuiBase<?> gui, String string, int x, int y) {
-		gui.getTextRenderer().draw(string, x, y, 16777215);
-	}
-
-	public void drawString(GuiBase<?> gui, String string, int x, int y, int color) {
-		gui.getTextRenderer().draw(string, x, y, color);
-	}
-
-	public void drawProgressBar(GuiBase<?> gui, double progress, int x, int y) {
+	public void drawProgressBar(MatrixStack matrixStack, GuiBase<?> gui, double progress, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 150, 18, 22, 15);
+		gui.drawTexture(matrixStack, x, y, 150, 18, 22, 15);
 		int j = (int) (progress);
 		if (j > 0) {
-			gui.drawTexture(x, y, 150, 34, j + 1, 15);
+			gui.drawTexture(matrixStack, x, y, 150, 34, j + 1, 15);
 		}
 	}
 
-	public void drawOutputSlot(GuiBase<?> gui, int x, int y) {
+	public void drawOutputSlot(MatrixStack matrixStack, GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 174, 0, 26, 26);
+		gui.drawTexture(matrixStack, x, y, 174, 0, 26, 26);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawJEIButton(GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
+	public void drawJEIButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (FabricLoader.getInstance().isModLoaded("jei")) {
 			if (layer == GuiBase.Layer.BACKGROUND) {
@@ -145,7 +145,7 @@ public class GuiBuilder {
 				y += gui.getGuiTop();
 			}
 			gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-			gui.drawTexture(x, y, 202, 0, 12, 12);
+			gui.drawTexture(matrixStack, x, y, 202, 0, 12, 12);
 		}
 	}
 
@@ -160,23 +160,23 @@ public class GuiBuilder {
 	 * @param layer Layer Layer to draw on
 	 * @param locked boolean Set to true if it is in locked state
 	 */
-	public void drawLockButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
+	public void drawLockButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
+		gui.drawTexture(matrixStack, x, y, 174, 26 + (locked ? 12 : 0), 20, 12);
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
+			List<Text> list = new ArrayList<>();
 			if (locked) {
-				list.add(StringUtils.t("reborncore.gui.tooltip.unlock_items"));
+				list.add(new TranslatableText("reborncore.gui.tooltip.unlock_items"));
 			} else {
-				list.add(StringUtils.t("reborncore.gui.tooltip.lock_items"));
+				list.add(new TranslatableText("reborncore.gui.tooltip.lock_items"));
 			}
 			RenderSystem.pushMatrix();
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -191,7 +191,7 @@ public class GuiBuilder {
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawHologramButton(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+	public void drawHologramButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (gui.isTabOpen()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
@@ -199,19 +199,19 @@ public class GuiBuilder {
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		if (gui.getMachine().renderMultiblock == null) {
-			gui.drawTexture(x, y, 174, 50, 20, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 50, 20, 12);
 		} else {
-			gui.drawTexture(x, y, 174, 62, 20, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 62, 20, 12);
 		}
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.t("reborncore.gui.tooltip.hologram"));
+			List<Text> list = new ArrayList<>();
+			list.add(new TranslatableText("reborncore.gui.tooltip.hologram"));
 			RenderSystem.pushMatrix();
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -226,21 +226,25 @@ public class GuiBuilder {
 	 * @param max int Maximum heat value
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBigHeatBar(GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
+	public void drawBigHeatBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 26, 218, 114, 18);
+		gui.drawTexture(matrixStack, x, y, 26, 218, 114, 18);
 		if (value != 0) {
 			int j = (int) ((double) value / (double) max * 106);
 			if (j < 0) {
 				j = 0;
 			}
-			gui.drawTexture(x + 4, y + 4, 26, 246, j, 10);
-			gui.drawCentredString(value + StringUtils.t("reborncore.gui.heat"), y + 5, 0xFFFFFF, layer);
+			gui.drawTexture(matrixStack, x + 4, y + 4, 26, 246, j, 10);
+
+			Text text = new LiteralText(String.valueOf(value))
+					.append(new TranslatableText("reborncore.gui.heat"));
+
+			gui.drawCentredText(matrixStack, text, y + 5, 0xFFFFFF, layer);
 		}
 	}
 
@@ -259,7 +263,7 @@ public class GuiBuilder {
 	 * @param format String Formatted value to put on the bar
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, String line2, String format, GuiBase.Layer layer) {
+	public void drawBigBlueBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, Text line2, String format, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
@@ -270,40 +274,66 @@ public class GuiBuilder {
 		if (j < 0) {
 			j = 0;
 		}
-		gui.drawTexture(x + 4, y + 4, 0, 236, j, 10);
+		gui.drawTexture(matrixStack, x + 4, y + 4, 0, 236, j, 10);
 		if (!suffix.equals("")) {
 			suffix = " " + suffix;
 		}
-		gui.drawCentredString(format + suffix, y + 5, 0xFFFFFF, layer);
+		gui.drawCentredText(matrixStack, new LiteralText(format).append(suffix), y + 5, 0xFFFFFF, layer);
 		if (gui.isPointInRect(x, y, 114, 18, mouseX, mouseY)) {
 			int percentage = percentage(max, value);
-			List<String> list = new ArrayList<>();
-			list.add("" + Formatting.GOLD + value + "/" + max + suffix);
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + Formatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.dsu_fullness"));
+			List<Text> list = new ArrayList<>();
+
+			list.add(
+					new LiteralText(String.valueOf(value))
+						.formatted(Formatting.GOLD)
+						.append("/")
+						.append(String.valueOf(max))
+						.append(suffix)
+			);
+
+			list.add(
+					new LiteralText(String.valueOf(percentage))
+						.formatted(StringUtils.getPercentageColour(percentage))
+						.append("%")
+						.append(
+								new TranslatableText("reborncore.gui.tooltip.dsu_fullness")
+								.formatted(Formatting.GRAY)
+						)
+			);
+
 			list.add(line2);
 
 			if (value > max) {
-				list.add(Formatting.GRAY + "Yo this is storing more than it should be able to");
-				list.add(Formatting.GRAY + "prolly a bug");
-				list.add(Formatting.GRAY + "pls report and tell how tf you did this");
+				list.add(
+						new LiteralText("Yo this is storing more than it should be able to")
+							.formatted(Formatting.GRAY)
+				);
+				list.add(
+						new LiteralText("prolly a bug")
+								.formatted(Formatting.GRAY)
+				);
+				list.add(
+						new LiteralText("pls report and tell how tf you did this")
+								.formatted(Formatting.GRAY)
+				);
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
 	}
 
-	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
-		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, suffix, "", Integer.toString(value), layer);
+	public void drawBigBlueBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, GuiBase.Layer layer) {
+		drawBigBlueBar(matrixStack, gui, x, y, value, max, mouseX, mouseY, suffix, LiteralText.EMPTY, Integer.toString(value), layer);
 
 	}
 
-	public void drawBigBlueBar(GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
-		drawBigBlueBar(gui, x, y, value, max, mouseX, mouseY, "", "", "", layer);
+	public void drawBigBlueBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, GuiBase.Layer layer) {
+		drawBigBlueBar(matrixStack, gui, x, y, value, max, mouseX, mouseY, "", LiteralText.EMPTY, "", layer);
 	}
 
 	/**
@@ -312,7 +342,7 @@ public class GuiBuilder {
 	 * @param gui GuiBase GUI to draw on
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawMultiblockMissingBar(GuiBase<?> gui, GuiBase.Layer layer) {
+	public void drawMultiblockMissingBar(MatrixStack matrixStack, GuiBase<?> gui, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		int x = 0;
 		int y = 4;
@@ -328,7 +358,7 @@ public class GuiBuilder {
 		RenderUtil.drawGradientRect(0, x, y + 68, x + 176, y + 70 + 20, 0xC0000000, 0x00000000);
 		RenderSystem.colorMask(true, true, true, true);
 		RenderSystem.disableDepthTest();
-		gui.drawCentredString(StringUtils.t("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
+		gui.drawCentredText(matrixStack, new TranslatableText("reborncore.gui.missingmultiblock"), 43, 0xFFFFFF, layer);
 	}
 
 	/**
@@ -339,9 +369,9 @@ public class GuiBuilder {
 	 * @param x int Top left corner where to place slots
 	 * @param y int Top left corner where to place slots
 	 */
-	public void drawUpgrades(GuiBase<?> gui, int x, int y) {
+	public void drawUpgrades(MatrixStack matrixStack, GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 217, 0, 24, 81);
+		gui.drawTexture(matrixStack, x, y, 217, 0, 24, 81);
 	}
 
 	/**
@@ -352,9 +382,9 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place tab
 	 * @param stack ItemStack Item to show as tab icon
 	 */
-	public void drawSlotTab(GuiBase<?> gui, int x, int y, ItemStack stack) {
+	public void drawSlotTab(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, ItemStack stack) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 217, 82, 24, 24);
+		gui.drawTexture(matrixStack, x, y, 217, 82, 24, 24);
 		gui.getMinecraft().getItemRenderer().renderGuiItem(stack, x + 5, y + 4);
 	}
 
@@ -367,23 +397,23 @@ public class GuiBuilder {
      * @param mouseX int Mouse cursor position
      * @param mouseY int Mouse cursor position
      */
-	public void drawSlotConfigTips(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiTab guiTab) {
-		List<String> tips = guiTab.getTips().stream()
-				.map(StringUtils::t)
+	public void drawSlotConfigTips(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiTab guiTab) {
+		List<Text> tips = guiTab.getTips().stream()
+				.map(TranslatableText::new)
 				.collect(Collectors.toList());
 
 		TipsListWidget explanation = new TipsListWidget(gui, gui.getScreenWidth() - 14, 54, y, y + 76, 9 + 2, tips);
 		explanation.setLeftPos(x - 81);
-		explanation.render(mouseX, mouseY, 1.0f);
+		explanation.render(matrixStack, mouseX, mouseY, 1.0f);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
 
 
 	private class TipsListWidget extends EntryListWidget<TipsListWidget.TipsListEntry> {
 
-		public TipsListWidget(GuiBase<?> gui, int width, int height, int top, int bottom, int entryHeight, List<String> tips) {
+		public TipsListWidget(GuiBase<?> gui, int width, int height, int top, int bottom, int entryHeight, List<Text> tips) {
 			super(gui.getMinecraft(), width, height, top, bottom, entryHeight);
-			for (String tip : tips){
+			for (Text tip : tips){
 				this.addEntry(new TipsListEntry(tip));
 			}
 		}
@@ -397,14 +427,14 @@ public class GuiBuilder {
 		protected void renderHoleBackground(int top, int bottom, int alphaTop, int alphaBottom){}
 
 		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {
-			private String tip;
+			private Text tip;
 
-			public TipsListEntry(String tip){
+			public TipsListEntry(Text tip){
 				this.tip = tip;
 			}
 
 			@Override
-			public void render(int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
+			public void render(MatrixStack matrixStack, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
 				MinecraftClient.getInstance().textRenderer.drawTrimmed(tip, x, y, width, 11184810);
 			}
 		}
@@ -419,18 +449,21 @@ public class GuiBuilder {
 	 * @param maxOutput int Energy output value
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawEnergyOutput(GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
+	public void drawEnergyOutput(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
-		String text = PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput) + " "
-			+ PowerSystem.getDisplayPower().abbreviation + "/t";
-		int width = gui.getTextRenderer().getStringWidth(text);
-		gui.drawString(text, x - width - 2, y + 5, 0, layer);
+		Text text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput))
+				.append(SPACE_TEXT)
+				.append(PowerSystem.getDisplayPower().abbreviation)
+				.append("\t");
+
+		int width = gui.getTextRenderer().getWidth(text);
+		gui.drawText(matrixStack, text, x - width - 2, y + 5, 0, layer);
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 150, 91, 16, 16);
+		gui.drawTexture(matrixStack, x, y, 150, 91, 16, 16);
 	}
 
 	/**
@@ -446,7 +479,7 @@ public class GuiBuilder {
 	 * @param direction ProgressDirection Direction of progress arrow
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawProgressBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
+	public void drawProgressBar(MatrixStack matrixStack, GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
@@ -454,7 +487,7 @@ public class GuiBuilder {
 		}
 
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, direction.x, direction.y, direction.width, direction.height);
+		gui.drawTexture(matrixStack, x, y, direction.x, direction.y, direction.width, direction.height);
 		int j = (int) ((double) progress / (double) maxProgress * 16);
 		if (j < 0) {
 			j = 0;
@@ -462,16 +495,16 @@ public class GuiBuilder {
 
 		switch (direction) {
 			case RIGHT:
-				gui.drawTexture(x, y, direction.xActive, direction.yActive, j, 10);
+				gui.drawTexture(matrixStack, x, y, direction.xActive, direction.yActive, j, 10);
 				break;
 			case LEFT:
-				gui.drawTexture(x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
+				gui.drawTexture(matrixStack, x + 16 - j, y, direction.xActive + 16 - j, direction.yActive, j, 10);
 				break;
 			case UP:
-				gui.drawTexture(x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
+				gui.drawTexture(matrixStack, x, y + 16 - j, direction.xActive, direction.yActive + 16 - j, 10, j);
 				break;
 			case DOWN:
-				gui.drawTexture(x, y, direction.xActive, direction.yActive, 10, j);
+				gui.drawTexture(matrixStack, x, y, direction.xActive, direction.yActive, 10, j);
 				break;
 			default:
 				return;
@@ -479,13 +512,17 @@ public class GuiBuilder {
 
 		if (gui.isPointInRect(x, y, direction.width, direction.height, mouseX, mouseY)) {
 			int percentage = percentage(maxProgress, progress);
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%");
+			List<Text> list = new ArrayList<>();
+			list.add(
+					new LiteralText(String.valueOf(percentage))
+					.formatted(StringUtils.getPercentageColour(percentage))
+					.append("%")
+			);
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -504,7 +541,7 @@ public class GuiBuilder {
 	 * @param buttonID int Button ID used to switch energy systems
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawMultiEnergyBar(GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
+	public void drawMultiEnergyBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
 			int mouseY, int buttonID, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
@@ -514,39 +551,53 @@ public class GuiBuilder {
 
 		EnergySystem displayPower = PowerSystem.getDisplayPower();
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
+		gui.drawTexture(matrixStack, x, y, displayPower.xBar - 15, displayPower.yBar - 1, 14, 50);
 		int draw = (int) ((double) energyStored / (double) maxEnergyStored * (48));
 		if (energyStored > maxEnergyStored) {
 			draw = 48;
 		}
-		gui.drawTexture(x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
+		gui.drawTexture(matrixStack, x + 1, y + 49 - draw, displayPower.xBar, 48 + displayPower.yBar - draw, 12, draw);
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
 			List<Text> list = Lists.newArrayList();
-			list.add(new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored) + "/"
-					+ PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored) + " "
-					+ displayPower.abbreviation).formatted(Formatting.GOLD));
-			list.add(new LiteralText(StringUtils.getPercentageColour(percentage) + "" + percentage + "%"
-					+ Formatting.GRAY + " " + StringUtils.t("reborncore.gui.tooltip.power_charged")));
+			list.add(
+					new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored))
+					.formatted(Formatting.GOLD)
+					.append("/")
+					.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored))
+					.append(SPACE_TEXT)
+					.append(displayPower.abbreviation)
+			);
+
+			list.add(
+					StringUtils.getPercentageText(percentage)
+					.append(SPACE_TEXT)
+					.append(
+							new TranslatableText("reborncore.gui.tooltip.power_charged")
+							.formatted(Formatting.GRAY)
+					)
+			);
+
 			if (gui.be instanceof IListInfoProvider) {
 				if (Screen.hasShiftDown()) {
 					((IListInfoProvider) gui.be).addInfo(list, true, true);
 				} else {
-					list.add(new LiteralText(""));
-					list.add((new LiteralText(Formatting.BLUE + "Shift" + Formatting.GRAY + " "
-							+ StringUtils.t("reborncore.gui.tooltip.power_moreinfo"))));
+					list.add(LiteralText.EMPTY);
+
+					list.add(
+							new LiteralText("Shift")
+							.formatted(Formatting.BLUE)
+							.append(SPACE_TEXT)
+							.formatted(Formatting.GRAY)
+							.append(new TranslatableText("reborncore.gui.tooltip.power_moreinfo"))
+					);
 				}
 			}
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			List<String> list1 = Lists.newArrayList();
-
-			for (Text itextcomponent : list) {
-				list1.add(itextcomponent.asFormattedString());
-			}
-			gui.renderTooltip(list1, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -565,7 +616,7 @@ public class GuiBuilder {
 	 * @param isTankEmpty boolean True if tank is empty
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawTank(GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
+	public void drawTank(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
@@ -579,26 +630,37 @@ public class GuiBuilder {
 			percentage = percentage(maxCapacity.getRawValue(), amount.getRawValue());
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 194, 26, 22, 56);
+		gui.drawTexture(matrixStack, x, y, 194, 26, 22, 56);
 		if (!isTankEmpty) {
-			drawFluid(gui, fluid, x + 4, y + 4, 14, 48, maxCapacity.getRawValue());
+			drawFluid(matrixStack, gui, fluid, x + 4, y + 4, 14, 48, maxCapacity.getRawValue());
 		}
-		gui.drawTexture(x + 3, y + 3, 194, 82, 16, 50);
+		gui.drawTexture(matrixStack, x + 3, y + 3, 194, 82, 16, 50);
 
 		if (gui.isPointInRect(x, y, 22, 56, mouseX, mouseY)) {
-			List<String> list = new ArrayList<>();
+			List<Text> list = new ArrayList<>();
 			if (isTankEmpty) {
-				list.add(Formatting.GOLD + StringUtils.t("reborncore.gui.tooltip.tank_empty"));
+				list.add(new TranslatableText("reborncore.gui.tooltip.tank_empty").formatted(Formatting.GOLD));
 			} else {
-				list.add(Formatting.GOLD + String.format("%s / %s", amount, maxCapacity) + " " + FluidUtil.getFluidName(fluid));
+				list.add(
+						new LiteralText(String.format("%s / %s", amount, maxCapacity))
+							.formatted(Formatting.GOLD)
+							.append(SPACE_TEXT)
+							.append(FluidUtil.getFluidName(fluid))
+				);
 			}
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%" + Formatting.GRAY + " "
-				+ StringUtils.t("reborncore.gui.tooltip.tank_fullness"));
+
+			list.add(
+					StringUtils.getPercentageText(percentage)
+						.formatted(Formatting.GRAY)
+						.append(SPACE_TEXT)
+						.append(new TranslatableText("reborncore.gui.tooltip.tank_fullness"))
+			);
+
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -615,7 +677,7 @@ public class GuiBuilder {
 	 * @param height int Height of fluid to draw
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
-	public void drawFluid(GuiBase<?> gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
+	public void drawFluid(MatrixStack matrixStack, GuiBase<?> gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
 		if(fluid.getFluid() == Fluids.EMPTY){
 			return;
 		}
@@ -634,7 +696,7 @@ public class GuiBuilder {
 		while (offsetHeight != 0) {
 			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
 
-			DrawableHelper.drawSprite(x, y - offsetHeight, 0,  width, curHeight, sprite);
+			DrawableHelper.drawSprite(matrixStack, x, y - offsetHeight, 0,  width, curHeight, sprite);
 			offsetHeight -= curHeight;
 			iteration++;
 			if (iteration > 50) {
@@ -658,28 +720,28 @@ public class GuiBuilder {
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param layer Layer Layer to draw on
 	 */
-	public void drawBurnBar(GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
+	public void drawBurnBar(MatrixStack matrixStack, GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 150, 64, 13, 13);
+		gui.drawTexture(matrixStack, x, y, 150, 64, 13, 13);
 		int j = 13 - (int) ((double) progress / (double) maxProgress * 13);
 		if (j > 0) {
-			gui.drawTexture(x, y + j, 150, 51 + j, 13, 13 - j);
+			gui.drawTexture(matrixStack, x, y + j, 150, 51 + j, 13, 13 - j);
 
 		}
 		if (gui.isPointInRect(x, y, 12, 12, mouseX, mouseY)) {
 			int percentage = percentage(maxProgress, progress);
-			List<String> list = new ArrayList<>();
-			list.add(StringUtils.getPercentageColour(percentage) + "" + percentage + "%");
+			List<Text> list = new ArrayList<>();
+			list.add(StringUtils.getPercentageText(percentage));
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -693,15 +755,15 @@ public class GuiBuilder {
 	 * @param y int Top left corner where to place slots bar
 	 * @param count int Number of output slots
 	 */
-	public void drawOutputSlotBar(GuiBase<?> gui, int x, int y, int count) {
+	public void drawOutputSlotBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int count) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
-		gui.drawTexture(x, y, 150, 122, 3, 26);
+		gui.drawTexture(matrixStack, x, y, 150, 122, 3, 26);
 		x += 3;
 		for (int i = 1; i <= count; i++) {
-			gui.drawTexture(x, y, 150 + 3, 122, 20, 26);
+			gui.drawTexture(matrixStack, x, y, 150 + 3, 122, 20, 26);
 			x += 20;
 		}
-		gui.drawTexture(x, y, 150 + 23, 122, 3, 26);
+		gui.drawTexture(matrixStack, x, y, 150 + 23, 122, 3, 26);
 	}
 
 	protected int percentage(int MaxValue, int CurrentValue) {

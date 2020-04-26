@@ -25,13 +25,14 @@
 package reborncore.client.gui.builder.widget;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.Text;
 
 public class GuiButtonSimple extends ButtonWidget {
-	public GuiButtonSimple( int x, int y, String buttonText, ButtonWidget.PressAction pressAction) {
+	public GuiButtonSimple(int x, int y, Text buttonText, ButtonWidget.PressAction pressAction) {
 		super(x, y, 20, 200, buttonText, pressAction);
 	}
 
-	public GuiButtonSimple(int x, int y, int widthIn, int heightIn, String buttonText, ButtonWidget.PressAction pressAction) {
+	public GuiButtonSimple(int x, int y, int widthIn, int heightIn, Text buttonText, ButtonWidget.PressAction pressAction) {
 		super(x, y, widthIn, heightIn, buttonText, pressAction);
 	}
 }

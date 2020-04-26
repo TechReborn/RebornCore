@@ -28,20 +28,22 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import org.lwjgl.opengl.GL11;
 
 public class GuiHiddenButton extends ButtonWidget {
 
-	public GuiHiddenButton(int xPosition, int yPosition, String displayString) {
+	public GuiHiddenButton(int xPosition, int yPosition, Text displayString) {
 		super(xPosition, yPosition, 0, 0, displayString, var1 -> {});
 	}
 
-	public GuiHiddenButton(int id, int xPosition, int yPosition, int width, int height, String displayString) {
+	public GuiHiddenButton(int id, int xPosition, int yPosition, int width, int height, Text displayString) {
 		super(xPosition, yPosition, width, height, displayString, var1 -> {});
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (this.visible) {
 			TextRenderer fontrenderer = MinecraftClient.getInstance().textRenderer;
 			MinecraftClient.getInstance().getTextureManager().bindTexture(WIDGETS_LOCATION);
@@ -59,7 +61,7 @@ public class GuiHiddenButton extends ButtonWidget {
 				l = 16777120;
 			}
 
-			this.drawCenteredString(fontrenderer, this.getMessage(), this.x + this.width / 2,
+			this.method_27534(matrixStack, fontrenderer, this.getMessage(), this.x + this.width / 2,
 				this.y + (this.height - 8) / 2, l);
 		}
 	}

@@ -26,6 +26,7 @@ package reborncore.client.hud;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 /**
  * Created by Prospector
@@ -45,5 +46,5 @@ public abstract class StackInfoElement {
 		isStack = false;
 	}
 
-	public abstract String getText(ItemStack stack);
+	public abstract Text getText(ItemStack stack);
 }

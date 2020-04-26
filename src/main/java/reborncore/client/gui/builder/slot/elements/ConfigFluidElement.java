@@ -24,6 +24,8 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.util.Tank;
 
@@ -49,12 +51,12 @@ public class ConfigFluidElement extends ElementBase {
 			return true;
 		}));
 
-		elements.add(new CheckBoxElement("Pull In", 0xFFFFFFFF, x - 26, y + 42, "input", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+		elements.add(new CheckBoxElement(new LiteralText("Pull In"), 0xFFFFFFFF, x - 26, y + 42, "input", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 			checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
 			return true;
 		}));
-		elements.add(new CheckBoxElement("Pump Out", 0xFFFFFFFF, x - 26, y + 57, "output", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+		elements.add(new CheckBoxElement(new LiteralText("Pump Out"), 0xFFFFFFFF, x - 26, y + 57, "output", 0, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 			checkBoxElement -> checkBoxElement.machineBase.fluidConfiguration.autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
 			return true;
@@ -65,12 +67,12 @@ public class ConfigFluidElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase<?> gui) {
-		super.draw(gui);
+	public void draw(MatrixStack matrixStack, GuiBase<?> gui) {
+		super.draw(matrixStack, gui);
 		if (isHovering) {
-			drawSprite(gui, type.getButtonHoverOverlay(), x, y);
+			drawSprite(matrixStack, gui, type.getButtonHoverOverlay(), x, y);
 		}
-		elements.forEach(elementBase -> elementBase.draw(gui));
+		elements.forEach(elementBase -> elementBase.draw(matrixStack, gui));
 	}
 
 	public SlotType getType() {

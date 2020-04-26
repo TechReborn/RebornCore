@@ -35,7 +35,6 @@ import reborncore.api.ToolManager;
 import reborncore.common.RebornCoreCommands;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
-import reborncore.common.chunkloading.ChunkLoaderManager;
 import reborncore.common.config.Configuration;
 import reborncore.common.crafting.ingredient.IngredientManager;
 import reborncore.common.fluid.RebornFluidManager;
@@ -46,7 +45,6 @@ import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.util.CalenderUtils;
 import reborncore.common.util.GenericWrenchHelper;
-import reborncore.common.world.DataAttachment;
 
 import java.io.File;
 import java.util.function.Supplier;
@@ -114,7 +112,6 @@ public class RebornCore implements ModInitializer {
 
 		RebornCoreCommands.setup();
 
-		DataAttachment.REGISTRY.register(ChunkLoaderManager.class, ChunkLoaderManager::new);
 		RebornCoreTags.WATER_EXPLOSION_ITEM.toString();
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");

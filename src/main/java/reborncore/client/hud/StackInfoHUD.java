@@ -30,8 +30,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.opengl.GL11;
 import reborncore.common.RebornCoreConfig;
@@ -57,7 +62,7 @@ public class StackInfoHUD implements HudRenderCallback {
 		ELEMENTS.add(element);
 	}
 
-	public void drawStackInfoHud(Window res) {
+	public void drawStackInfoHud(MatrixStack matrixStack, Window res) {
 		PlayerEntity player = mc.player;
 		if (player == null){
 			return;
@@ -80,43 +85,54 @@ public class StackInfoHUD implements HudRenderCallback {
 		}
 
 		for (ItemStack stack : stacks) {
-			addInfo(stack, res);
+			addInfo(matrixStack, stack, res);
 		}
 	}
 
-	private void addInfo(ItemStack stack, Window res) {
+	private void addInfo(MatrixStack matrixStack, ItemStack stack, Window res) {
 		if (stack == ItemStack.EMPTY) {
 			return;
 		}
 
-		String text;
+		MutableText text;
 		if (stack.getItem() instanceof EnergyHolder) {
 
 			double maxCharge = Energy.of(stack).getMaxStored();
 			double currentCharge = Energy.of(stack).getEnergy();
 
 			Formatting color = StringUtils.getPercentageColour(percentage(maxCharge, currentCharge));
-			text = color + PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge)
-					+ "/" + PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge) + " "
-					+ PowerSystem.getDisplayPower().abbreviation + Formatting.GRAY;
+
+			text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge))
+					.formatted(color)
+					.append("/")
+					.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge))
+					.append(" ")
+					.append(PowerSystem.getDisplayPower().abbreviation);
+
 			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
 				if (stack.getTag().getBoolean("isActive")) {
-					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.active")
-							+ Formatting.GOLD + ")" + Formatting.GRAY;
+
+					text.formatted(Formatting.GOLD)
+							.append(" (")
+							.append(new TranslatableText("reborncore.message.active"))
+							.append(")");
 				} else {
-					text = text + Formatting.GOLD + " (" + StringUtils.t("reborncore.message.inactive")
-							+ Formatting.GOLD + ")" + Formatting.GRAY;
+
+					text.formatted(Formatting.GOLD)
+							.append(" (")
+							.append(new TranslatableText("reborncore.message.inactive"))
+							.append(")");
 				}
 			}
 
 			if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
-				int strWidth = mc.textRenderer.getStringWidth(text);
+				int strWidth = mc.textRenderer.getWidth(text);
 				// 18 for item icon and additionally padding from configuration file
 				x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
 			}
 
-			renderStackForInfo(stack);
-			mc.textRenderer.drawWithShadow(text, x + 18, y, 0);
+			renderStackForInfo(matrixStack, stack);
+			mc.textRenderer.draw(matrixStack, text, x + 18, y, 0);
 
 			if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
 				y += 20;
@@ -127,14 +143,14 @@ public class StackInfoHUD implements HudRenderCallback {
 
 		for (StackInfoElement element : ELEMENTS) {
 			if (!element.getText(stack).equals("")) {
-				renderStackForInfo(stack);
-				mc.textRenderer.drawWithShadow(element.getText(stack), x + 18, y, 0);
+				renderStackForInfo(matrixStack, stack);
+				mc.textRenderer.draw(matrixStack, element.getText(stack), x + 18, y, 0);
 				y += 20;
 			}
 		}
 	}
 
-	private void renderStackForInfo(ItemStack stack) {
+	private void renderStackForInfo(MatrixStack matrixStack, ItemStack stack) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(32826);
 		DiffuseLighting.enable();
@@ -157,7 +173,7 @@ public class StackInfoHUD implements HudRenderCallback {
 	}
 
 	@Override
-	public void onHudRender(float tickDelta) {
+	public void onHudRender(MatrixStack matrixStack, float tickDelta) {
 		if (mc.options.hudHidden) {
 			return;
 		}
@@ -165,7 +181,7 @@ public class StackInfoHUD implements HudRenderCallback {
 			return;
 		}
 		if (mc.isWindowFocused() || (mc.currentScreen != null && mc.options.debugEnabled)) {
-			drawStackInfoHud(mc.getWindow());
+			drawStackInfoHud(matrixStack, mc.getWindow());
 		}
 	}
 }

@@ -24,6 +24,9 @@
 
 package reborncore.common.util;
 
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -51,27 +54,6 @@ public class StringUtils {
 	}
 
 	/**
-	 * Simple wrapper for text translation
-	 *
-	 * @param translationKey String Translation Key from language file
-	 * @return String Translated string
-	 */
-	public static String t(String translationKey) {
-		return new TranslatableText(translationKey).asFormattedString();
-	}
-
-	/**
-	 * Simple wrapper for formatted text translation
-	 *
-	 * @param translationKey String Translation Key from language file
-	 * @param format Text to insert into translation
-	 * @return String Translated string
-	 */
-	public static String t(String translationKey, Object... format) {
-		return new TranslatableText(translationKey, format).asFormattedString();
-	}
-
-	/**
 	 * Returns red-yellow-green text formatting depending on percentage
 	 *
 	 * @param percentage int percentage amount
@@ -85,6 +67,12 @@ public class StringUtils {
 		} else {
 			return Formatting.YELLOW;
 		}
+	}
+
+	public static MutableText getPercentageText(int percentage) {
+		return new LiteralText(String.valueOf(percentage))
+				.formatted(getPercentageColour(percentage))
+				.append("%");
 	}
 
 }

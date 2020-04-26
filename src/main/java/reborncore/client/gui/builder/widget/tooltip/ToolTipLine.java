@@ -25,40 +25,43 @@
 package reborncore.client.gui.builder.widget.tooltip;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 public class ToolTipLine {
 
-	private String line;
+	private Text line;
 	private int color;
 	private boolean shadowed;
 
-	public ToolTipLine(String line, int color, boolean shadowed) {
+	public ToolTipLine(Text line, int color, boolean shadowed) {
 		this.line = line;
 		this.color = color;
 		this.shadowed = shadowed;
 	}
 
-	public ToolTipLine(String line, int color) {
+	public ToolTipLine(Text line, int color) {
 		this(line, color, false);
 	}
 
-	public ToolTipLine(String line, boolean shadowed) {
+	public ToolTipLine(Text line, boolean shadowed) {
 		this(line, 0xFFFFFF, shadowed);
 	}
 
-	public ToolTipLine(String line) {
+	public ToolTipLine(Text line) {
 		this(line, 0xFFFFFF, false);
 	}
 
 	public ToolTipLine() {
-		this("");
+		this(LiteralText.EMPTY);
 	}
 
-	public String getLine() {
+	public Text getLine() {
 		return line;
 	}
 
-	public void setLine(String line) {
+	public void setLine(Text line) {
 		this.line = line;
 	}
 
@@ -79,14 +82,14 @@ public class ToolTipLine {
 	}
 
 	public int getWidth(TextRenderer fontRenderer) {
-		return fontRenderer.getStringWidth(getLine());
+		return fontRenderer.getWidth(getLine());
 	}
 
-	public void draw(TextRenderer fontRenderer, int x, int y) {
+	public void draw(MatrixStack matrixStack, TextRenderer fontRenderer, int x, int y) {
 		if (!isShadowed()) {
-			fontRenderer.draw(getLine(), x, y, color);
+			fontRenderer.draw(matrixStack, getLine(), x, y, color);
 		} else {
-			fontRenderer.drawWithShadow(getLine(), x, y, color);
+			fontRenderer.draw(matrixStack, getLine(), x, y, color);
 		}
 
 	}

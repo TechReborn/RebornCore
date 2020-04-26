@@ -29,6 +29,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -123,9 +125,9 @@ public class ElementBase {
 		}
 	}
 
-	public void draw(GuiBase<?> gui) {
+	public void draw(MatrixStack matrixStack, GuiBase<?> gui) {
 		for (OffsetSprite sprite : getSpriteContainer().offsetSprites) {
-			drawSprite(gui, sprite.getSprite(), x + sprite.getOffsetX(gui.getMachine()), y + sprite.getOffsetY(gui.getMachine()));
+			drawSprite(matrixStack, gui, sprite.getSprite(), x + sprite.getOffsetX(gui.getMachine()), y + sprite.getOffsetY(gui.getMachine()));
 		}
 	}
 
@@ -292,39 +294,23 @@ public class ElementBase {
 		return gui.isPointInRect(x + gui.getGuiLeft(), y + gui.getGuiTop(), xSize, ySize, mouseX, mouseY);
 	}
 
-	public void drawString(GuiBase<?> gui, String string, int x, int y, int color) {
+	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
-		gui.getTextRenderer().draw(string, x, y, color);
-	}
-
-	public void drawString(GuiBase<?> gui, String string, int x, int y) {
-		drawString(gui, string, x, y, 16777215);
+		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
 	}
 
 	public void setTextureSheet(Identifier textureLocation) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(textureLocation);
 	}
 
-	public void drawCenteredString(GuiBase<?> gui, String string, int y, int colour) {
-		drawString(gui, string, (gui.getScreenWidth() / 2 - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
-	}
-
-	public void drawCenteredString(GuiBase<?> gui, String string, int x, int y, int colour) {
-		drawString(gui, string, (x - gui.getTextRenderer().getStringWidth(string) / 2), y, colour);
-	}
-
-	public int getStringWidth(String string) {
-		return MinecraftClient.getInstance().textRenderer.getStringWidth(string);
-	}
-
-	public void drawSprite(GuiBase<?> gui, ISprite iSprite, int x, int y) {
+	public void drawSprite(MatrixStack matrixStack, GuiBase<?> gui, ISprite iSprite, int x, int y) {
 		Sprite sprite = iSprite.getSprite(gui.getMachine());
 		if (sprite != null) {
 			if (sprite.hasTextureInfo()) {
 				RenderSystem.color3f(1F, 1F, 1F);
 				setTextureSheet(sprite.textureLocation);
-				gui.drawTexture(x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
+				gui.drawTexture(matrixStack, x + gui.getGuiLeft(), y + gui.getGuiTop(), sprite.x, sprite.y, sprite.width, sprite.height);
 			}
 			if (sprite.hasStack()) {
 				RenderSystem.pushMatrix();
@@ -351,12 +337,12 @@ public class ElementBase {
 		return (int) ((CurrentValue * 100.0f) / MaxValue);
 	}
 
-	public void drawDefaultBackground(Screen gui, int x, int y, int width, int height) {
+	public void drawDefaultBackground(MatrixStack matrixStack, Screen gui, int x, int y, int width, int height) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(GuiBuilder.defaultTextureSheet);
-		gui.drawTexture(x, y, 0, 0, width / 2, height / 2);
-		gui.drawTexture(x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
-		gui.drawTexture(x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
-		gui.drawTexture(x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x, y, 0, 0, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
+		gui.drawTexture(matrixStack, x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2, height / 2);
 	}
 }

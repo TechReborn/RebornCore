@@ -24,20 +24,23 @@
 
 package reborncore.client.gui.builder.slot.elements;
 
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import java.util.function.Predicate;
 
 public class CheckBoxElement extends ElementBase {
-	public String label, type;
+	public Text label;
+	public String type;
 	public int labelColor, slotID;
 	public MachineBaseBlockEntity machineBase;
 	Predicate<CheckBoxElement> ticked;
 
 	private Sprite.CheckBox checkBoxSprite;
 
-	public CheckBoxElement(String label, int labelColor, int x, int y, String type, int slotID, Sprite.CheckBox checkBoxSprite, MachineBaseBlockEntity machineBase, Predicate<CheckBoxElement> ticked) {
+	public CheckBoxElement(Text label, int labelColor, int x, int y, String type, int slotID, Sprite.CheckBox checkBoxSprite, MachineBaseBlockEntity machineBase, Predicate<CheckBoxElement> ticked) {
 		super(x, y, checkBoxSprite.getNormal());
 		this.checkBoxSprite = checkBoxSprite;
 		this.type = type;
@@ -62,14 +65,14 @@ public class CheckBoxElement extends ElementBase {
 	}
 
 	@Override
-	public void draw(GuiBase<?> gui) {
+	public void draw(MatrixStack matrixStack, GuiBase<?> gui) {
 		//	super.draw(gui);
 		ISprite sprite = checkBoxSprite.getNormal();
 		if (ticked.test(this)) {
 			sprite = checkBoxSprite.getTicked();
 		}
-		drawSprite(gui, sprite, x, y);
-		drawString(gui, label, x + checkBoxSprite.getNormal().width + 5, ((y + getHeight(gui.getMachine()) / 2) - (gui.getTextRenderer().fontHeight / 2)), labelColor);
+		drawSprite(matrixStack, gui, sprite, x, y);
+		drawText(matrixStack, gui, label, x + checkBoxSprite.getNormal().width + 5, ((y + getHeight(gui.getMachine()) / 2) - (gui.getTextRenderer().fontHeight / 2)), labelColor);
 	}
 
 }

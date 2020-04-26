@@ -54,10 +54,10 @@ import java.io.File;
 public class ItemStackRenderer implements HudRenderCallback {
 
 	@Override
-	public void onHudRender(float v) {
+	public void onHudRender(MatrixStack matrixStack, float v) {
 		if (!ItemStackRenderManager.RENDER_QUEUE.isEmpty()) {
 
-			MinecraftClient.getInstance().textRenderer.draw("Rendering " + ItemStackRenderManager.RENDER_QUEUE.size() + " items left", 5, 5, -1);
+			MinecraftClient.getInstance().textRenderer.draw(matrixStack, "Rendering " + ItemStackRenderManager.RENDER_QUEUE.size() + " items left", 5, 5, -1);
 
 			ItemStack itemStack = ItemStackRenderManager.RENDER_QUEUE.poll();
 			export(itemStack, 512, Registry.ITEM.getId(itemStack.getItem()));

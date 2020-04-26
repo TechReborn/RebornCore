@@ -25,6 +25,8 @@
 package reborncore.client.gui.builder.widget;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import reborncore.client.gui.builder.GuiBase;
 
 /**
@@ -36,27 +38,27 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 	UpDownButtonType type;
 	
 	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, ButtonWidget.PressAction pressAction, UpDownButtonType type) {
-		super(x, y, 12, 12, "", pressAction);
+		super(x, y, 12, 12, LiteralText.EMPTY, pressAction);
 		this.gui = gui;
 		this.type = type;
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (gui.hideGuiElements()) return;
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
 		case FASTFORWARD:
-			gui.drawTexture(x, y, 174, 74, 12, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 74, 12, 12);
 			break;
 		case FORWARD:
-			gui.drawTexture(x, y, 174, 86, 12, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 86, 12, 12);
 			break;
 		case REWIND:
-			gui.drawTexture(x, y, 174, 98, 12, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 98, 12, 12);
 			break;
 		case FASTREWIND:
-			gui.drawTexture(x, y, 174, 110, 12, 12);
+			gui.drawTexture(matrixStack, x, y, 174, 110, 12, 12);
 			break;
 		default:
 			break;

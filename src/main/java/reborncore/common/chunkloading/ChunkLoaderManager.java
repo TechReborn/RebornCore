@@ -34,51 +34,55 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.util.NBTSerializable;
-import reborncore.common.world.DataAttachment;
-import reborncore.common.world.DataAttachmentProvider;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //This does not do the actual chunk loading, just keeps track of what chunks the chunk loader has loaded
-public class ChunkLoaderManager implements DataAttachment {
+public class ChunkLoaderManager extends PersistentState {
 
 	private static final ChunkTicketType<ChunkPos> CHUNK_LOADER = ChunkTicketType.create("reborncore:chunk_loader", Comparator.comparingLong(ChunkPos::toLong));
+	private static final String KEY = "reborncore_chunk_loader";
+
+	public ChunkLoaderManager() {
+		super(KEY);
+	}
 
 	public static ChunkLoaderManager get(World world){
-		return DataAttachmentProvider.get(world, ChunkLoaderManager.class);
+		ServerWorld serverWorld = (ServerWorld) world;
+		return serverWorld.getPersistentStateManager().getOrCreate(ChunkLoaderManager::new, KEY);
 	}
 
 	private final List<LoadedChunk> loadedChunks = new ArrayList<>();
 
 	@Override
-	public @Nonnull
-	CompoundTag write() {
-		CompoundTag tag = new CompoundTag();
+	public void fromTag(CompoundTag tag) {
+		loadedChunks.clear();
+		ListTag listTag = tag.getList("loadedchunks", tag.getType());
+
+		loadedChunks.addAll(listTag.stream()
+				.map(tag1 -> (CompoundTag) tag1)
+				.map(LoadedChunk::new)
+				.collect(Collectors.toList())
+		);
+	}
+
+	@Override
+	public CompoundTag toTag(CompoundTag tag) {
 		ListTag listTag = new ListTag();
 
 		listTag.addAll(loadedChunks.stream().map(LoadedChunk::write).collect(Collectors.toList()));
 		tag.put("loadedchunks", listTag);
 
 		return tag;
-	}
-
-	@Override
-	public void read(@Nonnull CompoundTag tag) {
-		loadedChunks.clear();
-		ListTag listTag = tag.getList("loadedchunks", tag.getType());
-
-		loadedChunks.addAll(listTag.stream()
-			                    .map(tag1 -> (CompoundTag) tag1)
-			                    .map(LoadedChunk::new)
-			                    .collect(Collectors.toList())
-		);
 	}
 
 	public Optional<LoadedChunk> getLoadedChunk(World world, ChunkPos chunkPos, BlockPos chunkLoader){
@@ -120,6 +124,7 @@ public class ChunkLoaderManager implements DataAttachment {
 		final ServerChunkManager serverChunkManager = ((ServerWorld) world).getChunkManager();
 		serverChunkManager.addTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
 
+		markDirty();
 	}
 
 	public void unloadChunkLoader(World world, BlockPos chunkLoader){
@@ -138,6 +143,7 @@ public class ChunkLoaderManager implements DataAttachment {
 			final ServerChunkManager serverChunkManager = ((ServerWorld) world).getChunkManager();
 			serverChunkManager.removeTicket(ChunkLoaderManager.CHUNK_LOADER, loadedChunk.getChunk(), 31, loadedChunk.getChunk());
 		}
+		markDirty();
 	}
 
 	public static Identifier getWorldName(World world){

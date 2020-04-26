@@ -24,6 +24,7 @@
 
 package reborncore.client.gui.builder.slot;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.Validate;
 import reborncore.client.gui.builder.GuiBase;
@@ -62,8 +63,8 @@ public class GuiTab {
 		return machineBaseBlockEntity;
 	}
 
-	public void draw(int x, int y) {
-		builder.draw.draw(guiBase, x, y);
+	public void draw(MatrixStack matrixStack, int x, int y) {
+		builder.draw.draw(matrixStack, guiBase, x, y);
 	}
 
 	public boolean click(double mouseX, double mouseY, int mouseButton) {
@@ -97,7 +98,7 @@ public class GuiTab {
 		private String name;
 		private Function<GuiTab, Boolean> enabled = (tab) -> true;
 		private Function<GuiTab, ItemStack> stack = (tab) -> ItemStack.EMPTY;
-		private Draw draw = (gui, x, y) -> {};
+		private Draw draw = (matrixStack, gui, x, y) -> {};
 		private Click click = (guiBase, mouseX, mouseY, mouseButton) -> false;
 		private MouseReleased mouseReleased = (guiBase, mouseX, mouseY, state) -> false;
 		private KeyPressed keyPressed = (guiBase, keyCode, scanCode, modifiers) -> false;
@@ -159,7 +160,7 @@ public class GuiTab {
 		}
 
 		public interface Draw {
-			void draw(GuiBase<?> guiBase, int mouseX, int mouseY);
+			void draw(MatrixStack matrixStack, GuiBase<?> guiBase, int mouseX, int mouseY);
 		}
 
 		public interface Click {

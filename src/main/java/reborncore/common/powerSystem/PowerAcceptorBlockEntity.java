@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -385,26 +386,56 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	// IListInfoProvider
 	@Override
 	public void addInfo(List<Text> info, boolean isReal, boolean hasData) {
-		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.maxEnergy") + ": "
-				+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxPower())));
+		info.add(
+				new TranslatableText("reborncore.tooltip.energy.maxEnergy")
+				.formatted(Formatting.GRAY)
+				.append(": ")
+				.append(PowerSystem.getLocaliszedPowerFormatted(getMaxPower()))
+				.formatted(Formatting.GOLD)
+		);
+
 		if (getMaxInput(EnergySide.UNKNOWN) != 0) {
-			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.inputRate") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxInput(EnergySide.UNKNOWN))));
+			info.add(
+					new TranslatableText("reborncore.tooltip.energy.inputRate")
+							.formatted(Formatting.GRAY)
+							.append(": ")
+							.append(PowerSystem.getLocaliszedPowerFormatted(getMaxInput(EnergySide.UNKNOWN)))
+							.formatted(Formatting.GOLD)
+			);
 		}
 		if (getMaxOutput(EnergySide.UNKNOWN) <= 0) {
-			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.outputRate") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getMaxOutput(EnergySide.UNKNOWN))));
+			info.add(
+					new TranslatableText("reborncore.tooltip.energy.outputRate")
+							.formatted(Formatting.GRAY)
+							.append(": ")
+							.append(PowerSystem.getLocaliszedPowerFormatted(getMaxOutput(EnergySide.UNKNOWN)))
+							.formatted(Formatting.GOLD)
+			);
 		}
-		info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.tier") + ": "
-				+ Formatting.GOLD + StringUtils.toFirstCapitalAllLowercase(getTier().toString())));
+
+		info.add(
+				new TranslatableText("reborncore.tooltip.energy.tier")
+						.formatted(Formatting.GRAY)
+						.append(": ")
+						.append(StringUtils.toFirstCapitalAllLowercase(getTier().toString()))
+						.formatted(Formatting.GOLD)
+		);
+
 		if (isReal) {
-			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy.change") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(getPowerChange()) + "/t"));
+			new TranslatableText("reborncore.tooltip.energy.change")
+					.formatted(Formatting.GRAY)
+					.append(": ")
+					.append(PowerSystem.getLocaliszedPowerFormatted(getPowerChange()))
+					.append("/t")
+					.formatted(Formatting.GOLD);
 		}
 
 		if (hasData) {
-			info.add(new LiteralText(Formatting.GRAY + StringUtils.t("reborncore.tooltip.energy") + ": "
-					+ Formatting.GOLD + PowerSystem.getLocaliszedPowerFormatted(energy)));
+			new TranslatableText("reborncore.tooltip.energy.change")
+					.formatted(Formatting.GRAY)
+					.append(": ")
+					.append(PowerSystem.getLocaliszedPowerFormatted(energy))
+					.formatted(Formatting.GOLD);
 		}
 
 		super.addInfo(info, isReal, hasData);

@@ -139,9 +139,14 @@ public class ItemUtils {
 			return;
 		}
 		if (isClient) {
-			ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
-					Formatting.GRAY + StringUtils.t("reborncore.message.energyError") + " "
-							+ Formatting.GOLD + StringUtils.t("reborncore.message.deactivating")));
+			ChatUtils.sendNoSpamMessages(messageId, new TranslatableText("reborncore.message.energyError")
+					.formatted(Formatting.GRAY)
+					.append(" ")
+					.append(
+							new TranslatableText("reborncore.message.deactivating")
+									.formatted(Formatting.GOLD)
+					)
+			);
 		}
 		stack.getOrCreateTag().putBoolean("isActive", false);
 	}
@@ -160,16 +165,28 @@ public class ItemUtils {
 		if (!ItemUtils.isActive(stack)) {
 			stack.getOrCreateTag().putBoolean("isActive", true);
 			if (isClient) {
-				ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
-						Formatting.GRAY + StringUtils.t("reborncore.message.setTo") + " "
-								+ Formatting.GOLD + StringUtils.t("reborncore.message.active")));
+
+
+				ChatUtils.sendNoSpamMessages(messageId, new TranslatableText("reborncore.message.setTo")
+						.formatted(Formatting.GRAY)
+						.append(" ")
+						.append(
+								new TranslatableText("reborncore.message.active")
+										.formatted(Formatting.GOLD)
+						)
+				);
 			}
 		} else {
 			stack.getOrCreateTag().putBoolean("isActive", false);
 			if (isClient) {
-				ChatUtils.sendNoSpamMessages(messageId, new LiteralText(
-						Formatting.GRAY + StringUtils.t("reborncore.message.setTo") + " "
-								+ Formatting.GOLD + StringUtils.t("reborncore.message.inactive")));
+				ChatUtils.sendNoSpamMessages(messageId, new TranslatableText("reborncore.message.setTo")
+						.formatted(Formatting.GRAY)
+						.append(" ")
+						.append(
+								new TranslatableText("reborncore.message.inactive")
+										.formatted(Formatting.GOLD)
+						)
+				);
 			}
 		}
 	}

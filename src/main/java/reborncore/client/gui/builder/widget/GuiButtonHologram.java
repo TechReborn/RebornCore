@@ -25,6 +25,8 @@
 package reborncore.client.gui.builder.widget;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import reborncore.client.gui.builder.GuiBase;
 
 /**
@@ -36,13 +38,13 @@ public class GuiButtonHologram extends GuiButtonExtended {
 	GuiBase<?> gui;
 
 	public GuiButtonHologram(int x, int y, GuiBase<?> gui, GuiBase.Layer layer, ButtonWidget.PressAction pressAction) {
-		super(x, y, 20, 12, "", pressAction);
+		super(x, y, 20, 12, LiteralText.EMPTY, pressAction);
 		this.layer = layer;
 		this.gui = gui;
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 
 	}
 }
