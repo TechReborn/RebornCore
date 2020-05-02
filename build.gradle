@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.4.+"
+		classpath "net.fabricmc:fabric-loom:0.4.3"
 		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
 	}
 }

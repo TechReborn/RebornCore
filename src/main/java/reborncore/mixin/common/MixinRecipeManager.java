@@ -25,25 +25,35 @@
 package reborncore.mixin.common;
 
 import com.google.gson.JsonObject;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeManager;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import reborncore.common.crafting.ConditionManager;
-import reborncore.common.crafting.DummyRecipe;
+
+import java.util.Iterator;
+import java.util.Map;
 
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-	@Inject(method = "deserialize",at = @At("HEAD"), cancellable = true)
-	private static void deserialize(Identifier id, JsonObject json, CallbackInfoReturnable<Recipe<?>> infoReturnable) {
-		// TODO dont hard code this as its awful
-		if (id.getNamespace().equals("reborncore") || id.getNamespace().equals("techreborn")) {
-			if (!ConditionManager.shouldLoadRecipe(json)) {
-				infoReturnable.setReturnValue(new DummyRecipe(id, json));
+	@Inject(method = "apply",at = @At("HEAD"))
+	private void deserialize(Map<Identifier, JsonObject> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
+		Iterator<Map.Entry<Identifier, JsonObject>> iterator = map.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<Identifier, JsonObject> entry = iterator.next();
+			Identifier id = entry.getKey();
+			JsonObject json = entry.getValue();
+
+			// TODO dont hard code this as its awful
+			if (id.getNamespace().equals("reborncore") || id.getNamespace().equals("techreborn")) {
+				if (!ConditionManager.shouldLoadRecipe(json)) {
+					iterator.remove();
+				}
 			}
 		}
 	}

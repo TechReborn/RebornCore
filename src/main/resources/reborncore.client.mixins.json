@@ -7,7 +7,12 @@
     "MixinItemDynamicRenderer",
     "MixinGameRenderer",
     "MixinItemRenderer",
-    "MixinDebugRenderer"
+    "MixinDebugRenderer",
+	"AccessorCamera",
+	"MixinDebugRenderer",
+	"MixinGameRenderer",
+	"MixinItemRenderer",
+	"MixinPlayerEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
