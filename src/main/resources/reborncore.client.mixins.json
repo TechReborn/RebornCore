@@ -4,11 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
 	"AccessorCamera",
-    "MixinPlayerEntityRenderer",
-    "MixinItemDynamicRenderer",
-    "MixinGameRenderer",
-    "MixinItemRenderer",
-    "MixinDebugRenderer"
+	"MixinDebugRenderer",
+	"MixinGameRenderer",
+	"MixinItemRenderer",
+	"MixinPlayerEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
