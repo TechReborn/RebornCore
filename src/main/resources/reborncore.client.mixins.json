@@ -6,7 +6,8 @@
     "MixinGameRenderer",
     "MixinItemRenderer",
     "MixinDebugRenderer",
-	"MixinPlayerEntityRenderer"
+	"MixinPlayerEntityRenderer",
+	"AccessorModelPredicateProviderRegistry"
   ],
   "injectors": {
     "defaultRequire": 1

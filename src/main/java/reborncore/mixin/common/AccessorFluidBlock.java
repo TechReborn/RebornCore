@@ -25,7 +25,7 @@
 package reborncore.mixin.common;
 
 import net.minecraft.block.FluidBlock;
-import net.minecraft.fluid.BaseFluid;
+import net.minecraft.fluid.FlowableFluid;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -33,5 +33,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface AccessorFluidBlock {
 
 	@Accessor
-	BaseFluid getFluid();
+	FlowableFluid getFluid();
 }

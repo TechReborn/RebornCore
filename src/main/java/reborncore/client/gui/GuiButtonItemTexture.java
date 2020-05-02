@@ -63,11 +63,11 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			int u = textureU;
 			int v = textureV;
 			if (flag) {
-				u += mc.textRenderer.getWidth(this.NAME) + 25;
-				v += mc.textRenderer.getWidth(this.NAME) + 25;
+				u += mc.textRenderer.getStringWidth(this.NAME) + 25;
+				v += mc.textRenderer.getStringWidth(this.NAME) + 25;
 				GL11.glPushMatrix();
 				GL11.glColor4f(0f, 0f, 0f, 1f);
-				this.drawTexture(matrixStack, this.x, this.y, u, v, mc.textRenderer.getWidth(this.NAME) + 25, height);
+				this.drawTexture(matrixStack, this.x, this.y, u, v, mc.textRenderer.getStringWidth(this.NAME) + 25, height);
 				GL11.glPopMatrix();
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -75,7 +75,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			DiffuseLighting.enable();
 			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 			itemRenderer.renderGuiItemIcon(itemstack, this.x, this.y);
-			this.method_27534(matrixStack, mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
+			this.drawStringWithShadow(matrixStack, mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
 			                Color.WHITE.getColor());
 		}
 	}

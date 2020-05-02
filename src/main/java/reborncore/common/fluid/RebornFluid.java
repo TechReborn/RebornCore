@@ -26,7 +26,7 @@ package reborncore.common.fluid;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.fluid.BaseFluid;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -39,7 +39,7 @@ import net.minecraft.world.WorldView;
 
 import java.util.function.Supplier;
 
-public abstract class RebornFluid extends BaseFluid {
+public abstract class RebornFluid extends FlowableFluid {
 
 	private final boolean still;
 

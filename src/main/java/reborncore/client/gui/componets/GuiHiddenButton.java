@@ -61,7 +61,7 @@ public class GuiHiddenButton extends ButtonWidget {
 				l = 16777120;
 			}
 
-			this.method_27534(matrixStack, fontrenderer, this.getMessage(), this.x + this.width / 2,
+			this.drawStringWithShadow(matrixStack, fontrenderer, this.getMessage(), this.x + this.width / 2,
 				this.y + (this.height - 8) / 2, l);
 		}
 	}
