@@ -28,8 +28,6 @@ import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import reborncore.RebornCore;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
