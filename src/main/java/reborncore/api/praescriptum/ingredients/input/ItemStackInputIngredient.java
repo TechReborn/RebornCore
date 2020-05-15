@@ -82,7 +82,7 @@ public class ItemStackInputIngredient extends InputIngredient<ItemStack> {
     @Override
     public boolean matches(Object other) {
         return other instanceof ItemStack &&
-                ItemUtils.isItemEqual(ingredient, (ItemStack) other, true, true);
+                ItemUtils.isItemEqual(ingredient, (ItemStack) other, true, false);
     }
 
     @Override
