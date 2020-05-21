@@ -456,7 +456,7 @@ public class GuiBuilder {
 				.append(PowerSystem.getDisplayPower().abbreviation)
 				.append("\t");
 
-		int width = gui.getTextRenderer().getStringWidth(text);
+		int width = gui.getTextRenderer().getWidth(text);
 		gui.drawText(matrixStack, text, x - width - 2, y + 5, 0, layer);
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();

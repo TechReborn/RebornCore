@@ -24,31 +24,30 @@
 
 package reborncore.common.world;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.util.BitSet;
 import java.util.Random;
-import java.util.function.Function;
 
 //Thanks vanilla, just to add end ores :/
 public class CustomOreFeature extends OreFeature {
 
-	public static final Feature<OreFeatureConfig> CUSTOM_ORE_FEATURE = Registry.register(Registry.FEATURE, new Identifier("reborncore", "custom_ore"), new CustomOreFeature(CustomOreFeatureConfig::deserialize));
+	public static final Feature<OreFeatureConfig> CUSTOM_ORE_FEATURE = Registry.register(Registry.FEATURE, new Identifier("reborncore", "custom_ore"), new CustomOreFeature(CustomOreFeatureConfig.CODEC));
 
-	public CustomOreFeature(Function<Dynamic<?>, ? extends OreFeatureConfig> function){
-		super(function);
+	public CustomOreFeature(Codec<OreFeatureConfig> codec){
+		super(codec);
 	}
 
 	@Override
-	protected boolean generateVeinPart(IWorld world, Random random, OreFeatureConfig config, double double_1, double double_2, double double_3, double double_4, double double_5, double double_6, int int_1, int int_2, int int_3, int int_4, int int_5) {
+	protected boolean generateVeinPart(WorldAccess world, Random random, OreFeatureConfig config, double double_1, double double_2, double double_3, double double_4, double double_5, double double_6, int int_1, int int_2, int int_3, int int_4, int int_5) {
 		int int_6 = 0;
 		BitSet bitSet = new BitSet(int_4 * int_5 * int_4);
 		BlockPos.Mutable mutablePos = new BlockPos.Mutable();

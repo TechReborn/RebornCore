@@ -24,6 +24,9 @@
 
 package reborncore.common.chunkloading;
 
+import net.minecraft.class_5318;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -34,15 +37,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.util.NBTSerializable;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -147,8 +154,11 @@ public class ChunkLoaderManager extends PersistentState {
 	}
 
 	public static Identifier getWorldName(World world){
-		Validate.isTrue(world instanceof ServerWorld, "world must be a ServerWorld");
-		return Registry.DIMENSION_TYPE.getId(world.getDimension().getType());
+		return world.method_28380().method_29116().getId(world.getDimension());
+	}
+
+	public static RegistryKey<DimensionType> getDimensionRegistryKey(World world){
+		return RegistryKey.of(Registry.DIMENSION_TYPE_KEY, getWorldName(world));
 	}
 
 	public void syncChunkLoaderToClient(ServerPlayerEntity serverPlayerEntity, BlockPos chunkLoader){

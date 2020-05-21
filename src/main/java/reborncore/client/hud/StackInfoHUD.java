@@ -126,7 +126,7 @@ public class StackInfoHUD implements HudRenderCallback {
 			}
 
 			if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
-				int strWidth = mc.textRenderer.getStringWidth(text);
+				int strWidth = mc.textRenderer.getWidth(text);
 				// 18 for item icon and additionally padding from configuration file
 				x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
 			}

@@ -84,7 +84,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 			GL11.glEnable(32826);
 			DiffuseLighting.enable();
 			renderImage(matrixStack, this.x, this.y);
-			this.method_27535(matrixStack, mc.textRenderer, this.name, this.x + 20, this.y + 3,
+			this.drawTextWithShadow(matrixStack, mc.textRenderer, this.name, this.x + 20, this.y + 3,
 			                Color.WHITE.getColor());
 		}
 	}

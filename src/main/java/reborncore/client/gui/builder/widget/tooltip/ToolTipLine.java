@@ -82,7 +82,7 @@ public class ToolTipLine {
 	}
 
 	public int getWidth(TextRenderer fontRenderer) {
-		return fontRenderer.getStringWidth(getLine());
+		return fontRenderer.getWidth(getLine());
 	}
 
 	public void draw(MatrixStack matrixStack, TextRenderer fontRenderer, int x, int y) {

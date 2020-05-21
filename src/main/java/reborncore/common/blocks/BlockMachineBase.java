@@ -46,8 +46,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import reborncore.api.ToolManager;
 import reborncore.api.blockentity.IMachineGuiHandler;
 import reborncore.api.blockentity.IUpgrade;
@@ -142,10 +142,10 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onBlockRemoved(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onStateReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			ItemHandlerUtils.dropContainedItems(worldIn, pos);
-			super.onBlockRemoved(state, worldIn, pos, newState, isMoving);
+			super.onStateReplaced(state, worldIn, pos, newState, isMoving);
 		}
 	}
 
@@ -227,7 +227,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 	// InventoryProvider
 	@Override
-	public SidedInventory getInventory(BlockState blockState, IWorld world, BlockPos blockPos) {
+	public SidedInventory getInventory(BlockState blockState, WorldAccess world, BlockPos blockPos) {
 		BlockEntity blockEntity = world.getBlockEntity(blockPos);
 		if(blockEntity instanceof MachineBaseBlockEntity){
 			return (MachineBaseBlockEntity)blockEntity;

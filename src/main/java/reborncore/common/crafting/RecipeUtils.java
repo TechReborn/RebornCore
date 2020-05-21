@@ -26,8 +26,8 @@ package reborncore.common.crafting;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.JsonOps;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.datafixer.NbtOps;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

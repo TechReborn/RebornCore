@@ -40,7 +40,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
@@ -72,7 +72,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		super.draw(matrixStack, gui);
 
 		MachineBaseBlockEntity machine = ((MachineBaseBlockEntity) gui.be);
-		IWorld world = machine.getWorld();
+		World world = machine.getWorld();
 		BlockPos pos = machine.getPos();
 		BlockState state = world.getBlockState(pos);
 		BlockState actualState = state.getBlock().getDefaultState();
@@ -187,7 +187,7 @@ public class SlotConfigPopupElement extends ElementBase {
 	}
 
 	public void drawState(GuiBase<?> gui,
-	                      IWorld world,
+						  World world,
 	                      BakedModel model,
 	                      BlockState actualState,
 	                      BlockPos pos,
@@ -213,7 +213,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		matrixStack.pop();
 	}
 
-	public void drawState(GuiBase<?> gui, IWorld world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
+	public void drawState(GuiBase<?> gui, World world, BakedModel model, BlockState actualState, BlockPos pos, BlockRenderManager dispatcher, int x, int y) {
 		drawState(gui, world, model, actualState, pos, dispatcher, x, y, null);
 	}
 }

@@ -26,8 +26,8 @@ package reborncore.common.crafting;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.JsonOps;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import io.github.cottonmc.libcd.api.CustomOutputRecipe;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.datafixer.NbtOps;

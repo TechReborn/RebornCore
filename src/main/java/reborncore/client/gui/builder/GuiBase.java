@@ -294,11 +294,11 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 	}
 
 	public void drawCentredText(MatrixStack matrixStack, Text text, int y, int colour, Layer layer) {
-		drawText(matrixStack, text, (backgroundWidth / 2 - getTextRenderer().getStringWidth(text) / 2), y, colour, layer);
+		drawText(matrixStack, text, (backgroundWidth / 2 - getTextRenderer().getWidth(text) / 2), y, colour, layer);
 	}
 
 	protected void drawCentredText(MatrixStack matrixStack, Text text, int y, int colour, int modifier, Layer layer) {
-		drawText(matrixStack, text, (backgroundWidth / 2 - (getTextRenderer().getStringWidth(text)) / 2) + modifier, y, colour, layer);
+		drawText(matrixStack, text, (backgroundWidth / 2 - (getTextRenderer().getWidth(text)) / 2) + modifier, y, colour, layer);
 	}
 
 	public void drawText(MatrixStack matrixStack, Text text, int x, int y, int colour, Layer layer) {
