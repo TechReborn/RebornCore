@@ -24,12 +24,19 @@
 
 package reborncore.common.network;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+
+import net.minecraft.datafixer.NbtOps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
 
 public class ExtendedPacketBuffer extends PacketByteBuf {
@@ -62,6 +69,48 @@ public class ExtendedPacketBuffer extends PacketByteBuf {
 			return (BigInteger) inputStream.readObject();
 		} catch (Exception e){
 			throw new RuntimeException("Failed to read big int");
+		}
+	}
+
+	// Supports reading and writing list codec's
+	public <T> void writeCodec(Codec<T> codec, T object) {
+		DataResult<Tag> dataResult = codec.encodeStart(NbtOps.INSTANCE, object);
+		if (dataResult.error().isPresent()) {
+			throw new RuntimeException("Failed to encode: " + dataResult.error().get().message() + " " + object);
+		} else {
+			Tag tag = dataResult.result().get();
+			if (tag instanceof CompoundTag) {
+				writeByte(0);
+				writeCompoundTag((CompoundTag)tag);
+			} else if (tag instanceof ListTag) {
+				writeByte(1);
+				CompoundTag compoundTag = new CompoundTag();
+				compoundTag.put("tag", tag);
+				writeCompoundTag(compoundTag);
+			} else {
+				throw new RuntimeException("Failed to write: " + tag);
+			}
+		}
+	}
+
+	public <T> T readCodec(Codec<T> codec) {
+		byte type = readByte();
+		Tag tag = null;
+
+		if (type == 0) {
+			tag = readCompoundTag();
+		} else if (type == 1) {
+			tag = readCompoundTag().get("tag");
+		} else {
+			throw new RuntimeException("Failed to read codec");
+		}
+
+		DataResult<T> dataResult = codec.parse(NbtOps.INSTANCE, tag);
+
+		if (dataResult.error().isPresent()) {
+			throw new RuntimeException("Failed to decode: " + dataResult.error().get().message() + " " + tag);
+		} else {
+			return dataResult.result().get();
 		}
 	}
 }

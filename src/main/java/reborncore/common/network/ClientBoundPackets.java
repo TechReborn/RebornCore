@@ -77,13 +77,7 @@ public class ClientBoundPackets {
 
 	public static Packet<ClientPlayPacketListener> createPacketSyncLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks){
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "sync_chunks"), extendedPacketBuffer -> {
-			CompoundTag tag = new CompoundTag();
-			ListTag listTag = new ListTag();
-
-			listTag.addAll(chunks.stream().map(ChunkLoaderManager.LoadedChunk::write).collect(Collectors.toList()));
-			tag.put("chunks", listTag);
-
-			extendedPacketBuffer.writeCompoundTag(tag);
+			extendedPacketBuffer.writeCodec(ChunkLoaderManager.CODEC, chunks);
 		});
 	}
 

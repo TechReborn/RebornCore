@@ -24,11 +24,10 @@
 
 package reborncore.common.chunkloading;
 
-import net.minecraft.class_5318;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.datafixer.NbtOps;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
@@ -44,17 +43,15 @@ import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
-import reborncore.common.util.NBTSerializable;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //This does not do the actual chunk loading, just keeps track of what chunks the chunk loader has loaded
 public class ChunkLoaderManager extends PersistentState {
+
+	public static Codec<List<LoadedChunk>> CODEC = Codec.list(LoadedChunk.CODEC);
 
 	private static final ChunkTicketType<ChunkPos> CHUNK_LOADER = ChunkTicketType.create("reborncore:chunk_loader", Comparator.comparingLong(ChunkPos::toLong));
 	private static final String KEY = "reborncore_chunk_loader";
@@ -73,23 +70,20 @@ public class ChunkLoaderManager extends PersistentState {
 	@Override
 	public void fromTag(CompoundTag tag) {
 		loadedChunks.clear();
-		ListTag listTag = tag.getList("loadedchunks", tag.getType());
 
-		loadedChunks.addAll(listTag.stream()
-				.map(tag1 -> (CompoundTag) tag1)
-				.map(LoadedChunk::new)
-				.collect(Collectors.toList())
-		);
+		List<LoadedChunk> chunks = CODEC.parse(NbtOps.INSTANCE, tag.getCompound("loadedchunks"))
+				.result()
+				.orElse(Collections.emptyList());
+
+		loadedChunks.addAll(chunks);
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		ListTag listTag = new ListTag();
-
-		listTag.addAll(loadedChunks.stream().map(LoadedChunk::write).collect(Collectors.toList()));
-		tag.put("loadedchunks", listTag);
-
-		return tag;
+	public CompoundTag toTag(CompoundTag compoundTag) {
+		CODEC.encodeStart(NbtOps.INSTANCE, loadedChunks)
+				.result()
+				.ifPresent(tag -> compoundTag.put("loadedchunks", tag));
+		return compoundTag;
 	}
 
 	public Optional<LoadedChunk> getLoadedChunk(World world, ChunkPos chunkPos, BlockPos chunkLoader){
@@ -179,7 +173,24 @@ public class ChunkLoaderManager extends PersistentState {
 		);
 	}
 
-	public static class LoadedChunk implements NBTSerializable {
+	public static class LoadedChunk {
+
+		public static Codec<ChunkPos> CHUNK_POS_CODEC = RecordCodecBuilder.create(instance ->
+				instance.group(
+					Codec.INT.fieldOf("x").forGetter(p -> p.x),
+					Codec.INT.fieldOf("z").forGetter(p -> p.z)
+				)
+				.apply(instance, ChunkPos::new));
+
+		public static Codec<LoadedChunk> CODEC = RecordCodecBuilder.create(instance ->
+				instance.group(
+					CHUNK_POS_CODEC.fieldOf("chunk").forGetter(LoadedChunk::getChunk),
+					Identifier.field_25139.fieldOf("world").forGetter(LoadedChunk::getWorld),
+					Codec.STRING.fieldOf("player").forGetter(LoadedChunk::getPlayer),
+					BlockPos.field_25064.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
+				)
+				.apply(instance, LoadedChunk::new));
+
 		private ChunkPos chunk;
 		private Identifier world;
 		private String player;
@@ -191,28 +202,6 @@ public class ChunkLoaderManager extends PersistentState {
 			this.player = player;
 			this.chunkLoader = chunkLoader;
 			Validate.isTrue(!StringUtils.isBlank(player), "Player cannot be blank");
-		}
-
-		public LoadedChunk(CompoundTag tag) {
-			read(tag);
-		}
-
-		@Override
-		public @Nonnull CompoundTag write() {
-			CompoundTag tag = new CompoundTag();
-			tag.putLong("chunk", chunk.toLong());
-			tag.putString("world", world.toString());
-			tag.putString("player", player);
-			tag.putLong("chunkLoader", chunkLoader.asLong());
-			return tag;
-		}
-
-		@Override
-		public void read(@Nonnull CompoundTag tag) {
-			chunk = new ChunkPos(tag.getLong("chunk"));
-			world = new Identifier(tag.getString("world"));
-			player = tag.getString("player");
-			chunkLoader = BlockPos.fromLong(tag.getLong("chunkLoader"));
 		}
 
 		public ChunkPos getChunk() {

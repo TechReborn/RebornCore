@@ -47,7 +47,8 @@ public class ClientChunkManager {
 	private static List<ChunkLoaderManager.LoadedChunk> loadedChunks = new ArrayList<>();
 
 	public static void setLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks){
-		loadedChunks = chunks;
+		loadedChunks.clear();
+		loadedChunks.addAll(chunks);
 	}
 
 	public static void toggleLoadedChunks(BlockPos chunkLoader){

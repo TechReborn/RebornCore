@@ -120,15 +120,9 @@ public class ClientBoundPacketHandlers {
 		});
 
 		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "sync_chunks"), (extendedPacketBuffer, context) -> {
-			CompoundTag tag = extendedPacketBuffer.readCompoundTag();
-			ListTag listTag = tag.getList("chunks", tag.getType());
-			List<ChunkLoaderManager.LoadedChunk> chunks = listTag.stream()
-				.map(tag1 -> (CompoundTag) tag1)
-				.map(ChunkLoaderManager.LoadedChunk::new)
-				.collect(Collectors.toList());
+			List<ChunkLoaderManager.LoadedChunk> chunks = extendedPacketBuffer.readCodec(ChunkLoaderManager.CODEC);
 
 			context.getTaskQueue().execute(() -> ClientChunkManager.setLoadedChunks(chunks));
-
 		});
 	}
 
