@@ -104,18 +104,7 @@ public abstract class RebornMachineBlock extends Block implements ITileEntityPro
         	return EnumFacing.NORTH;
         }
 
-        EnumFacing bestFacing = null;
-        double bestScore = Double.NEGATIVE_INFINITY;
-        Vec3d dir = placer.getLookVec();
-        for (EnumFacing entry : FACING.getAllowedValues()) {
-            double score = dir.dotProduct(new Vec3d(entry.getOpposite().getDirectionVec()));
-            if (score > bestScore) {
-                bestScore = score;
-                bestFacing = entry;
-            }
-        }
-
-        return bestFacing;
+        return placer.getHorizontalFacing().getOpposite();
     }
     
 	public boolean isActive(IBlockState state) {
