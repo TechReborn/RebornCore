@@ -118,7 +118,14 @@ public class RecipeHandler {
             }
         }
 
-        Recipe temp = getRecipe(queueOfInputs);
+        Recipe temp;
+        if (recipe.shouldUseNBT()) {
+        	temp = getRecipeStrict(queueOfInputs);
+        }
+        else {
+        	temp = getRecipe(queueOfInputs);
+        }
+
 
         if (temp != null) {
             if (replace) {
@@ -162,6 +169,27 @@ public class RecipeHandler {
 
         return null;
     }
+    
+    /**
+     * Get the recipe for the given input ingredients including NBT match.
+     *
+     * @param ingredients The ingredient list
+     * @return The recipe if it exists or null otherwise
+     */
+    public Recipe getRecipeStrict(Collection<InputIngredient<?>> ingredients) {
+        for (Recipe recipe : recipes) {
+            // check if everything need for the input is available in the input (ingredients + quantities)
+            if (ingredients.size() != recipe.getInputIngredients().size()) continue;
+
+            final Queue<InputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getInputIngredients());
+            for (InputIngredient<?> entry : ingredients)
+                adjusted.removeIf(temp -> temp.matchesStrict(entry.ingredient) && entry.getCount() >= temp.getCount());
+
+            if (adjusted.isEmpty()) return recipe;
+        }
+
+        return null;
+    }
 
     /**
      * Get the recipe for the given output ingredients.
@@ -169,20 +197,26 @@ public class RecipeHandler {
      * @param ingredients The ingredient list
      * @return The recipe if it exists or null otherwise
      */
-    public Recipe getRecipeByOutput(Collection<OutputIngredient<?>> ingredients) {
-//        for (Recipe recipe : recipes) {
-//            // check if everything need for the output is available in the output (ingredients + quantities)
-//            if (ingredients.size() != recipe.getOutputIngredients().size()) continue;
-//
-//            final Queue<OutputIngredient<?>> adjusted = new ArrayDeque<>(recipe.getOutputIngredients());
-//            for (OutputIngredient<?> entry : ingredients)
-//                adjusted.removeIf(temp -> temp.matches(entry.ingredient) && entry.getCount() >= temp.getCount());
-//
-//            if (adjusted.isEmpty()) return recipe;
-//        }
+	public Recipe getRecipeByOutput(Collection<OutputIngredient<?>> ingredients) {
 
-        return null;
-    }
+		for (Recipe recipe : recipes) {
+			// check if everything need for the output is available in the output
+			// (ingredients + quantities)
+			if (ingredients.size() != recipe.getItemOutputs().length) {
+				continue;
+			}
+
+			final Queue<ItemStack> adjusted = new LinkedList<>(Arrays.asList(recipe.getItemOutputs()));
+			for (OutputIngredient<?> entry : ingredients)
+				adjusted.removeIf(temp -> entry.matches(temp) && entry.getCount() >= temp.getCount());
+
+			if (adjusted.isEmpty()) {
+				return recipe;
+			}
+		}
+
+		return null;
+	}
 
     /**
      * Find a matching recipe for the provided inputs

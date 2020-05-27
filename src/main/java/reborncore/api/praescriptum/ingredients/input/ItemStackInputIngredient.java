@@ -87,7 +87,8 @@ public class ItemStackInputIngredient extends InputIngredient<ItemStack> {
 
     @Override
     public boolean matchesStrict(Object other) {
-        return matches(other);
+        return other instanceof ItemStack &&
+                ItemUtils.isItemEqual(ingredient, (ItemStack) other, true, true);
     }
 
     @Override

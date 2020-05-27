@@ -44,6 +44,7 @@ import java.util.List;
 public class Recipe {
     public Recipe(RecipeHandler handler) {
         this.handler = handler;
+        this.useNBT = false;
     }
 
     public Recipe withInput(Collection<InputIngredient<?>> inputs) {
@@ -167,6 +168,12 @@ public class Recipe {
         metadata.setBoolean(key, value);
         return this;
     }
+    
+    public Recipe withNBT(boolean value) {
+    	useNBT = value;
+    	
+    	return this;
+    }
     // << Extra information
 
 
@@ -249,6 +256,10 @@ public class Recipe {
     public NBTTagCompound getMetadata() {
         return metadata;
     }
+    
+    public boolean shouldUseNBT() {
+    	return useNBT;
+    }
     // << Getters
 
     // Fields >>
@@ -262,5 +273,6 @@ public class Recipe {
 
     // Extra information
     private NBTTagCompound metadata;
+    private boolean useNBT;
     // << Fields
 }
