@@ -424,7 +424,9 @@ public class GuiBuilder {
 		}
 
 		@Override
-		protected void renderHoleBackground(int top, int bottom, int alphaTop, int alphaBottom){}
+		protected void renderBackground(MatrixStack matrixStack) {
+
+		}
 
 		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {
 			private Text tip;

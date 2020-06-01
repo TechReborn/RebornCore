@@ -148,11 +148,11 @@ public class ChunkLoaderManager extends PersistentState {
 	}
 
 	public static Identifier getWorldName(World world){
-		return world.method_28380().method_29116().getId(world.getDimension());
+		return world.method_27983().getValue();
 	}
 
-	public static RegistryKey<DimensionType> getDimensionRegistryKey(World world){
-		return RegistryKey.of(Registry.DIMENSION_TYPE_KEY, getWorldName(world));
+	public static RegistryKey<World> getDimensionRegistryKey(World world){
+		return world.method_27983();
 	}
 
 	public void syncChunkLoaderToClient(ServerPlayerEntity serverPlayerEntity, BlockPos chunkLoader){
