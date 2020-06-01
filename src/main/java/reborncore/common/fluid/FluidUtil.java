@@ -82,6 +82,10 @@ public class FluidUtil {
 			}
 			source.setFluidAmount(source.getFluidAmount().subtract(transferAmount));
 			destination.setFluidInstance(fluidInstance);
+
+			if (source.getFluidAmount().equals(FluidValue.EMPTY)) {
+				source.setFluid(Fluids.EMPTY);
+			}
 		}
 	}
 }
