@@ -40,7 +40,7 @@ public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockE
 	@Override
 	public void render(T blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
 		if (blockEntity.renderMultiblock) {
-			blockEntity.writeMultiblock(new MultiblockWriter.HologramRenderer(blockEntity.getWorld(), matrixStack, vertexConsumerProvider, 0.4F));
+			blockEntity.writeMultiblock(new MultiblockWriter.HologramRenderer(blockEntity.getWorld(), matrixStack, vertexConsumerProvider, 0.4F).rotate(blockEntity.getFacing().getOpposite()));
 		}
 	}
 }
