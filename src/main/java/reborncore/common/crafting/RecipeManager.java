@@ -38,17 +38,18 @@ import reborncore.common.crafting.ingredient.RebornIngredient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class RecipeManager {
 
 	private static final Map<Identifier, RebornRecipeType<?>> recipeTypes = new HashMap<>();
 
-	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(Class<R> clazz, Identifier name){
+	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(BiFunction<RebornRecipeType<R>, Identifier, R> recipeFunction, Identifier name){
 		if(recipeTypes.containsKey(name)){
 			throw new RuntimeException("RebornRecipe type with this name already registered");
 		}
-		RebornRecipeType<R> type = new RebornRecipeType<>(clazz, name);
+		RebornRecipeType<R> type = new RebornRecipeType<>(recipeFunction, name);
 		recipeTypes.put(name, type);
 
 		Registry.register(Registry.RECIPE_SERIALIZER, name, (RecipeSerializer<?>) type);

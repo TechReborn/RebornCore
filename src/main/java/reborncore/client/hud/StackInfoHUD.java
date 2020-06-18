@@ -161,7 +161,7 @@ public class StackInfoHUD implements HudRenderCallback {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-		itemRenderer.renderGuiItem(stack, x, y - 5);
+		itemRenderer.renderInGuiWithOverrides(stack, x, y - 5);
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}

@@ -385,7 +385,7 @@ public class GuiBuilder {
 	public void drawSlotTab(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, ItemStack stack) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexture(matrixStack, x, y, 217, 82, 24, 24);
-		gui.getMinecraft().getItemRenderer().renderGuiItem(stack, x + 5, y + 4);
+		gui.getMinecraft().getItemRenderer().renderInGuiWithOverrides(stack, x + 5, y + 4);
 	}
 
 
