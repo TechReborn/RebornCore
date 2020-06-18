@@ -35,17 +35,17 @@ import net.minecraft.world.World;
 import reborncore.RebornCore;
 import reborncore.common.util.serialization.SerializationUtil;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, RecipeSerializer {
 
-	private final Class<R> clazz;
+	private final BiFunction<RebornRecipeType<R>, Identifier, R> recipeFunction;
 
 	private final Identifier typeId;
 
-	public RebornRecipeType(Class<R> clazz, Identifier typeId) {
-		this.clazz = clazz;
+	public RebornRecipeType(BiFunction<RebornRecipeType<R>, Identifier, R> recipeFunction, Identifier typeId) {
+		this.recipeFunction = recipeFunction;
 		this.typeId = typeId;
 	}
 
@@ -87,11 +87,7 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 	}
 
 	R newRecipe(Identifier recipeId) {
-		try {
-			return clazz.getConstructor(RebornRecipeType.class, Identifier.class).newInstance(this, recipeId);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			throw new RuntimeException("Failed to create new recipe class for " + recipeId + " using " + clazz.getName());
-		}
+		return recipeFunction.apply(this, recipeId);
 	}
 
 	@Override
@@ -117,10 +113,6 @@ public class RebornRecipeType<R extends RebornRecipe> implements RecipeType, Rec
 
 	public List<R> getRecipes(World world) {
 		return RecipeUtils.getRecipes(world, this);
-	}
-
-	public Class<R> getRecipeClass() {
-		return clazz;
 	}
 
 }

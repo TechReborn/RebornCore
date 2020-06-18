@@ -31,8 +31,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.Validate;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * Created by Gigabit101 on 16/08/2016.
@@ -49,14 +49,10 @@ public class RebornRegistry {
 		Registry.register(Registry.ITEM, name, itemBlock);
 	}
 
-	public static void registerBlock(Block block, Class<? extends BlockItem> itemclass, Identifier name) {
+	public static void registerBlock(Block block, Function<Block, BlockItem> blockItemFunction, Identifier name) {
 		Registry.register(Registry.BLOCK, name, block);
-		try {
-			BlockItem itemBlock = itemclass.getConstructor(Block.class).newInstance(block);
-			Registry.register(Registry.ITEM, name, itemBlock);
-		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		BlockItem itemBlock = blockItemFunction.apply(block);
+		Registry.register(Registry.ITEM, name, itemBlock);
 	}
 
 	public static void registerBlock(Block block, Item.Settings itemGroup) {
@@ -64,9 +60,9 @@ public class RebornRegistry {
 		registerBlock(block, itemGroup, objIdentMap.get(block));
 	}
 
-	public static void registerBlock(Block block, Class<? extends BlockItem> itemclass){
+	public static void registerBlock(Block block, Function<Block, BlockItem> blockItemFunction){
 		Validate.isTrue(objIdentMap.containsKey(block));
-		registerBlock(block, itemclass, objIdentMap.get(block));
+		registerBlock(block, blockItemFunction, objIdentMap.get(block));
 	}
 
 	public static void registerBlock(Block block, BlockItem itemBlock, Identifier name) {
