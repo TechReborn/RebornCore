@@ -30,7 +30,9 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
@@ -341,5 +343,24 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 	@Override
 	public Slot addSlot(Slot slotIn) {
 		return super.addSlot(slotIn);
+	}
+
+	public MachineBaseBlockEntity getBlockEntity() {
+		return blockEntity;
+	}
+
+	public BlockPos getPos() {
+		return getBlockEntity().getPos();
+	}
+
+	ScreenHandlerType<BuiltScreenHandler> type = null;
+
+	public void setType(ScreenHandlerType<BuiltScreenHandler> type) {
+		this.type = type;
+	}
+
+	@Override
+	public ScreenHandlerType<BuiltScreenHandler> getType() {
+		return type;
 	}
 }
