@@ -52,7 +52,7 @@ public class RedstoneConfigGui {
 		int i = 0;
 		int spread = configuration.getElements().size() == 3 ? 27 : 18;
 		for (RedstoneConfiguration.Element element : configuration.getElements()) {
-			itemRenderer.renderGuiItem(element.getIcon(), x - 3, y + (i * spread) - 5);
+			itemRenderer.renderInGuiWithOverrides(element.getIcon(), x - 3, y + (i * spread) - 5);
 
 			guiBase.getTextRenderer().draw(matrixStack, new TranslatableText("reborncore.gui.fluidconfig." + element.getName()), x + 15, y + (i * spread), -1);
 

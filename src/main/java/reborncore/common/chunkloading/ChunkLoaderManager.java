@@ -185,7 +185,7 @@ public class ChunkLoaderManager extends PersistentState {
 		public static Codec<LoadedChunk> CODEC = RecordCodecBuilder.create(instance ->
 				instance.group(
 					CHUNK_POS_CODEC.fieldOf("chunk").forGetter(LoadedChunk::getChunk),
-					Identifier.field_25139.fieldOf("world").forGetter(LoadedChunk::getWorld),
+					Identifier.CODEC.fieldOf("world").forGetter(LoadedChunk::getWorld),
 					Codec.STRING.fieldOf("player").forGetter(LoadedChunk::getPlayer),
 					BlockPos.field_25064.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
 				)
