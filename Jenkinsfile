@@ -6,7 +6,7 @@ node {
    stage 'Build'
 
    sh "chmod +x gradlew"
-   sh "./gradlew clean build publish curseTools --refresh-dependencies --stacktrace"
+   sh "./gradlew clean build publish curseTools --stacktrace"
 
    stage "Archive artifacts"
 

@@ -63,7 +63,7 @@ public class RebornExplosion extends Explosion {
 			World world,
 		@Nonnull
 			int radius) {
-		super(world, null, center.getX(), center.getY(), center.getZ(), radius, false, DestructionType.DESTROY);
+		super(world, null, null, null, center.getX(), center.getY(), center.getZ(), radius, false, DestructionType.DESTROY);
 		this.center = center;
 		this.world = world;
 		this.radius = radius;
