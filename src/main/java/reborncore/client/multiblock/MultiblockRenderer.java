@@ -27,14 +27,17 @@ package reborncore.client.multiblock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 
@@ -66,13 +69,12 @@ public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockE
 		matrixStack.translate(0.5, 0.5, 0.5);
 		float scale = 0.4F;
 		matrixStack.scale(scale, scale, scale);
-		matrixStack.translate(-0.5, -0.5, -0.5);
 
 		if (state.getBlock() instanceof FluidBlock) {
-			//TODO nope (edit: nope again on 4-Jan-20)
-			//FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
-			//blockRenderManager.renderFluid(new BlockPos(0, 260, 0), world, vertexConsumerProvider.getBuffer(RenderLayers.getFluidLayer(fluidState)), fluidState);
+			FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
+			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(fluidState.getFluid().getBucketItem()), ModelTransformation.Mode.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
 		} else {
+			matrixStack.translate(-0.5, -0.5, -0.5);
 			VertexConsumer consumer = vertexConsumerProvider.getBuffer(RenderLayer.getSolid());
 			blockRenderManager.renderBlock(state, OUT_OF_WORLD_POS, world, matrixStack, consumer, false, new Random());
 		}
