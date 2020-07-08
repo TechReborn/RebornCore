@@ -100,7 +100,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public void setFluidAmount(FluidValue amount) {
-		if (!fluidInstance.isEmpty()) {
+		if (!fluidInstance.isEmptyFluid()) {
 			fluidInstance.setAmount(amount);
 		}
 	}
