@@ -82,7 +82,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public boolean canFit(Fluid fluid, FluidValue amount) {
-		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace().moreThan(amount);
+		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace().equalOrMoreThan(amount);
 	}
 
 	public boolean isEmpty() {
