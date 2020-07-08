@@ -71,7 +71,7 @@ public class WorldUtils {
 	}
 
 	public static void dropItem(Item item, World world, BlockPos pos) {
-		dropItem(new ItemStack( item),world,pos);
+		dropItem(new ItemStack(item), world, pos);
 	}
 
 	public static void dropItems(List<ItemStack> itemStackList, World world, BlockPos pos) {
