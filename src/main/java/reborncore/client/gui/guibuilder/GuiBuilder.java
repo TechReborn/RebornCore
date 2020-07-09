@@ -201,10 +201,10 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		if (gui.getMachine().renderMultiblock == null) {
-			gui.drawTexture(matrixStack, x, y, 174, 50, 20, 12);
-		} else {
+		if (gui.getMachine().renderMultiblock) {
 			gui.drawTexture(matrixStack, x, y, 174, 62, 20, 12);
+		} else {
+			gui.drawTexture(matrixStack, x, y, 174, 50, 20, 12);
 		}
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<Text> list = new ArrayList<>();

@@ -24,29 +24,15 @@
 
 package reborncore.client.multiblock;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
-
-import java.util.Random;
-
+import reborncore.common.blockentity.MultiblockWriter;
 
 public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockEntityRenderer<T> {
-
-	private static final BlockPos OUT_OF_WORLD_POS = new BlockPos(0, 260, 0); //such a shitty hack to make local lighting not affect this, but it works for now
 
 	public MultiblockRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
 		super(blockEntityRenderDispatcher);
@@ -54,31 +40,8 @@ public class MultiblockRenderer<T extends MachineBaseBlockEntity> extends BlockE
 
 	@Override
 	public void render(T blockEntity, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
-		if (blockEntity.renderMultiblock != null) {
-			for (MultiblockComponent comp : blockEntity.renderMultiblock.getComponents()) {
-				renderModel(blockEntity, blockEntity.getWorld(), comp.getRelativePosition(), comp.state, matrixStack, vertexConsumerProvider);
-			}
+		if (blockEntity.renderMultiblock) {
+			blockEntity.writeMultiblock(new MultiblockWriter.HologramRenderer(blockEntity.getWorld(), matrixStack, vertexConsumerProvider, 0.4F).rotate(blockEntity.getFacing().getOpposite()));
 		}
 	}
-
-	private void renderModel(T blockEntity, World world, BlockPos relativePos, BlockState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
-		final BlockPos blockEntityPos = blockEntity.getPos();
-		final BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
-		matrixStack.push();
-		matrixStack.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
-		matrixStack.translate(0.5, 0.5, 0.5);
-		float scale = 0.4F;
-		matrixStack.scale(scale, scale, scale);
-
-		if (state.getBlock() instanceof FluidBlock) {
-			FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
-			MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(fluidState.getFluid().getBucketItem()), ModelTransformation.Mode.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, vertexConsumerProvider);
-		} else {
-			matrixStack.translate(-0.5, -0.5, -0.5);
-			VertexConsumer consumer = vertexConsumerProvider.getBuffer(RenderLayer.getSolid());
-			blockRenderManager.renderBlock(state, OUT_OF_WORLD_POS, world, matrixStack, consumer, false, new Random());
-		}
-		matrixStack.pop();
-	}
-
 }
