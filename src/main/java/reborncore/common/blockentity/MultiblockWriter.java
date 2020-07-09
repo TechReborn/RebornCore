@@ -30,11 +30,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
@@ -266,17 +270,17 @@ public interface MultiblockWriter {
 			matrix.translate(x, y, z);
 			matrix.translate(0.5, 0.5, 0.5);
 			matrix.scale(scale, scale, scale);
-			matrix.translate(-0.5, -0.5, -0.5);
+
 
 			if (state.getBlock() instanceof FluidBlock) {
-				// TODO nope (edit: nope again on 4-Jan-20)
-				// FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
-				// blockRenderManager.renderFluid(new BlockPos(0, 260, 0), world, vertexConsumerProvider.getBuffer(RenderLayers.getFluidLayer(fluidState)), fluidState);
+				FluidState fluidState = ((FluidBlock) state.getBlock()).getFluidState(state);
+				MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(fluidState.getFluid().getBucketItem()), ModelTransformation.Mode.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrix, vertexConsumerProvider);
 			} else {
+				matrix.translate(-0.5, -0.5, -0.5);
 				VertexConsumer consumer = vertexConsumerProvider.getBuffer(RenderLayer.getSolid());
 				blockRenderManager.renderBlock(state, OUT_OF_WORLD_POS, view, matrix, consumer, false, new Random());
 			}
-
+			
 			matrix.pop();
 			return this;
 		}
