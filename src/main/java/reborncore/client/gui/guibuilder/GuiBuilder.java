@@ -32,6 +32,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -426,6 +429,22 @@ public class GuiBuilder {
 		@Override
 		protected void renderBackground(MatrixStack matrixStack) {
 
+		}
+
+		@Override
+		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			Tessellator tessellator = Tessellator.getInstance();
+			BufferBuilder bufferBuilder = tessellator.getBuffer();
+			this.client.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+			bufferBuilder.vertex(this.left, this.bottom, 0.0D).texture((float)this.left / 32.0F, (float)(this.bottom + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.right, this.bottom, 0.0D).texture((float)this.right / 32.0F, (float)(this.bottom + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.right, this.top, 0.0D).texture((float)this.right / 32.0F, (float)(this.top + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.left, this.top, 0.0D).texture((float)this.left / 32.0F, (float)(this.top + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			tessellator.draw();
+
+			super.renderList(matrices, this.getRowLeft(), this.top, mouseX, mouseY, delta);
 		}
 
 		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {

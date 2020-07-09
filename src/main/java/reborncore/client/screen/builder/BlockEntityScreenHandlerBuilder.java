@@ -24,11 +24,17 @@
 
 package reborncore.client.screen.builder;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.datafixer.NbtOps;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.registry.RegistryTracker;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.RebornCore;
@@ -45,6 +51,7 @@ import reborncore.common.fluid.container.ItemFluidInfo;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import team.reborn.energy.Energy;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -146,6 +153,22 @@ public class BlockEntityScreenHandlerBuilder {
 	public BlockEntityScreenHandlerBuilder sync(Syncable syncable){
 		syncable.getSyncPair(this.parent.objectValues);
 		return this;
+	}
+
+	public <T> BlockEntityScreenHandlerBuilder sync(Codec<T> codec) {
+		return sync(() -> {
+			DataResult<Tag> dataResult = codec.encodeStart(NbtOps.INSTANCE, (T) blockEntity);;
+			if (dataResult.error().isPresent()) {
+				throw new RuntimeException("Failed to encode: " + dataResult.error().get().message() + " " + blockEntity);
+			} else {
+				return (CompoundTag)dataResult.result().get();
+			}
+		}, compoundTag -> {
+			DataResult<T> dataResult = codec.parse(NbtOps.INSTANCE, compoundTag);
+			if (dataResult.error().isPresent()) {
+				throw new RuntimeException("Failed to encode: " + dataResult.error().get().message() + " " + blockEntity);
+			}
+		});
 	}
 
 	public BlockEntityScreenHandlerBuilder syncEnergyValue() {

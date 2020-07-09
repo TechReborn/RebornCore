@@ -98,8 +98,12 @@ public class FluidInstance implements NBTSerializable {
     }
 
     public boolean isEmpty() {
-        return this.getFluid() == Fluids.EMPTY || this.getAmount().isEmpty();
+        return isEmptyFluid() || this.getAmount().isEmpty();
     }
+
+    public boolean isEmptyFluid(){
+    	return this.getFluid() == Fluids.EMPTY;
+	}
 
     public FluidInstance copy() {
         return new FluidInstance().setFluid(fluid).setAmount(amount);
