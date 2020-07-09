@@ -52,7 +52,7 @@ public class FluidSettings {
 	private FluidSettings() {
 	}
 
-	public static FluidSettings create(){
+	public static FluidSettings create() {
 		return new FluidSettings();
 	}
 

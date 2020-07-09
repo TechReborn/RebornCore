@@ -69,9 +69,9 @@ public class RenderUtil {
 	}
 
 	public static Sprite getStillTexture(Fluid fluid) {
-		FluidRenderHandler fluidRenderHandler =  FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-		if(fluidRenderHandler != null){
-			return fluidRenderHandler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN , fluid.getDefaultState())[0];
+		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
+		if (fluidRenderHandler != null) {
+			return fluidRenderHandler.getFluidSprites(MinecraftClient.getInstance().world, BlockPos.ORIGIN, fluid.getDefaultState())[0];
 		}
 		return null;
 	}
@@ -81,7 +81,7 @@ public class RenderUtil {
 	}
 
 	public static void renderGuiTank(FluidInstance fluid, FluidValue capacity, FluidValue amount, double x, double y, double zLevel,
-	                                 double width, double height) {
+									 double width, double height) {
 		if (fluid == null || fluid.getFluid() == null || fluid.getAmount().lessThanOrEqual(FluidValue.EMPTY)) {
 			return;
 		}
@@ -117,8 +117,8 @@ public class RenderUtil {
 				tes.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 				tes.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * drawHeight / 16F).next();
 				tes.vertex(drawX + drawWidth, drawY + drawHeight, 0)
-					.texture(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
-					.next();
+						.texture(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
+						.next();
 				tes.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
 				tes.vertex(drawX, drawY, 0).texture(minU, minV).next();
 				tessellator.draw();
@@ -144,10 +144,10 @@ public class RenderUtil {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
-		vertexbuffer.vertex((double) right, (double) top, (double) 0).color(f1, f2, f3, f).next();
-		vertexbuffer.vertex((double) left, (double) top, (double) 0).color(f1, f2, f3, f).next();
-		vertexbuffer.vertex((double) left, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
-		vertexbuffer.vertex((double) right, (double) bottom, (double) 0).color(f5, f6, f7, f4).next();
+		vertexbuffer.vertex(right, top, 0).color(f1, f2, f3, f).next();
+		vertexbuffer.vertex(left, top, 0).color(f1, f2, f3, f).next();
+		vertexbuffer.vertex(left, bottom, 0).color(f5, f6, f7, f4).next();
+		vertexbuffer.vertex(right, bottom, 0).color(f5, f6, f7, f4).next();
 		tessellator.draw();
 		RenderSystem.shadeModel(7424);
 		RenderSystem.disableBlend();

@@ -34,7 +34,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 import reborncore.common.network.ServerBoundPackets;
 
@@ -44,29 +43,29 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class ClientChunkManager {
 
-	private static List<ChunkLoaderManager.LoadedChunk> loadedChunks = new ArrayList<>();
+	private static final List<ChunkLoaderManager.LoadedChunk> loadedChunks = new ArrayList<>();
 
-	public static void setLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks){
+	public static void setLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks) {
 		loadedChunks.clear();
 		loadedChunks.addAll(chunks);
 	}
 
-	public static void toggleLoadedChunks(BlockPos chunkLoader){
-		if(loadedChunks.size() == 0){
+	public static void toggleLoadedChunks(BlockPos chunkLoader) {
+		if (loadedChunks.size() == 0) {
 			MinecraftClient.getInstance().getNetworkHandler().sendPacket(ServerBoundPackets.requestChunkloaderChunks(chunkLoader));
 		} else {
 			loadedChunks.clear();
 		}
 	}
 
-	public static boolean hasChunksForLoader(BlockPos pos){
+	public static boolean hasChunksForLoader(BlockPos pos) {
 		return loadedChunks.stream()
-			.filter(loadedChunk -> loadedChunk.getChunkLoader().equals(pos))
-			.anyMatch(loadedChunk -> loadedChunk.getWorld().equals(ChunkLoaderManager.getWorldName(MinecraftClient.getInstance().world)));
+				.filter(loadedChunk -> loadedChunk.getChunkLoader().equals(pos))
+				.anyMatch(loadedChunk -> loadedChunk.getWorld().equals(ChunkLoaderManager.getWorldName(MinecraftClient.getInstance().world)));
 	}
 
 	public static void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, double x, double y, double z) {
-		if (loadedChunks.size() == 0){
+		if (loadedChunks.size() == 0) {
 			return;
 		}
 		final MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -86,16 +85,16 @@ public class ClientChunkManager {
 		bufferBuilder.begin(3, VertexFormats.POSITION_COLOR);
 
 		loadedChunks.stream()
-			.filter(loadedChunk -> loadedChunk.getWorld().equals(ChunkLoaderManager.getWorldName(minecraftClient.world)))
-			.forEach(loadedChunk -> {
-				double chunkX = (double) loadedChunk.getChunk().getStartX() - x;
-				double chunkY = (double) loadedChunk.getChunk().getStartZ() - z;
+				.filter(loadedChunk -> loadedChunk.getWorld().equals(ChunkLoaderManager.getWorldName(minecraftClient.world)))
+				.forEach(loadedChunk -> {
+					double chunkX = (double) loadedChunk.getChunk().getStartX() - x;
+					double chunkY = (double) loadedChunk.getChunk().getStartZ() - z;
 
-				bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
-				bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
-				bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
-				bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
-		});
+					bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
+					bufferBuilder.vertex(chunkX + 8, 0.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
+					bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.5F).next();
+					bufferBuilder.vertex(chunkX + 8, 256.0D - y, chunkY + 8).color(1.0F, 0.0F, 0.0F, 0.0F).next();
+				});
 
 		tessellator.draw();
 		RenderSystem.lineWidth(1.0F);

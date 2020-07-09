@@ -31,6 +31,6 @@ import net.minecraft.block.entity.BlockEntity;
  */
 public interface ICrafterSoundHanlder {
 
-	public void playSound(boolean firstRun, BlockEntity blockEntity);
+	void playSound(boolean firstRun, BlockEntity blockEntity);
 
 }

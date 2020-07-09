@@ -41,7 +41,7 @@ import java.util.Map;
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-	@Inject(method = "apply",at = @At("HEAD"))
+	@Inject(method = "apply", at = @At("HEAD"))
 	private void deserialize(Map<Identifier, JsonObject> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo info) {
 		Iterator<Map.Entry<Identifier, JsonObject>> iterator = map.entrySet().iterator();
 		while (iterator.hasNext()) {

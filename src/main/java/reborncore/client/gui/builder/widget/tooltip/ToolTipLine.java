@@ -104,8 +104,8 @@ public class ToolTipLine {
 		}
 		ToolTipLine that = (ToolTipLine) o;
 		return color == that.color &&
-			shadowed == that.shadowed &&
-			line.equals(that.line);
+				shadowed == that.shadowed &&
+				line.equals(that.line);
 
 	}
 

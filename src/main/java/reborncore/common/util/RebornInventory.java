@@ -29,8 +29,8 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import reborncore.api.items.InventoryBase;
-import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.blockentity.SlotConfiguration;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +38,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 
 	private final String name;
 	private final int stackLimit;
-	private T blockEntity;
+	private final T blockEntity;
 	private boolean hasChanged = false;
 	private final IInventoryAccess<T> inventoryAccess;
 
@@ -53,7 +53,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	//If you are using this with a machine, dont forget to set .withConfiguredAccess()
 	public RebornInventory(int size, String invName, int invStackLimit, T blockEntity) {
 		this(size, invName, invStackLimit, blockEntity, (slotID, stack, facing, direction, be) -> {
-			if(facing == null){
+			if (facing == null) {
 				return true;
 			}
 			switch (direction) {
@@ -65,7 +65,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 			return false;
 		});
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -80,7 +80,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	public ItemStack removeStack(int i, int i1) {
 		ItemStack stack = super.removeStack(i, i1);
 
-		if(!stack.isEmpty()) {
+		if (!stack.isEmpty()) {
 			setChanged();
 		}
 
@@ -122,7 +122,6 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	public void write(CompoundTag data, String tag) {
 		data.put(tag, serializeNBT());
 	}
-
 
 
 	public int getContents() {

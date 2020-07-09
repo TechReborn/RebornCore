@@ -32,15 +32,15 @@ import net.minecraft.screen.slot.Slot;
  */
 public class PlayerInventorySlot extends Slot {
 
-    public boolean doDraw;
+	public boolean doDraw;
 
-    public PlayerInventorySlot(Inventory inventory, int index, int xPosition, int yPosition) {
-        super(inventory, index, xPosition, yPosition);
-        this.doDraw = true;
-    }
+	public PlayerInventorySlot(Inventory inventory, int index, int xPosition, int yPosition) {
+		super(inventory, index, xPosition, yPosition);
+		this.doDraw = true;
+	}
 
-    @Override
-    public boolean doDrawHoveringEffect() {
-        return doDraw? true : false;
-    }
+	@Override
+	public boolean doDrawHoveringEffect() {
+		return doDraw;
+	}
 }

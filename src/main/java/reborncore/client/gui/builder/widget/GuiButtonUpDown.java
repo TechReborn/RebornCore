@@ -36,7 +36,7 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 
 	GuiBase<?> gui;
 	UpDownButtonType type;
-	
+
 	public GuiButtonUpDown(int x, int y, GuiBase<?> gui, ButtonWidget.PressAction pressAction, UpDownButtonType type) {
 		super(x, y, 12, 12, LiteralText.EMPTY, pressAction);
 		this.gui = gui;
@@ -48,27 +48,27 @@ public class GuiButtonUpDown extends GuiButtonExtended {
 		if (gui.hideGuiElements()) return;
 		gui.getMinecraft().getTextureManager().bindTexture(gui.builder.getResourceLocation());
 		switch (type) {
-		case FASTFORWARD:
-			gui.drawTexture(matrixStack, x, y, 174, 74, 12, 12);
-			break;
-		case FORWARD:
-			gui.drawTexture(matrixStack, x, y, 174, 86, 12, 12);
-			break;
-		case REWIND:
-			gui.drawTexture(matrixStack, x, y, 174, 98, 12, 12);
-			break;
-		case FASTREWIND:
-			gui.drawTexture(matrixStack, x, y, 174, 110, 12, 12);
-			break;
-		default:
-			break;
-		}			
+			case FASTFORWARD:
+				gui.drawTexture(matrixStack, x, y, 174, 74, 12, 12);
+				break;
+			case FORWARD:
+				gui.drawTexture(matrixStack, x, y, 174, 86, 12, 12);
+				break;
+			case REWIND:
+				gui.drawTexture(matrixStack, x, y, 174, 98, 12, 12);
+				break;
+			case FASTREWIND:
+				gui.drawTexture(matrixStack, x, y, 174, 110, 12, 12);
+				break;
+			default:
+				break;
+		}
 	}
-	
-	public enum UpDownButtonType{
+
+	public enum UpDownButtonType {
 		FASTFORWARD,
 		FORWARD,
 		REWIND,
-		FASTREWIND;
+		FASTREWIND
 	}
 }

@@ -39,15 +39,15 @@ public class BlockWrenchEventHandler {
 	public static List<Block> wrenableBlocks = new ArrayList<>();
 
 
-	public static void setup(){
-		UseBlockCallback.EVENT.register((UseBlockCallback) (playerEntity, world, hand, blockHitResult) -> {
+	public static void setup() {
+		UseBlockCallback.EVENT.register((playerEntity, world, hand, blockHitResult) -> {
 			if (hand == Hand.OFF_HAND) {
 				// Wrench should be in main hand
 				return ActionResult.PASS;
 			}
 			if (ToolManager.INSTANCE.canHandleTool(playerEntity.getStackInHand(Hand.MAIN_HAND))) {
 				BlockState state = world.getBlockState(blockHitResult.getBlockPos());
-				if(wrenableBlocks.contains(state.getBlock())){
+				if (wrenableBlocks.contains(state.getBlock())) {
 					Block block = state.getBlock();
 					block.onUse(state, world, blockHitResult.getBlockPos(), playerEntity, hand, blockHitResult);
 					return ActionResult.SUCCESS;

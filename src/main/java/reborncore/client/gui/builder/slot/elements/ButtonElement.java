@@ -26,7 +26,7 @@ package reborncore.client.gui.builder.slot.elements;
 
 public class ButtonElement extends ElementBase {
 	@SuppressWarnings("unused")
-	private Sprite.Button buttonSprite;
+	private final Sprite.Button buttonSprite;
 
 	public ButtonElement(int x, int y, Sprite.Button buttonSprite) {
 		super(x, y, buttonSprite.getNormal());

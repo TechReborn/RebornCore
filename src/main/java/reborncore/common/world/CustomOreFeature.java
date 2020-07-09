@@ -42,7 +42,7 @@ public class CustomOreFeature extends OreFeature {
 
 	public static final Feature<OreFeatureConfig> CUSTOM_ORE_FEATURE = Registry.register(Registry.FEATURE, new Identifier("reborncore", "custom_ore"), new CustomOreFeature(CustomOreFeatureConfig.CODEC));
 
-	public CustomOreFeature(Codec<OreFeatureConfig> codec){
+	public CustomOreFeature(Codec<OreFeatureConfig> codec) {
 		super(codec);
 	}
 
@@ -58,22 +58,22 @@ public class CustomOreFeature extends OreFeature {
 		double double_13;
 		double double_14;
 		double double_15;
-		for(int_8 = 0; int_8 < config.size; ++int_8) {
-			float float_1 = (float)int_8 / (float)config.size;
-			double_12 = MathHelper.lerp((double)float_1, double_1, double_2);
-			double_13 = MathHelper.lerp((double)float_1, double_5, double_6);
-			double_14 = MathHelper.lerp((double)float_1, double_3, double_4);
-			double_15 = random.nextDouble() * (double)config.size / 16.0D;
-			double double_11 = ((double)(MathHelper.sin(3.1415927F * float_1) + 1.0F) * double_15 + 1.0D) / 2.0D;
+		for (int_8 = 0; int_8 < config.size; ++int_8) {
+			float float_1 = (float) int_8 / (float) config.size;
+			double_12 = MathHelper.lerp(float_1, double_1, double_2);
+			double_13 = MathHelper.lerp(float_1, double_5, double_6);
+			double_14 = MathHelper.lerp(float_1, double_3, double_4);
+			double_15 = random.nextDouble() * (double) config.size / 16.0D;
+			double double_11 = ((double) (MathHelper.sin(3.1415927F * float_1) + 1.0F) * double_15 + 1.0D) / 2.0D;
 			doubles_1[int_8 * 4 + 0] = double_12;
 			doubles_1[int_8 * 4 + 1] = double_13;
 			doubles_1[int_8 * 4 + 2] = double_14;
 			doubles_1[int_8 * 4 + 3] = double_11;
 		}
 
-		for(int_8 = 0; int_8 < config.size - 1; ++int_8) {
+		for (int_8 = 0; int_8 < config.size - 1; ++int_8) {
 			if (doubles_1[int_8 * 4 + 3] > 0.0D) {
-				for(int int_9 = int_8 + 1; int_9 < config.size; ++int_9) {
+				for (int int_9 = int_8 + 1; int_9 < config.size; ++int_9) {
 					if (doubles_1[int_9 * 4 + 3] > 0.0D) {
 						double_12 = doubles_1[int_8 * 4 + 0] - doubles_1[int_9 * 4 + 0];
 						double_13 = doubles_1[int_8 * 4 + 1] - doubles_1[int_9 * 4 + 1];
@@ -91,7 +91,7 @@ public class CustomOreFeature extends OreFeature {
 			}
 		}
 
-		for(int_8 = 0; int_8 < config.size; ++int_8) {
+		for (int_8 = 0; int_8 < config.size; ++int_8) {
 			double double_16 = doubles_1[int_8 * 4 + 3];
 			if (double_16 >= 0.0D) {
 				double double_17 = doubles_1[int_8 * 4 + 0];
@@ -104,14 +104,14 @@ public class CustomOreFeature extends OreFeature {
 				int int_15 = Math.max(MathHelper.floor(double_18 + double_16), int_12);
 				int int_16 = Math.max(MathHelper.floor(double_19 + double_16), int_13);
 
-				for(int x = int_11; x <= int_14; ++x) {
-					double double_20 = ((double)x + 0.5D - double_17) / double_16;
+				for (int x = int_11; x <= int_14; ++x) {
+					double double_20 = ((double) x + 0.5D - double_17) / double_16;
 					if (double_20 * double_20 < 1.0D) {
-						for(int y = int_12; y <= int_15; ++y) {
-							double double_21 = ((double)y + 0.5D - double_18) / double_16;
+						for (int y = int_12; y <= int_15; ++y) {
+							double double_21 = ((double) y + 0.5D - double_18) / double_16;
 							if (double_20 * double_20 + double_21 * double_21 < 1.0D) {
-								for(int z = int_13; z <= int_16; ++z) {
-									double double_22 = ((double)z + 0.5D - double_19) / double_16;
+								for (int z = int_13; z <= int_16; ++z) {
+									double double_22 = ((double) z + 0.5D - double_19) / double_16;
 									if (double_20 * double_20 + double_21 * double_21 + double_22 * double_22 < 1.0D) {
 										int int_20 = x - int_1 + (y - int_2) * int_4 + (z - int_3) * int_4 * int_5;
 										if (!bitSet.get(int_20)) {

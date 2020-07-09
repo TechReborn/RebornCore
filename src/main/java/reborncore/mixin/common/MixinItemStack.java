@@ -39,19 +39,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import reborncore.api.items.ItemStackModifiers;
 
-import java.util.HashMap;
-
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 
-	@Shadow public abstract Item getItem();
+	@Shadow
+	public abstract Item getItem();
 
 	@Inject(method = "getAttributeModifiers", at = @At("RETURN"), cancellable = true)
-	private void getAttributeModifiers(EquipmentSlot equipmentSlot, CallbackInfoReturnable<Multimap<EntityAttribute, EntityAttributeModifier>> info){
-		if(getItem() instanceof ItemStackModifiers){
+	private void getAttributeModifiers(EquipmentSlot equipmentSlot, CallbackInfoReturnable<Multimap<EntityAttribute, EntityAttributeModifier>> info) {
+		if (getItem() instanceof ItemStackModifiers) {
 			ItemStackModifiers item = (ItemStackModifiers) getItem();
 			Multimap<EntityAttribute, EntityAttributeModifier> modifierHashMap = ArrayListMultimap.create(info.getReturnValue());
-			item.getAttributeModifiers(equipmentSlot, (ItemStack)(Object)this, modifierHashMap);
+			item.getAttributeModifiers(equipmentSlot, (ItemStack) (Object) this, modifierHashMap);
 			info.setReturnValue(ImmutableMultimap.copyOf(modifierHashMap));
 		}
 	}

@@ -39,7 +39,9 @@ import java.util.List;
 @Mixin(World.class)
 public class MixinWorld {
 
-	@Shadow @Final protected List<BlockEntity> unloadedBlockEntities;
+	@Shadow
+	@Final
+	protected List<BlockEntity> unloadedBlockEntities;
 
 	@Inject(method = "tickBlockEntities", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = {"ldc=blockEntities"}))
 	public void tickBlockEntities(CallbackInfo info) {

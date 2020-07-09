@@ -35,11 +35,13 @@ import org.lwjgl.opengl.GL11;
 public class GuiHiddenButton extends ButtonWidget {
 
 	public GuiHiddenButton(int xPosition, int yPosition, Text displayString) {
-		super(xPosition, yPosition, 0, 0, displayString, var1 -> {});
+		super(xPosition, yPosition, 0, 0, displayString, var1 -> {
+		});
 	}
 
 	public GuiHiddenButton(int id, int xPosition, int yPosition, int width, int height, Text displayString) {
-		super(xPosition, yPosition, width, height, displayString, var1 -> {});
+		super(xPosition, yPosition, width, height, displayString, var1 -> {
+		});
 	}
 
 	@Override
@@ -49,7 +51,7 @@ public class GuiHiddenButton extends ButtonWidget {
 			MinecraftClient.getInstance().getTextureManager().bindTexture(WIDGETS_LOCATION);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = mouseX >= this.x && mouseY >= this.y
-				&& mouseX < this.x + this.width && mouseY < this.y + this.height;
+					&& mouseX < this.x + this.width && mouseY < this.y + this.height;
 			GL11.glEnable(GL11.GL_BLEND);
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -62,7 +64,7 @@ public class GuiHiddenButton extends ButtonWidget {
 			}
 
 			this.drawTextWithShadow(matrixStack, fontrenderer, this.getMessage(), this.x + this.width / 2,
-				this.y + (this.height - 8) / 2, l);
+					this.y + (this.height - 8) / 2, l);
 		}
 	}
 }

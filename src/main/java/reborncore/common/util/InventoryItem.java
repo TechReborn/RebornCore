@@ -41,8 +41,8 @@ public class InventoryItem extends InventoryBase {
 	int size;
 
 	private InventoryItem(
-		@Nonnull
-			ItemStack stack, int size) {
+			@Nonnull
+					ItemStack stack, int size) {
 		super(size);
 		Validate.notNull(stack);
 		Validate.isTrue(!stack.isEmpty());
@@ -87,8 +87,8 @@ public class InventoryItem extends InventoryBase {
 
 	public List<ItemStack> getAllStacks() {
 		return IntStream.range(0, size)
-			.mapToObj(this::getStack)
-			.collect(Collectors.toList());
+				.mapToObj(this::getStack)
+				.collect(Collectors.toList());
 	}
 
 	public int getSlots() {
@@ -103,8 +103,8 @@ public class InventoryItem extends InventoryBase {
 
 	@Override
 	public void setStack(int slot,
-	                           @Nonnull
-		                           ItemStack stack) {
+						 @Nonnull
+								 ItemStack stack) {
 		setSlotData(slot, stack.toTag(new CompoundTag()));
 	}
 
@@ -120,8 +120,8 @@ public class InventoryItem extends InventoryBase {
 	}
 
 	public int getStackLimit(int slot,
-	                         @Nonnull
-		                         ItemStack stack) {
+							 @Nonnull
+									 ItemStack stack) {
 		return Math.min(getSlotLimit(slot), stack.getMaxCount());
 	}
 

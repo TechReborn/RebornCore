@@ -45,8 +45,8 @@ public class RecipeManager {
 
 	private static final Map<Identifier, RebornRecipeType<?>> recipeTypes = new HashMap<>();
 
-	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(BiFunction<RebornRecipeType<R>, Identifier, R> recipeFunction, Identifier name){
-		if(recipeTypes.containsKey(name)){
+	public static <R extends RebornRecipe> RebornRecipeType<R> newRecipeType(BiFunction<RebornRecipeType<R>, Identifier, R> recipeFunction, Identifier name) {
+		if (recipeTypes.containsKey(name)) {
 			throw new RuntimeException("RebornRecipe type with this name already registered");
 		}
 		RebornRecipeType<R> type = new RebornRecipeType<>(recipeFunction, name);
@@ -57,42 +57,42 @@ public class RecipeManager {
 		return type;
 	}
 
-	public static RebornRecipeType<?> getRecipeType(Identifier name){
-		if(!recipeTypes.containsKey(name)){
+	public static RebornRecipeType<?> getRecipeType(Identifier name) {
+		if (!recipeTypes.containsKey(name)) {
 			throw new RuntimeException("RebornRecipe type " + name + " not found");
 		}
 		return recipeTypes.get(name);
 	}
 
-	public static List<RebornRecipeType> getRecipeTypes(String namespace){
+	public static List<RebornRecipeType> getRecipeTypes(String namespace) {
 		return recipeTypes.values().stream().filter(rebornRecipeType -> rebornRecipeType.getName().getNamespace().equals(namespace)).collect(Collectors.toList());
 	}
 
-	public static void validateRecipes(World world){
+	public static void validateRecipes(World world) {
 		//recipeTypes.forEach((key, value) -> validate(value, world));
 
 		System.out.println("Validating recipes");
 		world.getRecipeManager().keys().forEach(identifier -> {
 			try {
-				Recipe recipe =  world.getRecipeManager().get(identifier).get();
+				Recipe recipe = world.getRecipeManager().get(identifier).get();
 				RecipeSerializer recipeSerializer = recipe.getSerializer();
 				PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 				recipeSerializer.write(buf, recipe);
 
 				Recipe readback = recipeSerializer.read(identifier, buf);
-			} catch (Exception e){
+			} catch (Exception e) {
 				throw new RuntimeException("Failed to read " + identifier, e);
 			}
 		});
 		System.out.println("Done");
 	}
 
-	private static <R extends RebornRecipe> void validate(RebornRecipeType<R> rebornRecipeType, World world){
+	private static <R extends RebornRecipe> void validate(RebornRecipeType<R> rebornRecipeType, World world) {
 		List<R> recipes = rebornRecipeType.getRecipes(world);
 
-		for(RebornRecipe recipe1 : recipes){
-			for(RebornRecipe recipe2 : recipes){
-				if(recipe1 == recipe2){
+		for (RebornRecipe recipe1 : recipes) {
+			for (RebornRecipe recipe2 : recipes) {
+				if (recipe1 == recipe2) {
 					continue;
 				}
 
@@ -103,22 +103,22 @@ public class RecipeManager {
 
 				boolean hasAll = true;
 
-				for(RebornIngredient recipe1Input : recipe1.getRebornIngredients()){
+				for (RebornIngredient recipe1Input : recipe1.getRebornIngredients()) {
 					boolean matches = false;
-					for(ItemStack testStack : recipe1Input.getPreviewStacks()){
-						for(RebornIngredient recipe2Input : recipe2.getRebornIngredients()){
-							if(recipe2Input.test(testStack)){
+					for (ItemStack testStack : recipe1Input.getPreviewStacks()) {
+						for (RebornIngredient recipe2Input : recipe2.getRebornIngredients()) {
+							if (recipe2Input.test(testStack)) {
 								matches = true;
 							}
 						}
 					}
 
-					if(!matches){
+					if (!matches) {
 						hasAll = false;
 					}
 				}
 
-				if(hasAll){
+				if (hasAll) {
 					System.out.println(recipe1.getId() + " conflicts with " + recipe2.getId());
 				}
 

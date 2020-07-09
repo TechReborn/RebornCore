@@ -105,7 +105,7 @@ public final class FluidValue {
 
 	@Deprecated
 	public static FluidValue fromRaw(int rawValue) {
-		if(rawValue < 0) {
+		if (rawValue < 0) {
 			rawValue = 0;
 		}
 		return new FluidValue(rawValue);
@@ -114,7 +114,7 @@ public final class FluidValue {
 	public static FluidValue parseFluidValue(JsonElement jsonElement) {
 		if (jsonElement.isJsonObject()) {
 			final JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if(jsonObject.has("buckets")) {
+			if (jsonObject.has("buckets")) {
 				int buckets = JsonHelper.getInt(jsonObject, "buckets");
 				return BUCKET.multiply(buckets);
 			}

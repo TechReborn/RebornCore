@@ -32,13 +32,13 @@ import reborncore.common.network.NetworkManager;
 
 public interface ExtendedScreenHandlerListener {
 
-	public default void sendObject(ScreenHandlerListener screenHandlerListener, ScreenHandler screenHandler, int var, Object value) {
+	default void sendObject(ScreenHandlerListener screenHandlerListener, ScreenHandler screenHandler, int var, Object value) {
 		if (screenHandlerListener instanceof ServerPlayerEntity) {
 			NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSendObject(var, value, screenHandler), (ServerPlayerEntity) screenHandlerListener);
 		}
 	}
 
-	public default void handleObject(int var, Object value) {
+	default void handleObject(int var, Object value) {
 
 	}
 }

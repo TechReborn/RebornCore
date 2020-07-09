@@ -2,7 +2,6 @@ package reborncore.common.crafting.ingredient;
 
 import net.minecraft.tag.Tag;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

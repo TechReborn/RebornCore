@@ -37,24 +37,24 @@ import java.util.stream.Stream;
 public class SerializationUtil {
 
 	public static final Gson GSON = new GsonBuilder()
-		.setPrettyPrinting()
-		.enableComplexMapKeySerialization()
-		.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
-		.create();
+			.setPrettyPrinting()
+			.enableComplexMapKeySerialization()
+			.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+			.create();
 
 	//Same as above, just without pretty printing
 	public static final Gson GSON_FLAT = new GsonBuilder()
-		.enableComplexMapKeySerialization()
-		.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
-		.create();
+			.enableComplexMapKeySerialization()
+			.registerTypeAdapter(ItemStack.class, new ItemStackSerializer())
+			.create();
 
 
-	public static Stream<JsonElement> stream(JsonArray array){
+	public static Stream<JsonElement> stream(JsonArray array) {
 		return IntStream.range(0, array.size())
-			.mapToObj(array::get);
+				.mapToObj(array::get);
 	}
 
-	public static JsonArray asArray(List<JsonElement> elements){
+	public static JsonArray asArray(List<JsonElement> elements) {
 		JsonArray array = new JsonArray();
 		elements.forEach(array::add);
 		return array;

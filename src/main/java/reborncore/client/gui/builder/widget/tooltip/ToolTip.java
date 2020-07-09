@@ -68,7 +68,8 @@ public class ToolTip {
 		return lines;
 	}
 
-	protected void refresh() {}
+	protected void refresh() {
+	}
 
 	public void draw(MatrixStack matrixStack, TextRenderer font, int mouseX, int mouseY) {
 		refresh();

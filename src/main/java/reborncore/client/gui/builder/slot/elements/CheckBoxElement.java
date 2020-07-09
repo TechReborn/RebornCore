@@ -38,7 +38,7 @@ public class CheckBoxElement extends ElementBase {
 	public MachineBaseBlockEntity machineBase;
 	Predicate<CheckBoxElement> ticked;
 
-	private Sprite.CheckBox checkBoxSprite;
+	private final Sprite.CheckBox checkBoxSprite;
 
 	public CheckBoxElement(Text label, int labelColor, int x, int y, String type, int slotID, Sprite.CheckBox checkBoxSprite, MachineBaseBlockEntity machineBase, Predicate<CheckBoxElement> ticked) {
 		super(x, y, checkBoxSprite.getNormal());

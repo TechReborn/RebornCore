@@ -39,7 +39,7 @@ public class UpgradeSlot extends BaseSlot {
 
 	@Override
 	public boolean canInsert(final ItemStack stack) {
-		if(!(stack.getItem() instanceof IUpgrade)){
+		if (!(stack.getItem() instanceof IUpgrade)) {
 			return false;
 		}
 		IUpgrade upgrade = (IUpgrade) stack.getItem();

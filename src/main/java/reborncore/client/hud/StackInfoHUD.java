@@ -35,7 +35,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.lwjgl.opengl.GL11;
@@ -54,7 +53,7 @@ import java.util.List;
 public class StackInfoHUD implements HudRenderCallback {
 
 	public static List<StackInfoElement> ELEMENTS = new ArrayList<>();
-	private static MinecraftClient mc = MinecraftClient.getInstance();
+	private static final MinecraftClient mc = MinecraftClient.getInstance();
 	private int x = 2;
 	private int y = 7;
 
@@ -64,7 +63,7 @@ public class StackInfoHUD implements HudRenderCallback {
 
 	public void drawStackInfoHud(MatrixStack matrixStack, Window res) {
 		PlayerEntity player = mc.player;
-		if (player == null){
+		if (player == null) {
 			return;
 		}
 		List<ItemStack> stacks = new ArrayList<>();

@@ -104,12 +104,12 @@ public final class PlayerScreenHandlerBuilder {
 		private PlayerArmorScreenHandlerBuilder armor(final int index, final int xStart, final int yStart,
 													  final EquipmentSlot slotType, final Identifier sprite) {
 			this.parent.parent.slots.add(new SpriteSlot(this.parent.player, index, xStart, yStart, sprite, 1)
-				.setFilter(stack -> {
-					if(stack.getItem() instanceof ArmorItem){
-						return ((ArmorItem) stack.getItem()).getSlotType() == slotType;
-					}
-					return false;
-				}));
+					.setFilter(stack -> {
+						if (stack.getItem() instanceof ArmorItem) {
+							return ((ArmorItem) stack.getItem()).getSlotType() == slotType;
+						}
+						return false;
+					}));
 			return this;
 		}
 
@@ -131,7 +131,7 @@ public final class PlayerScreenHandlerBuilder {
 
 		public PlayerArmorScreenHandlerBuilder complete(final int xStart, final int yStart) {
 			return this.helmet(xStart, yStart).chestplate(xStart, yStart + 18).leggings(xStart, yStart + 18 + 18)
-				.boots(xStart, yStart + 18 + 18 + 18);
+					.boots(xStart, yStart + 18 + 18 + 18);
 		}
 
 		public PlayerScreenHandlerBuilder addArmor() {

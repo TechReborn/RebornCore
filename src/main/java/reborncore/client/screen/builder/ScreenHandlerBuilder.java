@@ -93,8 +93,8 @@ public class ScreenHandlerBuilder {
 	 */
 	public BuiltScreenHandler create(int syncID) {
 		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
-			this.playerInventoryRanges,
-			this.blockEntityInventoryRanges, null);
+				this.playerInventoryRanges,
+				this.blockEntityInventoryRanges, null);
 		if (!this.objectValues.isEmpty()) {
 			built.addObjectSync(objectValues);
 		}
@@ -110,8 +110,8 @@ public class ScreenHandlerBuilder {
 
 	public BuiltScreenHandler create(final MachineBaseBlockEntity blockEntity, int syncID) {
 		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
-			this.playerInventoryRanges,
-			this.blockEntityInventoryRanges, blockEntity);
+				this.playerInventoryRanges,
+				this.blockEntityInventoryRanges, blockEntity);
 		if (!this.objectValues.isEmpty())
 			built.addObjectSync(objectValues);
 		if (!this.craftEvents.isEmpty()) {

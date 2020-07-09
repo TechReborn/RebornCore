@@ -81,20 +81,19 @@ public class WrenchUtils {
 						worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
 					}
 					worldIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), ModSounds.BLOCK_DISMANTLE,
-						SoundCategory.BLOCKS, 0.6F, 1F);
+							SoundCategory.BLOCKS, 0.6F, 1F);
 				}
 			} else {
 				BlockState oldState = worldIn.getBlockState(pos);
 				BlockState newState;
 				if (oldState.contains(Properties.FACING)) {
 					// Machine can face all 6 directions. Let's move face to hit side.
-						newState = oldState.with(Properties.FACING, side);
-				}
-				else {
+					newState = oldState.with(Properties.FACING, side);
+				} else {
 					newState = oldState.rotate(BlockRotation.CLOCKWISE_90);
 				}
 
-				if (!newState.canPlaceAt(worldIn, pos)){
+				if (!newState.canPlaceAt(worldIn, pos)) {
 					return false;
 				}
 				worldIn.setBlockState(pos, newState);

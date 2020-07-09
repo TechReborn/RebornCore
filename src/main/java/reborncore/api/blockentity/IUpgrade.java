@@ -25,8 +25,8 @@
 package reborncore.api.blockentity;
 
 import net.minecraft.item.ItemStack;
-import reborncore.common.recipes.IUpgradeHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.recipes.IUpgradeHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,14 +36,14 @@ import javax.annotation.Nullable;
  */
 public interface IUpgrade {
 
-	public void process(
-		@Nonnull MachineBaseBlockEntity machineBase,
-		@Nullable
-			IUpgradeHandler handler,
-		@Nonnull
-			ItemStack stack);
+	void process(
+			@Nonnull MachineBaseBlockEntity machineBase,
+			@Nullable
+					IUpgradeHandler handler,
+			@Nonnull
+					ItemStack stack);
 
-	public default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack){
+	default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack) {
 		return true;
 	}
 }

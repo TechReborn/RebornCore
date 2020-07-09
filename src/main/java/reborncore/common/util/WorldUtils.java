@@ -57,7 +57,7 @@ public class WorldUtils {
 		float dZ = rand.nextFloat() * 0.8F + 0.1F;
 
 		ItemEntity entityItem = new ItemEntity(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
-			itemStack.copy());
+				itemStack.copy());
 
 		if (itemStack.hasTag()) {
 			entityItem.getStack().setTag(itemStack.getTag().copy());

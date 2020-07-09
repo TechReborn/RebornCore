@@ -36,21 +36,21 @@ public interface IRecipeCrafterProvider extends SlotConfiguration.SlotFilter {
 
 	RecipeCrafter getRecipeCrafter();
 
-	default boolean canCraft(RebornRecipe rebornRecipe){
+	default boolean canCraft(RebornRecipe rebornRecipe) {
 		return true;
 	}
 
 	@Override
-	default boolean isStackValid(int slotID, ItemStack stack){
-		if(getRecipeCrafter() == null){
+	default boolean isStackValid(int slotID, ItemStack stack) {
+		if (getRecipeCrafter() == null) {
 			return false;
 		}
 		return getRecipeCrafter().isStackValidInput(stack);
 	}
 
 	@Override
-	default int[] getInputSlots(){
-		if(getRecipeCrafter() == null){
+	default int[] getInputSlots() {
+		if (getRecipeCrafter() == null) {
 			return new int[]{};
 		}
 		return getRecipeCrafter().inputSlots;

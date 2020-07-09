@@ -37,24 +37,24 @@ import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class ModelSantaHat extends EntityModel<AbstractClientPlayerEntity> {
-	private ModelPart hatband1;
-	private ModelPart hatband2;
-	private ModelPart hatband3;
-	private ModelPart hatband4;
-	private ModelPart hatbase1;
-	private ModelPart hatband5;
-	private ModelPart hatband6;
-	private ModelPart hatbase2;
-	private ModelPart hatextension1;
-	private ModelPart hatextension2;
-	private ModelPart hatextension3;
-	private ModelPart hatextension4;
-	private ModelPart hatball1;
-	private ModelPart hatball2;
-	private ModelPart hatball3;
-	private ModelPart hatball4;
-	private ModelPart hatball5;
-	private ModelPart hatball6;
+	private final ModelPart hatband1;
+	private final ModelPart hatband2;
+	private final ModelPart hatband3;
+	private final ModelPart hatband4;
+	private final ModelPart hatbase1;
+	private final ModelPart hatband5;
+	private final ModelPart hatband6;
+	private final ModelPart hatbase2;
+	private final ModelPart hatextension1;
+	private final ModelPart hatextension2;
+	private final ModelPart hatextension3;
+	private final ModelPart hatextension4;
+	private final ModelPart hatball1;
+	private final ModelPart hatball2;
+	private final ModelPart hatball3;
+	private final ModelPart hatball4;
+	private final ModelPart hatball5;
+	private final ModelPart hatball6;
 
 	public ModelSantaHat() {
 		textureWidth = 64;

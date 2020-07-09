@@ -37,7 +37,7 @@ public class TorchHelper {
 
 	public static ActionResult placeTorch(ItemUsageContext itemUsageContext) {
 		PlayerEntity player = itemUsageContext.getPlayer();
-		if (player == null){
+		if (player == null) {
 			return ActionResult.FAIL;
 		}
 

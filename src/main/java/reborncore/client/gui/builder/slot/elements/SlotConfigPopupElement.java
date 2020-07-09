@@ -44,10 +44,10 @@ import net.minecraft.world.World;
 import reborncore.RebornCore;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
+import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
-import reborncore.common.blockentity.SlotConfiguration;
-import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.util.Color;
 import reborncore.common.util.MachineFacing;
 
@@ -119,7 +119,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		//Bit of a mess, in the future have a way to remove config options from this list
 		SlotConfiguration.ExtractConfig nextConfig = currentSlot.getSlotIO().getIoConfig().getNext();
-		if(!allowInput && nextConfig == SlotConfiguration.ExtractConfig.INPUT){
+		if (!allowInput && nextConfig == SlotConfiguration.ExtractConfig.INPUT) {
 			nextConfig = SlotConfiguration.ExtractConfig.OUTPUT;
 		}
 
@@ -188,13 +188,13 @@ public class SlotConfigPopupElement extends ElementBase {
 
 	public void drawState(GuiBase<?> gui,
 						  World world,
-	                      BakedModel model,
-	                      BlockState actualState,
-	                      BlockPos pos,
-	                      BlockRenderManager dispatcher,
-	                      int x,
-	                      int y,
-	                      Quaternion quaternion) {
+						  BakedModel model,
+						  BlockState actualState,
+						  BlockPos pos,
+						  BlockRenderManager dispatcher,
+						  int x,
+						  int y,
+						  Quaternion quaternion) {
 
 		MatrixStack matrixStack = new MatrixStack();
 		matrixStack.push();
@@ -203,7 +203,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		matrixStack.translate(0.5F, 0.5F, 0.5F);
 		matrixStack.scale(-1, -1, -1);
 
-		if(quaternion != null) {
+		if (quaternion != null) {
 			matrixStack.multiply(quaternion);
 		}
 

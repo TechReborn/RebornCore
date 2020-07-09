@@ -48,14 +48,14 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback, S
 
 	private static final Map<Fluid, TemporaryLazy<Sprite[]>> spriteMap = new HashMap<>();
 
-	public static void setupClient(){
+	public static void setupClient() {
 		RebornFluidRenderManager rebornFluidRenderManager = new RebornFluidRenderManager();
 		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(rebornFluidRenderManager);
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(rebornFluidRenderManager);
 		RebornFluidManager.getFluidStream().forEach(RebornFluidRenderManager::setupFluidRenderer);
 	}
 
-	private static void setupFluidRenderer(RebornFluid fluid){
+	private static void setupFluidRenderer(RebornFluid fluid) {
 		//Done lazy as we want to ensure we get the sprite at the correct time, but also dont want to be making these calls every time its required.
 		TemporaryLazy<Sprite[]> sprites = new TemporaryLazy<>(() -> {
 			FluidSettings fluidSettings = fluid.getFluidSettings();
@@ -69,8 +69,8 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback, S
 	@Override
 	public void registerSprites(SpriteAtlasTexture spriteAtlasTexture, Registry registry) {
 		Stream.concat(
-			RebornFluidManager.getFluidStream().map(rebornFluid -> rebornFluid.getFluidSettings().getFlowingTexture()),
-			RebornFluidManager.getFluidStream().map(rebornFluid -> rebornFluid.getFluidSettings().getStillTexture())
+				RebornFluidManager.getFluidStream().map(rebornFluid -> rebornFluid.getFluidSettings().getFlowingTexture()),
+				RebornFluidManager.getFluidStream().map(rebornFluid -> rebornFluid.getFluidSettings().getStillTexture())
 		).forEach(registry::register);
 	}
 

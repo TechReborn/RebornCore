@@ -199,7 +199,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		matrixStack.translate(0.5F, 0.5F, 0.5F);
 		matrixStack.scale(-1, -1, -1);
 
-		if(quaternion != null) {
+		if (quaternion != null) {
 			matrixStack.multiply(quaternion);
 		}
 

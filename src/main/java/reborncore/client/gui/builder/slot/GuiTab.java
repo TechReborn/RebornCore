@@ -98,11 +98,13 @@ public class GuiTab {
 		private String name;
 		private Function<GuiTab, Boolean> enabled = (tab) -> true;
 		private Function<GuiTab, ItemStack> stack = (tab) -> ItemStack.EMPTY;
-		private Draw draw = (matrixStack, gui, x, y) -> {};
+		private Draw draw = (matrixStack, gui, x, y) -> {
+		};
 		private Click click = (guiBase, mouseX, mouseY, mouseButton) -> false;
 		private MouseReleased mouseReleased = (guiBase, mouseX, mouseY, state) -> false;
 		private KeyPressed keyPressed = (guiBase, keyCode, scanCode, modifiers) -> false;
-		private Consumer<List<String>> tips = strings -> {};
+		private Consumer<List<String>> tips = strings -> {
+		};
 		private boolean hideGuiElements = false;
 
 		public static Builder builder() {

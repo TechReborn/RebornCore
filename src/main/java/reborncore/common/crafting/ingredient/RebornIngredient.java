@@ -53,14 +53,14 @@ public abstract class RebornIngredient implements Predicate<ItemStack> {
 	public abstract int getCount();
 
 	//Same as above but adds the type
-	public final JsonObject witeToJson(){
+	public final JsonObject witeToJson() {
 		JsonObject jsonObject = toJson();
 		jsonObject.addProperty("type", ingredientType.toString());
 		return jsonObject;
 	}
 
-	public <T extends RebornIngredient> void ifType(Class<T> clazz, Consumer<T> consumer){
-		if(this.getClass().isAssignableFrom(clazz)){
+	public <T extends RebornIngredient> void ifType(Class<T> clazz, Consumer<T> consumer) {
+		if (this.getClass().isAssignableFrom(clazz)) {
 			//noinspection unchecked
 			consumer.accept((T) this);
 		}

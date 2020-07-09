@@ -30,14 +30,14 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -54,7 +54,7 @@ public class NetworkManager {
 		return new CustomPayloadC2SPacket(identifier, buf);
 	}
 
-	public static void registerServerBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer){
+	public static void registerServerBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer) {
 		ServerSidePacketRegistry.INSTANCE.register(identifier, (packetContext, packetByteBuf) -> consumer.accept(new ExtendedPacketBuffer(packetByteBuf), packetContext));
 	}
 
@@ -63,7 +63,8 @@ public class NetworkManager {
 		packetBufferConsumer.accept(new ExtendedPacketBuffer(buf));
 		return new CustomPayloadS2CPacket(identifier, buf);
 	}
-	public static void registerClientBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer){
+
+	public static void registerClientBoundHandler(Identifier identifier, BiConsumer<ExtendedPacketBuffer, PacketContext> consumer) {
 		ClientSidePacketRegistry.INSTANCE.register(identifier, (packetContext, packetByteBuf) -> consumer.accept(new ExtendedPacketBuffer(packetByteBuf), packetContext));
 	}
 

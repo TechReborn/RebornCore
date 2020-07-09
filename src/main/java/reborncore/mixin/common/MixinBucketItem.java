@@ -37,7 +37,9 @@ import reborncore.common.fluid.container.ItemFluidInfo;
 @Mixin(BucketItem.class)
 public class MixinBucketItem implements ItemFluidInfo {
 
-	@Shadow @Final private Fluid fluid;
+	@Shadow
+	@Final
+	private Fluid fluid;
 
 	@Override
 	public ItemStack getEmpty() {

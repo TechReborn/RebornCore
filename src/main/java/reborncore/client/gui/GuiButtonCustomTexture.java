@@ -50,7 +50,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 	public int textureW;
 
 	public GuiButtonCustomTexture(int xPos, int yPos, int u, int v, int buttonWidth, int buttonHeight,
-	                              String texturename, String linkedPage, Text name, int buttonU, int buttonV, int textureH, int textureW, ButtonWidget.PressAction pressAction) {
+								  String texturename, String linkedPage, Text name, int buttonU, int buttonV, int textureH, int textureW, ButtonWidget.PressAction pressAction) {
 		super(xPos, yPos, buttonWidth, buttonHeight, LiteralText.EMPTY, pressAction);
 		this.textureU = u;
 		this.textureV = v;
@@ -68,7 +68,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 	public void drawButton(MatrixStack matrixStack, MinecraftClient mc, int mouseX, int mouseY) {
 		if (this.visible) {
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
-				&& mouseY < this.y + this.height;
+					&& mouseY < this.y + this.height;
 			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
@@ -85,7 +85,7 @@ public class GuiButtonCustomTexture extends ButtonWidget {
 			DiffuseLighting.enable();
 			renderImage(matrixStack, this.x, this.y);
 			this.drawTextWithShadow(matrixStack, mc.textRenderer, this.name, this.x + 20, this.y + 3,
-			                Color.WHITE.getColor());
+					Color.WHITE.getColor());
 		}
 	}
 

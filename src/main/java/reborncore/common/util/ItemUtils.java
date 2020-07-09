@@ -26,7 +26,6 @@ package reborncore.common.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -41,7 +40,7 @@ import java.util.List;
 public class ItemUtils {
 
 	public static boolean isItemEqual(final ItemStack a, final ItemStack b,
-	                                  final boolean matchNBT) {
+									  final boolean matchNBT) {
 		if (a.isEmpty() || b.isEmpty()) {
 			return false;
 		}
@@ -52,7 +51,7 @@ public class ItemUtils {
 	}
 
 	public static boolean isItemEqual(ItemStack a, ItemStack b, boolean matchNBT,
-	                                  boolean useTags) {
+									  boolean useTags) {
 		if (a.isEmpty() && b.isEmpty()) {
 			return true;
 		}
@@ -71,7 +70,7 @@ public class ItemUtils {
 
 	//TODO tags
 	public static boolean isInputEqual(Object input, ItemStack other, boolean matchNBT,
-	                                   boolean useTags) {
+									   boolean useTags) {
 		if (input instanceof ItemStack) {
 			return isItemEqual((ItemStack) input, other, matchNBT, useTags);
 		} else if (input instanceof String) {
@@ -126,9 +125,9 @@ public class ItemUtils {
 	/**
 	 * Check if powered item has enough energy to continue being in active state
 	 *
-	 * @param stack ItemStack ItemStack to check
-	 * @param cost int Cost of operation performed by tool
-	 * @param isClient boolean Client side
+	 * @param stack     ItemStack ItemStack to check
+	 * @param cost      int Cost of operation performed by tool
+	 * @param isClient  boolean Client side
 	 * @param messageId int MessageID for sending no spam message
 	 */
 	public static void checkActive(ItemStack stack, int cost, boolean isClient, int messageId) {
@@ -154,12 +153,12 @@ public class ItemUtils {
 	/**
 	 * Switch active\inactive state for powered item
 	 *
-	 * @param stack ItemStack ItemStack to work on
-	 * @param cost int Cost of operation performed by tool
-	 * @param isClient boolean Are we on client side
+	 * @param stack     ItemStack ItemStack to work on
+	 * @param cost      int Cost of operation performed by tool
+	 * @param isClient  boolean Are we on client side
 	 * @param messageId MessageID for sending no spam message
 	 */
-	public static void switchActive(ItemStack stack, int cost, boolean isClient, int messageId){
+	public static void switchActive(ItemStack stack, int cost, boolean isClient, int messageId) {
 		ItemUtils.checkActive(stack, cost, isClient, messageId);
 
 		if (!ItemUtils.isActive(stack)) {
@@ -194,10 +193,10 @@ public class ItemUtils {
 	/**
 	 * Adds active\inactive state to powered item tooltip
 	 *
-	 * @param stack ItemStack ItemStack to check
+	 * @param stack   ItemStack ItemStack to check
 	 * @param tooltip List Tooltip strings
 	 */
-	public static void buildActiveTooltip(ItemStack stack, List<Text> tooltip){
+	public static void buildActiveTooltip(ItemStack stack, List<Text> tooltip) {
 		if (!ItemUtils.isActive(stack)) {
 			tooltip.add(new TranslatableText("reborncore.message.inactive").formatted(Formatting.RED));
 		} else {

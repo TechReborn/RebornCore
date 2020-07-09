@@ -63,8 +63,8 @@ public class ItemHandlerUtils {
 					}
 				}
 			}
-			ItemScatterer.spawn(world, (double) pos.getX(), (double) pos.getY(),
-				(double) pos.getZ(), itemStack);
+			ItemScatterer.spawn(world, pos.getX(), pos.getY(),
+					pos.getZ(), itemStack);
 		}
 	}
 }
