@@ -32,7 +32,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.command.arguments.ItemStackArgumentType;
@@ -45,7 +45,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.ChunkStatus;
 import reborncore.client.ItemStackRenderManager;
@@ -58,7 +57,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
@@ -74,7 +72,7 @@ public class RebornCoreCommands {
 			CommandSource.suggestMatching(FabricLoader.getInstance().getAllMods().stream().map(modContainer -> modContainer.getMetadata().getId()), builder);
 
 	public static void setup() {
-		CommandRegistry.INSTANCE.register(false, RebornCoreCommands::addCommands);
+		CommandRegistrationCallback.EVENT.register(((dispatcher, isDedicated) -> RebornCoreCommands.addCommands(dispatcher)));
 	}
 
 	private static void addCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
