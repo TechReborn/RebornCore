@@ -173,7 +173,7 @@ public class StackInfoHUD implements HudRenderCallback {
 
 	@Override
 	public void onHudRender(MatrixStack matrixStack, float tickDelta) {
-		if (mc.options.hudHidden) {
+		if (mc.options.hudHidden || mc.options.debugEnabled) {
 			return;
 		}
 		if (!RebornCoreConfig.ShowStackInfoHUD) {
