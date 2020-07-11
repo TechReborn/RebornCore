@@ -92,59 +92,58 @@ public class StackInfoHUD implements HudRenderCallback {
 		if (stack == ItemStack.EMPTY) {
 			return;
 		}
-
-		MutableText text;
-		if (stack.getItem() instanceof EnergyHolder) {
-
-			double maxCharge = Energy.of(stack).getMaxStored();
-			double currentCharge = Energy.of(stack).getEnergy();
-
-			Formatting color = StringUtils.getPercentageColour(percentage(maxCharge, currentCharge));
-
-			text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge))
-					.formatted(color)
-					.append("/")
-					.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge))
-					.append(" ")
-					.append(PowerSystem.getDisplayPower().abbreviation);
-
-			if (stack.getTag() != null && stack.getTag().contains("isActive")) {
-				if (stack.getTag().getBoolean("isActive")) {
-
-					text.formatted(Formatting.GOLD)
-							.append(" (")
-							.append(new TranslatableText("reborncore.message.active"))
-							.append(")");
-				} else {
-
-					text.formatted(Formatting.GOLD)
-							.append(" (")
-							.append(new TranslatableText("reborncore.message.inactive"))
-							.append(")");
-				}
-			}
-
-			if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
-				int strWidth = mc.textRenderer.getWidth(text);
-				// 18 for item icon and additionally padding from configuration file
-				x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
-			}
-
-			renderStackForInfo(matrixStack, stack);
-			mc.textRenderer.draw(matrixStack, text, x + 18, y, 0);
-
-			if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
-				y += 20;
-			} else {
-				y -= 20;
-			}
-		}
-
+		
 		for (StackInfoElement element : ELEMENTS) {
 			if (!element.getText(stack).equals("")) {
-				renderStackForInfo(matrixStack, stack);
-				mc.textRenderer.draw(matrixStack, element.getText(stack), x + 18, y, 0);
-				y += 20;
+				if (stack.getItem() instanceof EnergyHolder) {
+					MutableText text;
+					double maxCharge = Energy.of(stack).getMaxStored();
+					double currentCharge = Energy.of(stack).getEnergy();
+
+					Formatting color = StringUtils.getPercentageColour(percentage(maxCharge, currentCharge));
+
+					text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(currentCharge))
+							.formatted(color)
+							.append("/")
+							.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxCharge))
+							.append(" ")
+							.append(PowerSystem.getDisplayPower().abbreviation);
+
+					if (stack.getTag() != null && stack.getTag().contains("isActive")) {
+						if (stack.getTag().getBoolean("isActive")) {
+
+							text.formatted(Formatting.GOLD)
+									.append(" (")
+									.append(new TranslatableText("reborncore.message.active"))
+									.append(")");
+						} else {
+
+							text.formatted(Formatting.GOLD)
+									.append(" (")
+									.append(new TranslatableText("reborncore.message.inactive"))
+									.append(")");
+						}
+					}
+
+					if (RebornCoreConfig.stackInfoCorner == 1 || RebornCoreConfig.stackInfoCorner == 2) {
+						int strWidth = mc.textRenderer.getWidth(text);
+						// 18 for item icon and additionally padding from configuration file
+						x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
+					}
+
+					renderStackForInfo(matrixStack, stack);
+					mc.textRenderer.draw(matrixStack, text, x + 18, y, 0);
+
+					if (RebornCoreConfig.stackInfoCorner == 0 || RebornCoreConfig.stackInfoCorner == 1) {
+						y += 20;
+					} else {
+						y -= 20;
+					}
+				}else{
+					renderStackForInfo(matrixStack, stack);
+					mc.textRenderer.draw(matrixStack, element.getText(stack), x + 18, y, 0);
+					y += 20;
+				}
 			}
 		}
 	}
