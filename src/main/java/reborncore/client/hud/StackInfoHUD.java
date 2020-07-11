@@ -67,14 +67,18 @@ public class StackInfoHUD implements HudRenderCallback {
 			return;
 		}
 		List<ItemStack> stacks = new ArrayList<>();
+
+		// Add items
 		stacks.add(player.getMainHandStack());
 		stacks.add(player.getOffHandStack());
 
 		for (ItemStack stack : player.getArmorItems()) {
 			stacks.add(stack);
 		}
+
 		x = RebornCoreConfig.stackInfoX;
 
+		// Position handling
 		if (RebornCoreConfig.stackInfoCorner == 2 || RebornCoreConfig.stackInfoCorner == 3) {
 			stacks = Lists.reverse(stacks);
 			// 20 for line height and additionally padding from configuration file
@@ -83,9 +87,11 @@ public class StackInfoHUD implements HudRenderCallback {
 			y = RebornCoreConfig.stackInfoY;
 		}
 
+		// Adding info and rendering
 		for (ItemStack stack : stacks) {
 			addInfo(matrixStack, stack, res);
 		}
+
 	}
 
 	private void addInfo(MatrixStack matrixStack, ItemStack stack, Window res) {
@@ -95,8 +101,9 @@ public class StackInfoHUD implements HudRenderCallback {
 		
 		for (StackInfoElement element : ELEMENTS) {
 			if (!element.getText(stack).equals("")) {
+				MutableText text = null;
+
 				if (stack.getItem() instanceof EnergyHolder) {
-					MutableText text;
 					double maxCharge = Energy.of(stack).getMaxStored();
 					double currentCharge = Energy.of(stack).getEnergy();
 
@@ -131,6 +138,22 @@ public class StackInfoHUD implements HudRenderCallback {
 						x = res.getScaledWidth() - strWidth - 18 - RebornCoreConfig.stackInfoX;
 					}
 
+				}else if(stack.isDamageable()){
+					int maxHealth = stack.getMaxDamage();
+					int health = maxHealth - stack.getDamage();
+
+
+					Formatting color = StringUtils.getPercentageColour(percentage(maxHealth, health));
+
+					text = new LiteralText(String.valueOf(health))
+							.formatted(color)
+							.append("/")
+							.append(String.valueOf(maxHealth));
+				}
+
+
+				// Only render if we can provide some actual useful information
+				if(text != null) {
 					renderStackForInfo(matrixStack, stack);
 					mc.textRenderer.draw(matrixStack, text, x + 18, y, 0);
 
@@ -139,10 +162,6 @@ public class StackInfoHUD implements HudRenderCallback {
 					} else {
 						y -= 20;
 					}
-				}else{
-					renderStackForInfo(matrixStack, stack);
-					mc.textRenderer.draw(matrixStack, element.getText(stack), x + 18, y, 0);
-					y += 20;
 				}
 			}
 		}
