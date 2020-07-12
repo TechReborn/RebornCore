@@ -11,7 +11,7 @@ public interface IDebuggable {
 	static String propertyFormat(String property, String info){
 		String s = "" + Formatting.GREEN;
 		s += property + ": ";
-		s += Formatting.BLUE;
+		s += Formatting.RED;
 		s += info;
 
 		return s;
