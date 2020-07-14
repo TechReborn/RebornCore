@@ -58,6 +58,20 @@ public class FunctionalFaceStorage {
 		return modeMap.size();
 	}
 
+	public boolean hasOneWay(){
+		return modeMap.containsValue(ConduitMode.ONE_WAY);
+	}
+	public Direction getOneWayDirection(){
+		for(Map.Entry<Direction, ConduitMode> entry : modeMap.entrySet()){
+			if(entry.getValue() == ConduitMode.ONE_WAY){
+				return entry.getKey();
+			}
+		}
+
+		return null;
+	}
+
+
 	public Set<Map.Entry<Direction, ConduitMode>> getEntrySet(){
 		return modeMap.entrySet();
 	}

@@ -71,49 +71,40 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		}
 		ticktime++;
 
-		// Loop through each mode and perform action
-		for (Map.Entry<Direction, ConduitMode> entry : functionalFaces.getEntrySet()) {
-
-			switch (entry.getValue()){
-				case ONE_WAY:
-					Direction direction = entry.getKey();
-					if(conduits.containsKey(direction)){
-						conduits.get(direction).transferItem(stored, direction.getOpposite());
-					}
-					stored.getStored();
-					break;
-				case INPUT:
-					importFace(entry.getKey());
-					break;
-				case OUTPUT:
-					exportFace(entry.getKey());
-					break;
-				case BLOCK:
-					// No functionality
-					break;
-			}
+		// Progress item if we have one
+		if(stored != null) {
+			stored.progress();
 		}
 
+		// Loop through each mode and perform action
+			for (Map.Entry<Direction, ConduitMode> entry : functionalFaces.getEntrySet()) {
 
+				switch (entry.getValue()) {
+					case INPUT:
+						if(stored != null) break;
+						importFace(entry.getKey());
+						break;
+					case OUTPUT:
+						if(stored == null) break;
+						exportFace(entry.getKey());
+						break;
+					default:
+						// No functionality for rest
+						break;
+				}
+			}
 
-
-		// Item logic
+		// Item logic after operations
 		if(stored != null) {
-			// Movement between conduits and progression
-			stored.progress();
 
 			// If finished, find another conduit to move to
 			if (stored.isFinished()) {
 
-				Pair<IConduit<T>, Direction> destination = getDestinationConduit(stored.getOriginDirection());
+				Pair<IConduit<T>, Direction> destination = getDestinationConduit();
 
 				if (destination != null) {
 					// Giving the opposite of the TO direction which is the direction which the new conduit will be facing this entity.
-					boolean didTransfer = destination.getLeft().transferItem(stored, destination.getRight().getOpposite());
-
-					if (didTransfer) {
-						stored = null;
-					}
+					tryTransferPayload(destination.getRight());
 				}
 			}
 		}
@@ -143,13 +134,27 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		conduits.remove(direction);
 	}
 
-	public boolean transferItem(IConduitTransfer<T> transfer, Direction origin) {
+	public void tryTransferPayload(Direction direction){
+		if(stored == null){
+			return;
+		}
+
+		boolean didTransfer = conduits.get(direction).transferPayload(stored, direction.getOpposite());
+
+		if(didTransfer){
+			this.stored = null;
+		}
+	}
+
+
+	// Called by other conduits
+	public boolean transferPayload(IConduitTransfer<T> transfer, Direction origin) {
 		if(stored == null) {
 			transfer.restartProgress();
 			transfer.setOriginDirection(origin);
 
 			this.stored = transfer;
-			
+
 			return true;
 		}
 
@@ -157,7 +162,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 	}
 
 	// Returns a direction which is next up for transfer
-	protected Pair<IConduit<T>, Direction> getDestinationConduit(Direction from) {
+	protected Pair<IConduit<T>, Direction> getDestinationConduit() {
 		if (conduits.isEmpty()) {
 			return null;
 		}
@@ -165,7 +170,18 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		HashMap<Direction, IConduit<T>> tempConduit = new HashMap<>(conduits);
 
 		// Don't send to where we've received.
-		tempConduit.remove(from);
+		tempConduit.remove(stored.getOriginDirection());
+
+		if(functionalFaces.hasOneWay()){
+			Direction oneWayDirection = functionalFaces.getOneWayDirection();
+
+			if(conduits.containsKey(oneWayDirection)){
+				return new Pair<>(conduits.get(oneWayDirection),  oneWayDirection);
+			}
+
+			// ONE-WAY, FORCED
+			return null;
+		}
 
 		// If pipe's changed or round robin round is finished, reset index
 		if(outputIndex >= tempConduit.size()){
@@ -192,7 +208,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 	public boolean canConnect(Direction direction, IConduit<T> otherConduit){
 
 		// Can't connect to direction which has a IO/Block mode
-		if(functionalFaces.hasFunctionality(direction)){
+		if(functionalFaces.hasFunctionality(direction) && functionalFaces.getFunctionality(direction) != ConduitMode.ONE_WAY){
 			return false;
 		}
 

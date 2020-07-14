@@ -12,7 +12,9 @@ public interface IConduit<T> {
 	boolean addFunctionality(Direction face, ItemStack playerHolding);
 	ItemStack removeFunctionality(Direction face);
 
-	boolean transferItem(IConduitTransfer<T> transfer, Direction origin);
+
+	void tryTransferPayload(Direction origin);
+	boolean transferPayload(IConduitTransfer<T> transfer, Direction origin);
 
 
 }
