@@ -1,5 +1,4 @@
 package reborncore.common.util;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public interface IDebuggable {
