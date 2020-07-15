@@ -22,11 +22,13 @@
  * SOFTWARE.
  */
 
-package reborncore.common.systems.conduit.block;
+package reborncore.api.systems.conduit.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -40,7 +42,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import reborncore.common.systems.conduit.IConduit;
+import reborncore.api.systems.conduit.IConduit;
 import reborncore.common.util.WorldUtils;
 
 import javax.annotation.Nullable;
@@ -106,13 +108,19 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		}
 	}
 
+	@Override
+	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+		super.onPlaced(world, pos, state, placer, itemStack);
+	}
+
 	private boolean connectToConduit(WorldAccess world, BlockPos ourPos, Direction direction) {
 		BlockEntity ourBaseEntity = world.getBlockEntity(ourPos);
 		BlockEntity otherBaseEntity = world.getBlockEntity(ourPos.offset(direction));
 
+		boolean considerOurEntity = true;
 
 		if(!(conduitEntityClass.isInstance(ourBaseEntity))){
-			return false;
+			considerOurEntity = false;
 		}
 
 		// Cast to a variable our entity
@@ -125,13 +133,20 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		IConduit<T> otherEntity = conduitEntityClass.cast(otherBaseEntity);
 
 		// Can't connect according to entities.
-		if(!ourEntity.canConnect(direction, otherEntity) || !otherEntity.canConnect(direction.getOpposite(), ourEntity)){
-			ourEntity.removeConduit(direction);
+		if((considerOurEntity && !ourEntity.canConnect(direction, otherEntity)) ||
+				((!otherEntity.canConnect(direction.getOpposite(), ourEntity)) && !otherEntity.isOneWayFace(direction.getOpposite()))){
+
+			if(considerOurEntity) {
+				ourEntity.removeConduit(direction);
+			}
+
 			return false;
 		}
 
 		// Add to entity as we've connected
-		ourEntity.addConduit(direction, otherEntity);
+		if(considerOurEntity) {
+			ourEntity.addConduit(direction, otherEntity);
+		}
 
 		return true;
 	}
@@ -139,6 +154,10 @@ public class ConduitBlock<T> extends BlockWithEntity {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity entity = world.getBlockEntity(pos);
+
+		if(world.isClient){
+			return super.onUse(state, world, pos, player, hand, hit);
+		}
 
 		if(hand != Hand.MAIN_HAND || !(conduitEntityClass.isInstance(entity))) return super.onUse(state, world, pos, player, hand, hit);
 
@@ -151,6 +170,8 @@ public class ConduitBlock<T> extends BlockWithEntity {
 
 			if(!outcome.isEmpty()){
 				if (player.inventory.insertStack(outcome)) {
+
+					world.setBlockState(pos, getState(world, pos));
 					return ActionResult.SUCCESS;
 				}
 
@@ -163,6 +184,17 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		}
 
 		return super.onUse(state, world, pos, player, hand, hit);
+	}
+
+	private BlockState getState(World world, BlockPos blockpos){
+		BlockState state = getDefaultState();
+
+		for(Direction direction : Direction.values()){
+			boolean canConnect = connectToConduit(world, blockpos, direction);
+			state = state.with(getProperty(direction), canConnect);
+		}
+
+		return state;
 	}
 
 	// BlockContainer
@@ -185,6 +217,13 @@ public class ConduitBlock<T> extends BlockWithEntity {
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(EAST, WEST, NORTH, SOUTH, UP, DOWN);
 	}
+
+	@Override
+	public BlockState getPlacementState(ItemPlacementContext context) {
+		if(context.getWorld().isClient) return getDefaultState();
+		return getState(context.getWorld(), context.getBlockPos());
+	}
+
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState ourState, Direction ourFacing, BlockState otherState,

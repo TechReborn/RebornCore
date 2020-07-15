@@ -1,4 +1,4 @@
-package reborncore.common.systems.conduit;
+package reborncore.api.systems.conduit;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
@@ -29,7 +29,6 @@ public interface IConduitTransfer<T> {
 	void setTargetDirection(Direction target);
 
 	// NBT
-
 	void fromTag(CompoundTag tag);
 
 	CompoundTag toTag(CompoundTag tag);

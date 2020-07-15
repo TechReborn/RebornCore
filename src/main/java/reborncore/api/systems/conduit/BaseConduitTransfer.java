@@ -1,4 +1,4 @@
-package reborncore.common.systems.conduit;
+package reborncore.api.systems.conduit;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;

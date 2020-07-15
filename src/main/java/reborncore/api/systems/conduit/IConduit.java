@@ -1,4 +1,4 @@
-package reborncore.common.systems.conduit;
+package reborncore.api.systems.conduit;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -11,6 +11,7 @@ public interface IConduit<T> {
 
 	boolean addFunctionality(Direction face, ItemStack playerHolding);
 	ItemStack removeFunctionality(Direction face);
+	boolean isOneWayFace(Direction direction);
 
 
 	void tryTransferPayload(Direction origin);

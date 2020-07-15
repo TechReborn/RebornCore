@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package reborncore.common.systems.conduit.block;
+package reborncore.api.systems.conduit.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
