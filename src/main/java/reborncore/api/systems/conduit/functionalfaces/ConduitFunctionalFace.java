@@ -7,12 +7,15 @@ public class ConduitFunctionalFace extends FunctionalFace {
 
 	public ConduitFunction conduitFunction;
 
-	public ConduitFunctionalFace(ConduitFunction conduitFunction){
+	private final IConduitItemProvider provider;
+
+	public ConduitFunctionalFace(ConduitFunction conduitFunction, IConduitItemProvider provider) {
 		this.conduitFunction = conduitFunction;
+		this.provider = provider;
 	}
 
-	public static ConduitFunctionalFace fromFunction(ConduitFunction conduitFunction){
-		return new ConduitFunctionalFace(conduitFunction);
+	public static ConduitFunctionalFace fromFunction(ConduitFunction conduitFunction, IConduitItemProvider provider) {
+		return new ConduitFunctionalFace(conduitFunction, provider);
 	}
 
 	@Override
@@ -21,16 +24,15 @@ public class ConduitFunctionalFace extends FunctionalFace {
 	}
 
 	public Item getItem() {
-		return conduitFunction.requiredItem;
+		return provider.getItem(conduitFunction);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof ConduitFunctionalFace){
-			ConduitFunctionalFace functionalFace = (ConduitFunctionalFace)obj;
+		if (obj instanceof ConduitFunctionalFace) {
+			ConduitFunctionalFace functionalFace = (ConduitFunctionalFace) obj;
 
-			if(functionalFace.conduitFunction == this.conduitFunction){
+			if (functionalFace.conduitFunction == this.conduitFunction) {
 				return true;
 			}
 		}

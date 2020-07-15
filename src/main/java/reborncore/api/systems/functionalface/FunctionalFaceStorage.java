@@ -10,49 +10,47 @@ public class FunctionalFaceStorage<F extends FunctionalFace> {
 
 	private final Map<Direction, F> functionMap = new HashMap<>();
 
-	public void addFunctionalFace(Direction direction, F function){
+	public void addFunctionalFace(Direction direction, F function) {
 		functionMap.put(direction, function);
 	}
 
-	public boolean canAddFunctionality(Direction direction, F function){
-		if(functionMap.containsKey(direction)) return false;
+	public boolean canAddFunctionality(Direction direction, F function) {
+		if (functionMap.containsKey(direction)) return false;
 
 		int count = (int) functionMap.values().stream().filter(mapMode -> mapMode == function).count();
 
-		if(count >= function.getMaxCount()) return false;
-
-		return true;
+		return count < function.getMaxCount();
 	}
 
-	public boolean hasFunctionality(Direction face){
+	public boolean hasFunctionality(Direction face) {
 		return functionMap.containsKey(face);
 	}
 
-	public boolean hasFunctionality(F function){
+	public boolean hasFunctionality(F function) {
 		return functionMap.containsValue(function);
 	}
 
-	public void clearFunctionaries(){
+	public void clearFunctionaries() {
 		functionMap.clear();
 	}
 
-	public F getFunctionality(Direction face){
+	public F getFunctionality(Direction face) {
 		return functionMap.get(face);
 	}
 
-	public void removeFunctionality(Direction face){
+	public void removeFunctionality(Direction face) {
 		functionMap.remove(face);
 	}
 
-	public boolean isEmpty(){
+	public boolean isEmpty() {
 		return functionMap.isEmpty();
 	}
 
-	public int getSize(){
+	public int getSize() {
 		return functionMap.size();
 	}
 
-	public Set<Map.Entry<Direction, F>> getEntrySet(){
+	public Set<Map.Entry<Direction, F>> getEntrySet() {
 		return functionMap.entrySet();
 	}
 }

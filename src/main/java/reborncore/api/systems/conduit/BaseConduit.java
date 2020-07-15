@@ -11,8 +11,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
-import reborncore.api.systems.conduit.functionalfaces.ConduitFunctionalFace;
 import reborncore.api.systems.conduit.functionalfaces.ConduitFunction;
+import reborncore.api.systems.conduit.functionalfaces.ConduitFunctionalFace;
+import reborncore.api.systems.conduit.functionalfaces.IConduitItemProvider;
 import reborncore.api.systems.functionalface.FunctionalFaceStorage;
 import reborncore.common.network.ClientBoundPackets;
 import reborncore.common.network.NetworkManager;
@@ -34,76 +35,82 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 
 	// Speciality faces
 	protected final FunctionalFaceStorage<ConduitFunctionalFace> functionalFaces = new FunctionalFaceStorage<>();
+	private final IConduitItemProvider conduitItemProvider;
 
 	private int ticktime = 0;
 
 	// Round robin variable
 	private int outputIndex = 0;
 
-	public BaseConduit(BlockEntityType<?> type, Class<? extends IConduit<T>> conduitEntityClass, Class<? extends IConduitTransfer<T>> transferClass) {
+	public BaseConduit(BlockEntityType<?> type, Class<? extends IConduit<T>> conduitEntityClass, Class<? extends IConduitTransfer<T>> transferClass, IConduitItemProvider conduitItemProvider) {
 		super(type);
 		this.transferClass = transferClass;
 		this.conduitEntityClass = conduitEntityClass;
+		this.conduitItemProvider = conduitItemProvider;
 	}
 
 	// Abstract functions
 	protected abstract void importFace(Direction face);
+
 	protected abstract void exportFace(Direction face);
 
-	protected void onServerLoad(){
+	protected void onServerLoad() {
 		// Conduits populating if read from NBT, note will be conduit type, checked elsewhere
-		for(Direction direction : new ArrayList<>(conduits.keySet())){
-			if(world == null) return;
+		for (Direction direction : new ArrayList<>(conduits.keySet())) {
+			if (world == null) return;
 
 			BlockEntity entity = world.getBlockEntity(this.pos.offset(direction));
 
-			if(conduitEntityClass.isInstance(entity)){
+			if (conduitEntityClass.isInstance(entity)) {
 				conduits.put(direction, conduitEntityClass.cast(entity));
-			}else {
+			} else {
 				conduits.remove(direction);
 			}
 		}
 	}
 
-	protected void clientTick(){
+	protected void clientTick() {
 
 	}
 
-	protected void serverTick(){
-		if(ticktime == 0){
+	protected void serverTick() {
+		if (ticktime == 0) {
 			onServerLoad();
 		}
 		ticktime++;
 
 		// Progress item if we have one
-		if(stored != null) {
+		if (stored != null) {
 			stored.progress();
 		}
 
 		// Loop through each mode and perform action
-			for (Map.Entry<Direction, ConduitFunctionalFace> entry : functionalFaces.getEntrySet()) {
+		for (Map.Entry<Direction, ConduitFunctionalFace> entry : functionalFaces.getEntrySet()) {
 
-				switch ((entry.getValue().conduitFunction)) {
-					case ONE_WAY:
-						if(stored == null || !stored.isFinished()) break;
-						tryTransferPayload(entry.getKey());
-						break;
-					case IMPORT:
-						if(stored != null) break;
-						importFace(entry.getKey());
-						break;
-					case EXPORT:
-						if(stored == null) break;
+			switch ((entry.getValue().conduitFunction)) {
+				case ONE_WAY:
+					if (stored == null || !stored.isFinished()) break;
+					if (!tryTransferPayload(entry.getKey())) {
+						// Might be storage
 						exportFace(entry.getKey());
-						break;
-					default:
-						// No functionality for rest
-						break;
-				}
+					}
+					break;
+				case IMPORT:
+					if (stored != null) break;
+					importFace(entry.getKey());
+					break;
+				case EXPORT:
+					if (stored == null) break;
+					exportFace(entry.getKey());
+					break;
+				default:
+					// No functionality for rest
+					break;
 			}
+		}
 
 		// Item logic after operations
-		if(stored != null) {
+		if (stored != null) {
 
 			// If finished, find another conduit to move to
 			if (stored.isFinished()) {
@@ -123,53 +130,56 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 
 	@Override
 	public void tick() {
-		if(world == null){
+		if (world == null) {
 			return;
 		}
 
-		if(world.isClient()){
+		if (world.isClient()) {
 			clientTick();
-		}else{
+		} else {
 			serverTick();
 		}
 	}
 
-	public void addConduit(Direction direction, IConduit<T> conduit){
+	public void addConduit(Direction direction, IConduit<T> conduit) {
 		conduits.put(direction, conduit);
 	}
 
-	public void removeConduit(Direction direction){
+	public void removeConduit(Direction direction) {
 		conduits.remove(direction);
 	}
 
-	public void tryTransferPayload(Direction direction){
-		if(stored == null){
-			return;
+	public boolean tryTransferPayload(Direction direction) {
+		if (stored == null) {
+			return false;
 		}
 
 		IConduit<T> conduit = conduits.get(direction);
 
-		if(conduit == null){
+		if (conduit == null) {
 			BlockEntity entity = world.getBlockEntity(this.pos.offset(direction));
 
-			if(conduitEntityClass.isInstance(entity)) {
+			if (conduitEntityClass.isInstance(entity)) {
 				conduit = conduitEntityClass.cast(entity);
-			}else{
-				return;
+			} else {
+				return false;
 			}
 		}
 
 		boolean didTransfer = conduit.transferPayload(stored, direction.getOpposite());
 
-		if(didTransfer){
+		if (didTransfer) {
 			this.stored = null;
+			return true;
 		}
+
+		return false;
 	}
 
 
 	// Called by other conduits
 	public boolean transferPayload(IConduitTransfer<T> transfer, Direction origin) {
-		if(stored == null) {
+		if (stored == null) {
 			transfer.restartProgress();
 			transfer.setOriginDirection(origin);
 
@@ -183,7 +193,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 
 	// Returns a direction which is next up for transfer
 	protected Pair<IConduit<T>, Direction> getDestinationConduit() {
-		if (conduits.isEmpty() || functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY))) {
+		if (conduits.isEmpty() || functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY, conduitItemProvider))) {
 			return null;
 		}
 
@@ -193,7 +203,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		tempConduit.remove(stored.getOriginDirection());
 
 		// If pipe's changed or round robin round is finished, reset index
-		if(outputIndex >= tempConduit.size()){
+		if (outputIndex >= tempConduit.size()) {
 			outputIndex = 0;
 		}
 
@@ -201,7 +211,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		int position = 0;
 
 		for (Map.Entry<Direction, IConduit<T>> entry : tempConduit.entrySet()) {
-			if(position == outputIndex) {
+			if (position == outputIndex) {
 				outputIndex++;
 				return new Pair<>(entry.getValue(), entry.getKey());
 			}
@@ -214,32 +224,28 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 	}
 
 	// Returns true if can connect to that direction from this entity
-	public boolean canConnect(Direction direction, IConduit<T> otherConduit){
+	public boolean canConnect(Direction direction, IConduit<T> otherConduit) {
 
 		// Can't connect to direction which has a IO/Block mode
-		if(functionalFaces.hasFunctionality(direction)){
-			return false;
-		}
-
-		return true;
+		return !functionalFaces.hasFunctionality(direction);
 	}
 
 	// Add functionality to side
-	public boolean addFunctionality(Direction face, ItemStack playerHolding){
+	public boolean addFunctionality(Direction face, ItemStack playerHolding) {
 		Item holdingItem = playerHolding.getItem();
 
-		ConduitFunction conduitFunction = ConduitFunction.fromItem(holdingItem);
+		ConduitFunction conduitFunction = conduitItemProvider.fromConduitFunction(holdingItem);
 
-		if(conduitFunction == null) return false;
+		if (conduitFunction == null) return false;
 
 		// Only one_way can connect
-		if(conduitFunction == ConduitFunction.ONE_WAY && functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY))){
+		if (conduitFunction == ConduitFunction.ONE_WAY && functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY, conduitItemProvider))) {
 			return false;
 		}
 
-		ConduitFunctionalFace conduitFunctionalFace = ConduitFunctionalFace.fromFunction(conduitFunction);
+		ConduitFunctionalFace conduitFunctionalFace = ConduitFunctionalFace.fromFunction(conduitFunction, conduitItemProvider);
 
-		if(functionalFaces.canAddFunctionality(face, conduitFunctionalFace)){
+		if (functionalFaces.canAddFunctionality(face, conduitFunctionalFace)) {
 			functionalFaces.addFunctionalFace(face, conduitFunctionalFace);
 			playerHolding.decrement(1);
 			return true;
@@ -250,10 +256,10 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 
 
 	// Add functionality to side
-	public ItemStack removeFunctionality(Direction face){
+	public ItemStack removeFunctionality(Direction face) {
 		ConduitFunctionalFace functionality = functionalFaces.getFunctionality(face);
 
-		if(functionality == null){
+		if (functionality == null) {
 			return ItemStack.EMPTY;
 		}
 
@@ -266,7 +272,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		return functionalFaces.getFunctionality(direction).conduitFunction == ConduitFunction.ONE_WAY;
 	}
 
-	public IConduitTransfer<T> getStored(){
+	public IConduitTransfer<T> getStored() {
 		return stored;
 	}
 
@@ -280,7 +286,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 	public CompoundTag toTag(CompoundTag tag) {
 		tag = super.toTag(tag);
 
-		if(!functionalFaces.isEmpty()){
+		if (!functionalFaces.isEmpty()) {
 			ListTag functionalFacesList = new ListTag();
 
 			int index = 0;
@@ -299,14 +305,14 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 			tag.put("functionalFace", functionalFacesList);
 		}
 
-		if(stored != null) {
+		if (stored != null) {
 			CompoundTag storedTag = new CompoundTag();
 			storedTag = stored.toTag(storedTag);
 			tag.put("stored", storedTag);
 		}
 
-		if(!conduits.isEmpty()){
-			ListTag conduitFacesList= new ListTag();
+		if (!conduits.isEmpty()) {
+			ListTag conduitFacesList = new ListTag();
 
 			int index = 0;
 			for (Map.Entry<Direction, IConduit<T>> entry : conduits.entrySet()) {
@@ -331,7 +337,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		stored = null;
 		conduits.clear();
 
-		if(tag.contains("stored")){
+		if (tag.contains("stored")) {
 			IConduitTransfer<T> transfer = null;
 			try {
 				transfer = transferClass.newInstance();
@@ -339,7 +345,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 				e.printStackTrace();
 			}
 
-			if(transfer != null){
+			if (transfer != null) {
 				transfer.fromTag(tag.getCompound("stored"));
 				this.stored = transfer;
 			}
@@ -356,14 +362,14 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 				CompoundTag compoundTag = functionList.getCompound(i);
 
 				Direction direction = Direction.byId(compoundTag.getInt("direction"));
-				ConduitFunctionalFace function = new ConduitFunctionalFace(ConduitFunction.values()[compoundTag.getInt("function")]);
+				ConduitFunctionalFace function = new ConduitFunctionalFace(ConduitFunction.values()[compoundTag.getInt("function")], conduitItemProvider);
 
 				functionalFaces.addFunctionalFace(direction, function);
 			}
 		}
 
 
-		if(tag.contains("conduit")){
+		if (tag.contains("conduit")) {
 			ListTag conduitList = tag.getList("conduit", NbtType.COMPOUND);
 
 			for (int i = 0; i < conduitList.size(); i++) {

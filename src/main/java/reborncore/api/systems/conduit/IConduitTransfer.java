@@ -4,27 +4,27 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 
 public interface IConduitTransfer<T> {
-    void progress();
+	void progress();
 
-    // Helper functions
-    boolean isFinished();
+	// Helper functions
+	boolean isFinished();
 
-    void restartProgress();
+	void restartProgress();
 
-    float getProgressPercent();
+	float getProgressPercent();
 
-    boolean isEmpty();
+	boolean isEmpty();
 
-    // Getter/Setters
-    T getStored();
+	// Getter/Setters
+	T getStored();
 
-    void setStored(T stored);
+	void setStored(T stored);
 
-    Direction getOriginDirection();
+	Direction getOriginDirection();
 
-    void setOriginDirection(Direction origin);
+	void setOriginDirection(Direction origin);
 
-    Direction getTargetDirection();
+	Direction getTargetDirection();
 
 	void setTargetDirection(Direction target);
 

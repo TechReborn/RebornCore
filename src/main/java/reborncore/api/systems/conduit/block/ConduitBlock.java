@@ -91,20 +91,20 @@ public class ConduitBlock<T> extends BlockWithEntity {
 
 	public BooleanProperty getProperty(Direction facing) {
 		switch (facing) {
-		case EAST:
-			return EAST;
-		case WEST:
-			return WEST;
-		case NORTH:
-			return NORTH;
-		case SOUTH:
-			return SOUTH;
-		case UP:
-			return UP;
-		case DOWN:
-			return DOWN;
-		default:
-			return EAST;
+			case EAST:
+				return EAST;
+			case WEST:
+				return WEST;
+			case NORTH:
+				return NORTH;
+			case SOUTH:
+				return SOUTH;
+			case UP:
+				return UP;
+			case DOWN:
+				return DOWN;
+			default:
+				return EAST;
 		}
 	}
 
@@ -119,24 +119,24 @@ public class ConduitBlock<T> extends BlockWithEntity {
 
 		boolean considerOurEntity = true;
 
-		if(!(conduitEntityClass.isInstance(ourBaseEntity))){
+		if (!(conduitEntityClass.isInstance(ourBaseEntity))) {
 			considerOurEntity = false;
 		}
 
 		// Cast to a variable our entity
 		IConduit<T> ourEntity = conduitEntityClass.cast(ourBaseEntity);
 
-		if(!(conduitEntityClass.isInstance(otherBaseEntity))){
+		if (!(conduitEntityClass.isInstance(otherBaseEntity))) {
 			return false;
 		}
 
 		IConduit<T> otherEntity = conduitEntityClass.cast(otherBaseEntity);
 
 		// Can't connect according to entities.
-		if((considerOurEntity && !ourEntity.canConnect(direction, otherEntity)) ||
-				((!otherEntity.canConnect(direction.getOpposite(), ourEntity)) && !otherEntity.isOneWayFace(direction.getOpposite()))){
+		if ((considerOurEntity && !ourEntity.canConnect(direction, otherEntity)) ||
+				((!otherEntity.canConnect(direction.getOpposite(), ourEntity)) && !otherEntity.isOneWayFace(direction.getOpposite()))) {
 
-			if(considerOurEntity) {
+			if (considerOurEntity) {
 				ourEntity.removeConduit(direction);
 			}
 
@@ -144,7 +144,7 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		}
 
 		// Add to entity as we've connected
-		if(considerOurEntity) {
+		if (considerOurEntity) {
 			ourEntity.addConduit(direction, otherEntity);
 		}
 
@@ -155,20 +155,21 @@ public class ConduitBlock<T> extends BlockWithEntity {
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity entity = world.getBlockEntity(pos);
 
-		if(world.isClient){
+		if (world.isClient) {
 			return super.onUse(state, world, pos, player, hand, hit);
 		}
 
-		if(hand != Hand.MAIN_HAND || !(conduitEntityClass.isInstance(entity))) return super.onUse(state, world, pos, player, hand, hit);
+		if (hand != Hand.MAIN_HAND || !(conduitEntityClass.isInstance(entity)))
+			return super.onUse(state, world, pos, player, hand, hit);
 
 		IConduit<T> conduit = conduitEntityClass.cast(entity);
 		Direction face = hit.getSide();
 
 		// Sneaking to remove
-		if(player.isSneaking()){
+		if (player.isSneaking()) {
 			ItemStack outcome = conduit.removeFunctionality(face);
 
-			if(!outcome.isEmpty()){
+			if (!outcome.isEmpty()) {
 				if (player.inventory.insertStack(outcome)) {
 
 					world.setBlockState(pos, getState(world, pos));
@@ -177,7 +178,7 @@ public class ConduitBlock<T> extends BlockWithEntity {
 
 				WorldUtils.dropItem(outcome, world, player.getBlockPos());
 			}
-		}else {
+		} else {
 			if (conduit.addFunctionality(face, player.getMainHandStack())) {
 				return ActionResult.SUCCESS;
 			}
@@ -186,10 +187,10 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		return super.onUse(state, world, pos, player, hand, hit);
 	}
 
-	private BlockState getState(World world, BlockPos blockpos){
+	private BlockState getState(World world, BlockPos blockpos) {
 		BlockState state = getDefaultState();
 
-		for(Direction direction : Direction.values()){
+		for (Direction direction : Direction.values()) {
 			boolean canConnect = connectToConduit(world, blockpos, direction);
 			state = state.with(getProperty(direction), canConnect);
 		}
@@ -220,17 +221,17 @@ public class ConduitBlock<T> extends BlockWithEntity {
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext context) {
-		if(context.getWorld().isClient) return getDefaultState();
+		if (context.getWorld().isClient) return getDefaultState();
 		return getState(context.getWorld(), context.getBlockPos());
 	}
 
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState ourState, Direction ourFacing, BlockState otherState,
-			WorldAccess worldIn, BlockPos ourPos, BlockPos otherPos) {
+												WorldAccess worldIn, BlockPos ourPos, BlockPos otherPos) {
 
-		if(worldIn.isClient()){
-			return super.getStateForNeighborUpdate(ourState, ourFacing, otherState, worldIn, ourPos,otherPos);
+		if (worldIn.isClient()) {
+			return super.getStateForNeighborUpdate(ourState, ourFacing, otherState, worldIn, ourPos, otherPos);
 		}
 
 		return ourState.with(getProperty(ourFacing), connectToConduit(worldIn, ourPos, ourFacing));
@@ -240,8 +241,6 @@ public class ConduitBlock<T> extends BlockWithEntity {
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext shapeContext) {
 		return conduitShapeUtil.getShape(state);
 	}
-
-
 
 
 }

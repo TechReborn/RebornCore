@@ -15,7 +15,7 @@ public abstract class BaseConduitTransfer<T> implements IConduitTransfer<T> {
 	// Used for rendering, not important
 	private Direction target;
 
-	public BaseConduitTransfer(T stored, int duration, Direction origin){
+	public BaseConduitTransfer(T stored, int duration, Direction origin) {
 		this.stored = stored;
 		this.duration = duration;
 		this.origin = origin;
@@ -25,30 +25,30 @@ public abstract class BaseConduitTransfer<T> implements IConduitTransfer<T> {
 	}
 
 	@Override
-	public void progress(){
-		if(!isFinished()) {
+	public void progress() {
+		if (!isFinished()) {
 			progress++;
 		}
 	}
 
 	// Helper functions
 	@Override
-	public boolean isFinished(){
+	public boolean isFinished() {
 		return progress >= duration;
 	}
 
 	@Override
-	public void restartProgress(){
+	public void restartProgress() {
 		progress = 0;
 	}
 
 	@Override
-	public float getProgressPercent(){
-		return ((float)progress / (float)duration);
+	public float getProgressPercent() {
+		return ((float) progress / (float) duration);
 	}
 
 	@Override
-	public boolean isEmpty(){
+	public boolean isEmpty() {
 		return false;
 	}
 
@@ -71,7 +71,7 @@ public abstract class BaseConduitTransfer<T> implements IConduitTransfer<T> {
 
 	// Getter/Setters
 	@Override
-	public T getStored(){
+	public T getStored() {
 		return this.stored;
 	}
 
