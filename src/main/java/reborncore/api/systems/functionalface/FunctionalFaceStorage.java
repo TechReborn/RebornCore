@@ -30,6 +30,16 @@ public class FunctionalFaceStorage<F extends FunctionalFace> {
 		return functionMap.containsValue(function);
 	}
 
+	public Direction getFunctionalityFace(F function) {
+		for(Map.Entry<Direction, F> entry : functionMap.entrySet()){
+			if(entry.getValue().equals(function)){
+				return entry.getKey();
+			}
+		}
+
+		return null;
+	}
+
 	public void clearFunctionaries() {
 		functionMap.clear();
 	}

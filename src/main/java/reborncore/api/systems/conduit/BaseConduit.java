@@ -115,11 +115,11 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 			// If finished, find another conduit to move to
 			if (stored.isFinished()) {
 
-				Pair<IConduit<T>, Direction> destination = getDestinationConduit();
+				Direction destination = getDestinationDirection(stored.getOriginDirection());
 
 				if (destination != null) {
 					// Giving the opposite of the TO direction which is the direction which the new conduit will be facing this entity.
-					tryTransferPayload(destination.getRight());
+					tryTransferPayload(destination);
 				}
 			}
 		}
@@ -182,6 +182,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		if (stored == null) {
 			transfer.restartProgress();
 			transfer.setOriginDirection(origin);
+			transfer.setTargetDirection(getDestinationDirection(origin));
 
 			this.stored = transfer;
 
@@ -192,15 +193,23 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 	}
 
 	// Returns a direction which is next up for transfer
-	protected Pair<IConduit<T>, Direction> getDestinationConduit() {
-		if (conduits.isEmpty() || functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY, conduitItemProvider))) {
-			return null;
+	protected Direction getDestinationDirection(Direction from) {
+
+		// Always return one-way direction if present
+		if(functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY, conduitItemProvider))){
+			return functionalFaces.getFunctionalityFace(ConduitFunctionalFace.fromFunction(ConduitFunction.ONE_WAY, conduitItemProvider));
 		}
 
+		// If we have export, then export
+		if(functionalFaces.hasFunctionality(ConduitFunctionalFace.fromFunction(ConduitFunction.EXPORT, conduitItemProvider))){
+			return functionalFaces.getFunctionalityFace(ConduitFunctionalFace.fromFunction(ConduitFunction.EXPORT, conduitItemProvider));
+		}
+
+		// Else pick a direction with valid conduit and remove from
 		HashMap<Direction, IConduit<T>> tempConduit = new HashMap<>(conduits);
 
 		// Don't send to where we've received.
-		tempConduit.remove(stored.getOriginDirection());
+		tempConduit.remove(from);
 
 		// If pipe's changed or round robin round is finished, reset index
 		if (outputIndex >= tempConduit.size()) {
@@ -213,7 +222,7 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 		for (Map.Entry<Direction, IConduit<T>> entry : tempConduit.entrySet()) {
 			if (position == outputIndex) {
 				outputIndex++;
-				return new Pair<>(entry.getValue(), entry.getKey());
+				return entry.getKey();
 			}
 
 			// Increment if not right index
@@ -265,6 +274,18 @@ public abstract class BaseConduit<T> extends BlockEntity implements Tickable, ID
 
 		functionalFaces.removeFunctionality(face);
 		return new ItemStack(functionality.getItem());
+	}
+
+	public void neighbourChange(){
+
+		// Update stored target
+		if(this.stored != null){
+			Direction destination = getDestinationDirection(stored.getOriginDirection());
+
+			if(destination != null){
+				this.stored.setTargetDirection(destination);
+			}
+		}
 	}
 
 	@Override

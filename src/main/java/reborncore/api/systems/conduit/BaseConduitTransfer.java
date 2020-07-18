@@ -13,12 +13,13 @@ public abstract class BaseConduitTransfer<T> implements IConduitTransfer<T> {
 	private Direction origin;
 
 	// Used for rendering, not important
-	private Direction target;
+	private Direction target = null;
 
-	public BaseConduitTransfer(T stored, int duration, Direction origin) {
+	public BaseConduitTransfer(T stored, int duration, Direction origin, Direction target) {
 		this.stored = stored;
 		this.duration = duration;
 		this.origin = origin;
+		this.target = target;
 	}
 
 	protected BaseConduitTransfer() {
@@ -59,12 +60,21 @@ public abstract class BaseConduitTransfer<T> implements IConduitTransfer<T> {
 		this.duration = tag.getInt("tickFinish");
 
 		this.origin = Direction.byId(tag.getInt("fromDirection"));
+
+		if(tag.contains("targetDirection")) {
+			this.target = Direction.byId(tag.getInt("targetDirection"));
+		}
 	}
 
 	protected CompoundTag toTagBase(CompoundTag tag) {
 		tag.putInt("tickProgress", progress);
 		tag.putInt("tickFinish", duration);
+
 		tag.putInt("fromDirection", origin.getId());
+
+		if(target != null) {
+			tag.putInt("targetDirection", target.getId());
+		}
 
 		return tag;
 	}

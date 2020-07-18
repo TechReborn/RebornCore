@@ -26,6 +26,7 @@ package reborncore.api.systems.conduit.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -235,6 +236,18 @@ public class ConduitBlock<T> extends BlockWithEntity {
 		}
 
 		return ourState.with(getProperty(ourFacing), connectToConduit(worldIn, ourPos, ourFacing));
+	}
+
+	@Override
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+		super.neighborUpdate(state, world, pos, block, fromPos, notify);
+
+		if(world.isClient) return;
+
+		BlockEntity entity = world.getBlockEntity(pos);
+		if(!(conduitEntityClass.isInstance(entity))) return;
+
+		conduitEntityClass.cast(entity).neighbourChange();
 	}
 
 	@Override

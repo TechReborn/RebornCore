@@ -17,6 +17,8 @@ public interface IConduit<T> {
 
 	boolean isOneWayFace(Direction direction);
 
+	void neighbourChange();
+
 
 	boolean tryTransferPayload(Direction origin);
 
