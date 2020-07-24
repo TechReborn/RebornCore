@@ -25,6 +25,9 @@
 package reborncore.common.blockentity;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntLists;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
@@ -294,7 +297,17 @@ public class SlotConfiguration implements NBTSerializable {
 				return;
 			}
 
+			IntList availableSlots = IntLists.EMPTY_LIST;
+
+			if (sourceInv instanceof SidedInventory) {
+				availableSlots = IntArrayList.wrap(((SidedInventory) sourceInv).getAvailableSlots(side.getOpposite()));
+			}
+
 			for (int i = 0; i < sourceInv.size(); i++) {
+				if (availableSlots.contains(i)) {
+					continue;
+				}
+
 				ItemStack sourceStack = sourceInv.getStack(i);
 				if (sourceStack.isEmpty()) {
 					continue;
