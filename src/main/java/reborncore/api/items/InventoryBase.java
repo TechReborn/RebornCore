@@ -34,7 +34,7 @@ import net.minecraft.util.collection.DefaultedList;
 
 public abstract class InventoryBase implements Inventory {
 
-	private int size;
+	private final int size;
 	private DefaultedList<ItemStack> stacks;
 
 	public InventoryBase(int size) {

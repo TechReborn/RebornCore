@@ -41,14 +41,14 @@ public class GuiButtonExtended extends GuiButtonSimple {
 		super(x, y, widthIn, heightIn, buttonText, pressAction);
 	}
 
-	public GuiButtonExtended clickHandler(TriConsumer<GuiButtonExtended, Double, Double> consumer){
+	public GuiButtonExtended clickHandler(TriConsumer<GuiButtonExtended, Double, Double> consumer) {
 		clickHandler = consumer;
 		return this;
 	}
 
 	@Override
 	public void onClick(double mouseX, double mouseY) {
-		if(clickHandler != null){
+		if (clickHandler != null) {
 			clickHandler.accept(this, mouseX, mouseY);
 		}
 		super.onClick(mouseY, mouseY);

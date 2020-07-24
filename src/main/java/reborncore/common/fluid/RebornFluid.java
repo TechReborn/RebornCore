@@ -135,7 +135,7 @@ public abstract class RebornFluid extends FlowableFluid {
 	@Override
 	protected void appendProperties(StateManager.Builder<Fluid, FluidState> stateBuilder) {
 		super.appendProperties(stateBuilder);
-		if(!still){
+		if (!still) {
 			stateBuilder.add(LEVEL);
 		}
 	}

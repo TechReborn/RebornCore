@@ -62,23 +62,23 @@ public class StackIngredient extends RebornIngredient {
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
-		if(!json.has("item")){
+		if (!json.has("item")) {
 			System.out.println("nope");
 		}
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "item"));
 		Item item = Registry.ITEM.getOrEmpty(identifier).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + identifier + "'"));
 
 		Optional<Integer> stackSize = Optional.empty();
-		if(json.has("count")){
+		if (json.has("count")) {
 			stackSize = Optional.of(JsonHelper.getInt(json, "count"));
 		}
 
 		Optional<CompoundTag> tag = Optional.empty();
 		boolean requireEmptyTag = false;
 
-		if(json.has("nbt")){
-			if(!json.get("nbt").isJsonObject()){
-				if(json.get("nbt").getAsString().equals("empty")){
+		if (json.has("nbt")) {
+			if (!json.get("nbt").isJsonObject()) {
+				if (json.get("nbt").getAsString().equals("empty")) {
 					requireEmptyTag = true;
 				}
 			} else {
@@ -92,17 +92,17 @@ public class StackIngredient extends RebornIngredient {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		if(itemStack.isEmpty()){
+		if (itemStack.isEmpty()) {
 			return false;
 		}
-		if(stacks.stream().noneMatch(recipeStack -> recipeStack.getItem() == itemStack.getItem())){
+		if (stacks.stream().noneMatch(recipeStack -> recipeStack.getItem() == itemStack.getItem())) {
 			return false;
 		}
-		if(count.isPresent() && count.get() > itemStack.getCount()){
+		if (count.isPresent() && count.get() > itemStack.getCount()) {
 			return false;
 		}
-		if(tag.isPresent()){
-			if(!itemStack.hasTag()){
+		if (tag.isPresent()) {
+			if (!itemStack.hasTag()) {
 				return false;
 			}
 
@@ -113,14 +113,11 @@ public class StackIngredient extends RebornIngredient {
 			JsonElement jsonElement = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, compoundTag);
 			compoundTag = (CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, jsonElement);
 
-			if(!tag.get().equals(compoundTag)){
+			if (!tag.get().equals(compoundTag)) {
 				return false;
 			}
 		}
-		if(requireEmptyTag && itemStack.hasTag()){
-			return false;
-		}
-		return true;
+		return !requireEmptyTag || !itemStack.hasTag();
 	}
 
 	@Override
@@ -131,11 +128,11 @@ public class StackIngredient extends RebornIngredient {
 	@Override
 	public List<ItemStack> getPreviewStacks() {
 		return Collections.unmodifiableList(
-			stacks.stream()
-				.map(ItemStack::copy)
-				.peek(itemStack -> itemStack.setCount(count.orElse(1)))
-				.peek(itemStack -> itemStack.setTag(tag.orElse(null)))
-				.collect(Collectors.toList()));
+				stacks.stream()
+						.map(ItemStack::copy)
+						.peek(itemStack -> itemStack.setCount(count.orElse(1)))
+						.peek(itemStack -> itemStack.setTag(tag.orElse(null)))
+						.collect(Collectors.toList()));
 	}
 
 	@Override
@@ -145,7 +142,7 @@ public class StackIngredient extends RebornIngredient {
 		jsonObject.addProperty("item", Registry.ITEM.getId(stacks.get(0).getItem()).toString());
 		count.ifPresent(integer -> jsonObject.addProperty("count", integer));
 
-		if(requireEmptyTag){
+		if (requireEmptyTag) {
 			jsonObject.addProperty("nbt", "empty");
 		} else {
 			tag.ifPresent(compoundTag -> jsonObject.add("nbt", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, compoundTag)));

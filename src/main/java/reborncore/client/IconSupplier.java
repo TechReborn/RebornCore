@@ -32,7 +32,7 @@ import net.minecraft.util.Identifier;
 import reborncore.RebornCore;
 
 public class IconSupplier {
-	
+
 	public static Identifier armour_head_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_head");
 	public static Identifier armour_chest_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_chest");
 	public static Identifier armour_legs_id = new Identifier(RebornCore.MOD_ID, "gui/slot_sprites/armour_legs");

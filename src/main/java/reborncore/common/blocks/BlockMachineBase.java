@@ -29,7 +29,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
@@ -80,7 +79,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		this.hasCustomStates = hasCustomStates;
 		if (!hasCustomStates) {
 			this.setDefaultState(
-				this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
+					this.getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false));
 		}
 		BlockWrenchEventHandler.wrenableBlocks.add(this);
 	}
@@ -122,7 +121,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
 
 		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
-		if(blockEntity instanceof MachineBaseBlockEntity){
+		if (blockEntity instanceof MachineBaseBlockEntity) {
 			((MachineBaseBlockEntity) blockEntity).onPlace(worldIn, pos, state, placer, stack);
 		}
 	}
@@ -152,7 +151,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	@Override
 	public void onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
 		BlockEntity blockEntity = world.getBlockEntity(blockPos);
-		if(blockEntity instanceof MachineBaseBlockEntity){
+		if (blockEntity instanceof MachineBaseBlockEntity) {
 			((MachineBaseBlockEntity) blockEntity).onBreak(world, playerEntity, blockPos, blockState);
 		}
 		super.onBreak(world, blockPos, blockState, playerEntity);
@@ -202,7 +201,7 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 				IUpgradeable upgradeableEntity = (IUpgradeable) blockEntity;
 				if (upgradeableEntity.canBeUpgraded()) {
 					if (InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack,
-					                                     true).getCount() > 0) {
+							true).getCount() > 0) {
 						stack = InventoryUtils.insertItemStacked(upgradeableEntity.getUpgradeInvetory(), stack, false);
 						playerIn.setStackInHand(Hand.MAIN_HAND, stack);
 						return ActionResult.SUCCESS;
@@ -229,8 +228,8 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	@Override
 	public SidedInventory getInventory(BlockState blockState, WorldAccess world, BlockPos blockPos) {
 		BlockEntity blockEntity = world.getBlockEntity(blockPos);
-		if(blockEntity instanceof MachineBaseBlockEntity){
-			return (MachineBaseBlockEntity)blockEntity;
+		if (blockEntity instanceof MachineBaseBlockEntity) {
+			return (MachineBaseBlockEntity) blockEntity;
 		}
 		return null;
 	}

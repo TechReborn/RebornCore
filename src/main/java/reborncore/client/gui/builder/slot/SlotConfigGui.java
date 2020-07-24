@@ -31,12 +31,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
-import reborncore.client.screen.builder.BuiltScreenHandler;
 import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.elements.ConfigSlotElement;
 import reborncore.client.gui.builder.slot.elements.ElementBase;
 import reborncore.client.gui.builder.slot.elements.SlotType;
+import reborncore.client.screen.builder.BuiltScreenHandler;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
@@ -98,8 +98,8 @@ public class SlotConfigGui {
 			return Collections.emptyList();
 		}
 		return slotElementMap.values().stream()
-			.filter(configSlotElement -> configSlotElement.getId() == selectedSlot)
-			.collect(Collectors.toList());
+				.filter(configSlotElement -> configSlotElement.getId() == selectedSlot)
+				.collect(Collectors.toList());
 	}
 
 	public static void copyToClipboard() {

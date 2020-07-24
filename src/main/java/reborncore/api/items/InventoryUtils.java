@@ -24,11 +24,7 @@
 
 package reborncore.api.items;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.InventoryProvider;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -49,16 +45,16 @@ public class InventoryUtils {
 			ItemStack targetStack = inventory.getStack(i);
 
 			//Nice and simple, insert the item into a blank slot
-			if(targetStack.isEmpty()){
-				if(!simulate){
+			if (targetStack.isEmpty()) {
+				if (!simulate) {
 					inventory.setStack(i, stack);
 				}
 				return ItemStack.EMPTY;
-			} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)){
+			} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)) {
 				int freeStackSpace = targetStack.getMaxCount() - targetStack.getCount();
-				if(freeStackSpace > 0){
+				if (freeStackSpace > 0) {
 					int transferAmount = Math.min(freeStackSpace, input.getCount());
-					if(!simulate){
+					if (!simulate) {
 						targetStack.increment(transferAmount);
 					}
 					stack.decrement(transferAmount);
@@ -76,7 +72,7 @@ public class InventoryUtils {
 			for (int slot : sidedInventory.getAvailableSlots(direction)) {
 				if (sidedInventory.canInsert(slot, stack, direction)) {
 					stack = insertIntoInv(sidedInventory, slot, stack);
-					if(stack.isEmpty()){
+					if (stack.isEmpty()) {
 						break;
 					}
 				}
@@ -111,17 +107,17 @@ public class InventoryUtils {
 		return inventory;
 	}
 
-	private static ItemStack insertIntoInv(Inventory inventory, int slot, ItemStack input){
+	private static ItemStack insertIntoInv(Inventory inventory, int slot, ItemStack input) {
 		ItemStack targetStack = inventory.getStack(slot);
 		ItemStack stack = input.copy();
 
 		//Nice and simple, insert the item into a blank slot
-		if(targetStack.isEmpty()){
+		if (targetStack.isEmpty()) {
 			inventory.setStack(slot, stack);
 			return ItemStack.EMPTY;
-		} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)){
+		} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)) {
 			int freeStackSpace = targetStack.getMaxCount() - targetStack.getCount();
-			if(freeStackSpace > 0){
+			if (freeStackSpace > 0) {
 				int transferAmount = Math.min(freeStackSpace, stack.getCount());
 				targetStack.increment(transferAmount);
 				stack.decrement(transferAmount);

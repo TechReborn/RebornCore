@@ -108,8 +108,8 @@ public class Sprite implements ISprite {
 	}
 
 	public static class Button {
-		private Sprite normal;
-		private Sprite hovered;
+		private final Sprite normal;
+		private final Sprite hovered;
 
 		public Button(Sprite normal, Sprite hovered) {
 			this.normal = normal;
@@ -126,9 +126,9 @@ public class Sprite implements ISprite {
 	}
 
 	public static class ToggleButton {
-		private Sprite normal;
-		private Sprite hovered;
-		private Sprite pressed;
+		private final Sprite normal;
+		private final Sprite hovered;
+		private final Sprite pressed;
 
 		public ToggleButton(Sprite normal, Sprite hovered, Sprite pressed) {
 			this.normal = normal;
@@ -150,8 +150,8 @@ public class Sprite implements ISprite {
 	}
 
 	public static class CheckBox {
-		private Sprite normal;
-		private Sprite ticked;
+		private final Sprite normal;
+		private final Sprite ticked;
 
 		public CheckBox(Sprite normal, Sprite ticked) {
 			this.normal = normal;

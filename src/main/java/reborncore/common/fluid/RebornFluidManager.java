@@ -42,12 +42,12 @@ public class RebornFluidManager {
 
 	private static Lazy<Map<Fluid, BucketItem>> bucketMap;
 
-	public static void register(RebornFluid rebornFluid, Identifier identifier){
+	public static void register(RebornFluid rebornFluid, Identifier identifier) {
 		fluids.put(identifier, rebornFluid);
 		Registry.register(Registry.FLUID, identifier, rebornFluid);
 	}
 
-	public static void setupBucketMap(){
+	public static void setupBucketMap() {
 		bucketMap = new Lazy<>(() -> {
 			Map<Fluid, BucketItem> map = new HashMap<>();
 			Registry.ITEM.stream().filter(item -> item instanceof BucketItem).forEach(item -> {
@@ -55,7 +55,7 @@ public class RebornFluidManager {
 				//We can be sure of this as we add this via a mixin
 				ItemFluidInfo fluidInfo = (ItemFluidInfo) bucketItem;
 				Fluid fluid = fluidInfo.getFluid(new ItemStack(item));
-				if(!map.containsKey(fluid)){
+				if (!map.containsKey(fluid)) {
 					map.put(fluid, bucketItem);
 				}
 			});
@@ -63,7 +63,7 @@ public class RebornFluidManager {
 		});
 	}
 
-	public static Map<Fluid, BucketItem> getBucketMap(){
+	public static Map<Fluid, BucketItem> getBucketMap() {
 		return bucketMap.get();
 	}
 
@@ -71,7 +71,7 @@ public class RebornFluidManager {
 		return fluids;
 	}
 
-	public static Stream<RebornFluid> getFluidStream(){
+	public static Stream<RebornFluid> getFluidStream() {
 		return fluids.values().stream();
 	}
 }

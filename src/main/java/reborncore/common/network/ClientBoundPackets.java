@@ -26,7 +26,6 @@ package reborncore.common.network;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.screen.ScreenHandler;
@@ -37,7 +36,6 @@ import reborncore.common.blockentity.SlotConfiguration;
 import reborncore.common.chunkloading.ChunkLoaderManager;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientBoundPackets {
 
@@ -75,7 +73,7 @@ public class ClientBoundPackets {
 		});
 	}
 
-	public static Packet<ClientPlayPacketListener> createPacketSyncLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks){
+	public static Packet<ClientPlayPacketListener> createPacketSyncLoadedChunks(List<ChunkLoaderManager.LoadedChunk> chunks) {
 		return NetworkManager.createClientBoundPacket(new Identifier("reborncore", "sync_chunks"), extendedPacketBuffer -> {
 			extendedPacketBuffer.writeCodec(ChunkLoaderManager.CODEC, chunks);
 		});

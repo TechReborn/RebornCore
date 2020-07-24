@@ -26,6 +26,7 @@ package reborncore.common.util;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -56,7 +57,7 @@ public class WorldUtils {
 		float dZ = rand.nextFloat() * 0.8F + 0.1F;
 
 		ItemEntity entityItem = new ItemEntity(world, pos.getX() + dX, pos.getY() + dY, pos.getZ() + dZ,
-			itemStack.copy());
+				itemStack.copy());
 
 		if (itemStack.hasTag()) {
 			entityItem.getStack().setTag(itemStack.getTag().copy());
@@ -67,6 +68,10 @@ public class WorldUtils {
 		if (!world.isClient) {
 			world.spawnEntity(entityItem);
 		}
+	}
+
+	public static void dropItem(Item item, World world, BlockPos pos) {
+		dropItem(new ItemStack(item), world, pos);
 	}
 
 	public static void dropItems(List<ItemStack> itemStackList, World world, BlockPos pos) {

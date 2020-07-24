@@ -47,13 +47,13 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import reborncore.api.blockentity.IUpgradeable;
-import reborncore.client.screen.builder.BuiltScreenHandler;
-import reborncore.client.screen.builder.slot.PlayerInventorySlot;
 import reborncore.client.gui.builder.slot.FluidConfigGui;
 import reborncore.client.gui.builder.slot.GuiTab;
 import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.builder.widget.GuiButtonHologram;
 import reborncore.client.gui.guibuilder.GuiBuilder;
+import reborncore.client.screen.builder.BuiltScreenHandler;
+import reborncore.client.screen.builder.slot.PlayerInventorySlot;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 import javax.annotation.Nullable;
@@ -72,7 +72,7 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 	public static FluidCellProvider fluidCellProvider = fluid -> ItemStack.EMPTY;
 	public static ItemStack wrenchStack = ItemStack.EMPTY;
 
-	private List<GuiTab.Builder> tabBuilders = Util.make(new ArrayList<>(), builders -> {
+	private final List<GuiTab.Builder> tabBuilders = Util.make(new ArrayList<>(), builders -> {
 		builders.add(GuiTab.Builder.builder()
 				.name("reborncore.gui.tooltip.config_slots")
 				.enabled(guiTab -> guiTab.machine().hasSlotConfig())
@@ -126,8 +126,8 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 	public BlockEntity be;
 	@Nullable
 	public BuiltScreenHandler builtScreenHandler;
-	private int xSize = 176;
-	private int ySize = 176;
+	private final int xSize = 176;
+	private final int ySize = 176;
 
 	private GuiTab selectedTab;
 	private List<GuiTab> tabs;

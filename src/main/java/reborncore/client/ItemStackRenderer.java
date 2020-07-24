@@ -77,7 +77,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 
-		if(minecraft.getItemRenderer() == null || minecraft.world == null) {
+		if (minecraft.getItemRenderer() == null || minecraft.world == null) {
 			return;
 		}
 

@@ -99,10 +99,11 @@ public class RecipeCrafter implements IUpgradeHandler {
 	int ticksSinceLastChange;
 
 	@Nullable
-	public static ICrafterSoundHanlder soundHanlder = (firstRun, blockEntity) -> {};
+	public static ICrafterSoundHanlder soundHanlder = (firstRun, blockEntity) -> {
+	};
 
 	public RecipeCrafter(RebornRecipeType<?> recipeType, BlockEntity blockEntity, int inputs, int outputs, RebornInventory<?> inventory,
-	                     int[] inputSlots, int[] outputSlots) {
+						 int[] inputSlots, int[] outputSlots) {
 		this.recipeType = recipeType;
 		this.blockEntity = blockEntity;
 		if (blockEntity instanceof EnergyStorage) {
@@ -179,7 +180,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				}
 			} else if (currentRecipe != null && currentTickTime < currentNeededTicks) {
 				double useRequirement = getEuPerTick(currentRecipe.getPower());
-				if(Energy.of(energy).use(useRequirement)){
+				if (Energy.of(energy).use(useRequirement)) {
 					currentTickTime++;
 					if (currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null) {
 						soundHanlder.playSound(false, blockEntity);
@@ -258,9 +259,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 			return true;
 		}
 		if (ItemUtils.isItemEqual(inventory.getStack(slot), stack, true, true)) {
-			if (stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount()) {
-				return true;
-			}
+			return stack.getCount() + inventory.getStack(slot).getCount() <= stack.getMaxCount();
 		}
 		return false;
 	}
@@ -295,8 +294,8 @@ public class RecipeCrafter implements IUpgradeHandler {
 
 		if (blockEntity != null && blockEntity.getWorld() != null && blockEntity.getWorld().isClient) {
 			blockEntity.getWorld().updateListeners(blockEntity.getPos(),
-			                                  blockEntity.getWorld().getBlockState(blockEntity.getPos()),
-			                                  blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
+					blockEntity.getWorld().getBlockState(blockEntity.getPos()),
+					blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
 		}
 	}
 
@@ -335,13 +334,13 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public void setIsActive() {
 		if (blockEntity.getWorld().getBlockState(blockEntity.getPos()).getBlock() instanceof BlockMachineBase) {
 			BlockMachineBase blockMachineBase = (BlockMachineBase) blockEntity.getWorld()
-				.getBlockState(blockEntity.getPos()).getBlock();
+					.getBlockState(blockEntity.getPos()).getBlock();
 			boolean isActive = isActive() || canCraftAgain();
 			blockMachineBase.setActive(isActive, blockEntity.getWorld(), blockEntity.getPos());
 		}
 		blockEntity.getWorld().updateListeners(blockEntity.getPos(),
-		                                  blockEntity.getWorld().getBlockState(blockEntity.getPos()),
-		                                  blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
+				blockEntity.getWorld().getBlockState(blockEntity.getPos()),
+				blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
 	}
 
 	public void setCurrentRecipe(RebornRecipe recipe) {

@@ -56,11 +56,11 @@ public class BaseSlot extends Slot {
 		return filter.test(stack);
 	}
 
-	public boolean canWorldBlockInsert(){
+	public boolean canWorldBlockInsert() {
 		return true;
 	}
 
 	public int getSlotID() {
-		return ((AccessorSlot)this).getIndex();
+		return ((AccessorSlot) this).getIndex();
 	}
 }

@@ -28,13 +28,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
@@ -49,7 +49,6 @@ import reborncore.api.blockentity.IUpgrade;
 import reborncore.api.blockentity.IUpgradeable;
 import reborncore.api.blockentity.InventoryProvider;
 import reborncore.api.recipe.IRecipeCrafterProvider;
-import reborncore.client.multiblock.Multiblock;
 import reborncore.common.blocks.BlockMachineBase;
 import reborncore.common.fluid.FluidValue;
 import reborncore.common.network.ClientBoundPackets;
@@ -75,7 +74,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	public FluidConfiguration fluidConfiguration;
 	private RedstoneConfiguration redstoneConfiguration;
 
-	public Multiblock renderMultiblock;
+	public boolean renderMultiblock = false;
 
 	private int ticktime = 0;
 
@@ -97,6 +96,14 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		super(blockEntityTypeIn);
 		redstoneConfiguration = new RedstoneConfiguration(this);
 	}
+
+	public boolean isMultiblockValid() {
+		MultiblockWriter.MultiblockVerifier verifier = new MultiblockWriter.MultiblockVerifier(getPos(), getWorld());
+		writeMultiblock(verifier.rotate(getFacing().getOpposite()));
+		return verifier.isValid();
+	}
+
+	public void writeMultiblock(MultiblockWriter writer) {}
 
 	public void syncWithAll() {
 		if (!world.isClient) {

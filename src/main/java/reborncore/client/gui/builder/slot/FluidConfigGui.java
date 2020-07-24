@@ -100,7 +100,7 @@ public class FluidConfigGui {
 		}
 	}
 
-	public static boolean mouseReleased(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton)  {
+	public static boolean mouseReleased(GuiBase<?> guiBase, double mouseX, double mouseY, int mouseButton) {
 		boolean clicked = false;
 		if (mouseButton == 0) {
 			for (ConfigFluidElement configFluidElement : getVisibleElements()) {

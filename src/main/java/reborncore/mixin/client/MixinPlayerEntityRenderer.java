@@ -45,7 +45,7 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
 	}
 
 	@Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
-	private void construct(EntityRenderDispatcher entityRenderDispatcher, boolean alex, CallbackInfo info){
+	private void construct(EntityRenderDispatcher entityRenderDispatcher, boolean alex, CallbackInfo info) {
 		if (CalenderUtils.christmas && RebornCoreConfig.easterEggs) {
 			addFeature(new HolidayRenderManager.LayerRender(this));
 		}

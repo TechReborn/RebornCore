@@ -57,7 +57,7 @@ public class TagIngredient extends RebornIngredient {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		if(count.isPresent() && count.get() > itemStack.getCount()){
+		if (count.isPresent() && count.get() > itemStack.getCount()) {
 			return false;
 		}
 		return itemStack.getItem().isIn(tag);
@@ -75,11 +75,11 @@ public class TagIngredient extends RebornIngredient {
 
 	public static RebornIngredient deserialize(JsonObject json) {
 		Optional<Integer> count = Optional.empty();
-		if(json.has("count")){
+		if (json.has("count")) {
 			count = Optional.of(JsonHelper.getInt(json, "count"));
 		}
 
-		if(json.has("server_sync")){
+		if (json.has("server_sync")) {
 			Identifier tagIdent = new Identifier(JsonHelper.getString(json, "tag_identifier"));
 			List<Item> items = new ArrayList<>();
 			for (int i = 0; i < JsonHelper.getInt(json, "items"); i++) {

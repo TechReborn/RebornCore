@@ -43,13 +43,14 @@ import javax.annotation.Nullable;
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 
-	@Shadow protected abstract void renderGuiQuad(BufferBuilder bufferBuilder_1, int int_1, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7, int int_8);
+	@Shadow
+	protected abstract void renderGuiQuad(BufferBuilder bufferBuilder_1, int int_1, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7, int int_8);
 
 	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("HEAD"))
 	private void renderGuiItemOverlay(TextRenderer textRenderer, ItemStack stack, int x, int y, @Nullable String string, CallbackInfo info) {
 		if (stack.getItem() instanceof ItemDurabilityExtensions) {
 			ItemDurabilityExtensions durabilityExtensions = (ItemDurabilityExtensions) stack.getItem();
-			if(!durabilityExtensions.showDurability(stack)){
+			if (!durabilityExtensions.showDurability(stack)) {
 				return;
 			}
 			RenderSystem.disableDepthTest();

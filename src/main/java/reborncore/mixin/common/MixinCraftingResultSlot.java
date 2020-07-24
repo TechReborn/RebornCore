@@ -46,7 +46,9 @@ public abstract class MixinCraftingResultSlot {
 	@Final
 	private CraftingInventory input;
 
-	@Shadow @Final private PlayerEntity player;
+	@Shadow
+	@Final
+	private PlayerEntity player;
 
 	@ModifyVariable(method = "onTakeItem", at = @At(value = "INVOKE"), index = 3)
 	private DefaultedList<ItemStack> defaultedList(DefaultedList<ItemStack> list) {
@@ -63,7 +65,7 @@ public abstract class MixinCraftingResultSlot {
 	}
 
 	@Inject(method = "onCrafted(Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onCraft(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;I)V", shift = At.Shift.AFTER))
-	private void onCrafted(ItemStack itemStack, CallbackInfo info){
+	private void onCrafted(ItemStack itemStack, CallbackInfo info) {
 		ItemCraftCallback.EVENT.invoker().onCraft(itemStack, input, player);
 	}
 

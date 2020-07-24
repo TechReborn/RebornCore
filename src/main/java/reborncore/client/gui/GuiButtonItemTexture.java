@@ -44,7 +44,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 	public Text NAME;
 
 	public GuiButtonItemTexture(int xPos, int yPos, int u, int v, int width, int height, ItemStack stack,
-	                            String linkedPage, Text name, ButtonWidget.PressAction pressAction) {
+								String linkedPage, Text name, ButtonWidget.PressAction pressAction) {
 		super(xPos, yPos, width, height, LiteralText.EMPTY, pressAction);
 		textureU = u;
 		textureV = v;
@@ -58,7 +58,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 		if (this.visible) {
 			MinecraftClient mc = MinecraftClient.getInstance();
 			boolean flag = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
-				&& mouseY < this.y + this.height;
+					&& mouseY < this.y + this.height;
 			mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 			int u = textureU;
 			int v = textureV;
@@ -76,7 +76,7 @@ public class GuiButtonItemTexture extends ButtonWidget {
 			ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 			itemRenderer.renderGuiItemIcon(itemstack, this.x, this.y);
 			this.drawTextWithShadow(matrixStack, mc.textRenderer, this.NAME, this.x + 20, this.y + 3,
-			                Color.WHITE.getColor());
+					Color.WHITE.getColor());
 		}
 	}
 

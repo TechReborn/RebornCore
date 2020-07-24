@@ -32,7 +32,7 @@ import java.util.List;
 
 public class SlotFilteredVoid extends BaseSlot {
 
-	private List<ItemStack> filter = new ArrayList<ItemStack>();
+	private final List<ItemStack> filter = new ArrayList<ItemStack>();
 
 	public SlotFilteredVoid(Inventory itemHandler, int id, int x, int y) {
 		super(itemHandler, id, x, y);

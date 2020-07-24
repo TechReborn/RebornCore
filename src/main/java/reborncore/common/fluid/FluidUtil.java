@@ -24,14 +24,14 @@
 
 package reborncore.common.fluid;
 
-import net.minecraft.fluid.Fluids;
-import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.StringUtils;
+import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.util.Tank;
 
 import javax.annotation.Nonnull;
@@ -54,11 +54,11 @@ public class FluidUtil {
 		return null;
 	}
 
-	public static String getFluidName(@Nonnull FluidInstance fluidInstance){
+	public static String getFluidName(@Nonnull FluidInstance fluidInstance) {
 		return getFluidName(fluidInstance.getFluid());
 	}
 
-	public static String getFluidName(@Nonnull Fluid fluid){
+	public static String getFluidName(@Nonnull Fluid fluid) {
 		return StringUtils.capitalize(Registry.FLUID.getId(fluid).getPath());
 	}
 

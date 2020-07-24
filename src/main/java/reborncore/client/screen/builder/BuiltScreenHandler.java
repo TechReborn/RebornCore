@@ -123,7 +123,7 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 	public void sendContentUpdates() {
 		super.sendContentUpdates();
 
-		for (final ScreenHandlerListener listener : ((AccessorScreenHandler)(this)).getListeners()) {
+		for (final ScreenHandlerListener listener : ((AccessorScreenHandler) (this)).getListeners()) {
 
 			int i = 0;
 			if (!this.shortValues.isEmpty()) {
@@ -155,8 +155,8 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 				int objects = 0;
 				for (final MutableTriple<Supplier, Consumer, Object> value : this.objectValues) {
 					final Object supplied = value.getLeft().get();
-					if(supplied != value.getRight()){
-						sendObject(listener,this, objects, supplied);
+					if (supplied != value.getRight()) {
+						sendObject(listener, this, objects, supplied);
 						value.setRight(supplied);
 					}
 					objects++;
@@ -280,7 +280,7 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 				final Slot slot = this.slots.get(slotIndex);
 				final ItemStack stackInSlot = slot.getStack();
 				if (!stackInSlot.isEmpty() && ItemUtils.isItemEqual(stackInSlot, stackToShift, true, true)
-					&& slot.canInsert(stackToShift)) {
+						&& slot.canInsert(stackToShift)) {
 					final int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
 					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxStackAmount());
 					if (resultingStackSize <= max) {
@@ -316,7 +316,7 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 	}
 
 	private boolean shiftToBlockEntity(final ItemStack stackToShift) {
-		if(!blockEntity.getOptionalInventory().isPresent()){
+		if (!blockEntity.getOptionalInventory().isPresent()) {
 			return false;
 		}
 		for (final Range<Integer> range : this.blockEntitySlotRanges) {

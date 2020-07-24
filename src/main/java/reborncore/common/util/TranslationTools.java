@@ -26,6 +26,7 @@ package reborncore.common.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -54,20 +55,20 @@ public class TranslationTools {
 		Path outputDir = dir.resolve("out");
 		Files.createDirectories(outputDir);
 
-		for(Path path : Files.walk(dir.resolve("old")).collect(Collectors.toList())){
-			if(Files.isDirectory(path)){
+		for (Path path : Files.walk(dir.resolve("old")).collect(Collectors.toList())) {
+			if (Files.isDirectory(path)) {
 				continue;
 			}
 			Map<String, String> oldLang = readLangFile(path);
 			Map<String, String> output = new HashMap<>();
 
-			for(Map.Entry<String, String> entry : oldLang.entrySet()) {
+			for (Map.Entry<String, String> entry : oldLang.entrySet()) {
 				String key = entry.getKey();
 				String value = entry.getValue();
-				if(keyMap.containsKey(key)){
+				if (keyMap.containsKey(key)) {
 					key = keyMap.get(key);
 				}
-				if(!newLang.containsKey(key)){
+				if (!newLang.containsKey(key)) {
 					//Lost key, no point copying them over
 					continue;
 				}
@@ -87,27 +88,27 @@ public class TranslationTools {
 
 		Map<String, String> conversion = new HashMap<>();
 
-		for(Map.Entry<String, String> entry : oldLang.entrySet()) {
+		for (Map.Entry<String, String> entry : oldLang.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
 
 			List<String> newKeys = getKeysByValue(newLang, value);
-			if(newKeys.size() == 1){
+			if (newKeys.size() == 1) {
 				conversion.put(key, newKeys.get(0));
-			} else if (newKeys.size() > 0){
+			} else if (newKeys.size() > 0) {
 				boolean autoMatched = false;
 				String[][] autoMatches = new String[][]{{"tile.", "block."}, {"fluid.", "fluid."}};
-				for(String[] arr : autoMatches){
-					if(key.startsWith(arr[0])){
-						for(String newKey : newKeys){
-							if(newKey.startsWith(arr[1])){
+				for (String[] arr : autoMatches) {
+					if (key.startsWith(arr[0])) {
+						for (String newKey : newKeys) {
+							if (newKey.startsWith(arr[1])) {
 								autoMatched = true;
 								conversion.put(key, newKey);
 							}
 						}
 					}
 				}
-				if(!autoMatched){
+				if (!autoMatched) {
 					System.out.println();
 					System.out.println(key);
 					System.out.println();
@@ -126,20 +127,21 @@ public class TranslationTools {
 	}
 
 	private static Map<String, String> readJsonFile(Path path) throws IOException {
-		Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+		Type mapType = new TypeToken<Map<String, String>>() {
+		}.getType();
 		return new Gson().fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), mapType);
 	}
 
 	private static Map<String, String> readLangFile(Path path) throws IOException {
 		List<String> lines = Files.lines(path).collect(Collectors.toList());
 		Map<String, String> map = new HashMap<>();
-		for(String line : lines){
+		for (String line : lines) {
 			line = line.trim();
-			if(line.isEmpty() || line.startsWith("#")){
+			if (line.isEmpty() || line.startsWith("#")) {
 				continue;
 			}
 			String[] split = line.split("=");
-			if(split.length != 2){
+			if (split.length != 2) {
 				throw new UnsupportedOperationException();
 			}
 			map.put(split[0], split[1]);

@@ -27,17 +27,17 @@ package reborncore.common.network;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.math.BigInteger;
-
 import net.minecraft.datafixer.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 
 public class ExtendedPacketBuffer extends PacketByteBuf {
 	public ExtendedPacketBuffer(ByteBuf wrapped) {
@@ -52,22 +52,22 @@ public class ExtendedPacketBuffer extends PacketByteBuf {
 		return ObjectBufferUtils.readObject(this);
 	}
 
-	public void writeBigInt(BigInteger bigInteger){
+	public void writeBigInt(BigInteger bigInteger) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream outputStream = new ObjectOutputStream(baos);
 			outputStream.writeObject(bigInteger);
 			writeByteArray(baos.toByteArray());
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("Failed to write big int");
 		}
 	}
 
-	public BigInteger readBigInt(){
+	public BigInteger readBigInt() {
 		try {
 			ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(readByteArray()));
 			return (BigInteger) inputStream.readObject();
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new RuntimeException("Failed to read big int");
 		}
 	}
@@ -81,7 +81,7 @@ public class ExtendedPacketBuffer extends PacketByteBuf {
 			Tag tag = dataResult.result().get();
 			if (tag instanceof CompoundTag) {
 				writeByte(0);
-				writeCompoundTag((CompoundTag)tag);
+				writeCompoundTag((CompoundTag) tag);
 			} else if (tag instanceof ListTag) {
 				writeByte(1);
 				CompoundTag compoundTag = new CompoundTag();

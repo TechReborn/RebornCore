@@ -56,7 +56,6 @@ import reborncore.common.powerSystem.PowerSystem;
 import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import reborncore.common.util.StringUtils;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +75,7 @@ public class GuiBuilder {
 	public GuiBuilder(Identifier resourceLocation) {
 		GuiBuilder.resourceLocation = resourceLocation;
 	}
-	
+
 	public Identifier getResourceLocation() {
 		return resourceLocation;
 	}
@@ -88,7 +87,7 @@ public class GuiBuilder {
 		gui.drawTexture(matrixStack, x + width / 2, y, 150 - width / 2, 0, width / 2, height / 2);
 		gui.drawTexture(matrixStack, x, y + height / 2, 0, 150 - height / 2, width / 2, height / 2);
 		gui.drawTexture(matrixStack, x + width / 2, y + height / 2, 150 - width / 2, 150 - height / 2, width / 2,
-			height / 2);
+				height / 2);
 	}
 
 	public void drawPlayerSlots(MatrixStack matrixStack, Screen gui, int posX, int posY, boolean center) {
@@ -113,7 +112,7 @@ public class GuiBuilder {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(resourceLocation);
 		gui.drawTexture(matrixStack, posX, posY, 150, 0, 18, 18);
 	}
-	
+
 	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
 		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
 	}
@@ -135,9 +134,9 @@ public class GuiBuilder {
 	/**
 	 * Draws button with JEI icon in the given coords.
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place button
-	 * @param y int Top left corner where to place button
+	 * @param gui   GuiBase GUI to draw on
+	 * @param x     int Top left corner where to place button
+	 * @param y     int Top left corner where to place button
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawJEIButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, GuiBase.Layer layer) {
@@ -155,12 +154,12 @@ public class GuiBuilder {
 	/**
 	 * Draws lock button in either locked or unlocked state
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place button
-	 * @param y int Top left corner where to place button
+	 * @param gui    GuiBase GUI to draw on
+	 * @param x      int Top left corner where to place button
+	 * @param y      int Top left corner where to place button
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param layer Layer Layer to draw on
+	 * @param layer  Layer Layer to draw on
 	 * @param locked boolean Set to true if it is in locked state
 	 */
 	public void drawLockButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer, boolean locked) {
@@ -187,12 +186,12 @@ public class GuiBuilder {
 	/**
 	 * Draws hologram toggle button
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place button
-	 * @param y int Top left corner where to place button
+	 * @param gui    GuiBase GUI to draw on
+	 * @param x      int Top left corner where to place button
+	 * @param y      int Top left corner where to place button
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param layer Layer Layer to draw on
+	 * @param layer  Layer Layer to draw on
 	 */
 	public void drawHologramButton(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (gui.isTabOpen()) return;
@@ -201,10 +200,10 @@ public class GuiBuilder {
 			y += gui.getGuiTop();
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-		if (gui.getMachine().renderMultiblock == null) {
-			gui.drawTexture(matrixStack, x, y, 174, 50, 20, 12);
-		} else {
+		if (gui.getMachine().renderMultiblock) {
 			gui.drawTexture(matrixStack, x, y, 174, 62, 20, 12);
+		} else {
+			gui.drawTexture(matrixStack, x, y, 174, 50, 20, 12);
 		}
 		if (gui.isPointInRect(x, y, 20, 12, mouseX, mouseY)) {
 			List<Text> list = new ArrayList<>();
@@ -222,11 +221,11 @@ public class GuiBuilder {
 	/**
 	 * Draws big horizontal bar for heat value
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place bar
-	 * @param y int Top left corner where to place bar
+	 * @param gui   GuiBase GUI to draw on
+	 * @param x     int Top left corner where to place bar
+	 * @param y     int Top left corner where to place bar
 	 * @param value int Current heat value
-	 * @param max int Maximum heat value
+	 * @param max   int Maximum heat value
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawBigHeatBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, GuiBase.Layer layer) {
@@ -254,17 +253,17 @@ public class GuiBuilder {
 	/**
 	 * Draws big horizontal blue bar
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place bar
-	 * @param y int Top left corner where to place bar
-	 * @param value int Current value
-	 * @param max int Maximum value
+	 * @param gui    GuiBase GUI to draw on
+	 * @param x      int Top left corner where to place bar
+	 * @param y      int Top left corner where to place bar
+	 * @param value  int Current value
+	 * @param max    int Maximum value
 	 * @param mouseX int Mouse cursor position to check for tooltip
 	 * @param mouseY int Mouse cursor position to check for tooltip
 	 * @param suffix String String to put on the bar and tooltip after percentage value
-	 * @param line2 String String to put into tooltip as a second line
+	 * @param line2  String String to put into tooltip as a second line
 	 * @param format String Formatted value to put on the bar
-	 * @param layer Layer Layer to draw on
+	 * @param layer  Layer Layer to draw on
 	 */
 	public void drawBigBlueBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int value, int max, int mouseX, int mouseY, String suffix, Text line2, String format, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
@@ -288,20 +287,20 @@ public class GuiBuilder {
 
 			list.add(
 					new LiteralText(String.valueOf(value))
-						.formatted(Formatting.GOLD)
-						.append("/")
-						.append(String.valueOf(max))
-						.append(suffix)
+							.formatted(Formatting.GOLD)
+							.append("/")
+							.append(String.valueOf(max))
+							.append(suffix)
 			);
 
 			list.add(
 					new LiteralText(String.valueOf(percentage))
-						.formatted(StringUtils.getPercentageColour(percentage))
-						.append("%")
-						.append(
-								new TranslatableText("reborncore.gui.tooltip.dsu_fullness")
-								.formatted(Formatting.GRAY)
-						)
+							.formatted(StringUtils.getPercentageColour(percentage))
+							.append("%")
+							.append(
+									new TranslatableText("reborncore.gui.tooltip.dsu_fullness")
+											.formatted(Formatting.GRAY)
+							)
 			);
 
 			list.add(line2);
@@ -309,7 +308,7 @@ public class GuiBuilder {
 			if (value > max) {
 				list.add(
 						new LiteralText("Yo this is storing more than it should be able to")
-							.formatted(Formatting.GRAY)
+								.formatted(Formatting.GRAY)
 				);
 				list.add(
 						new LiteralText("prolly a bug")
@@ -342,7 +341,7 @@ public class GuiBuilder {
 	/**
 	 * Shades GUI and draw gray bar on top of GUI
 	 *
-	 * @param gui GuiBase GUI to draw on
+	 * @param gui   GuiBase GUI to draw on
 	 * @param layer Layer Layer to draw on
 	 */
 	public void drawMultiblockMissingBar(MatrixStack matrixStack, GuiBase<?> gui, GuiBase.Layer layer) {
@@ -369,8 +368,8 @@ public class GuiBuilder {
 	 * level.
 	 *
 	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place slots
-	 * @param y int Top left corner where to place slots
+	 * @param x   int Top left corner where to place slots
+	 * @param y   int Top left corner where to place slots
 	 */
 	public void drawUpgrades(MatrixStack matrixStack, GuiBase<?> gui, int x, int y) {
 		gui.getMinecraft().getTextureManager().bindTexture(resourceLocation);
@@ -380,9 +379,9 @@ public class GuiBuilder {
 	/**
 	 * Draws tab on the left side of machine GUI. Draws on the background level.
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place tab
-	 * @param y int Top left corner where to place tab
+	 * @param gui   GuiBase GUI to draw on
+	 * @param x     int Top left corner where to place tab
+	 * @param y     int Top left corner where to place tab
 	 * @param stack ItemStack Item to show as tab icon
 	 */
 	public void drawSlotTab(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, ItemStack stack) {
@@ -392,14 +391,15 @@ public class GuiBuilder {
 	}
 
 
-    /**
-     * Draws Slot Configuration tips instead of player inventory
-     * @param gui GuiBase GUI to draw on
-     * @param x int Top left corner where to place tips list
-     * @param y int Top left corner where to place tips list
-     * @param mouseX int Mouse cursor position
-     * @param mouseY int Mouse cursor position
-     */
+	/**
+	 * Draws Slot Configuration tips instead of player inventory
+	 *
+	 * @param gui    GuiBase GUI to draw on
+	 * @param x      int Top left corner where to place tips list
+	 * @param y      int Top left corner where to place tips list
+	 * @param mouseX int Mouse cursor position
+	 * @param mouseY int Mouse cursor position
+	 */
 	public void drawSlotConfigTips(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, GuiTab guiTab) {
 		List<Text> tips = guiTab.getTips().stream()
 				.map(TranslatableText::new)
@@ -416,7 +416,7 @@ public class GuiBuilder {
 
 		public TipsListWidget(GuiBase<?> gui, int width, int height, int top, int bottom, int entryHeight, List<Text> tips) {
 			super(gui.getMinecraft(), width, height, top, bottom, entryHeight);
-			for (Text tip : tips){
+			for (Text tip : tips) {
 				this.addEntry(new TipsListEntry(tip));
 			}
 		}
@@ -438,19 +438,19 @@ public class GuiBuilder {
 			this.client.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-			bufferBuilder.vertex(this.left, this.bottom, 0.0D).texture((float)this.left / 32.0F, (float)(this.bottom + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
-			bufferBuilder.vertex(this.right, this.bottom, 0.0D).texture((float)this.right / 32.0F, (float)(this.bottom + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
-			bufferBuilder.vertex(this.right, this.top, 0.0D).texture((float)this.right / 32.0F, (float)(this.top + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
-			bufferBuilder.vertex(this.left, this.top, 0.0D).texture((float)this.left / 32.0F, (float)(this.top + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.left, this.bottom, 0.0D).texture((float) this.left / 32.0F, (float) (this.bottom + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.right, this.bottom, 0.0D).texture((float) this.right / 32.0F, (float) (this.bottom + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.right, this.top, 0.0D).texture((float) this.right / 32.0F, (float) (this.top + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
+			bufferBuilder.vertex(this.left, this.top, 0.0D).texture((float) this.left / 32.0F, (float) (this.top + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
 			tessellator.draw();
 
 			super.renderList(matrices, this.getRowLeft(), this.top, mouseX, mouseY, delta);
 		}
 
 		private class TipsListEntry extends EntryListWidget.Entry<TipsListWidget.TipsListEntry> {
-			private Text tip;
+			private final Text tip;
 
-			public TipsListEntry(Text tip){
+			public TipsListEntry(Text tip) {
 				this.tip = tip;
 			}
 
@@ -464,11 +464,11 @@ public class GuiBuilder {
 	/**
 	 * Draws energy output value and icon
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place energy output
-	 * @param y int Top left corner where to place energy output
+	 * @param gui       GuiBase GUI to draw on
+	 * @param x         int Top left corner where to place energy output
+	 * @param y         int Top left corner where to place energy output
 	 * @param maxOutput int Energy output value
-	 * @param layer Layer Layer to draw on
+	 * @param layer     Layer Layer to draw on
 	 */
 	public void drawEnergyOutput(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
@@ -490,15 +490,15 @@ public class GuiBuilder {
 	/**
 	 * Draws progress arrow in direction specified.
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param progress int Current progress
+	 * @param gui         GuiBase GUI to draw on
+	 * @param progress    int Current progress
 	 * @param maxProgress int Maximum progress
-	 * @param x int Top left corner where to place progress arrow
-	 * @param y int Top left corner where to place progress arrow
-	 * @param mouseX int Mouse cursor position to check for tooltip
-	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param direction ProgressDirection Direction of progress arrow
-	 * @param layer Layer Layer to draw on
+	 * @param x           int Top left corner where to place progress arrow
+	 * @param y           int Top left corner where to place progress arrow
+	 * @param mouseX      int Mouse cursor position to check for tooltip
+	 * @param mouseY      int Mouse cursor position to check for tooltip
+	 * @param direction   ProgressDirection Direction of progress arrow
+	 * @param layer       Layer Layer to draw on
 	 */
 	public void drawProgressBar(MatrixStack matrixStack, GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, ProgressDirection direction, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
@@ -536,8 +536,8 @@ public class GuiBuilder {
 			List<Text> list = new ArrayList<>();
 			list.add(
 					new LiteralText(String.valueOf(percentage))
-					.formatted(StringUtils.getPercentageColour(percentage))
-					.append("%")
+							.formatted(StringUtils.getPercentageColour(percentage))
+							.append("%")
 			);
 			if (layer == GuiBase.Layer.FOREGROUND) {
 				mouseX -= gui.getGuiLeft();
@@ -552,18 +552,18 @@ public class GuiBuilder {
 	/**
 	 * Draws multi-energy bar
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place energy bar
-	 * @param y int Top left corner where to place energy bar
-	 * @param energyStored int Current amount of energy
+	 * @param gui             GuiBase GUI to draw on
+	 * @param x               int Top left corner where to place energy bar
+	 * @param y               int Top left corner where to place energy bar
+	 * @param energyStored    int Current amount of energy
 	 * @param maxEnergyStored int Maximum amount of energy
-	 * @param mouseX int Mouse cursor position to check for tooltip
-	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param buttonID int Button ID used to switch energy systems
-	 * @param layer Layer Layer to draw on
+	 * @param mouseX          int Mouse cursor position to check for tooltip
+	 * @param mouseY          int Mouse cursor position to check for tooltip
+	 * @param buttonID        int Button ID used to switch energy systems
+	 * @param layer           Layer Layer to draw on
 	 */
 	public void drawMultiEnergyBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int energyStored, int maxEnergyStored, int mouseX,
-			int mouseY, int buttonID, GuiBase.Layer layer) {
+								   int mouseY, int buttonID, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
 		if (layer == GuiBase.Layer.BACKGROUND) {
 			x += gui.getGuiLeft();
@@ -583,20 +583,20 @@ public class GuiBuilder {
 			List<Text> list = Lists.newArrayList();
 			list.add(
 					new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored))
-					.formatted(Formatting.GOLD)
-					.append("/")
-					.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored))
-					.append(SPACE_TEXT)
-					.append(displayPower.abbreviation)
+							.formatted(Formatting.GOLD)
+							.append("/")
+							.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored))
+							.append(SPACE_TEXT)
+							.append(displayPower.abbreviation)
 			);
 
 			list.add(
 					StringUtils.getPercentageText(percentage)
-					.append(SPACE_TEXT)
-					.append(
-							new TranslatableText("reborncore.gui.tooltip.power_charged")
-							.formatted(Formatting.GRAY)
-					)
+							.append(SPACE_TEXT)
+							.append(
+									new TranslatableText("reborncore.gui.tooltip.power_charged")
+											.formatted(Formatting.GRAY)
+							)
 			);
 
 			if (gui.be instanceof IListInfoProvider) {
@@ -607,10 +607,10 @@ public class GuiBuilder {
 
 					list.add(
 							new LiteralText("Shift")
-							.formatted(Formatting.BLUE)
-							.append(SPACE_TEXT)
-							.formatted(Formatting.GRAY)
-							.append(new TranslatableText("reborncore.gui.tooltip.power_moreinfo"))
+									.formatted(Formatting.BLUE)
+									.append(SPACE_TEXT)
+									.formatted(Formatting.GRAY)
+									.append(new TranslatableText("reborncore.gui.tooltip.power_moreinfo"))
 					);
 				}
 			}
@@ -627,15 +627,15 @@ public class GuiBuilder {
 	/**
 	 * Draws tank and fluid inside it
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner of tank
-	 * @param y int Top left corner of tank
-	 * @param mouseX int Mouse cursor position to check for tooltip
-	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param fluid FluidStack Fluid to draw in tank
+	 * @param gui         GuiBase GUI to draw on
+	 * @param x           int Top left corner of tank
+	 * @param y           int Top left corner of tank
+	 * @param mouseX      int Mouse cursor position to check for tooltip
+	 * @param mouseY      int Mouse cursor position to check for tooltip
+	 * @param fluid       FluidStack Fluid to draw in tank
 	 * @param maxCapacity int Maximum tank capacity
 	 * @param isTankEmpty boolean True if tank is empty
-	 * @param layer Layer Layer to draw on
+	 * @param layer       Layer Layer to draw on
 	 */
 	public void drawTank(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int mouseX, int mouseY, FluidInstance fluid, FluidValue maxCapacity, boolean isTankEmpty, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
@@ -664,17 +664,17 @@ public class GuiBuilder {
 			} else {
 				list.add(
 						new LiteralText(String.format("%s / %s", amount, maxCapacity))
-							.formatted(Formatting.GOLD)
-							.append(SPACE_TEXT)
-							.append(FluidUtil.getFluidName(fluid))
+								.formatted(Formatting.GOLD)
+								.append(SPACE_TEXT)
+								.append(FluidUtil.getFluidName(fluid))
 				);
 			}
 
 			list.add(
 					StringUtils.getPercentageText(percentage)
-						.formatted(Formatting.GRAY)
-						.append(SPACE_TEXT)
-						.append(new TranslatableText("reborncore.gui.tooltip.tank_fullness"))
+							.formatted(Formatting.GRAY)
+							.append(SPACE_TEXT)
+							.append(new TranslatableText("reborncore.gui.tooltip.tank_fullness"))
 			);
 
 			if (layer == GuiBase.Layer.FOREGROUND) {
@@ -690,16 +690,16 @@ public class GuiBuilder {
 	/**
 	 * Draws fluid in tank
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param fluid FluidStack Fluid to draw
-	 * @param x int Top left corner of fluid
-	 * @param y int Top left corner of fluid
-	 * @param width int Width of fluid to draw
-	 * @param height int Height of fluid to draw
+	 * @param gui         GuiBase GUI to draw on
+	 * @param fluid       FluidStack Fluid to draw
+	 * @param x           int Top left corner of fluid
+	 * @param y           int Top left corner of fluid
+	 * @param width       int Width of fluid to draw
+	 * @param height      int Height of fluid to draw
 	 * @param maxCapacity int Maximum capacity of tank
 	 */
 	public void drawFluid(MatrixStack matrixStack, GuiBase<?> gui, FluidInstance fluid, int x, int y, int width, int height, int maxCapacity) {
-		if(fluid.getFluid() == Fluids.EMPTY){
+		if (fluid.getFluid() == Fluids.EMPTY) {
 			return;
 		}
 		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
@@ -717,7 +717,7 @@ public class GuiBuilder {
 		while (offsetHeight != 0) {
 			final int curHeight = offsetHeight < iconHeight ? offsetHeight : iconHeight;
 
-			DrawableHelper.drawSprite(matrixStack, x, y - offsetHeight, 0,  width, curHeight, sprite);
+			DrawableHelper.drawSprite(matrixStack, x, y - offsetHeight, 0, width, curHeight, sprite);
 			offsetHeight -= curHeight;
 			iteration++;
 			if (iteration > 50) {
@@ -732,14 +732,14 @@ public class GuiBuilder {
 	/**
 	 * Draws burning progress, similar to vanilla furnace
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param progress int Current progress
+	 * @param gui         GuiBase GUI to draw on
+	 * @param progress    int Current progress
 	 * @param maxProgress int Maximum progress
-	 * @param x int Top left corner where to place burn bar
-	 * @param y int Top left corner where to place burn bar
-	 * @param mouseX int Mouse cursor position to check for tooltip
-	 * @param mouseY int Mouse cursor position to check for tooltip
-	 * @param layer Layer Layer to draw on
+	 * @param x           int Top left corner where to place burn bar
+	 * @param y           int Top left corner where to place burn bar
+	 * @param mouseX      int Mouse cursor position to check for tooltip
+	 * @param mouseY      int Mouse cursor position to check for tooltip
+	 * @param layer       Layer Layer to draw on
 	 */
 	public void drawBurnBar(MatrixStack matrixStack, GuiBase<?> gui, int progress, int maxProgress, int x, int y, int mouseX, int mouseY, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
@@ -771,9 +771,9 @@ public class GuiBuilder {
 	/**
 	 * Draws bar containing output slots
 	 *
-	 * @param gui GuiBase GUI to draw on
-	 * @param x int Top left corner where to place slots bar
-	 * @param y int Top left corner where to place slots bar
+	 * @param gui   GuiBase GUI to draw on
+	 * @param x     int Top left corner where to place slots bar
+	 * @param y     int Top left corner where to place slots bar
 	 * @param count int Number of output slots
 	 */
 	public void drawOutputSlotBar(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int count) {

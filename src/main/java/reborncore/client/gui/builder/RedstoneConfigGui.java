@@ -34,7 +34,6 @@ import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.RedstoneConfiguration;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
-import reborncore.common.util.StringUtils;
 
 import java.util.Locale;
 
@@ -56,14 +55,14 @@ public class RedstoneConfigGui {
 
 			guiBase.getTextRenderer().draw(matrixStack, new TranslatableText("reborncore.gui.fluidconfig." + element.getName()), x + 15, y + (i * spread), -1);
 
-			boolean hovered = withinBounds(guiBase, mouseX, mouseY, x + 92, y + (i * spread) -2, 63, 15);
+			boolean hovered = withinBounds(guiBase, mouseX, mouseY, x + 92, y + (i * spread) - 2, 63, 15);
 			int color = hovered ? 0xFF8b8b8b : 0x668b8b8b;
-			RenderUtil.drawGradientRect(0, x + 91, y + (i * spread) -2, x + 93 + 65, y + (i * spread) + 10, color, color);
+			RenderUtil.drawGradientRect(0, x + 91, y + (i * spread) - 2, x + 93 + 65, y + (i * spread) + 10, color, color);
 
 			Text name = new TranslatableText("reborncore.gui.fluidconfig." + configuration.getState(element).name().toLowerCase(Locale.ROOT));
 			guiBase.drawCentredText(matrixStack, name, y + (i * spread), -1, x + 37, GuiBase.Layer.FOREGROUND);
 			//guiBase.getTextRenderer().drawWithShadow(name, x + 92, y + (i * spread), -1);
-			i ++;
+			i++;
 		}
 
 	}
@@ -78,7 +77,7 @@ public class RedstoneConfigGui {
 		int i = 0;
 		int spread = configuration.getElements().size() == 3 ? 27 : 18;
 		for (RedstoneConfiguration.Element element : configuration.getElements()) {
-			if (withinBounds(guiBase, (int)mouseX, (int)mouseY, x + 91, y + (i * spread) -2, 63, 15)) {
+			if (withinBounds(guiBase, (int) mouseX, (int) mouseY, x + 91, y + (i * spread) - 2, 63, 15)) {
 				RedstoneConfiguration.State currentState = configuration.getState(element);
 				int ns = currentState.ordinal() + 1;
 				if (ns >= RedstoneConfiguration.State.values().length) {
@@ -89,15 +88,15 @@ public class RedstoneConfigGui {
 				NetworkManager.sendToServer(packet);
 				return true;
 			}
-			i ++;
+			i++;
 		}
 		return false;
 	}
 
-	private static boolean withinBounds(GuiBase<?> guiBase,int mouseX, int mouseY, int x, int y, int width, int height) {
+	private static boolean withinBounds(GuiBase<?> guiBase, int mouseX, int mouseY, int x, int y, int width, int height) {
 		mouseX -= guiBase.getGuiLeft();
 		mouseY -= guiBase.getGuiTop();
-		return (mouseX > x && mouseX < x + width ) && (mouseY > y && mouseY < y + height);
+		return (mouseX > x && mouseX < x + width) && (mouseY > y && mouseY < y + height);
 	}
 
 }

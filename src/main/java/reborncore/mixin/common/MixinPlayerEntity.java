@@ -49,7 +49,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 		super(type, world);
 	}
 
-	private DefaultedList<ItemStack> reborncore_armorcache = DefaultedList.ofSize(4, ItemStack.EMPTY);
+	private final DefaultedList<ItemStack> reborncore_armorcache = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	public void tick(CallbackInfo info) {

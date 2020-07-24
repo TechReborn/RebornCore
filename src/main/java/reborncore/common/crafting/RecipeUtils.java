@@ -47,32 +47,32 @@ import java.util.List;
 
 public class RecipeUtils {
 	@SuppressWarnings("unchecked")
-	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type){
+	public static <T extends RebornRecipe> List<T> getRecipes(World world, RebornRecipeType<?> type) {
 		AccessorRecipeManager accessorRecipeManager = (AccessorRecipeManager) world.getRecipeManager();
 		//noinspection unchecked
 		return new ArrayList<>(accessorRecipeManager.getAll(type).values());
 	}
 
-	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject){
-		if(jsonObject.isJsonArray()){
+	public static DefaultedList<ItemStack> deserializeItems(JsonElement jsonObject) {
+		if (jsonObject.isJsonArray()) {
 			return SerializationUtil.stream(jsonObject.getAsJsonArray()).map(entry -> deserializeItem(entry.getAsJsonObject())).collect(DefaultedListCollector.toList());
 		} else {
 			return DefaultedList.copyOf(deserializeItem(jsonObject.getAsJsonObject()));
 		}
 	}
 
-	private static ItemStack deserializeItem(JsonObject jsonObject){
+	private static ItemStack deserializeItem(JsonObject jsonObject) {
 		Identifier resourceLocation = new Identifier(JsonHelper.getString(jsonObject, "item"));
 		Item item = Registry.ITEM.get(resourceLocation);
-		if(item == Items.AIR){
+		if (item == Items.AIR) {
 			throw new IllegalStateException(resourceLocation + " did not exist");
 		}
 		int count = 1;
-		if(jsonObject.has("count")){
+		if (jsonObject.has("count")) {
 			count = JsonHelper.getInt(jsonObject, "count");
 		}
 		ItemStack stack = new ItemStack(item, count);
-		if(jsonObject.has("nbt")){
+		if (jsonObject.has("nbt")) {
 			CompoundTag tag = (CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, jsonObject.get("nbt"));
 			stack.setTag(tag);
 		}

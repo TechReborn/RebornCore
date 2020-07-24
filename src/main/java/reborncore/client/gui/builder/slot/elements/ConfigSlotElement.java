@@ -58,12 +58,12 @@ public class ConfigSlotElement extends ElementBase {
 		SlotConfigPopupElement popupElement;
 
 		boolean inputEnabled = gui.builtScreenHandler.slots.stream()
-			.filter(Objects::nonNull)
-			.filter(slot -> slot.inventory == inventory)
-			.filter(slot -> slot instanceof BaseSlot)
-			.map(slot -> (BaseSlot) slot)
-			.filter(baseSlot -> baseSlot.getSlotID() == slotId)
-			.allMatch(BaseSlot::canWorldBlockInsert);
+				.filter(Objects::nonNull)
+				.filter(slot -> slot.inventory == inventory)
+				.filter(slot -> slot instanceof BaseSlot)
+				.map(slot -> (BaseSlot) slot)
+				.filter(baseSlot -> baseSlot.getSlotID() == slotId)
+				.allMatch(BaseSlot::canWorldBlockInsert);
 
 
 		elements.add(popupElement = new SlotConfigPopupElement(this.id, x - 22, y - 22, this, inputEnabled));
@@ -73,25 +73,25 @@ public class ConfigSlotElement extends ElementBase {
 			return true;
 		}));
 
-		if(inputEnabled){
+		if (inputEnabled) {
 			elements.add(new CheckBoxElement(new LiteralText("Auto Input"), 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-			                                 checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
+					checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
 				popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
 				return true;
 			}));
 		}
 
 		elements.add(new CheckBoxElement(new LiteralText("Auto Output"), 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-			checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
+				checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
 			return true;
 		}));
 
-		if (gui.getMachine() instanceof SlotConfiguration.SlotFilter){
+		if (gui.getMachine() instanceof SlotConfiguration.SlotFilter) {
 			SlotConfiguration.SlotFilter slotFilter = (SlotConfiguration.SlotFilter) gui.getMachine();
 			if (Arrays.stream(slotFilter.getInputSlots()).anyMatch(value -> value == slotId)) {
 				elements.add(new CheckBoxElement(new LiteralText("Filter Input"), 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
-				                                 checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
+						checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 					popupElement.updateCheckBox((CheckBoxElement) element, "filter", gui13);
 					return true;
 				}));

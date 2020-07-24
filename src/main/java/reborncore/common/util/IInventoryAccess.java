@@ -30,9 +30,9 @@ import reborncore.common.blockentity.MachineBaseBlockEntity;
 
 public interface IInventoryAccess<T extends MachineBaseBlockEntity> {
 
-	public boolean canHandleIO(int slotID, ItemStack stack, Direction face, AccessDirection direction, T blockEntity);
+	boolean canHandleIO(int slotID, ItemStack stack, Direction face, AccessDirection direction, T blockEntity);
 
-	public enum AccessDirection {
+	enum AccessDirection {
 		INSERT,
 		EXTRACT
 	}

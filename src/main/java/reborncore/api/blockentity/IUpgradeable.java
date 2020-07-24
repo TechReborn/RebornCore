@@ -29,15 +29,15 @@ import net.minecraft.item.ItemStack;
 
 public interface IUpgradeable {
 
-	public default boolean canBeUpgraded() {
+	default boolean canBeUpgraded() {
 		return true;
 	}
 
-	public Inventory getUpgradeInvetory();
+	Inventory getUpgradeInvetory();
 
-	public int getUpgradeSlotCount();
+	int getUpgradeSlotCount();
 
-	public default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack){
+	default boolean isUpgradeValid(IUpgrade upgrade, ItemStack stack) {
 		return true;
 	}
 

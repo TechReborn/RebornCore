@@ -62,11 +62,11 @@ public class FluidIngredient extends RebornIngredient {
 		this.count = count;
 
 		previewStacks = new Lazy<>(() -> Registry.ITEM.stream()
-			.filter(item -> item instanceof ItemFluidInfo)
-			.filter(item -> !holders.isPresent() || holders.get().stream().anyMatch(i -> i == item))
-			.map(item -> ((ItemFluidInfo)item).getFull(fluid))
-			.peek(stack -> stack.setCount(count.orElse(1)))
-			.collect(Collectors.toList()));
+				.filter(item -> item instanceof ItemFluidInfo)
+				.filter(item -> !holders.isPresent() || holders.get().stream().anyMatch(i -> i == item))
+				.map(item -> ((ItemFluidInfo) item).getFull(fluid))
+				.peek(stack -> stack.setCount(count.orElse(1)))
+				.collect(Collectors.toList()));
 
 		previewIngredient = new Lazy<>(() -> Ingredient.ofStacks(previewStacks.get().toArray(new ItemStack[0])));
 	}
@@ -74,17 +74,17 @@ public class FluidIngredient extends RebornIngredient {
 	public static RebornIngredient deserialize(JsonObject json) {
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "fluid"));
 		Fluid fluid = Registry.FLUID.get(identifier);
-		if(fluid == Fluids.EMPTY){
+		if (fluid == Fluids.EMPTY) {
 			throw new JsonParseException("Fluid could not be found: " + JsonHelper.getString(json, "fluid"));
 		}
 
 		Optional<List<Item>> holders = Optional.empty();
 
-		if(json.has("holder")){
-			if(json.get("holder").isJsonPrimitive()){
+		if (json.has("holder")) {
+			if (json.get("holder").isJsonPrimitive()) {
 				String ident = JsonHelper.getString(json, "holder");
 				Item item = Registry.ITEM.get(new Identifier(ident));
-				if(item == Items.AIR){
+				if (item == Items.AIR) {
 					throw new JsonParseException("could not find item:" + ident);
 				}
 				holders = Optional.of(Collections.singletonList(item));
@@ -94,7 +94,7 @@ public class FluidIngredient extends RebornIngredient {
 				for (int i = 0; i < jsonArray.size(); i++) {
 					String ident = jsonArray.get(i).getAsString();
 					Item item = Registry.ITEM.get(new Identifier(ident));
-					if(item == Items.AIR){
+					if (item == Items.AIR) {
 						throw new JsonParseException("could not find item:" + ident);
 					}
 					itemList.add(item);
@@ -105,7 +105,7 @@ public class FluidIngredient extends RebornIngredient {
 
 		Optional<Integer> count = Optional.empty();
 
-		if(json.has("count")){
+		if (json.has("count")) {
 			count = Optional.of(json.get("count").getAsInt());
 		}
 
@@ -114,13 +114,13 @@ public class FluidIngredient extends RebornIngredient {
 
 	@Override
 	public boolean test(ItemStack itemStack) {
-		if(holders.isPresent() && holders.get().stream().noneMatch(item -> itemStack.getItem() == item)){
+		if (holders.isPresent() && holders.get().stream().noneMatch(item -> itemStack.getItem() == item)) {
 			return false;
 		}
-		if(count.isPresent() && itemStack.getCount() < count.get()){
+		if (count.isPresent() && itemStack.getCount() < count.get()) {
 			return false;
 		}
-		if(itemStack.getItem() instanceof ItemFluidInfo){
+		if (itemStack.getItem() instanceof ItemFluidInfo) {
 			return ((ItemFluidInfo) itemStack.getItem()).getFluid(itemStack) == fluid;
 		}
 		return false;
@@ -140,9 +140,9 @@ public class FluidIngredient extends RebornIngredient {
 	public JsonObject toJson() {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("fluid", Registry.FLUID.getId(fluid).toString());
-		if(holders.isPresent()){
+		if (holders.isPresent()) {
 			List<Item> holderList = holders.get();
-			if(holderList.size() == 1){
+			if (holderList.size() == 1) {
 				jsonObject.addProperty("holder", Registry.ITEM.getId(holderList.get(0)).toString());
 			} else {
 				JsonArray holderArray = new JsonArray();

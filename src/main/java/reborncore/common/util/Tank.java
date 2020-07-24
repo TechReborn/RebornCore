@@ -24,8 +24,7 @@
 
 package reborncore.common.util;
 
-import reborncore.common.fluid.FluidValue;
-import reborncore.common.fluid.container.FluidInstance;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -35,7 +34,8 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.client.screen.builder.Syncable;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
-import net.minecraft.fluid.Fluid;
+import reborncore.common.fluid.FluidValue;
+import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.fluid.container.GenericFluidContainer;
 
 import javax.annotation.Nonnull;
@@ -64,25 +64,25 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	@Nonnull
-	public FluidInstance getFluidInstance(){
+	public FluidInstance getFluidInstance() {
 		return getFluidInstance(side);
 	}
 
 	@Nonnull
-	public Fluid getFluid(){
+	public Fluid getFluid() {
 		return getFluidInstance().getFluid();
 	}
 
-	public FluidValue getCapacity(){
+	public FluidValue getCapacity() {
 		return capacity;
 	}
 
-	public FluidValue getFreeSpace(){
+	public FluidValue getFreeSpace() {
 		return getCapacity().subtract(getFluidAmount());
 	}
 
 	public boolean canFit(Fluid fluid, FluidValue amount) {
-		return (getFluid() == Fluids.EMPTY || getFluid() == fluid) && getFreeSpace().moreThan(amount);
+		return (isEmpty() || getFluid() == fluid) && getFreeSpace().equalOrMoreThan(amount);
 	}
 
 	public boolean isEmpty() {
@@ -100,7 +100,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public void setFluidAmount(FluidValue amount) {
-		if (!fluidInstance.isEmpty()) {
+		if (!fluidInstance.isEmptyFluid()) {
 			fluidInstance.setAmount(amount);
 		}
 	}
@@ -127,8 +127,8 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	public void setSide(
-		@Nullable
-			Direction side) {
+			@Nullable
+					Direction side) {
 		this.side = side;
 	}
 

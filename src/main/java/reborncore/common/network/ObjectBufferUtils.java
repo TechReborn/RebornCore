@@ -95,7 +95,7 @@ public enum ObjectBufferUtils {
 		this.reader = reader;
 	}
 
-	public static void writeObject(Object object, ExtendedPacketBuffer buffer){
+	public static void writeObject(Object object, ExtendedPacketBuffer buffer) {
 		ObjectBufferUtils utils = Arrays.stream(values()).filter(objectBufferUtils -> objectBufferUtils.clazz == object.getClass()).findFirst().orElse(null);
 		Objects.requireNonNull(utils, "No support found for " + object.getClass());
 		buffer.writeInt(utils.ordinal());

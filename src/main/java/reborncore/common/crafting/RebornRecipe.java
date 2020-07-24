@@ -81,8 +81,8 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		this.time = time;
 	}
 
-	public void deserialize(JsonObject jsonObject){
-		if(jsonObject.has("dummy")){
+	public void deserialize(JsonObject jsonObject) {
+		if (jsonObject.has("dummy")) {
 			makeDummy();
 			return;
 		}
@@ -94,15 +94,15 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		time = JsonHelper.getInt(jsonObject, "time");
 
 		ingredients = SerializationUtil.stream(JsonHelper.getArray(jsonObject, "ingredients"))
-			.map(IngredientManager::deserialize)
-			.collect(DefaultedListCollector.toList());
+				.map(IngredientManager::deserialize)
+				.collect(DefaultedListCollector.toList());
 
 		JsonArray resultsJson = JsonHelper.getArray(jsonObject, "results");
 		outputs = RecipeUtils.deserializeItems(resultsJson);
 	}
 
 	public void serialize(JsonObject jsonObject) {
-		if(isDummy()){
+		if (isDummy()) {
 			jsonObject.addProperty("dummy", true);
 			return;
 		}
@@ -114,13 +114,13 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		jsonObject.add("ingredients", ingredientsArray);
 
 		JsonArray resultsArray = new JsonArray();
-		for(ItemStack stack : outputs){
+		for (ItemStack stack : outputs) {
 			JsonObject stackObject = new JsonObject();
 			stackObject.addProperty("item", Registry.ITEM.getId(stack.getItem()).toString());
-			if(stack.getCount() > 1){
+			if (stack.getCount() > 1) {
 				stackObject.addProperty("count", stack.getCount());
 			}
-			if(stack.hasTag()){
+			if (stack.hasTag()) {
 				stackObject.add("nbt", Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, stack.getTag()));
 			}
 			resultsArray.add(stackObject);
@@ -151,7 +151,7 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		return type;
 	}
 
-	public RebornRecipeType<?> getRebornRecipeType(){
+	public RebornRecipeType<?> getRebornRecipeType() {
 		return type;
 	}
 
@@ -183,13 +183,11 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 	 * @return if true the recipe will craft, if false it will not
 	 */
 	public boolean canCraft(BlockEntity blockEntity) {
-		if(isDummy()) {
+		if (isDummy()) {
 			return false;
 		}
-		if(blockEntity instanceof IRecipeCrafterProvider){
-			if(!((IRecipeCrafterProvider) blockEntity).canCraft(this)){
-				return false;
-			}
+		if (blockEntity instanceof IRecipeCrafterProvider) {
+			return ((IRecipeCrafterProvider) blockEntity).canCraft(this);
 		}
 		return true;
 	}
@@ -198,7 +196,7 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 	 * @param blockEntity the blockEntity that is doing the crafting
 	 * @return return true if fluid was taken and should craft
 	 */
-	public boolean onCraft(BlockEntity blockEntity){
+	public boolean onCraft(BlockEntity blockEntity) {
 		return true;
 	}
 

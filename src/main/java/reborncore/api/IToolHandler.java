@@ -38,11 +38,11 @@ public interface IToolHandler {
 	/**
 	 * Called when a machine is actived with the item that has IToolHandler on it
 	 *
-	 * @param stack the held itemstack
-	 * @param pos the pos of the block
-	 * @param world the world of the block
+	 * @param stack  the held itemstack
+	 * @param pos    the pos of the block
+	 * @param world  the world of the block
 	 * @param player the player that actived the block
-	 * @param side the side that the player actived
+	 * @param side   the side that the player actived
 	 * @param damage if the tool should be damged, or power taken
 	 * @return If the tool can handle being actived on the block, return false when the tool is broken or out of power for example.
 	 */
