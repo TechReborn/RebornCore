@@ -297,14 +297,14 @@ public class SlotConfiguration implements NBTSerializable {
 				return;
 			}
 
-			IntList availableSlots = IntLists.EMPTY_LIST;
+			IntList availableSlots = null;
 
 			if (sourceInv instanceof SidedInventory) {
 				availableSlots = IntArrayList.wrap(((SidedInventory) sourceInv).getAvailableSlots(side.getOpposite()));
 			}
 
 			for (int i = 0; i < sourceInv.size(); i++) {
-				if (availableSlots.contains(i)) {
+				if (availableSlots != null && !availableSlots.contains(i)) {
 					continue;
 				}
 
