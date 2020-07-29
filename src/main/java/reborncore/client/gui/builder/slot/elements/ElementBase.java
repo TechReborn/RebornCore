@@ -297,7 +297,7 @@ public class ElementBase {
 	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
 		x = adjustX(gui, x);
 		y = adjustY(gui, y);
-		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
+		gui.getTextRenderer().method_30883(matrixStack, text, x, y, color);
 	}
 
 	public void setTextureSheet(Identifier textureLocation) {

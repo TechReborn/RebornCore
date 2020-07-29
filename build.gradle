@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.4-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.5-SNAPSHOT"
 		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
 	}
 }
@@ -50,14 +50,12 @@ configurations {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.16.1"
-	mappings "net.fabricmc:yarn:1.16.1+build.1:v2"
+	minecraft "com.mojang:minecraft:1.16.2-pre1"
+	mappings "net.fabricmc:yarn:1.16.2-pre1+build.1:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.9.0+build.204"
 
 	//Fabric api
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.16.0+build.384-1.16.1"
-
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.16.1+build.387-1.16"
 
 	modApi 'teamreborn:energy:0.1.0'
 	include 'teamreborn:energy:0.1.0'

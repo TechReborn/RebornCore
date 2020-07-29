@@ -53,7 +53,7 @@ public class RedstoneConfigGui {
 		for (RedstoneConfiguration.Element element : configuration.getElements()) {
 			itemRenderer.renderInGuiWithOverrides(element.getIcon(), x - 3, y + (i * spread) - 5);
 
-			guiBase.getTextRenderer().draw(matrixStack, new TranslatableText("reborncore.gui.fluidconfig." + element.getName()), x + 15, y + (i * spread), -1);
+			guiBase.getTextRenderer().method_30883(matrixStack, new TranslatableText("reborncore.gui.fluidconfig." + element.getName()), x + 15, y + (i * spread), -1);
 
 			boolean hovered = withinBounds(guiBase, mouseX, mouseY, x + 92, y + (i * spread) - 2, 63, 15);
 			int color = hovered ? 0xFF8b8b8b : 0x668b8b8b;

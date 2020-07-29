@@ -114,7 +114,7 @@ public class GuiBuilder {
 	}
 
 	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
-		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
+		gui.getTextRenderer().method_30883(matrixStack, text, x, y, color);
 	}
 
 	public void drawProgressBar(MatrixStack matrixStack, GuiBase<?> gui, double progress, int x, int y) {
@@ -178,7 +178,7 @@ public class GuiBuilder {
 				list.add(new TranslatableText("reborncore.gui.tooltip.lock_items"));
 			}
 			RenderSystem.pushMatrix();
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -213,7 +213,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -323,7 +323,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -543,7 +543,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -618,7 +618,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -681,7 +681,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -762,7 +762,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
+			gui.method_30901(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}

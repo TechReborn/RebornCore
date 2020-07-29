@@ -45,7 +45,6 @@ import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
 
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 //This does not do the actual chunk loading, just keeps track of what chunks the chunk loader has loaded

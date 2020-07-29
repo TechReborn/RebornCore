@@ -58,8 +58,8 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.RebornInventory;
 import reborncore.common.util.Tank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -455,7 +455,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	public SlotConfiguration getSlotConfiguration() {
 		Validate.notNull(slotConfiguration, "slotConfiguration cannot be null");
 		return slotConfiguration;

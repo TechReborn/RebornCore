@@ -32,7 +32,7 @@ import reborncore.common.fluid.FluidUtil;
 import reborncore.common.util.NBTSerializable;
 import reborncore.common.util.Tank;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -117,7 +117,7 @@ public class FluidConfiguration implements NBTSerializable {
 		this.output = output;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public CompoundTag write() {
 		CompoundTag compound = new CompoundTag();
@@ -128,7 +128,7 @@ public class FluidConfiguration implements NBTSerializable {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundTag nbt) {
+	public void read(@NotNull CompoundTag nbt) {
 		sideMap.clear();
 		Arrays.stream(Direction.values()).forEach(facing -> {
 			CompoundTag compound = nbt.getCompound("side_" + facing.ordinal());
@@ -165,7 +165,7 @@ public class FluidConfiguration implements NBTSerializable {
 			return ioConfig;
 		}
 
-		@Nonnull
+		@NotNull
 		@Override
 		public CompoundTag write() {
 			CompoundTag tagCompound = new CompoundTag();
@@ -175,7 +175,7 @@ public class FluidConfiguration implements NBTSerializable {
 		}
 
 		@Override
-		public void read(@Nonnull CompoundTag nbt) {
+		public void read(@NotNull CompoundTag nbt) {
 			side = Direction.values()[nbt.getInt("side")];
 			ioConfig = FluidConfiguration.ExtractConfig.values()[nbt.getInt("config")];
 		}

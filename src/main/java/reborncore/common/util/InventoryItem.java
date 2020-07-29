@@ -29,19 +29,19 @@ import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.Validate;
 import reborncore.api.items.InventoryBase;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class InventoryItem extends InventoryBase {
 
-	@Nonnull
+	@NotNull
 	ItemStack stack;
 	int size;
 
 	private InventoryItem(
-			@Nonnull
+			@NotNull
 					ItemStack stack, int size) {
 		super(size);
 		Validate.notNull(stack);
@@ -95,7 +95,7 @@ public class InventoryItem extends InventoryBase {
 		return size;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getStack(int slot) {
 		return ItemStack.fromTag(getSlotData(slot));
@@ -103,7 +103,7 @@ public class InventoryItem extends InventoryBase {
 
 	@Override
 	public void setStack(int slot,
-						 @Nonnull
+						 @NotNull
 								 ItemStack stack) {
 		setSlotData(slot, stack.toTag(new CompoundTag()));
 	}
@@ -120,7 +120,7 @@ public class InventoryItem extends InventoryBase {
 	}
 
 	public int getStackLimit(int slot,
-							 @Nonnull
+							 @NotNull
 									 ItemStack stack) {
 		return Math.min(getSlotLimit(slot), stack.getMaxCount());
 	}

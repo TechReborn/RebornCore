@@ -43,7 +43,7 @@ import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.util.Color;
 import reborncore.mixin.common.AccessorSlot;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

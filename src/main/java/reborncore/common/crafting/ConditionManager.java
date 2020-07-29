@@ -53,7 +53,7 @@ public final class ConditionManager {
 		register("fluid", Identifier.class, (id) -> registryContains(Registry.FLUID, id));
 
 		//Only loads the recipe when the tag is loaded
-		register("tag", Identifier.class, s -> ItemTags.getContainer().getEntries().containsKey(s));
+		register("tag", Identifier.class, s -> ItemTags.getTagGroup().getTags().containsKey(s));
 
 		//Only load the recipe if the provided mod is loaded
 		register("mod", String.class, s -> FabricLoader.getInstance().isModLoaded(s));

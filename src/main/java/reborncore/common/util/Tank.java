@@ -38,8 +38,8 @@ import reborncore.common.fluid.FluidValue;
 import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.fluid.container.GenericFluidContainer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 public class Tank implements GenericFluidContainer<Direction>, Syncable {
 
 	private final String name;
-	@Nonnull
+	@NotNull
 	private FluidInstance fluidInstance = new FluidInstance();
 	private final FluidValue capacity;
 
@@ -63,12 +63,12 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		this.blockEntity = blockEntity;
 	}
 
-	@Nonnull
+	@NotNull
 	public FluidInstance getFluidInstance() {
 		return getFluidInstance(side);
 	}
 
-	@Nonnull
+	@NotNull
 	public Fluid getFluid() {
 		return getFluidInstance().getFluid();
 	}
@@ -116,7 +116,7 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 		return this;
 	}
 
-	public void setFluid(@Nonnull Fluid f) {
+	public void setFluid(@NotNull Fluid f) {
 		Validate.notNull(f);
 		fluidInstance.setFluid(f);
 	}
@@ -143,17 +143,17 @@ public class Tank implements GenericFluidContainer<Direction>, Syncable {
 	}
 
 	@Override
-	public void setFluid(@Nullable Direction type, @Nonnull FluidInstance instance) {
+	public void setFluid(@Nullable Direction type, @NotNull FluidInstance instance) {
 		fluidInstance = instance;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public FluidInstance getFluidInstance(@Nullable Direction type) {
 		return fluidInstance;
 	}
 
-	public void setFluidInstance(@Nonnull FluidInstance fluidInstance) {
+	public void setFluidInstance(@NotNull FluidInstance fluidInstance) {
 		this.fluidInstance = fluidInstance;
 	}
 

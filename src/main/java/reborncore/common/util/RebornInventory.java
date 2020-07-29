@@ -32,7 +32,7 @@ import reborncore.api.items.InventoryBase;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class RebornInventory<T extends MachineBaseBlockEntity> extends InventoryBase {
 
@@ -71,7 +71,7 @@ public class RebornInventory<T extends MachineBaseBlockEntity> extends Inventory
 	}
 
 	@Override
-	public void setStack(int slot, @Nonnull ItemStack stack) {
+	public void setStack(int slot, @NotNull ItemStack stack) {
 		super.setStack(slot, stack);
 		setChanged();
 	}
