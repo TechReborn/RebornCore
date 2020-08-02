@@ -10,6 +10,7 @@
 	"AccessorSlot",
 	"MixinBucketItem",
 	"MixinCraftingResultSlot",
+	"MixinGenerationSettings",
 	"MixinItemEntity",
 	"MixinItemStack",
 	"MixinPlayerEntity",
