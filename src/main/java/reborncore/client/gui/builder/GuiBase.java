@@ -308,7 +308,7 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 			factorX = this.x;
 			factorY = this.y;
 		}
-		getTextRenderer().method_30883(matrixStack, text, x + factorX, y + factorY, colour);
+		getTextRenderer().draw(matrixStack, text, x + factorX, y + factorY, colour);
 		RenderSystem.color4f(1, 1, 1, 1);
 	}
 

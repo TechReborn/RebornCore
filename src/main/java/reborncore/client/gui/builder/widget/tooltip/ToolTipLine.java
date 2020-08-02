@@ -87,9 +87,9 @@ public class ToolTipLine {
 
 	public void draw(MatrixStack matrixStack, TextRenderer fontRenderer, int x, int y) {
 		if (!isShadowed()) {
-			fontRenderer.method_30883(matrixStack, getLine(), x, y, color);
+			fontRenderer.draw(matrixStack, getLine(), x, y, color);
 		} else {
-			fontRenderer.method_30883(matrixStack, getLine(), x, y, color);
+			fontRenderer.draw(matrixStack, getLine(), x, y, color);
 		}
 
 	}

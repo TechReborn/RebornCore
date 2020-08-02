@@ -114,7 +114,7 @@ public class GuiBuilder {
 	}
 
 	public void drawText(MatrixStack matrixStack, GuiBase<?> gui, Text text, int x, int y, int color) {
-		gui.getTextRenderer().method_30883(matrixStack, text, x, y, color);
+		gui.getTextRenderer().draw(matrixStack, text, x, y, color);
 	}
 
 	public void drawProgressBar(MatrixStack matrixStack, GuiBase<?> gui, double progress, int x, int y) {
