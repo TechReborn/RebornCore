@@ -5,6 +5,7 @@
   "mixins": [
 	"AccessorScreenHandler",
 	"AccessorFluidBlock",
+	"AccessorFoliagePlacerType",
 	"AccessorIngredient",
 	"AccessorRecipeManager",
 	"AccessorSlot",
