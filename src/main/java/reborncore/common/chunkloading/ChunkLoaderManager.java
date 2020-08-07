@@ -26,8 +26,8 @@ package reborncore.common.chunkloading;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.datafixer.NbtOps;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
@@ -147,7 +147,7 @@ public class ChunkLoaderManager extends PersistentState {
 	}
 
 	public static Identifier getWorldName(World world){
-		return world.getDimensionRegistryKey().getValue();
+		return world.getRegistryKey().getValue();
 	}
 
 	public static RegistryKey<World> getDimensionRegistryKey(World world){

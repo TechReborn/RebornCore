@@ -49,7 +49,7 @@ public class SpriteSlot extends FilteredSlot {
 	}
 
 	@Override
-	public int getMaxStackAmount() {
+	public int getMaxItemCount() {
 		return this.stacksize;
 	}
 

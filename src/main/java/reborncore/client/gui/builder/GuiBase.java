@@ -266,14 +266,14 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
 			List<Text> list = new ArrayList<>();
 			list.add(new TranslatableText("reborncore.gui.tooltip.upgrades"));
-			method_30901(matrixStack, list, mouseX, mouseY);
+			renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 82 : 0;
 		for (GuiTab tab : tabs) {
 			if (isPointWithinBounds(-26, 6 + offset, 24, 23, mouseX, mouseY)) {
-				method_30901(matrixStack, Collections.singletonList(new TranslatableText(tab.name())), mouseX, mouseY);
+				renderTooltip(matrixStack, Collections.singletonList(new TranslatableText(tab.name())), mouseX, mouseY);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1, 1, 1, 1);
 			}

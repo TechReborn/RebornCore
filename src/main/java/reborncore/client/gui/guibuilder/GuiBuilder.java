@@ -178,7 +178,7 @@ public class GuiBuilder {
 				list.add(new TranslatableText("reborncore.gui.tooltip.lock_items"));
 			}
 			RenderSystem.pushMatrix();
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -213,7 +213,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.popMatrix();
 		}
 	}
@@ -323,7 +323,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -543,7 +543,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -618,7 +618,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -681,7 +681,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
@@ -762,7 +762,7 @@ public class GuiBuilder {
 				mouseX -= gui.getGuiLeft();
 				mouseY -= gui.getGuiTop();
 			}
-			gui.method_30901(matrixStack, list, mouseX, mouseY);
+			gui.renderTooltip(matrixStack, list, mouseX, mouseY);
 			RenderSystem.disableLighting();
 			RenderSystem.color4f(1, 1, 1, 1);
 		}

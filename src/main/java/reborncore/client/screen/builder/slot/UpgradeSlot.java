@@ -53,7 +53,7 @@ public class UpgradeSlot extends BaseSlot {
 	}
 
 	@Override
-	public int getMaxStackAmount() {
+	public int getMaxItemCount() {
 		return 1;
 	}
 
