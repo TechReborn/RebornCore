@@ -274,45 +274,52 @@ public class BuiltScreenHandler extends ScreenHandler implements ExtendedScreenH
 	}
 
 	protected boolean shiftItemStack(final ItemStack stackToShift, final int start, final int end) {
-		boolean changed = false;
-		if (stackToShift.isStackable()) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.slots.get(slotIndex);
-				final ItemStack stackInSlot = slot.getStack();
-				if (!stackInSlot.isEmpty() && ItemUtils.isItemEqual(stackInSlot, stackToShift, true, true)
-						&& slot.canInsert(stackToShift)) {
-					final int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
-					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
-					if (resultingStackSize <= max) {
-						stackToShift.setCount(0);
-						stackInSlot.setCount(resultingStackSize);
-						slot.markDirty();
-						changed = true;
-					} else if (stackInSlot.getCount() < max) {
-						stackToShift.decrement(max - stackInSlot.getCount());
-						stackInSlot.setCount(max);
-						slot.markDirty();
-						changed = true;
+		if (stackToShift.isEmpty()) {
+			return false;
+		}
+		int inCount = stackToShift.getCount();
+
+		// First lets see if we have the same item in a slot to merge with
+		for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
+			final Slot slot = this.slots.get(slotIndex);
+			final ItemStack stackInSlot = slot.getStack();
+			int maxCount = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
+
+			if (!stackToShift.isEmpty() && slot.canInsert(stackToShift)) {
+				if (ItemUtils.isItemEqual(stackInSlot, stackToShift, true, false)) {
+					// Got 2 stacks that need merging
+					int freeStackSpace = maxCount - stackInSlot.getCount();
+					if (freeStackSpace > 0) {
+						int transferAmount = Math.min(freeStackSpace, stackToShift.getCount());
+						stackInSlot.increment(transferAmount);
+						stackToShift.decrement(transferAmount);
 					}
 				}
 			}
 		}
-		if (stackToShift.getCount() > 0) {
-			for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
-				final Slot slot = this.slots.get(slotIndex);
-				ItemStack stackInSlot = slot.getStack();
-				if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
-					final int max = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
-					stackInSlot = stackToShift.copy();
-					stackInSlot.setCount(Math.min(stackToShift.getCount(), max));
-					stackToShift.decrement(stackInSlot.getCount());
-					slot.setStack(stackInSlot);
-					slot.markDirty();
-					changed = true;
-				}
+
+		// If not lets go find the next free slot to insert our remaining stack
+		for (int slotIndex = start; stackToShift.getCount() > 0 && slotIndex < end; slotIndex++) {
+			final Slot slot = this.slots.get(slotIndex);
+			final ItemStack stackInSlot = slot.getStack();
+
+			if (stackInSlot.isEmpty() && slot.canInsert(stackToShift)) {
+				int maxCount = Math.min(stackToShift.getMaxCount(), slot.getMaxItemCount());
+
+				int moveCount = Math.min(maxCount, stackToShift.getCount());
+				ItemStack moveStack = stackToShift.copy();
+				moveStack.setCount(moveCount);
+				slot.setStack(moveStack);
+				stackToShift.decrement(moveCount);
 			}
 		}
-		return changed;
+
+		//If we moved some, but still have more left over lets try again
+		if (!stackToShift.isEmpty() && stackToShift.getCount() != inCount) {
+			shiftItemStack(stackToShift, start, end);
+		}
+
+		return stackToShift.getCount() != inCount;
 	}
 
 	private boolean shiftToBlockEntity(final ItemStack stackToShift) {
