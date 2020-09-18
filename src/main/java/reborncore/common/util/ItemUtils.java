@@ -24,6 +24,7 @@
 
 package reborncore.common.util;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
@@ -201,6 +202,27 @@ public class ItemUtils {
 			tooltip.add(new TranslatableText("reborncore.message.inactive").formatted(Formatting.RED));
 		} else {
 			tooltip.add(new TranslatableText("reborncore.message.active").formatted(Formatting.GREEN));
+		}
+	}
+
+	/**
+	 *  Output energy from item to other items in inventory
+	 *
+	 * @param player PlayerEntity having powered item
+	 * @param itemStack ItemStack Powered item
+	 * @param maxOutput int Maximum output rate of powered item
+	 */
+	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput){
+		if (!Energy.valid(itemStack)) {
+			return;
+		}
+
+		for (int i = 0; i < player.inventory.size(); i++) {
+			if (Energy.valid(player.inventory.getStack(i))) {
+				Energy.of(itemStack)
+						.into(Energy.of(player.inventory.getStack(i)))
+						.move(maxOutput);
+			}
 		}
 	}
 }
