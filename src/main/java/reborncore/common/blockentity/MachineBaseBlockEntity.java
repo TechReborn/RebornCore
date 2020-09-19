@@ -474,7 +474,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public boolean canInsert(int index, ItemStack stack, @Nullable Direction direction) {
-		if(direction == null){
+		if(direction == null || slotConfiguration == null){
 			return false;
 		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
@@ -491,6 +491,9 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public boolean canExtract(int index, ItemStack stack, Direction direction) {
+		if (slotConfiguration == null) {
+			return false;
+		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		return slotConfig.getSlotIO().ioConfig.isExtact();
