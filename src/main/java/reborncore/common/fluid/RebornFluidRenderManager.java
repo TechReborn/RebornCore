@@ -50,7 +50,7 @@ public class RebornFluidRenderManager implements ClientSpriteRegistryCallback, S
 
 	public static void setupClient() {
 		RebornFluidRenderManager rebornFluidRenderManager = new RebornFluidRenderManager();
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(rebornFluidRenderManager);
+		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(rebornFluidRenderManager);
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(rebornFluidRenderManager);
 		RebornFluidManager.getFluidStream().forEach(RebornFluidRenderManager::setupFluidRenderer);
 	}

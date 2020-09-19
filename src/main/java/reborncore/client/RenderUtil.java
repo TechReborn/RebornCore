@@ -47,7 +47,7 @@ import reborncore.common.util.Tank;
  * Created by Gigabit101 on 08/08/2016.
  */
 public class RenderUtil {
-	public static final Identifier BLOCK_TEX = SpriteAtlasTexture.BLOCK_ATLAS_TEX;
+	public static final Identifier BLOCK_TEX = SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
 
 	public static TextureManager engine() {
 		return MinecraftClient.getInstance().getTextureManager();
@@ -65,7 +65,7 @@ public class RenderUtil {
 	}
 
 	public static Sprite getSprite(Identifier identifier) {
-		return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(identifier);
+		return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(identifier);
 	}
 
 	public static Sprite getStillTexture(Fluid fluid) {

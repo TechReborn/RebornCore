@@ -435,7 +435,7 @@ public class GuiBuilder {
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			this.client.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
+			this.client.getTextureManager().bindTexture(DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
 			bufferBuilder.vertex(this.left, this.bottom, 0.0D).texture((float) this.left / 32.0F, (float) (this.bottom + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
@@ -702,7 +702,7 @@ public class GuiBuilder {
 		if (fluid.getFluid() == Fluids.EMPTY) {
 			return;
 		}
-		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		y += height;
 		final Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidSprites(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState())[0];
 		int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidColor(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState());

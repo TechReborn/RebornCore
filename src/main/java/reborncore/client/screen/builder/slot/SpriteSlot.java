@@ -57,6 +57,6 @@ public class SpriteSlot extends FilteredSlot {
 	@Nullable
 	@Environment(EnvType.CLIENT)
 	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(SpriteAtlasTexture.BLOCK_ATLAS_TEX, spriteName);
+		return Pair.of(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, spriteName);
 	}
 }

@@ -186,7 +186,7 @@ public class ChunkLoaderManager extends PersistentState {
 					CHUNK_POS_CODEC.fieldOf("chunk").forGetter(LoadedChunk::getChunk),
 					Identifier.CODEC.fieldOf("world").forGetter(LoadedChunk::getWorld),
 					Codec.STRING.fieldOf("player").forGetter(LoadedChunk::getPlayer),
-					BlockPos.field_25064.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
+					BlockPos.CODEC.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
 				)
 				.apply(instance, LoadedChunk::new));
 

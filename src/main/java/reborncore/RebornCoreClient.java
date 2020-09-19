@@ -38,7 +38,7 @@ public class RebornCoreClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		RebornFluidRenderManager.setupClient();
-		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(IconSupplier::registerSprites);
+		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(IconSupplier::registerSprites);
 		ClientBoundPacketHandlers.init();
 		HudRenderCallback.EVENT.register(new ItemStackRenderer());
 	}

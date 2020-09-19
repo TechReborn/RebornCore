@@ -99,8 +99,8 @@ public class ItemStackRenderer implements HudRenderCallback {
 		RenderSystem.loadIdentity();
 
 		{
-			minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-			minecraft.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
+			minecraft.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+			minecraft.getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
 			RenderSystem.enableRescaleNormal();
 			RenderSystem.enableAlphaTest();
@@ -142,7 +142,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 
 		try (NativeImage nativeImage = new NativeImage(size, size, false)) {
-			GlStateManager.bindTexture(framebuffer.method_30277());
+			GlStateManager.bindTexture(framebuffer.getColorAttachment());
 			nativeImage.loadFromTextureImage(0, false);
 			nativeImage.mirrorVertically();
 
