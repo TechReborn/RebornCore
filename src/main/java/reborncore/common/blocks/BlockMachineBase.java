@@ -61,8 +61,8 @@ import reborncore.common.util.WrenchUtils;
 
 public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
-	public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-	public static BooleanProperty ACTIVE = BooleanProperty.of("active");
+	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+	public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
 
 	boolean hasCustomStates;
 
@@ -134,8 +134,6 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 	// Block
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		FACING = DirectionProperty.of("facing", Direction.Type.HORIZONTAL);
-		ACTIVE = BooleanProperty.of("active");
 		builder.add(FACING, ACTIVE);
 	}
 
