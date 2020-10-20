@@ -53,7 +53,7 @@ public class Configuration {
 	}
 
 	private void setup() {
-		final File configDir = new File(FabricLoader.getInstance().getConfigDirectory(), modId);
+		final File configDir = new File(FabricLoader.getInstance().getConfigDir().toFile(), modId);
 
 		if (!configDir.exists()) {
 			configDir.mkdirs();

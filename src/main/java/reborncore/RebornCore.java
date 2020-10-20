@@ -1,5 +1,5 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2020 TechReborn
  *
@@ -56,7 +56,7 @@ public class RebornCore implements ModInitializer {
 	public static final String MOD_VERSION = "@MODVERSION@";
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+	public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 	public static File configDir;
 
 	public static boolean LOADED = false;
@@ -67,15 +67,10 @@ public class RebornCore implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		new Configuration(RebornCoreConfig.class, "reborncore");
-
-		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
-		if (!configDir.exists()) {
-			configDir.mkdir();
-		}
+		new Configuration(RebornCoreConfig.class, MOD_ID);
 
 		//ConfigRegistryFactory.saveAll();
-		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
+		PowerSystem.selectedFile = (new File(FabricLoader.getInstance().getConfigDir().toFile(), "reborncore/selected_energy.json"));
 		PowerSystem.readFile();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 
@@ -94,13 +89,13 @@ public class RebornCore implements ModInitializer {
 		ModSounds.setup();
 		BlockWrenchEventHandler.setup();
 
-		/**
-		 * This is a generic multiblock tick handler. If you are using this code on your
-		 * own, you will need to register this with the Forge TickRegistry on both the
-		 * client AND server sides. Note that different types of ticks run on different
-		 * parts of the system. CLIENT ticks only run on the client, at the start/end of
-		 * each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
-		 * ticks run only on the server, and only when worlds are loaded.
+		/*
+		  This is a generic multiblock tick handler. If you are using this code on your
+		  own, you will need to register this with the Forge TickRegistry on both the
+		  client AND server sides. Note that different types of ticks run on different
+		  parts of the system. CLIENT ticks only run on the client, at the start/end of
+		  each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
+		  ticks run only on the server, and only when worlds are loaded.
 		 */
 		WorldTickCallback.EVENT.register(MultiblockRegistry::tickStart);
 
