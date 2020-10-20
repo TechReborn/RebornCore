@@ -174,7 +174,7 @@ public class BlockEntityScreenHandlerBuilder {
 			PowerAcceptorBlockEntity powerAcceptor = ((PowerAcceptorBlockEntity) this.blockEntity);
 
 			return this.sync(powerAcceptor::getEnergy, powerAcceptor::setEnergy)
-					.sync(() -> powerAcceptor.extraPowerStorage, powerAcceptor::setExtraPowerStorage)
+					.sync(powerAcceptor::getExtraPowerStorage, powerAcceptor::setExtraPowerStorage)
 					.sync(powerAcceptor::getPowerChange, powerAcceptor::setPowerChange);
 		}
 
