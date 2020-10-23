@@ -39,40 +39,37 @@ public class PowerSystem {
 
 	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
 
-	public static String getLocaliszedPower(double eu) {
-		return getLocaliszedPower((int) eu);
+	private static Locale locale = Locale.ROOT;
+
+	public static String getLocalizedPower(double power) {
+
+		return getRoundedString(power, selectedSystem.abbreviation, true);
 	}
 
-	public static String getLocaliszedPowerNoSuffix(double eu) {
-		return getLocaliszedPowerNoSuffix((int) eu);
+	public static String getLocalizedPowerNoSuffix(double power) {
+		return getRoundedString(power, "", true);
 	}
 
-	public static String getLocaliszedPowerFormatted(double eu) {
-		return getLocaliszedPowerFormatted((int) eu);
+	public static String getLocalizedPowerNoFormat(double power){
+		return getRoundedString(power, selectedSystem.abbreviation, false);
 	}
 
-	public static String getLocaliszedPowerFormattedNoSuffix(double eu) {
-		return getLocaliszedPowerFormattedNoSuffix((int) eu);
+	public static String getLocalizedPowerNoSuffixNoFormat(double power){
+		return getRoundedString(power, "", false);
 	}
 
-	public static String getLocaliszedPower(int eu) {
-		return getRoundedString(eu, EnergySystem.EU.abbreviation);
+	public static String getLocalizedPowerFull(double power){
+		return getFullPower(power, selectedSystem.abbreviation);
 	}
 
-	public static String getLocaliszedPowerNoSuffix(int eu) {
-		return getRoundedString(eu, "");
+	public static String getLocalizedPowerFullNoSuffix(double power){
+		return getFullPower(power, "");
 	}
 
-	public static String getLocaliszedPowerFormatted(int eu) {
-		return getRoundedString(eu, EnergySystem.EU.abbreviation);
-	}
-
-	public static String getLocaliszedPowerFormattedNoSuffix(int eu) {
-		return getRoundedString(eu, "", true);
-	}
-
-	private static String getRoundedString(double value, String units) {
-		return getRoundedString(value, units, false);
+	private static String getFullPower(double power, String units){
+		checkLocale();
+		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
+		return formatter.format(power) + " " + units;
 	}
 
 	private static String getRoundedString(double euValue, String units, boolean doFormat) {
@@ -104,16 +101,18 @@ public class PowerSystem {
 			}
 		}
 
-		String strValue = String.valueOf(value);
-
-		Locale locale = Locale.ENGLISH;
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && doFormat) {
-			locale = Locale.forLanguageTag(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode());
+		if (doFormat){
+			checkLocale();
+			DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
+			ret += formatter.format(value);
+			int idx = ret.lastIndexOf(formatter.getDecimalFormatSymbols().getDecimalSeparator());
+			if (idx > 0){
+				ret = ret.substring(0, idx + 2);
+			}
 		}
-		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
-		ret += formatter.format(value);
-		strValue = strValue.substring(0, strValue.lastIndexOf(formatter.getDecimalFormatSymbols().getDecimalSeparator()) + 2);
-		ret += strValue;
+		else {
+			ret +=value;
+		}
 
 		if (showMagnitude) {
 			ret += magnitude[i];
@@ -146,6 +145,14 @@ public class PowerSystem {
 		if(!selectedSystem.enabled.get()){
 			bumpPowerConfig();
 		}
+	}
+
+	private static void checkLocale() {
+		if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) { return; }
+		MinecraftClient instance = MinecraftClient.getInstance();
+		if (instance == null) { return; }
+		String strangeMcLang = instance.getLanguageManager().getLanguage().getCode();
+		locale = Locale.forLanguageTag(strangeMcLang.substring(0, 2));
 	}
 
 	public enum EnergySystem {

@@ -430,7 +430,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 				new TranslatableText("reborncore.tooltip.energy.maxEnergy")
 				.formatted(Formatting.GRAY)
 				.append(": ")
-				.append(PowerSystem.getLocaliszedPowerFormatted(getMaxStoredPower()))
+				.append(PowerSystem.getLocalizedPower(getMaxStoredPower()))
 				.formatted(Formatting.GOLD)
 		);
 
@@ -439,7 +439,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 					new TranslatableText("reborncore.tooltip.energy.inputRate")
 							.formatted(Formatting.GRAY)
 							.append(": ")
-							.append(PowerSystem.getLocaliszedPowerFormatted(getMaxInput(EnergySide.UNKNOWN)))
+							.append(PowerSystem.getLocalizedPower(getMaxInput(EnergySide.UNKNOWN)))
 							.formatted(Formatting.GOLD)
 			);
 		}
@@ -448,7 +448,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 					new TranslatableText("reborncore.tooltip.energy.outputRate")
 							.formatted(Formatting.GRAY)
 							.append(": ")
-							.append(PowerSystem.getLocaliszedPowerFormatted(getMaxOutput(EnergySide.UNKNOWN)))
+							.append(PowerSystem.getLocalizedPower(getMaxOutput(EnergySide.UNKNOWN)))
 							.formatted(Formatting.GOLD)
 			);
 		}
@@ -465,7 +465,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			new TranslatableText("reborncore.tooltip.energy.change")
 					.formatted(Formatting.GRAY)
 					.append(": ")
-					.append(PowerSystem.getLocaliszedPowerFormatted(powerChange))
+					.append(PowerSystem.getLocalizedPower(powerChange))
 					.append("/t")
 					.formatted(Formatting.GOLD);
 		}
@@ -474,7 +474,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 			new TranslatableText("reborncore.tooltip.energy.change")
 					.formatted(Formatting.GRAY)
 					.append(": ")
-					.append(PowerSystem.getLocaliszedPowerFormatted(energy))
+					.append(PowerSystem.getLocalizedPower(energy))
 					.formatted(Formatting.GOLD);
 		}
 

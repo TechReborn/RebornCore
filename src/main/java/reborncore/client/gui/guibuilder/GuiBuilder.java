@@ -461,6 +461,7 @@ public class GuiBuilder {
 		}
 	}
 
+	//TODO: change to double
 	/**
 	 * Draws energy output value and icon
 	 *
@@ -472,7 +473,7 @@ public class GuiBuilder {
 	 */
 	public void drawEnergyOutput(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
-		Text text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput))
+		Text text = new LiteralText(PowerSystem.getLocalizedPowerNoSuffix(maxOutput))
 				.append(SPACE_TEXT)
 				.append(PowerSystem.getDisplayPower().abbreviation)
 				.append("\t");
@@ -581,15 +582,21 @@ public class GuiBuilder {
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
 			List<Text> list = Lists.newArrayList();
-			list.add(
-					new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored))
-							.formatted(Formatting.GOLD)
-							.append("/")
-							.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored))
-							.append(SPACE_TEXT)
-							.append(displayPower.abbreviation)
-			);
-
+			if (Screen.hasShiftDown()) {
+				list.add(
+						new LiteralText(PowerSystem.getLocalizedPowerFullNoSuffix(energyStored))
+								.formatted(Formatting.GOLD)
+								.append("/")
+								.append(PowerSystem.getLocalizedPowerFull(maxEnergyStored))
+				);
+			} else {
+				list.add(
+						new LiteralText(PowerSystem.getLocalizedPowerNoSuffix(energyStored))
+								.formatted(Formatting.GOLD)
+								.append("/")
+								.append(PowerSystem.getLocalizedPower(maxEnergyStored))
+				);
+			}
 			list.add(
 					StringUtils.getPercentageText(percentage)
 							.append(SPACE_TEXT)
