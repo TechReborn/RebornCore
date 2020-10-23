@@ -24,16 +24,17 @@
 
 package reborncore.common.powerSystem;
 
-import org.apache.commons.io.FileUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import reborncore.common.RebornCoreConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class PowerSystem {
-	public static File selectedFile;
 	private static EnergySystem selectedSystem = EnergySystem.values()[0];
 
 	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
@@ -104,14 +105,21 @@ public class PowerSystem {
 		}
 
 		String strValue = String.valueOf(value);
-		strValue = strValue.substring(0, strValue.lastIndexOf('.') + 2);
+
+		Locale locale = Locale.ENGLISH;
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && doFormat) {
+			locale = Locale.forLanguageTag(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode());
+		}
+		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
+		ret += formatter.format(value);
+		strValue = strValue.substring(0, strValue.lastIndexOf(formatter.getDecimalFormatSymbols().getDecimalSeparator()) + 2);
 		ret += strValue;
 
 		if (showMagnitude) {
 			ret += magnitude[i];
 		}
 
-		if (units != "") {
+		if (!units.equals("")) {
 			ret += " " + units;
 		}
 
@@ -131,31 +139,13 @@ public class PowerSystem {
 			value = 0;
 		}
 		selectedSystem = EnergySystem.values()[value];
-		writeFile();
 	}
 
-	public static void readFile() {
-		if (!selectedFile.exists()) {
-			writeFile();
+	public static void init(){
+		selectedSystem = Arrays.stream(EnergySystem.values()).filter(energySystem -> energySystem.abbreviation.equalsIgnoreCase(RebornCoreConfig.selectedSystem)).findFirst().orElse(EnergySystem.values()[0]);
+		if(!selectedSystem.enabled.get()){
+			bumpPowerConfig();
 		}
-		if (selectedFile.exists()) {
-
-			try {
-				String value = FileUtils.readFileToString(selectedFile, StandardCharsets.UTF_8);
-				selectedSystem = Arrays.stream(EnergySystem.values()).filter(energySystem -> energySystem.abbreviation.equalsIgnoreCase(value)).findFirst().orElse(EnergySystem.values()[0]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void writeFile() {
-		try {
-			FileUtils.write(selectedFile, selectedSystem.abbreviation, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		readFile();
 	}
 
 	public enum EnergySystem {

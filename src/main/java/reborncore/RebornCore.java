@@ -1,5 +1,5 @@
 /*
- * This file is part of RebornCore, licensed under the MIT License (MIT).
+ * This file is part of TechReborn, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2020 TechReborn
  *
@@ -68,10 +68,7 @@ public class RebornCore implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		new Configuration(RebornCoreConfig.class, MOD_ID);
-
-		//ConfigRegistryFactory.saveAll();
-		PowerSystem.selectedFile = (new File(FabricLoader.getInstance().getConfigDir().toFile(), "reborncore/selected_energy.json"));
-		PowerSystem.readFile();
+		PowerSystem.init();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("ic2:wrench"), true));

@@ -1,5 +1,5 @@
 /*
- * This file is part of RebornCore, licensed under the MIT License (MIT).
+ * This file is part of TechReborn, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2020 TechReborn
  *
