@@ -28,6 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -35,6 +36,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
@@ -106,9 +108,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	public void writeMultiblock(MultiblockWriter writer) {}
 
 	public void syncWithAll() {
-		if (!world.isClient) {
-			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
-		}
+		if (world == null || world.isClient) { return; }
+		NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
 	}
 
 	public void onLoad() {
@@ -140,10 +141,10 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public void tick() {
-		if(ticktime == 0){
+		if (ticktime == 0) {
 			onLoad();
 		}
-		ticktime ++;
+		ticktime++;
 		@Nullable
 		RecipeCrafter crafter = null;
 		if (getOptionalCrafter().isPresent()) {
@@ -158,18 +159,18 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 				}
 			}
 		}
-		if (!world.isClient) {
-			if (crafter != null && isActive(RedstoneConfiguration.RECIPE_PROCESSING)) {
-				crafter.updateEntity();
-			}
-			if (slotConfiguration != null && isActive(RedstoneConfiguration.ITEM_IO)) {
-				slotConfiguration.update(this);
-			}
-			if (fluidConfiguration != null && isActive(RedstoneConfiguration.FLUID_IO)) {
-				fluidConfiguration.update(this);
-			}
+		if (world == null || world.isClient) {
+			return;
 		}
-
+		if (crafter != null && isActive(RedstoneConfiguration.RECIPE_PROCESSING)) {
+			crafter.updateEntity();
+		}
+		if (slotConfiguration != null && isActive(RedstoneConfiguration.ITEM_IO)) {
+			slotConfiguration.update(this);
+		}
+		if (fluidConfiguration != null && isActive(RedstoneConfiguration.FLUID_IO)) {
+			fluidConfiguration.update(this);
+		}
 	}
 
 	public void resetUpgrades() {

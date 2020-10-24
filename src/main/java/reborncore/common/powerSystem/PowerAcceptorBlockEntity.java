@@ -304,10 +304,7 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	@Override
 	public void tick() {
 		super.tick();
-		if (world == null) {
-			return;
-		}
-		if (world.isClient) {
+		if (world == null || world.isClient) {
 			return;
 		}
 		if (getStored(EnergySide.UNKNOWN) <= 0) {
