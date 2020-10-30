@@ -29,6 +29,10 @@
   "reborncore.gui.tooltip.unlock_items": "Разблокировать предметы",
   "reborncore.gui.tooltip.upgrades": "Улучшение",
 
+  "reborncore.gui.slotconfig.autoinput": "Авто ввод",
+  "reborncore.gui.slotconfig.autooutput": "Авто вывод",
+  "reborncore.gui.slotconfig.filter_input": "Фильтр ввода",
+
   "reborncore.gui.slotconfigtip.slot": "Выберите слот для настройки.",
   "reborncore.gui.slotconfigtip.side1": "Оранжевый - вход.",
   "reborncore.gui.slotconfigtip.side2": "Синий - выход.",
@@ -36,11 +40,12 @@
   "reborncore.gui.slotconfigtip.copy1": "Ctrl+C скопировать настройки.",
   "reborncore.gui.slotconfigtip.copy2": "Ctrl+V вставить настройки.",
 
+  "reborncore.gui.fluidconfig.pullin": "Закачивать",
+  "reborncore.gui.fluidconfig.pumpout": "Откачивать",
   "reborncore.gui.fluidconfig.item_io": "Предметы",
   "reborncore.gui.fluidconfig.power_io": "Энергия",
   "reborncore.gui.fluidconfig.fluid_io": "Жидкости",
   "reborncore.gui.fluidconfig.recipe_processing": "Создание",
-
   "reborncore.gui.fluidconfig.ignored": "Игнорировать",
   "reborncore.gui.fluidconfig.enabled_on": "§cСигнал §aВкл",
   "reborncore.gui.fluidconfig.enabled_off": "§cСигнал §4Выкл"

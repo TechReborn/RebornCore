@@ -423,6 +423,16 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	// IListInfoProvider
 	@Override
 	public void addInfo(List<Text> info, boolean isReal, boolean hasData) {
+		if (!isReal && hasData) {
+			info.add(
+					new TranslatableText("reborncore.tooltip.energy")
+							.formatted(Formatting.GRAY)
+							.append(": ")
+							.append(PowerSystem.getLocalizedPower(energy))
+							.formatted(Formatting.GOLD)
+			);
+		}
+
 		info.add(
 				new TranslatableText("reborncore.tooltip.energy.maxEnergy")
 				.formatted(Formatting.GRAY)
@@ -459,21 +469,17 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 		);
 
 		if (isReal) {
-			new TranslatableText("reborncore.tooltip.energy.change")
-					.formatted(Formatting.GRAY)
-					.append(": ")
-					.append(PowerSystem.getLocalizedPower(powerChange))
-					.append("/t")
-					.formatted(Formatting.GOLD);
+			info.add(
+					new TranslatableText("reborncore.tooltip.energy.change")
+							.formatted(Formatting.GRAY)
+							.append(": ")
+							.append(PowerSystem.getLocalizedPower(powerChange))
+							.append("/t")
+							.formatted(Formatting.GOLD)
+			);
 		}
 
-		if (hasData) {
-			new TranslatableText("reborncore.tooltip.energy.change")
-					.formatted(Formatting.GRAY)
-					.append(": ")
-					.append(PowerSystem.getLocalizedPower(energy))
-					.formatted(Formatting.GOLD);
-		}
+
 
 		super.addInfo(info, isReal, hasData);
 	}
