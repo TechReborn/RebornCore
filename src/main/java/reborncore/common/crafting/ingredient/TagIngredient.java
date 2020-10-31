@@ -30,8 +30,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagContainers;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -92,7 +92,7 @@ public class TagIngredient extends RebornIngredient {
 		}
 
 		Identifier identifier = new Identifier(JsonHelper.getString(json, "tag"));
-		Tag<Item> tag = TagContainers.instance().items().get(identifier);
+		Tag<Item> tag = ServerTagManagerHolder.getTagManager().getItems().getTag(identifier);
 		if (tag == null) {
 			throw new JsonSyntaxException("Unknown item tag '" + identifier + "'");
 		}

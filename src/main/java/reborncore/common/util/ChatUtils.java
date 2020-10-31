@@ -30,6 +30,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
+import reborncore.mixin.client.AccessorChatHud;
 
 /**
  * Class stolen from SteamAgeRevolution, which I stole from BloodMagic, which was stolen from EnderCore, which stole the
@@ -52,6 +53,7 @@ public class ChatUtils {
 	private static void sendNoSpamMessage(int messageID, Text message) {
 		int deleteID = DELETION_ID + messageID;
 		ChatHud chat = MinecraftClient.getInstance().inGameHud.getChatHud();
-		chat.addMessage(message, deleteID);
+		AccessorChatHud accessorChatHud = (AccessorChatHud) chat;
+		accessorChatHud.invokeAddMessage(message, deleteID);
 	}
 }

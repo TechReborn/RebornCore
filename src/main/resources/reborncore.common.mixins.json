@@ -5,11 +5,13 @@
   "mixins": [
 	"AccessorScreenHandler",
 	"AccessorFluidBlock",
+	"AccessorFoliagePlacerType",
 	"AccessorIngredient",
 	"AccessorRecipeManager",
 	"AccessorSlot",
 	"MixinBucketItem",
 	"MixinCraftingResultSlot",
+	"MixinGenerationSettings",
 	"MixinItemEntity",
 	"MixinItemStack",
 	"MixinPlayerEntity",

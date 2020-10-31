@@ -7,7 +7,9 @@
     "MixinItemRenderer",
     "MixinDebugRenderer",
 	"MixinPlayerEntityRenderer",
-	"AccessorModelPredicateProviderRegistry"
+	"MixinWorldRenderer",
+	"AccessorModelPredicateProviderRegistry",
+	"AccessorChatHud"
   ],
   "injectors": {
     "defaultRequire": 1

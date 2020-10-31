@@ -142,7 +142,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 
 
 		try (NativeImage nativeImage = new NativeImage(size, size, false)) {
-			GlStateManager.bindTexture(framebuffer.colorAttachment);
+			GlStateManager.bindTexture(framebuffer.method_30277());
 			nativeImage.loadFromTextureImage(0, false);
 			nativeImage.mirrorVertically();
 

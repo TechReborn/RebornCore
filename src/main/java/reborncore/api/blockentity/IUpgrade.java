@@ -25,11 +25,10 @@
 package reborncore.api.blockentity;
 
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.recipes.IUpgradeHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Added to an item to say that it is a valid behavior
@@ -37,10 +36,10 @@ import javax.annotation.Nullable;
 public interface IUpgrade {
 
 	void process(
-			@Nonnull MachineBaseBlockEntity machineBase,
+			@NotNull MachineBaseBlockEntity machineBase,
 			@Nullable
 					IUpgradeHandler handler,
-			@Nonnull
+			@NotNull
 					ItemStack stack);
 
 	default boolean isValidForInventory(IUpgradeable upgradeable, ItemStack stack) {

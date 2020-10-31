@@ -36,7 +36,7 @@ import reborncore.client.screen.builder.Syncable;
 import reborncore.common.util.BooleanFunction;
 import reborncore.common.util.NBTSerializable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +145,7 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 		}
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public CompoundTag write() {
 		CompoundTag tag = new CompoundTag();
@@ -156,7 +156,7 @@ public class RedstoneConfiguration implements NBTSerializable, Syncable {
 	}
 
 	@Override
-	public void read(@Nonnull CompoundTag tag) {
+	public void read(@NotNull CompoundTag tag) {
 		stateMap = new HashMap<>();
 		for (String key : tag.getKeys()) {
 			Element element = ELEMENT_MAP.get(key);

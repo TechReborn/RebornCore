@@ -26,13 +26,13 @@ package reborncore.common.util;
 
 import net.minecraft.nbt.CompoundTag;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public interface NBTSerializable {
 
-	@Nonnull
+	@NotNull
 	CompoundTag write();
 
-	void read(@Nonnull CompoundTag tag);
+	void read(@NotNull CompoundTag tag);
 
 }

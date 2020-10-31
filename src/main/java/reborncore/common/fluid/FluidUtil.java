@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import reborncore.common.fluid.container.FluidInstance;
 import reborncore.common.util.Tank;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 
 public class FluidUtil {
@@ -54,11 +54,11 @@ public class FluidUtil {
 		return null;
 	}
 
-	public static String getFluidName(@Nonnull FluidInstance fluidInstance) {
+	public static String getFluidName(@NotNull FluidInstance fluidInstance) {
 		return getFluidName(fluidInstance.getFluid());
 	}
 
-	public static String getFluidName(@Nonnull Fluid fluid) {
+	public static String getFluidName(@NotNull Fluid fluid) {
 		return StringUtils.capitalize(Registry.FLUID.getId(fluid).getPath());
 	}
 

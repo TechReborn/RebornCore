@@ -47,7 +47,7 @@ public class SlotFake extends BaseSlot {
 	}
 
 	@Override
-	public int getMaxStackAmount() {
+	public int getMaxItemCount() {
 		return this.mMaxStacksize;
 	}
 

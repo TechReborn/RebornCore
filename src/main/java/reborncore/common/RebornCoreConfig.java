@@ -27,24 +27,6 @@ package reborncore.common;
 import reborncore.common.config.Config;
 
 public class RebornCoreConfig {
-
-	@Config(config = "client", key = "Show stack info", comment = "Show additional stack info on HUD, like active, charge, etc.")
-	public static boolean ShowStackInfoHUD = true;
-
-	@Config(config = "client", key = "Stack Info Corner", comment = "Screen corner for HUD, 0 is top left, 1 is top right, 2 is bottom right and 3 is bottom left")
-	public static int stackInfoCorner = 0;
-
-	@Config(config = "client", key = "Stack Info X", comment = "X padding for HUD ")
-	public static int stackInfoX = 2;
-
-	@Config(config = "client", key = "Stack Info Y", comment = "Y padding for HUD ")
-	public static int stackInfoY = 7;
-
-
 	@Config(config = "misc", key = "Enable Seasonal Easter Eggs", comment = "Disable this is you don't want seasonal easter eggs")
 	public static boolean easterEggs = true;
-
-	@Config(config = "power", key = "Energy smoking", comment = "When enabled machines that try to insert power into a machine with a lower teir will smoke")
-	public static boolean smokeHighTeir = false;
-
 }

@@ -31,7 +31,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class SpriteSlot extends FilteredSlot {
 
@@ -49,7 +49,7 @@ public class SpriteSlot extends FilteredSlot {
 	}
 
 	@Override
-	public int getMaxStackAmount() {
+	public int getMaxItemCount() {
 		return this.stacksize;
 	}
 

@@ -56,7 +56,7 @@ import reborncore.client.screen.builder.BuiltScreenHandler;
 import reborncore.client.screen.builder.slot.PlayerInventorySlot;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

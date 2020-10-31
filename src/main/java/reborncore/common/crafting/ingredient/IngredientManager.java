@@ -30,7 +30,7 @@ import com.google.gson.JsonParseException;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.function.Function;
 

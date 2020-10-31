@@ -37,11 +37,11 @@ import reborncore.common.fluid.container.FluidInstance;
 import net.minecraft.util.collection.DefaultedList;
 import reborncore.common.util.Tank;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class RebornFluidRecipe extends RebornRecipe {
 
-	@Nonnull
+	@NotNull
 	private FluidInstance fluidInstance = FluidInstance.EMPTY;
 
 	public RebornFluidRecipe(RebornRecipeType<?> type, Identifier name) {
@@ -125,7 +125,7 @@ public abstract class RebornFluidRecipe extends RebornRecipe {
 		return false;
 	}
 
-	@Nonnull
+	@NotNull
 	public FluidInstance getFluidInstance() {
 		return fluidInstance;
 	}

@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import reborncore.common.util.ItemDurabilityExtensions;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 //Not too happy with this, need to find and get a better solution into fabric soon
 @Mixin(ItemRenderer.class)

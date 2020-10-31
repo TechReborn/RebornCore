@@ -35,7 +35,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import reborncore.common.util.ItemUtils;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryUtils {
 

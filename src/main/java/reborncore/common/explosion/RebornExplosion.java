@@ -34,8 +34,8 @@ import net.minecraft.world.explosion.Explosion;
 import org.apache.commons.lang3.time.StopWatch;
 import reborncore.RebornCore;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,24 +44,24 @@ import java.util.List;
  */
 public class RebornExplosion extends Explosion {
 
-	@Nonnull
+	@NotNull
 	BlockPos center;
 
-	@Nonnull
+	@NotNull
 	World world;
 
-	@Nonnull
+	@NotNull
 	int radius;
 
 	@Nullable
 	LivingEntity livingBase;
 
 	public RebornExplosion(
-		@Nonnull
+		@NotNull
 			BlockPos center,
-		@Nonnull
+		@NotNull
 			World world,
-		@Nonnull
+		@NotNull
 			int radius) {
 		super(world, null, null, null, center.getX(), center.getY(), center.getZ(), radius, false, DestructionType.DESTROY);
 		this.center = center;
