@@ -50,8 +50,8 @@ configurations {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.16.4-rc1"
-	mappings "net.fabricmc:yarn:1.16.4-rc1+build.2:v2"
+	minecraft "com.mojang:minecraft:1.16.4"
+	mappings "net.fabricmc:yarn:1.16.4+build.6:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.10.6+build.214"
 
 	//Fabric api
