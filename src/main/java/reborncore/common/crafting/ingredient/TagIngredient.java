@@ -65,7 +65,7 @@ public class TagIngredient extends RebornIngredient {
 
 	@Override
 	public Ingredient getPreview() {
-		return Ingredient.fromTag(tag);
+		return Ingredient.ofStacks(getPreviewStacks().stream());
 	}
 
 	@Override
