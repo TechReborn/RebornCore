@@ -220,10 +220,14 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		throw new UnsupportedOperationException();
 	}
 
+	// Do not call directly, this is implemented only as a fallback. getOutputs() will return all of the outputs
 	@Deprecated
 	@Override
 	public ItemStack getOutput() {
-		throw new UnsupportedOperationException();
+		if (isDummy() || outputs.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		return outputs.get(0);
 	}
 
 	@Override
