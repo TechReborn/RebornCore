@@ -122,7 +122,7 @@ public class StackIngredient extends RebornIngredient {
 
 	@Override
 	public Ingredient getPreview() {
-		return Ingredient.ofStacks(stacks.toArray(new ItemStack[0]));
+		return Ingredient.ofStacks(stacks.stream());
 	}
 
 	@Override
