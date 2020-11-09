@@ -57,6 +57,9 @@ public final class ConditionManager {
 
 		//Only load the recipe if the provided mod is loaded
 		register("mod", String.class, s -> FabricLoader.getInstance().isModLoaded(s));
+
+		//Never load, just pass whatever in as the string
+		register("never", String.class, s -> false);
 	}
 
 	private static boolean registryContains(SimpleRegistry<?> registry, Identifier ident) {
