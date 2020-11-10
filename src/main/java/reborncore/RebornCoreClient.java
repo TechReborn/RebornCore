@@ -25,11 +25,13 @@
 package reborncore;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import reborncore.client.IconSupplier;
 import reborncore.client.ItemStackRenderer;
+import reborncore.client.StackToolTipHandler;
 import reborncore.common.fluid.RebornFluidRenderManager;
 import reborncore.common.network.ClientBoundPacketHandlers;
 
@@ -41,5 +43,6 @@ public class RebornCoreClient implements ClientModInitializer {
 		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(IconSupplier::registerSprites);
 		ClientBoundPacketHandlers.init();
 		HudRenderCallback.EVENT.register(new ItemStackRenderer());
+		ItemTooltipCallback.EVENT.register(new StackToolTipHandler());
 	}
 }

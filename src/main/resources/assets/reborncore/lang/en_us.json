@@ -11,6 +11,7 @@
   "reborncore.tooltip.energy.tier": "Tier",
   "reborncore.tooltip.energy.change": "Energy Change",
   "reborncore.tooltip.energy": "Energy Stored",
+  "reborncore.tooltip.has_data": "Stored data",
 
   "reborncore.gui.heat": "Heat",
   "reborncore.gui.missingmultiblock": "Incomplete Multiblock",

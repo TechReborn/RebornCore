@@ -263,19 +263,16 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 	@Override
 	protected void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
-		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
+		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades
+				&& this.focusedSlot != null && !this.focusedSlot.hasStack()) {
 			List<Text> list = new ArrayList<>();
 			list.add(new TranslatableText("reborncore.gui.tooltip.upgrades"));
 			renderTooltip(matrixStack, list, mouseX, mouseY);
-			RenderSystem.disableLighting();
-			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 82 : 0;
 		for (GuiTab tab : tabs) {
 			if (isPointWithinBounds(-26, 6 + offset, 24, 23, mouseX, mouseY)) {
 				renderTooltip(matrixStack, Collections.singletonList(new TranslatableText(tab.name())), mouseX, mouseY);
-				RenderSystem.disableLighting();
-				RenderSystem.color4f(1, 1, 1, 1);
 			}
 			offset += 24;
 		}
