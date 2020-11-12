@@ -72,11 +72,12 @@ public class PowerSystem {
 		return formatter.format(power) + " " + units;
 	}
 
-	private static String getRoundedString(double euValue, String units, boolean doFormat) {
+	private static String getRoundedString(double originalValue, String units, boolean doFormat) {
 		String ret = "";
 		double value = 0f;
 		int i = 0;
 		boolean showMagnitude = true;
+		double euValue = originalValue;
 		if (euValue < 0) {
 			ret = "-";
 			euValue = -euValue;
@@ -101,6 +102,14 @@ public class PowerSystem {
 			}
 		}
 
+		if (i > 10) {
+			doFormat = false;
+			showMagnitude = false;
+		} else if (i > 3) {
+			value = originalValue;
+			showMagnitude = false;
+		}
+
 		if (doFormat){
 			checkLocale();
 			DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
@@ -111,7 +120,12 @@ public class PowerSystem {
 			}
 		}
 		else {
-			ret +=value;
+			if (i>10){
+				ret += "∞";
+			}
+			else {
+				ret += value;
+			}
 		}
 
 		if (showMagnitude) {
