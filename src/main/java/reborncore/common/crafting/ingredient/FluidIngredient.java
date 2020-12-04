@@ -68,7 +68,7 @@ public class FluidIngredient extends RebornIngredient {
 				.peek(stack -> stack.setCount(count.orElse(1)))
 				.collect(Collectors.toList()));
 
-		previewIngredient = new Lazy<>(() -> Ingredient.ofStacks(previewStacks.get().toArray(new ItemStack[0])));
+		previewIngredient = new Lazy<>(() -> Ingredient.ofStacks(previewStacks.get().stream()));
 	}
 
 	public static RebornIngredient deserialize(JsonObject json) {
