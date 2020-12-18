@@ -24,9 +24,11 @@
 
 package reborncore.common.recipes;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import reborncore.RebornCore;
 import reborncore.api.recipe.IRecipeCrafterProvider;
 import reborncore.common.blocks.BlockMachineBase;
@@ -94,7 +96,6 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public RebornRecipe currentRecipe;
 	public int currentTickTime = 0;
 	public int currentNeededTicks = 1;// Set to 1 to stop rare crashes
-	double lastEnergy;
 
 	int ticksSinceLastChange;
 
@@ -126,7 +127,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 	 * Call this on the blockEntity tick
 	 */
 	public void updateEntity() {
-		if (blockEntity.getWorld().isClient) {
+		if (blockEntity.getWorld() == null || blockEntity.getWorld().isClient) {
 			return;
 		}
 		ticksSinceLastChange++;
@@ -182,7 +183,7 @@ public class RecipeCrafter implements IUpgradeHandler {
 				double useRequirement = getEuPerTick(currentRecipe.getPower());
 				if (Energy.of(energy).use(useRequirement)) {
 					currentTickTime++;
-					if (currentTickTime == 1 || currentTickTime % 20 == 0 && soundHanlder != null) {
+					if ((currentTickTime == 1 || currentTickTime % 20 == 0) && soundHanlder != null) {
 						soundHanlder.playSound(false, blockEntity);
 					}
 				}
@@ -191,28 +192,33 @@ public class RecipeCrafter implements IUpgradeHandler {
 		setInvDirty(false);
 	}
 
+	/**
+	 * Checks that we have all inputs, can fit output and update max tick time and current tick time
+	 */
 	public void updateCurrentRecipe() {
 		currentTickTime = 0;
 		for (RebornRecipe recipe : recipeType.getRecipes(blockEntity.getWorld())) {
 			// This checks to see if it has all of the inputs
-			if (recipe.canCraft(blockEntity) && hasAllInputs(recipe)) {
-				// This checks to see if it can fit all of the outputs
-				for (int i = 0; i < recipe.getOutputs().size(); i++) {
-					if (!canFitOutput(recipe.getOutputs().get(i), outputSlots[i])) {
-						currentRecipe = null;
-						this.currentTickTime = 0;
-						setIsActive();
-						return;
-					}
+			if (!hasAllInputs(recipe)) continue;
+			if (!recipe.canCraft(blockEntity)) continue;
+
+			// This checks to see if it can fit all of the outputs
+			boolean hasOutputSpace = true;
+			for (int i = 0; i < recipe.getOutputs().size(); i++) {
+				if (!canFitOutput(recipe.getOutputs().get(i), outputSlots[i])) {
+					hasOutputSpace = false;
 				}
-				// Sets the current recipe then syncs
-				setCurrentRecipe(recipe);
-				this.currentNeededTicks = Math.max((int) (currentRecipe.getTime() * (1.0 - getSpeedMultiplier())), 1);
-				this.currentTickTime = 0;
-				setIsActive();
-				return;
 			}
+			if (!hasOutputSpace) continue;
+			// Sets the current recipe then syncs
+			setCurrentRecipe(recipe);
+			this.currentNeededTicks = Math.max((int) (currentRecipe.getTime() * (1.0 - getSpeedMultiplier())), 1);
+			setIsActive();
+			return;
 		}
+		setCurrentRecipe(null);
+		currentNeededTicks = 0;
+		setIsActive();
 	}
 
 	public boolean hasAllInputs() {
@@ -315,32 +321,27 @@ public class RecipeCrafter implements IUpgradeHandler {
 	public boolean canCraftAgain() {
 		for (RebornRecipe recipe : recipeType.getRecipes(blockEntity.getWorld())) {
 			if (recipe.canCraft(blockEntity) && hasAllInputs(recipe)) {
-				boolean canGiveInvAll = true;
 				for (int i = 0; i < recipe.getOutputs().size(); i++) {
 					if (!canFitOutput(recipe.getOutputs().get(i), outputSlots[i])) {
-						canGiveInvAll = false;
 						return false;
 					}
 				}
-				if (energy.getStored(EnergySide.UNKNOWN) < recipe.getPower()) {
-					return false;
-				}
-				return canGiveInvAll;
+				return !(energy.getStored(EnergySide.UNKNOWN) < recipe.getPower());
 			}
 		}
 		return false;
 	}
 
 	public void setIsActive() {
-		if (blockEntity.getWorld().getBlockState(blockEntity.getPos()).getBlock() instanceof BlockMachineBase) {
-			BlockMachineBase blockMachineBase = (BlockMachineBase) blockEntity.getWorld()
-					.getBlockState(blockEntity.getPos()).getBlock();
+		BlockPos pos = blockEntity.getPos();
+		if (blockEntity.getWorld() == null) return;
+		BlockState oldState  = blockEntity.getWorld().getBlockState(pos);
+		if (oldState.getBlock() instanceof BlockMachineBase) {
+			BlockMachineBase blockMachineBase = (BlockMachineBase) oldState.getBlock();
 			boolean isActive = isActive() || canCraftAgain();
-			blockMachineBase.setActive(isActive, blockEntity.getWorld(), blockEntity.getPos());
+			blockMachineBase.setActive(isActive, blockEntity.getWorld(), pos);
 		}
-		blockEntity.getWorld().updateListeners(blockEntity.getPos(),
-				blockEntity.getWorld().getBlockState(blockEntity.getPos()),
-				blockEntity.getWorld().getBlockState(blockEntity.getPos()), 3);
+		blockEntity.getWorld().updateListeners(pos, oldState, blockEntity.getWorld().getBlockState(pos), 3);
 	}
 
 	public void setCurrentRecipe(RebornRecipe recipe) {
