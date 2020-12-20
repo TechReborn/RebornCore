@@ -339,9 +339,14 @@ public class RecipeCrafter implements IUpgradeHandler {
 		if (oldState.getBlock() instanceof BlockMachineBase) {
 			BlockMachineBase blockMachineBase = (BlockMachineBase) oldState.getBlock();
 			boolean isActive = isActive() || canCraftAgain();
+
+			if (isActive == oldState.get(BlockMachineBase.ACTIVE)) {
+				return;
+			}
+
 			blockMachineBase.setActive(isActive, blockEntity.getWorld(), pos);
+			blockEntity.getWorld().updateListeners(pos, oldState, blockEntity.getWorld().getBlockState(pos), 3);
 		}
-		blockEntity.getWorld().updateListeners(pos, oldState, blockEntity.getWorld().getBlockState(pos), 3);
 	}
 
 	public void setCurrentRecipe(RebornRecipe recipe) {
