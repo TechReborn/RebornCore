@@ -43,6 +43,7 @@ import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
+import reborncore.common.network.NetworkManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -166,10 +167,8 @@ public class ChunkLoaderManager extends PersistentState {
 		syncToClient(serverPlayerEntity, Collections.emptyList());
 	}
 
-	public void syncToClient(ServerPlayerEntity serverPlayerEntity, List<LoadedChunk> chunks){
-		serverPlayerEntity.networkHandler.sendPacket(
-			ClientBoundPackets.createPacketSyncLoadedChunks(chunks)
-		);
+	public void syncToClient(ServerPlayerEntity serverPlayerEntity, List<LoadedChunk> chunks) {
+		NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSyncLoadedChunks(chunks), serverPlayerEntity);
 	}
 
 	public static class LoadedChunk {

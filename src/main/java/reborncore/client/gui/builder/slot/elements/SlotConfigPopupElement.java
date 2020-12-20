@@ -46,6 +46,7 @@ import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.network.IdentifiedPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.util.Color;
@@ -125,7 +126,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.be.getPos(), newConfig);
+		IdentifiedPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.be.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -144,7 +145,7 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.be.getPos(), id, input, output, filter);
+		IdentifiedPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.be.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 

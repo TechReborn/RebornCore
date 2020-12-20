@@ -49,10 +49,10 @@ import java.util.List;
 public class ClientBoundPacketHandlers {
 
 	public static void init() {
-		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "custom_description"), (extendedPacketBuffer, context) -> {
-			BlockPos pos = extendedPacketBuffer.readBlockPos();
-			CompoundTag tagCompound = extendedPacketBuffer.readCompoundTag();
-			context.getTaskQueue().execute(() -> {
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "custom_description"), (client, handler, packetBuffer, responseSender) -> {
+			BlockPos pos = packetBuffer.readBlockPos();
+			CompoundTag tagCompound = packetBuffer.readCompoundTag();
+			client.execute(() -> {
 				World world = MinecraftClient.getInstance().world;
 				if (world.isChunkLoaded(pos)) {
 					BlockEntity blockentity = world.getBlockEntity(pos);
@@ -63,11 +63,11 @@ public class ClientBoundPacketHandlers {
 			});
 		});
 
-		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "fluid_config_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "fluid_config_sync"), (client, handler, packetBuffer, responseSender) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			CompoundTag compoundTag = packetBuffer.readCompoundTag();
 
-			context.getTaskQueue().execute(() -> {
+			client.execute(() -> {
 				FluidConfiguration fluidConfiguration = new FluidConfiguration(compoundTag);
 				if (!MinecraftClient.getInstance().world.isChunkLoaded(pos)) {
 					return;
@@ -84,11 +84,11 @@ public class ClientBoundPacketHandlers {
 			});
 		});
 
-		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "slot_sync"), (packetBuffer, context) -> {
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "slot_sync"), (client, handler, packetBuffer, responseSender) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
 			CompoundTag compoundTag = packetBuffer.readCompoundTag();
 
-			context.getTaskQueue().execute(() -> {
+			client.execute(() -> {
 				SlotConfiguration slotConfig = new SlotConfiguration(compoundTag);
 				if (!MinecraftClient.getInstance().world.isChunkLoaded(pos)) {
 					return;
@@ -102,11 +102,11 @@ public class ClientBoundPacketHandlers {
 			});
 		});
 
-		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "send_object"), (packetBuffer, context) -> {
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "send_object"), (client, handler, packetBuffer, responseSender) -> {
 			int id = packetBuffer.readInt();
-			Object value = packetBuffer.readObject();
+			Object value = new ExtendedPacketBuffer(packetBuffer).readObject();
 			String container = packetBuffer.readString(packetBuffer.readInt());
-			context.getTaskQueue().execute(() -> {
+			client.execute(() -> {
 				Screen gui = MinecraftClient.getInstance().currentScreen;
 				if (gui instanceof HandledScreen) {
 					ScreenHandler screenHandler = ((HandledScreen) gui).getScreenHandler();
@@ -117,10 +117,10 @@ public class ClientBoundPacketHandlers {
 			});
 		});
 
-		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "sync_chunks"), (extendedPacketBuffer, context) -> {
-			List<ChunkLoaderManager.LoadedChunk> chunks = extendedPacketBuffer.readCodec(ChunkLoaderManager.CODEC);
+		NetworkManager.registerClientBoundHandler(new Identifier("reborncore", "sync_chunks"), (client, handler, packetBuffer, responseSender) -> {
+			List<ChunkLoaderManager.LoadedChunk> chunks = new ExtendedPacketBuffer(packetBuffer).readCodec(ChunkLoaderManager.CODEC);
 
-			context.getTaskQueue().execute(() -> ClientChunkManager.setLoadedChunks(chunks));
+			client.execute(() -> ClientChunkManager.setLoadedChunks(chunks));
 		});
 	}
 

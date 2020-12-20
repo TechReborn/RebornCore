@@ -46,6 +46,7 @@ import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
+import reborncore.common.network.IdentifiedPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.util.Color;
@@ -116,7 +117,7 @@ public class FluidConfigPopupElement extends ElementBase {
 		FluidConfiguration.ExtractConfig fluidIO = config.getIoConfig().getNext();
 		FluidConfiguration.FluidConfig newConfig = new FluidConfiguration.FluidConfig(side, fluidIO);
 
-		Packet<?> packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.be.getPos(), newConfig);
+		IdentifiedPacket packetSave = ServerBoundPackets.createPacketFluidConfigSave(guiBase.be.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSave);
 	}
 
@@ -131,7 +132,7 @@ public class FluidConfigPopupElement extends ElementBase {
 			output = !configHolder.autoOutput();
 		}
 
-		Packet<?> packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.be.getPos(), input, output);
+		IdentifiedPacket packetFluidIOSave = ServerBoundPackets.createPacketFluidIOSave(guiBase.be.getPos(), input, output);
 		NetworkManager.sendToServer(packetFluidIOSave);
 	}
 

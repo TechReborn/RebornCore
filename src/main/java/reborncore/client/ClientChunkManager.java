@@ -35,6 +35,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.chunkloading.ChunkLoaderManager;
+import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class ClientChunkManager {
 
 	public static void toggleLoadedChunks(BlockPos chunkLoader) {
 		if (loadedChunks.size() == 0) {
-			MinecraftClient.getInstance().getNetworkHandler().sendPacket(ServerBoundPackets.requestChunkloaderChunks(chunkLoader));
+			NetworkManager.sendToServer(ServerBoundPackets.requestChunkloaderChunks(chunkLoader));
 		} else {
 			loadedChunks.clear();
 		}
