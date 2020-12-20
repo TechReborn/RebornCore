@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.Pair;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -42,8 +43,6 @@ import java.util.function.Supplier;
 public class ScreenHandlerBuilder {
 
 	private final String name;
-
-	private Predicate<PlayerEntity> canInteract = player -> true;
 
 	final List<Slot> slots;
 	final List<Range<Integer>> playerInventoryRanges, blockEntityInventoryRanges;
@@ -65,11 +64,6 @@ public class ScreenHandlerBuilder {
 		this.craftEvents = new ArrayList<>();
 	}
 
-	public ScreenHandlerBuilder interact(final Predicate<PlayerEntity> canInteract) {
-		this.canInteract = canInteract;
-		return this;
-	}
-
 	public PlayerScreenHandlerBuilder player(final PlayerInventory player) {
 		return new PlayerScreenHandlerBuilder(this, player);
 	}
@@ -86,30 +80,13 @@ public class ScreenHandlerBuilder {
 		this.blockEntityInventoryRanges.add(range);
 	}
 
-	@Deprecated
-	/**
-	 * The screen handler have to know if the blockEntity is still available (the block was not destroyed)
-	 * and if the player is not to far from him to close the GUI if necessary
-	 */
-	public BuiltScreenHandler create(int syncID) {
-		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
-				this.playerInventoryRanges,
-				this.blockEntityInventoryRanges, null);
-		if (!this.objectValues.isEmpty()) {
-			built.addObjectSync(objectValues);
-		}
-		if (!this.craftEvents.isEmpty()) {
-			built.addCraftEvents(this.craftEvents);
-		}
-
-		this.slots.forEach(built::addSlot);
-
-		this.slots.clear();
-		return built;
+	private Predicate<PlayerEntity> isUsable(MachineBaseBlockEntity blockEntity) {
+		return playerEntity -> blockEntity.getWorld().getBlockEntity(blockEntity.getPos()) == blockEntity
+				&& playerEntity.getPos().distanceTo(Vec3d.of(blockEntity.getPos())) < 16;
 	}
 
 	public BuiltScreenHandler create(final MachineBaseBlockEntity blockEntity, int syncID) {
-		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, this.canInteract,
+		final BuiltScreenHandler built = new BuiltScreenHandler(syncID, this.name, isUsable(blockEntity),
 				this.playerInventoryRanges,
 				this.blockEntityInventoryRanges, blockEntity);
 		if (!this.objectValues.isEmpty())
