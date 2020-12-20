@@ -34,6 +34,7 @@ import reborncore.common.recipes.IRecipeInput;
 import team.reborn.energy.Energy;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Created by mark on 12/04/15.
@@ -212,15 +213,25 @@ public class ItemUtils {
 	 * @param itemStack ItemStack Powered item
 	 * @param maxOutput int Maximum output rate of powered item
 	 */
-	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput){
+	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput) {
+		distributePowerToInventory(player, itemStack, maxOutput, (stack) -> true);
+	}
+
+	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput, Predicate<ItemStack> filter) {
 		if (!Energy.valid(itemStack)) {
 			return;
 		}
 
 		for (int i = 0; i < player.inventory.size(); i++) {
-			if (Energy.valid(player.inventory.getStack(i))) {
+			ItemStack invStack = player.inventory.getStack(i);
+
+			if (invStack.isEmpty() || !filter.test(invStack)) {
+				continue;
+			}
+
+			if (Energy.valid(invStack)) {
 				Energy.of(itemStack)
-						.into(Energy.of(player.inventory.getStack(i)))
+						.into(Energy.of(invStack))
 						.move(maxOutput);
 			}
 		}
