@@ -127,6 +127,16 @@ curseforge {
 	}
 }
 
+def getBranch() {
+	def ENV = System.getenv()
+	if (ENV.GITHUB_REF) {
+		def branch = ENV.GITHUB_REF
+		return branch.substring(branch.lastIndexOf("/") + 1)
+	}
+
+	return "unknown"
+}
+
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
