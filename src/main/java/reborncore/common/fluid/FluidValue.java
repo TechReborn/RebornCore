@@ -47,6 +47,8 @@ public final class FluidValue {
 		return fromRaw(rawValue * value);
 	}
 
+	public FluidValue fraction(int divider) {return fromRaw(rawValue / divider);}
+
 	public FluidValue add(FluidValue fluidValue) {
 		return fromRaw(rawValue + fluidValue.rawValue);
 	}
