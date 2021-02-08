@@ -18,11 +18,6 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-	mavenCentral()
-	jcenter()
-}
-
 version = "4.6.4"
 group = 'RebornCore'
 
@@ -38,11 +33,11 @@ license {
 
 dependencies {
 	minecraft "com.mojang:minecraft:1.16.5"
-	mappings "net.fabricmc:yarn:1.16.5+build.1:v2"
+	mappings "net.fabricmc:yarn:1.16.5+build.4:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.1"
 
 	//Fabric api
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.29.4+1.16"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.0+1.16"
 
 	modApi 'teamreborn:energy:0.1.1'
 	include 'teamreborn:energy:0.1.1'
@@ -94,14 +89,16 @@ publishing {
 	}
 }
 
-signing {
-    useInMemoryPgpKeys(ENV.SIGNING_KEY, ENV.SIGNING_PASSWORD)
+if (ENV.SIGNING_KEY) {
+	signing {
+		useInMemoryPgpKeys(ENV.SIGNING_KEY, ENV.SIGNING_PASSWORD)
 
-	sign publishing.publications.mavenJava
-	sign remapJar
+		sign publishing.publications.mavenJava
+		sign remapJar
+	}
+
+	task signAll(dependsOn: [signMavenJavaPublication, signRemapJar, remapJar])
 }
-
-task signAll(dependsOn: [signMavenJavaPublication, signRemapJar, remapJar])
 
 curseforge {
 	if (ENV.CURSEFORGE_API_KEY) {
@@ -171,7 +168,9 @@ task checkVersion {
 	}
 }
 
-publish.dependsOn signAll
+if (ENV.SIGNING_KEY) {
+	publish.dependsOn signAll
+}
 github.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
