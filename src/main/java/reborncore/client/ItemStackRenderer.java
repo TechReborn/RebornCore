@@ -43,6 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -88,7 +89,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 		framebuffer.beginWrite(true);
 
 		final ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-		final BakedModel model = itemRenderer.getHeldItemModel(stack, minecraft.world, minecraft.player);
+		final BakedModel model = itemRenderer.getHeldItemModel(stack, minecraft.world, minecraft.player, 0);
 
 		RenderSystem.matrixMode(GL11.GL_PROJECTION);
 		RenderSystem.pushMatrix();

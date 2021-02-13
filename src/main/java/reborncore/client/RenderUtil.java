@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -114,7 +115,7 @@ public class RenderUtil {
 
 				Tessellator tessellator = Tessellator.getInstance();
 				BufferBuilder tes = tessellator.getBuffer();
-				tes.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+				tes.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 				tes.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * drawHeight / 16F).next();
 				tes.vertex(drawX + drawWidth, drawY + drawHeight, 0)
 						.texture(minU + (maxU - minU) * drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F)
@@ -143,7 +144,7 @@ public class RenderUtil {
 		RenderSystem.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, VertexFormats.POSITION_COLOR);
+		vertexbuffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		vertexbuffer.vertex(right, top, 0).color(f1, f2, f3, f).next();
 		vertexbuffer.vertex(left, top, 0).color(f1, f2, f3, f).next();
 		vertexbuffer.vertex(left, bottom, 0).color(f5, f6, f7, f4).next();

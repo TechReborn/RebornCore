@@ -135,7 +135,7 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 	public boolean upgrades;
 
 	public GuiBase(PlayerEntity player, BlockEntity blockEntity, T screenHandler) {
-		super(screenHandler, player.inventory, new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
+		super(screenHandler, player.getInventory(), new LiteralText(I18n.translate(blockEntity.getCachedState().getBlock().getTranslationKey())));
 		this.be = blockEntity;
 		this.builtScreenHandler = (BuiltScreenHandler) screenHandler;
 		selectedTab = null;

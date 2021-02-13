@@ -106,12 +106,12 @@ public class StackToolTipHandler implements ItemTooltipCallback {
 		else {
 			try {
 				if ((block instanceof BaseBlockEntityProvider)) {
-					BlockEntity blockEntity = ((BlockEntityProvider) block).createBlockEntity(MinecraftClient.getInstance().world);
+					BlockEntity blockEntity = null; // FIXME ((BlockEntityProvider) block).createBlockEntity(MinecraftClient.getInstance().world);
 					boolean hasData = false;
 					if (itemStack.hasTag() && itemStack.getOrCreateTag().contains("blockEntity_data")) {
 						CompoundTag blockEntityData = itemStack.getOrCreateTag().getCompound("blockEntity_data");
 						if (blockEntity != null) {
-							blockEntity.fromTag(block.getDefaultState(), blockEntityData);
+							blockEntity.fromTag(blockEntityData);
 							hasData = true;
 							tooltipLines.add(new LiteralText(I18n.translate("reborncore.tooltip.has_data")).formatted(Formatting.DARK_GREEN));
 						}

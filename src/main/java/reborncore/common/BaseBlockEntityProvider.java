@@ -27,7 +27,10 @@ package reborncore.common;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlastFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -63,9 +66,17 @@ public abstract class BaseBlockEntityProvider extends Block implements BlockEnti
 			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 			CompoundTag nbt = stack.getTag().getCompound("blockEntity_data");
 			injectLocationData(nbt, pos);
-			blockEntity.fromTag(state, nbt);
+			blockEntity.fromTag(nbt);
 			blockEntity.markDirty();
 		}
+	}
+
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return (world1, pos, state1, blockEntity) -> {
+			if (blockEntity instanceof BlockEntityTicker) {
+				((BlockEntityTicker) blockEntity).tick(world1, pos, state1, blockEntity);
+			}
+		};
 	}
 
 	private void stripLocationData(CompoundTag compound) {
