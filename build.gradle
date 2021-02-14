@@ -32,12 +32,12 @@ license {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.16.5"
-	mappings "net.fabricmc:yarn:1.16.5+build.4:v2"
+	minecraft "com.mojang:minecraft:21w06a"
+	mappings "net.fabricmc:yarn:21w06a+build.8:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.1"
 
 	//Fabric api
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.0+1.16"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.2+1.17"
 
 	modApi 'teamreborn:energy:0.1.1'
 	include 'teamreborn:energy:0.1.1'
@@ -109,7 +109,7 @@ curseforge {
 		id = "237903"
 		changelog = "A changelog can be found at https://github.com/TechReborn/RebornCore"
 		releaseType = ENV.RELEASE_CHANNEL ?: "release"
-		addGameVersion "1.16.5"
+		addGameVersion "21w06a"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
@@ -159,7 +159,7 @@ task github(dependsOn: remapJar) {
 // A task to ensure that the version being released has not already been released.
 task checkVersion {
 	doFirst {
-		def xml = new URL("http://maven.modmuss50.me/RebornCore/RebornCore-1.16/maven-metadata.xml").text
+		def xml = new URL("http://maven.modmuss50.me/RebornCore/RebornCore-1.17/maven-metadata.xml").text
 		def metadata = new XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text();
 		if (versions.contains(version)) {

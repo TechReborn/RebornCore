@@ -79,7 +79,7 @@ public class ChunkLoaderManager extends PersistentState {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag compoundTag) {
+	public CompoundTag toNbt(CompoundTag compoundTag) {
 		CODEC.encodeStart(NbtOps.INSTANCE, loadedChunks)
 				.result()
 				.ifPresent(tag -> compoundTag.put("loadedchunks", tag));
