@@ -26,12 +26,14 @@ package reborncore;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
+import reborncore.api.blockentity.UnloadHandler;
 import reborncore.common.RebornCoreCommands;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
@@ -105,6 +107,11 @@ public class RebornCore implements ModInitializer {
 		RebornCoreCommands.setup();
 
 		RebornCoreTags.WATER_EXPLOSION_ITEM.toString();
+		
+		/* register UnloadHandler */
+		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+			if (blockEntity instanceof UnloadHandler) ((UnloadHandler) blockEntity).onUnload();
+		});
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;

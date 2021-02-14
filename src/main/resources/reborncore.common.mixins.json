@@ -15,8 +15,7 @@
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPlayerEntity",
-    "MixinRecipeManager",
-    "MixinWorld"
+    "MixinRecipeManager"
   ],
   "injectors": {
     "defaultRequire": 1
