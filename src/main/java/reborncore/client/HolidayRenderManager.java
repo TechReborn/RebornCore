@@ -48,7 +48,7 @@ public class HolidayRenderManager {
 
 	public static void setupClient() {
 		if (CalenderUtils.christmas && RebornCoreConfig.easterEggs) {
-			LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+			LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 				if (entityRenderer.getModel() instanceof PlayerEntityModel) {
 					registrationHelper.register(new LayerRender(entityRenderer));
 				}
