@@ -25,10 +25,12 @@
 package reborncore;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import reborncore.api.blockentity.UnloadHandler;
 import reborncore.client.HolidayRenderManager;
 import reborncore.client.IconSupplier;
 import reborncore.client.ItemStackRenderer;
@@ -46,5 +48,10 @@ public class RebornCoreClient implements ClientModInitializer {
 		ClientBoundPacketHandlers.init();
 		HudRenderCallback.EVENT.register(new ItemStackRenderer());
 		ItemTooltipCallback.EVENT.register(new StackToolTipHandler());
+
+		/* register UnloadHandler */
+		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+			if (blockEntity instanceof UnloadHandler) ((UnloadHandler) blockEntity).onUnload();
+		});
 	}
 }
