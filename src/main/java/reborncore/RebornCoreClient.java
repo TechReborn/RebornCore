@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import reborncore.client.HolidayRenderManager;
 import reborncore.client.IconSupplier;
 import reborncore.client.ItemStackRenderer;
 import reborncore.client.StackToolTipHandler;
@@ -40,6 +41,7 @@ public class RebornCoreClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		RebornFluidRenderManager.setupClient();
+		HolidayRenderManager.setupClient();
 		ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(IconSupplier::registerSprites);
 		ClientBoundPacketHandlers.init();
 		HudRenderCallback.EVENT.register(new ItemStackRenderer());
