@@ -44,13 +44,13 @@ public abstract class InventoryBase implements Inventory {
 
 	public Tag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
-		Inventories.toTag(tag, stacks);
+		Inventories.writeNbt(tag, stacks);
 		return tag;
 	}
 
 	public void deserializeNBT(CompoundTag tag) {
 		stacks = DefaultedList.ofSize(size, ItemStack.EMPTY);
-		Inventories.fromTag(tag, stacks);
+		Inventories.readNbt(tag, stacks);
 	}
 
 	@Override

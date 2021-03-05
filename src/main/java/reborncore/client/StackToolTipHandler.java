@@ -113,7 +113,7 @@ public class StackToolTipHandler implements ItemTooltipCallback {
 					if (itemStack.hasTag() && itemStack.getOrCreateTag().contains("blockEntity_data")) {
 						CompoundTag blockEntityData = itemStack.getOrCreateTag().getCompound("blockEntity_data");
 						if (blockEntity != null) {
-							blockEntity.fromTag(blockEntityData);
+							blockEntity.readNbt(blockEntityData);
 							hasData = true;
 							tooltipLines.add(new LiteralText(I18n.translate("reborncore.tooltip.has_data")).formatted(Formatting.DARK_GREEN));
 						}

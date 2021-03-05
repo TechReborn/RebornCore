@@ -129,13 +129,13 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	@Nullable
 	@Override
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {
-		return new BlockEntityUpdateS2CPacket(getPos(), 0, toInitialChunkDataTag());
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, toInitialChunkDataNbt());
 	}
 
 	@Override
-	public CompoundTag toInitialChunkDataTag() {
-		CompoundTag compound = super.toTag(new CompoundTag());
-		toTag(compound);
+	public CompoundTag toInitialChunkDataNbt() {
+		CompoundTag compound = super.writeNbt(new CompoundTag());
+		writeNbt(compound);
 		return compound;
 	}
 
@@ -232,8 +232,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	}
 
 	@Override
-	public void fromTag(CompoundTag tagCompound) {
-		super.fromTag(tagCompound);
+	public void readNbt(CompoundTag tagCompound) {
+		super.readNbt(tagCompound);
 		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().read(tagCompound);
 		}
@@ -258,8 +258,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tagCompound) {
-		super.toTag(tagCompound);
+	public CompoundTag writeNbt(CompoundTag tagCompound) {
+		super.writeNbt(tagCompound);
 		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().write(tagCompound);
 		}

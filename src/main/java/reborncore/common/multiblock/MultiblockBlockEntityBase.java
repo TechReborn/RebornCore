@@ -112,8 +112,8 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 	// /// Overrides from base BlockEntity methods
 
 	@Override
-	public void fromTag(CompoundTag data) {
-		super.fromTag(data);
+	public void readNbt(CompoundTag data) {
+		super.readNbt(data);
 
 		// We can't directly initialize a multiblock controller yet, so we cache
 		// the data here until
@@ -125,8 +125,8 @@ public abstract class MultiblockBlockEntityBase extends IMultiblockPart implemen
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag data) {
-		super.toTag(data);
+	public CompoundTag writeNbt(CompoundTag data) {
+		super.writeNbt(data);
 
 		if (isMultiblockSaveDelegate() && isConnected()) {
 			CompoundTag multiblockData = new CompoundTag();

@@ -332,8 +332,8 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
-		super.fromTag(tag);
+	public void readNbt(CompoundTag tag) {
+		super.readNbt(tag);
 		CompoundTag data = tag.getCompound("PowerAcceptor");
 		if (shouldHandleEnergyNBT()) {
 			this.setStored(data.getDouble("energy"));
@@ -341,8 +341,8 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		super.toTag(tag);
+	public CompoundTag writeNbt(CompoundTag tag) {
+		super.writeNbt(tag);
 		CompoundTag data = new CompoundTag();
 		data.putDouble("energy", getStored(EnergySide.UNKNOWN));
 		tag.put("PowerAcceptor", data);

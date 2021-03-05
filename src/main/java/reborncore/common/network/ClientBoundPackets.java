@@ -38,7 +38,7 @@ import java.util.List;
 public class ClientBoundPackets {
 
 	public static IdentifiedPacket createCustomDescriptionPacket(BlockEntity blockEntity) {
-		return createCustomDescriptionPacket(blockEntity.getPos(), blockEntity.toTag(new CompoundTag()));
+		return createCustomDescriptionPacket(blockEntity.getPos(), blockEntity.writeNbt(new CompoundTag()));
 	}
 
 	public static IdentifiedPacket createCustomDescriptionPacket(BlockPos blockPos, CompoundTag nbt) {

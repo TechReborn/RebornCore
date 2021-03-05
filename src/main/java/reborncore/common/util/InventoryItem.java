@@ -98,14 +98,14 @@ public class InventoryItem extends InventoryBase {
 	@NotNull
 	@Override
 	public ItemStack getStack(int slot) {
-		return ItemStack.fromTag(getSlotData(slot));
+		return ItemStack.fromNbt(getSlotData(slot));
 	}
 
 	@Override
 	public void setStack(int slot,
 						 @NotNull
 								 ItemStack stack) {
-		setSlotData(slot, stack.toTag(new CompoundTag()));
+		setSlotData(slot, stack.writeNbt(new CompoundTag()));
 	}
 
 	public int getSlotLimit(int slot) {

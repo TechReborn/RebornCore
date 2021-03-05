@@ -43,7 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -66,7 +65,7 @@ public class ItemStackRenderer implements HudRenderCallback {
 	}
 
 	private void export(ItemStack stack, int size, Identifier identifier) {
-		File dir = new File(FabricLoader.getInstance().getGameDirectory(), "item_renderer/" + identifier.getNamespace());
+		File dir = new File(FabricLoader.getInstance().getGameDir().toFile(), "item_renderer/" + identifier.getNamespace());
 		if (!dir.exists()) {
 			dir.mkdir();
 		}

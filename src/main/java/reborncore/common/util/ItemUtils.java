@@ -95,11 +95,11 @@ public class ItemUtils {
 		if (stack.getCount() > 127) {
 			stack.setCount(127);
 		}
-		stack.toTag(data);
+		stack.writeNbt(data);
 	}
 
 	public static ItemStack readItemFromNBT(CompoundTag data) {
-		return ItemStack.fromTag(data);
+		return ItemStack.fromNbt(data);
 	}
 
 	public static double getPowerForDurabilityBar(ItemStack stack) {

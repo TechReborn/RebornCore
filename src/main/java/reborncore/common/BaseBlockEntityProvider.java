@@ -51,7 +51,7 @@ public abstract class BaseBlockEntityProvider extends Block implements BlockEnti
 			return Optional.empty();
 		}
 		ItemStack newStack = stack.copy();
-		CompoundTag blockEntityData = blockEntity.toTag(new CompoundTag());
+		CompoundTag blockEntityData = blockEntity.writeNbt(new CompoundTag());
 		stripLocationData(blockEntityData);
 		if (!newStack.hasTag()) {
 			newStack.setTag(new CompoundTag());
@@ -66,7 +66,7 @@ public abstract class BaseBlockEntityProvider extends Block implements BlockEnti
 			BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 			CompoundTag nbt = stack.getTag().getCompound("blockEntity_data");
 			injectLocationData(nbt, pos);
-			blockEntity.fromTag(nbt);
+			blockEntity.readNbt(nbt);
 			blockEntity.markDirty();
 		}
 	}
