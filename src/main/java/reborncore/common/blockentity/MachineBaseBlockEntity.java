@@ -34,7 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
@@ -133,8 +133,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	}
 
 	@Override
-	public CompoundTag toInitialChunkDataNbt() {
-		CompoundTag compound = super.writeNbt(new CompoundTag());
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound compound = super.writeNbt(new NbtCompound());
 		writeNbt(compound);
 		return compound;
 	}
@@ -232,7 +232,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	}
 
 	@Override
-	public void readNbt(CompoundTag tagCompound) {
+	public void readNbt(NbtCompound tagCompound) {
 		super.readNbt(tagCompound);
 		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().read(tagCompound);
@@ -258,7 +258,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements BlockEntityTi
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag tagCompound) {
+	public NbtCompound writeNbt(NbtCompound tagCompound) {
 		super.writeNbt(tagCompound);
 		if (getOptionalInventory().isPresent()) {
 			getOptionalInventory().get().write(tagCompound);

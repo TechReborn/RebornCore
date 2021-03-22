@@ -32,12 +32,12 @@ license {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:21w08b"
-	mappings "net.fabricmc:yarn:21w08b+build.20:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.11.2"
+	minecraft "com.mojang:minecraft:21w11a"
+	mappings "net.fabricmc:yarn:21w11a+build.16:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.3"
 
 	//Fabric api
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.31.2+1.17"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.32.4+1.17"
 
 	modApi 'teamreborn:energy:0.1.1'
 	include 'teamreborn:energy:0.1.1'

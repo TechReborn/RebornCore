@@ -26,7 +26,7 @@ package reborncore.common.chunkloading;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
@@ -67,7 +67,7 @@ public class ChunkLoaderManager extends PersistentState {
 
 	private final List<LoadedChunk> loadedChunks = new ArrayList<>();
 
-	public static ChunkLoaderManager fromTag(CompoundTag tag) {
+	public static ChunkLoaderManager fromTag(NbtCompound tag) {
 		ChunkLoaderManager chunkLoaderManager = new ChunkLoaderManager();
 
 		chunkLoaderManager.loadedChunks.clear();
@@ -82,7 +82,7 @@ public class ChunkLoaderManager extends PersistentState {
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag compoundTag) {
+	public NbtCompound writeNbt(NbtCompound compoundTag) {
 		CODEC.encodeStart(NbtOps.INSTANCE, loadedChunks)
 				.result()
 				.ifPresent(tag -> compoundTag.put("loadedchunks", tag));

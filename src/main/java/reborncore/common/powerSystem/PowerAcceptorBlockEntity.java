@@ -28,7 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -332,18 +332,18 @@ public abstract class PowerAcceptorBlockEntity extends MachineBaseBlockEntity im
 	}
 
 	@Override
-	public void readNbt(CompoundTag tag) {
+	public void readNbt(NbtCompound tag) {
 		super.readNbt(tag);
-		CompoundTag data = tag.getCompound("PowerAcceptor");
+		NbtCompound data = tag.getCompound("PowerAcceptor");
 		if (shouldHandleEnergyNBT()) {
 			this.setStored(data.getDouble("energy"));
 		}
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag tag) {
+	public NbtCompound writeNbt(NbtCompound tag) {
 		super.writeNbt(tag);
-		CompoundTag data = new CompoundTag();
+		NbtCompound data = new NbtCompound();
 		data.putDouble("energy", getStored(EnergySide.UNKNOWN));
 		tag.put("PowerAcceptor", data);
 		return tag;

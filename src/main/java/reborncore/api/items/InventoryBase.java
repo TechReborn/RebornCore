@@ -28,8 +28,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.collection.DefaultedList;
 
 public abstract class InventoryBase implements Inventory {
@@ -42,13 +42,13 @@ public abstract class InventoryBase implements Inventory {
 		stacks = DefaultedList.ofSize(size, ItemStack.EMPTY);
 	}
 
-	public Tag serializeNBT() {
-		CompoundTag tag = new CompoundTag();
+	public NbtElement serializeNBT() {
+		NbtCompound tag = new NbtCompound();
 		Inventories.writeNbt(tag, stacks);
 		return tag;
 	}
 
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(NbtCompound tag) {
 		stacks = DefaultedList.ofSize(size, ItemStack.EMPTY);
 		Inventories.readNbt(tag, stacks);
 	}

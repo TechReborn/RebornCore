@@ -25,7 +25,7 @@
 package reborncore.common.network;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -43,7 +43,7 @@ public class ServerBoundPackets {
 	public static void init() {
 		NetworkManager.registerServerBoundHandler(new Identifier("reborncore", "fluid_config_save"), (server, player, handler, packetBuffer, responseSender) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
-			CompoundTag compoundTag = packetBuffer.readCompoundTag();
+			NbtCompound compoundTag = packetBuffer.readCompoundTag();
 
 			server.execute(() -> {
 				FluidConfiguration.FluidConfig fluidConfiguration = new FluidConfiguration.FluidConfig(compoundTag);
@@ -63,7 +63,7 @@ public class ServerBoundPackets {
 
 		NetworkManager.registerServerBoundHandler(new Identifier("reborncore", "config_save"), (server, player, handler, packetBuffer, responseSender) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
-			CompoundTag tagCompound = packetBuffer.readCompoundTag();
+			NbtCompound tagCompound = packetBuffer.readCompoundTag();
 
 			server.execute(() -> {
 				MachineBaseBlockEntity legacyMachineBase = (MachineBaseBlockEntity) player.world.getBlockEntity(pos);
@@ -122,7 +122,7 @@ public class ServerBoundPackets {
 
 		NetworkManager.registerServerBoundHandler(new Identifier("reborncore", "slot_save"), (server, player, handler, packetBuffer, responseSender) -> {
 			BlockPos pos = packetBuffer.readBlockPos();
-			CompoundTag compoundTag = packetBuffer.readCompoundTag();
+			NbtCompound compoundTag = packetBuffer.readCompoundTag();
 
 			server.execute(() -> {
 				SlotConfiguration.SlotConfig slotConfig = new SlotConfiguration.SlotConfig(compoundTag);
