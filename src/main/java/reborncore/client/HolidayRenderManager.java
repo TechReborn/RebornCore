@@ -24,8 +24,8 @@
 
 package reborncore.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -67,7 +67,7 @@ public class HolidayRenderManager {
 
 		@Override
 		public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T player, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-			MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+			RenderSystem.setShaderTexture(0, TEXTURE);
 			VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
 			matrixStack.push();
 

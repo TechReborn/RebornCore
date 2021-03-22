@@ -201,7 +201,7 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 	@Override
 	protected void drawBackground(MatrixStack matrixStack, float lastFrameDuration, int mouseX, int mouseY) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		renderBackground(matrixStack);
 		boolean drawPlayerSlots = selectedTab == null && drawPlayerSlots();
 		updateSlotDraw(drawPlayerSlots);
@@ -306,7 +306,7 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 			factorY = this.y;
 		}
 		getTextRenderer().draw(matrixStack, text, x + factorX, y + factorY, colour);
-		RenderSystem.color4f(1, 1, 1, 1);
+		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 	}
 
 	public GuiButtonHologram addHologramButton(int x, int y, int id, Layer layer) {
