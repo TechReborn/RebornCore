@@ -26,7 +26,6 @@ package reborncore.common.crafting;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.item.Item;
@@ -34,13 +33,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import reborncore.RebornCore;
 import reborncore.common.util.DefaultedListCollector;
 import reborncore.common.util.serialization.SerializationUtil;
 import reborncore.mixin.common.AccessorRecipeManager;
@@ -75,15 +72,9 @@ public class RecipeUtils {
 			count = JsonHelper.getInt(jsonObject, "count");
 		}
 		ItemStack stack = new ItemStack(item, count);
-		JsonElement nbtJson = jsonObject.get("nbt");
-		if (nbtJson instanceof JsonObject) {
-			stack.setTag((CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, nbtJson));
-		} else if (nbtJson instanceof JsonPrimitive) {
-			try {
-				stack.setTag(StringNbtReader.parse(nbtJson.getAsString()));
-			} catch (Exception ex) {
-				RebornCore.LOGGER.error("Failed to parse NBT: " + ex);
-			}
+		if (jsonObject.has("nbt")) {
+			CompoundTag tag = (CompoundTag) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, jsonObject.get("nbt"));
+			stack.setTag(tag);
 		}
 		return stack;
 	}
