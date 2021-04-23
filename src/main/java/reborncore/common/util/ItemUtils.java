@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package reborncore.common.util;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
@@ -33,6 +34,7 @@ import reborncore.common.recipes.IRecipeInput;
 import team.reborn.energy.Energy;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Created by mark on 12/04/15.
@@ -201,6 +203,37 @@ public class ItemUtils {
 			tooltip.add(new TranslatableText("reborncore.message.inactive").formatted(Formatting.RED));
 		} else {
 			tooltip.add(new TranslatableText("reborncore.message.active").formatted(Formatting.GREEN));
+		}
+	}
+
+	/**
+	 *  Output energy from item to other items in inventory
+	 *
+	 * @param player PlayerEntity having powered item
+	 * @param itemStack ItemStack Powered item
+	 * @param maxOutput int Maximum output rate of powered item
+	 */
+	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput) {
+		distributePowerToInventory(player, itemStack, maxOutput, (stack) -> true);
+	}
+
+	public static void distributePowerToInventory(PlayerEntity player, ItemStack itemStack, int maxOutput, Predicate<ItemStack> filter) {
+		if (!Energy.valid(itemStack)) {
+			return;
+		}
+
+		for (int i = 0; i < player.inventory.size(); i++) {
+			ItemStack invStack = player.inventory.getStack(i);
+
+			if (invStack.isEmpty() || !filter.test(invStack)) {
+				continue;
+			}
+
+			if (Energy.valid(invStack)) {
+				Energy.of(itemStack)
+						.into(Energy.of(invStack))
+						.move(maxOutput);
+			}
 		}
 	}
 }

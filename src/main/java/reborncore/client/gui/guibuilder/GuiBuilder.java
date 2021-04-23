@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -435,7 +435,7 @@ public class GuiBuilder {
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferBuilder = tessellator.getBuffer();
-			this.client.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
+			this.client.getTextureManager().bindTexture(DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
 			bufferBuilder.vertex(this.left, this.bottom, 0.0D).texture((float) this.left / 32.0F, (float) (this.bottom + (int) this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).next();
@@ -461,6 +461,7 @@ public class GuiBuilder {
 		}
 	}
 
+	//TODO: change to double
 	/**
 	 * Draws energy output value and icon
 	 *
@@ -472,7 +473,7 @@ public class GuiBuilder {
 	 */
 	public void drawEnergyOutput(MatrixStack matrixStack, GuiBase<?> gui, int x, int y, int maxOutput, GuiBase.Layer layer) {
 		if (gui.hideGuiElements()) return;
-		Text text = new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxOutput))
+		Text text = new LiteralText(PowerSystem.getLocalizedPowerNoSuffix(maxOutput))
 				.append(SPACE_TEXT)
 				.append(PowerSystem.getDisplayPower().abbreviation)
 				.append("\t");
@@ -581,15 +582,21 @@ public class GuiBuilder {
 		int percentage = percentage(maxEnergyStored, energyStored);
 		if (gui.isPointInRect(x + 1, y + 1, 11, 48, mouseX, mouseY)) {
 			List<Text> list = Lists.newArrayList();
-			list.add(
-					new LiteralText(PowerSystem.getLocaliszedPowerFormattedNoSuffix(energyStored))
-							.formatted(Formatting.GOLD)
-							.append("/")
-							.append(PowerSystem.getLocaliszedPowerFormattedNoSuffix(maxEnergyStored))
-							.append(SPACE_TEXT)
-							.append(displayPower.abbreviation)
-			);
-
+			if (Screen.hasShiftDown()) {
+				list.add(
+						new LiteralText(PowerSystem.getLocalizedPowerFullNoSuffix(energyStored))
+								.formatted(Formatting.GOLD)
+								.append("/")
+								.append(PowerSystem.getLocalizedPowerFull(maxEnergyStored))
+				);
+			} else {
+				list.add(
+						new LiteralText(PowerSystem.getLocalizedPowerNoSuffix(energyStored))
+								.formatted(Formatting.GOLD)
+								.append("/")
+								.append(PowerSystem.getLocalizedPower(maxEnergyStored))
+				);
+			}
 			list.add(
 					StringUtils.getPercentageText(percentage)
 							.append(SPACE_TEXT)
@@ -702,7 +709,7 @@ public class GuiBuilder {
 		if (fluid.getFluid() == Fluids.EMPTY) {
 			return;
 		}
-		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		gui.getMinecraft().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		y += height;
 		final Sprite sprite = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidSprites(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState())[0];
 		int color = FluidRenderHandlerRegistry.INSTANCE.get(fluid.getFluid()).getFluidColor(gui.getMachine().getWorld(), gui.getMachine().getPos(), fluid.getFluid().getDefaultState());

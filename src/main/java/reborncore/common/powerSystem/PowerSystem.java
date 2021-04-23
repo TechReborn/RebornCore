@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,61 +24,60 @@
 
 package reborncore.common.powerSystem;
 
-import org.apache.commons.io.FileUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import reborncore.common.RebornCoreConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class PowerSystem {
-	public static File selectedFile;
 	private static EnergySystem selectedSystem = EnergySystem.values()[0];
 
 	private static final char[] magnitude = new char[] { 'k', 'M', 'G', 'T' };
 
-	public static String getLocaliszedPower(double eu) {
-		return getLocaliszedPower((int) eu);
+	private static Locale locale = Locale.ROOT;
+
+	public static String getLocalizedPower(double power) {
+
+		return getRoundedString(power, selectedSystem.abbreviation, true);
 	}
 
-	public static String getLocaliszedPowerNoSuffix(double eu) {
-		return getLocaliszedPowerNoSuffix((int) eu);
+	public static String getLocalizedPowerNoSuffix(double power) {
+		return getRoundedString(power, "", true);
 	}
 
-	public static String getLocaliszedPowerFormatted(double eu) {
-		return getLocaliszedPowerFormatted((int) eu);
+	public static String getLocalizedPowerNoFormat(double power){
+		return getRoundedString(power, selectedSystem.abbreviation, false);
 	}
 
-	public static String getLocaliszedPowerFormattedNoSuffix(double eu) {
-		return getLocaliszedPowerFormattedNoSuffix((int) eu);
+	public static String getLocalizedPowerNoSuffixNoFormat(double power){
+		return getRoundedString(power, "", false);
 	}
 
-	public static String getLocaliszedPower(int eu) {
-		return getRoundedString(eu, EnergySystem.EU.abbreviation);
+	public static String getLocalizedPowerFull(double power){
+		return getFullPower(power, selectedSystem.abbreviation);
 	}
 
-	public static String getLocaliszedPowerNoSuffix(int eu) {
-		return getRoundedString(eu, "");
+	public static String getLocalizedPowerFullNoSuffix(double power){
+		return getFullPower(power, "");
 	}
 
-	public static String getLocaliszedPowerFormatted(int eu) {
-		return getRoundedString(eu, EnergySystem.EU.abbreviation);
+	private static String getFullPower(double power, String units){
+		checkLocale();
+		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
+		return formatter.format(power) + " " + units;
 	}
 
-	public static String getLocaliszedPowerFormattedNoSuffix(int eu) {
-		return getRoundedString(eu, "", true);
-	}
-
-	private static String getRoundedString(double value, String units) {
-		return getRoundedString(value, units, false);
-	}
-
-	private static String getRoundedString(double euValue, String units, boolean doFormat) {
+	private static String getRoundedString(double originalValue, String units, boolean doFormat) {
 		String ret = "";
 		double value = 0f;
 		int i = 0;
 		boolean showMagnitude = true;
+		double euValue = originalValue;
 		if (euValue < 0) {
 			ret = "-";
 			euValue = -euValue;
@@ -103,15 +102,37 @@ public class PowerSystem {
 			}
 		}
 
-		String strValue = String.valueOf(value);
-		strValue = strValue.substring(0, strValue.lastIndexOf('.') + 2);
-		ret += strValue;
+		if (i > 10) {
+			doFormat = false;
+			showMagnitude = false;
+		} else if (i > 3) {
+			value = originalValue;
+			showMagnitude = false;
+		}
+
+		if (doFormat){
+			checkLocale();
+			DecimalFormat formatter = (DecimalFormat) DecimalFormat.getInstance(locale);
+			ret += formatter.format(value);
+			int idx = ret.lastIndexOf(formatter.getDecimalFormatSymbols().getDecimalSeparator());
+			if (idx > 0){
+				ret = ret.substring(0, idx + 2);
+			}
+		}
+		else {
+			if (i>10){
+				ret += "∞";
+			}
+			else {
+				ret += value;
+			}
+		}
 
 		if (showMagnitude) {
 			ret += magnitude[i];
 		}
 
-		if (units != "") {
+		if (!units.equals("")) {
 			ret += " " + units;
 		}
 
@@ -131,31 +152,21 @@ public class PowerSystem {
 			value = 0;
 		}
 		selectedSystem = EnergySystem.values()[value];
-		writeFile();
 	}
 
-	public static void readFile() {
-		if (!selectedFile.exists()) {
-			writeFile();
-		}
-		if (selectedFile.exists()) {
-
-			try {
-				String value = FileUtils.readFileToString(selectedFile, StandardCharsets.UTF_8);
-				selectedSystem = Arrays.stream(EnergySystem.values()).filter(energySystem -> energySystem.abbreviation.equalsIgnoreCase(value)).findFirst().orElse(EnergySystem.values()[0]);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public static void init(){
+		selectedSystem = Arrays.stream(EnergySystem.values()).filter(energySystem -> energySystem.abbreviation.equalsIgnoreCase(RebornCoreConfig.selectedSystem)).findFirst().orElse(EnergySystem.values()[0]);
+		if(!selectedSystem.enabled.get()){
+			bumpPowerConfig();
 		}
 	}
 
-	public static void writeFile() {
-		try {
-			FileUtils.write(selectedFile, selectedSystem.abbreviation, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		readFile();
+	private static void checkLocale() {
+		if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) { return; }
+		MinecraftClient instance = MinecraftClient.getInstance();
+		if (instance == null) { return; }
+		String strangeMcLang = instance.getLanguageManager().getLanguage().getCode();
+		locale = Locale.forLanguageTag(strangeMcLang.substring(0, 2));
 	}
 
 	public enum EnergySystem {

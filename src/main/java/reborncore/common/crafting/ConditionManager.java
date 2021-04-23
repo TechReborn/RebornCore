@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,9 @@ public final class ConditionManager {
 
 		//Only load the recipe if the provided mod is loaded
 		register("mod", String.class, s -> FabricLoader.getInstance().isModLoaded(s));
+
+		//Never load, just pass whatever in as the string
+		register("never", String.class, s -> false);
 	}
 
 	private static boolean registryContains(SimpleRegistry<?> registry, Identifier ident) {

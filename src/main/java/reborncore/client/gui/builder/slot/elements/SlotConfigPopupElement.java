@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ import reborncore.client.gui.GuiUtil;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.blockentity.SlotConfiguration;
+import reborncore.common.network.IdentifiedPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 import reborncore.common.util.Color;
@@ -78,7 +79,7 @@ public class SlotConfigPopupElement extends ElementBase {
 		BlockState actualState = state.getBlock().getDefaultState();
 		BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
 		BakedModel model = dispatcher.getModels().getModel(state.getBlock().getDefaultState());
-		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+		MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		drawState(gui, world, model, actualState, pos, dispatcher, 4, 23, Vector3f.POSITIVE_Y.getDegreesQuaternion(90F)); //left
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 4, Vector3f.NEGATIVE_X.getDegreesQuaternion(90F)); //top
 		drawState(gui, world, model, actualState, pos, dispatcher, 23, 23, null); //centre
@@ -125,7 +126,7 @@ public class SlotConfigPopupElement extends ElementBase {
 
 		SlotConfiguration.SlotIO slotIO = new SlotConfiguration.SlotIO(nextConfig);
 		SlotConfiguration.SlotConfig newConfig = new SlotConfiguration.SlotConfig(side, slotIO, id);
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.be.getPos(), newConfig);
+		IdentifiedPacket packetSlotSave = ServerBoundPackets.createPacketSlotSave(guiBase.be.getPos(), newConfig);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 
@@ -144,7 +145,7 @@ public class SlotConfigPopupElement extends ElementBase {
 			filter = !configHolder.filter();
 		}
 
-		Packet<?> packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.be.getPos(), id, input, output, filter);
+		IdentifiedPacket packetSlotSave = ServerBoundPackets.createPacketIOSave(guiBase.be.getPos(), id, input, output, filter);
 		NetworkManager.sendToServer(packetSlotSave);
 	}
 

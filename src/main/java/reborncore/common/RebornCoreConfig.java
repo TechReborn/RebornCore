@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,4 +29,7 @@ import reborncore.common.config.Config;
 public class RebornCoreConfig {
 	@Config(config = "misc", key = "Enable Seasonal Easter Eggs", comment = "Disable this is you don't want seasonal easter eggs")
 	public static boolean easterEggs = true;
+
+	@Config(config = "misc", key = "Selected Energy system", comment = "Possible values are: E (was FE, EU)")
+	public static String selectedSystem = "E";
 }

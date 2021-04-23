@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -263,19 +263,16 @@ public class GuiBase<T extends ScreenHandler> extends HandledScreen<T> {
 
 	@Override
 	protected void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
-		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades) {
+		if (isPointWithinBounds(-25, 6, 24, 80, mouseX, mouseY) && upgrades
+				&& this.focusedSlot != null && !this.focusedSlot.hasStack()) {
 			List<Text> list = new ArrayList<>();
 			list.add(new TranslatableText("reborncore.gui.tooltip.upgrades"));
 			renderTooltip(matrixStack, list, mouseX, mouseY);
-			RenderSystem.disableLighting();
-			RenderSystem.color4f(1, 1, 1, 1);
 		}
 		int offset = upgrades ? 82 : 0;
 		for (GuiTab tab : tabs) {
 			if (isPointWithinBounds(-26, 6 + offset, 24, 23, mouseX, mouseY)) {
 				renderTooltip(matrixStack, Collections.singletonList(new TranslatableText(tab.name())), mouseX, mouseY);
-				RenderSystem.disableLighting();
-				RenderSystem.color4f(1, 1, 1, 1);
 			}
 			offset += 24;
 		}

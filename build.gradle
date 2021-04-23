@@ -1,38 +1,24 @@
 buildscript {
-	repositories {
-		jcenter()
-		mavenCentral()
-        maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-		maven {
-			url "https://plugins.gradle.org/m2/"
-		}
-	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.5-SNAPSHOT"
-		classpath "gradle.plugin.net.minecrell:licenser:0.2.1"
+		classpath 'org.kohsuke:github-api:1.114'
 	}
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'java-library'
-apply plugin: net.minecrell.gradle.licenser.Licenser
+plugins {
+	id 'java'
+	id 'idea'
+	id 'eclipse'
+	id 'maven-publish'
+	id 'signing'
+	id "org.cadixdev.licenser" version "0.5.0"
+	id "fabric-loom" version "0.6-SNAPSHOT"
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-	mavenCentral()
-	jcenter()
-}
-
-version = "4.4.1"
+version = "4.7.2"
 group = 'RebornCore'
 
 def ENV = System.getenv()
@@ -45,41 +31,36 @@ license {
 	ignoreFailures = true //Stops the build from failing if a file does not have a license header
 }
 
-configurations {
-	ctRuntime {}
-}
-
 dependencies {
-	minecraft "com.mojang:minecraft:1.16.2"
-	mappings "net.fabricmc:yarn:1.16.2+build.5:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.9.1+build.205"
+	minecraft "com.mojang:minecraft:1.16.5"
+	mappings "net.fabricmc:yarn:1.16.5+build.4:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.1"
 
 	//Fabric api
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.17.2+build.396-1.16"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.0+1.16"
 
-	modApi 'teamreborn:energy:0.1.0'
-	include 'teamreborn:energy:0.1.0'
-
-	ctRuntime "CurseTools:CurseTools:+"
+	modApi 'teamreborn:energy:0.1.1'
+	include 'teamreborn:energy:0.1.1'
 }
 
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
 	}
 }
 
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+	if (JavaVersion.current().isJava9Compatible()) {
+		 it.options.release = 8
+	}
+}
+
+java {
+	withSourcesJar()
 }
 
 publishing {
@@ -96,29 +77,100 @@ publishing {
 	}
 
 	repositories {
-		maven {
-			url "http://mavenupload.modmuss50.me/"
-			if (project.hasProperty('mavenPass')) {
+		if (ENV.MAVEN_URL) {
+			maven {
+				url ENV.MAVEN_URL
 				credentials {
-					username 'buildslave'
-					password project.getProperty('mavenPass')
+					username ENV.MAVEN_USERNAME
+					password ENV.MAVEN_PASSWORD
 				}
 			}
 		}
 	}
 }
 
-task curseTools {
+if (ENV.SIGNING_KEY) {
+	signing {
+		useInMemoryPgpKeys(ENV.SIGNING_KEY, ENV.SIGNING_PASSWORD)
+
+		sign publishing.publications.mavenJava
+		sign remapJar
+	}
+
+	task signAll(dependsOn: [signMavenJavaPublication, signRemapJar, remapJar])
+}
+
+curseforge {
+	if (ENV.CURSEFORGE_API_KEY) {
+		apiKey = ENV.CURSEFORGE_API_KEY
+	}
+
+	project {
+		id = "237903"
+		changelog = "A changelog can be found at https://github.com/TechReborn/RebornCore"
+		releaseType = ENV.RELEASE_CHANNEL ?: "release"
+		addGameVersion "1.16.5"
+		addGameVersion "Fabric"
+
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
+
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+
+	options {
+		forgeGradleIntegration = false
+	}
+}
+
+def getBranch() {
+	def ENV = System.getenv()
+	if (ENV.GITHUB_REF) {
+		def branch = ENV.GITHUB_REF
+		return branch.substring(branch.lastIndexOf("/") + 1)
+	}
+
+	return "unknown"
+}
+
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
+
+task github(dependsOn: remapJar) {
+	onlyIf {
+		ENV.GITHUB_TOKEN
+	}
+
 	doLast {
-		logger.lifecycle(":launching CurseTools")
-		ant.setLifecycleLogLevel "INFO"
-		ant.java(classname: 'me.modmuss50.cursetools.Main', classpath: configurations.ctRuntime.asPath, fork: true, spawn: false) {
-			arg(value: remapJar.archivePath.getAbsolutePath())
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
+
+		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
+		releaseBuilder.name("${archivesBaseName}-${version}")
+		releaseBuilder.body("A changelog can be found at https://github.com/TechReborn/RebornCore")
+		releaseBuilder.commitish(getBranch())
+
+		def ghRelease = releaseBuilder.create()
+		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
+	}
+}
+
+// A task to ensure that the version being released has not already been released.
+task checkVersion {
+	doFirst {
+		def xml = new URL("http://maven.modmuss50.me/RebornCore/RebornCore-1.16/maven-metadata.xml").text
+		def metadata = new XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text();
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
 		}
 	}
 }
 
-task copyToLib(type: Copy) {
-    into "$buildDir/output/lib"
-    from configurations.runtime
+if (ENV.SIGNING_KEY) {
+	publish.dependsOn signAll
 }
+github.mustRunAfter checkVersion
+publish.mustRunAfter checkVersion
+project.tasks.curseforge.mustRunAfter checkVersion

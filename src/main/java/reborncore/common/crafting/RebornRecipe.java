@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -220,10 +220,14 @@ public class RebornRecipe implements Recipe<Inventory>, CustomOutputRecipe {
 		throw new UnsupportedOperationException();
 	}
 
+	// Do not call directly, this is implemented only as a fallback. getOutputs() will return all of the outputs
 	@Deprecated
 	@Override
 	public ItemStack getOutput() {
-		throw new UnsupportedOperationException();
+		if (isDummy() || outputs.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		return outputs.get(0);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import reborncore.common.chunkloading.ChunkLoaderManager;
+import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class ClientChunkManager {
 
 	public static void toggleLoadedChunks(BlockPos chunkLoader) {
 		if (loadedChunks.size() == 0) {
-			MinecraftClient.getInstance().getNetworkHandler().sendPacket(ServerBoundPackets.requestChunkloaderChunks(chunkLoader));
+			NetworkManager.sendToServer(ServerBoundPackets.requestChunkloaderChunks(chunkLoader));
 		} else {
 			loadedChunks.clear();
 		}

@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,14 @@ package reborncore;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import reborncore.api.ToolManager;
+import reborncore.api.blockentity.UnloadHandler;
 import reborncore.common.RebornCoreCommands;
 import reborncore.common.RebornCoreConfig;
 import reborncore.common.blocks.BlockWrenchEventHandler;
@@ -56,7 +58,7 @@ public class RebornCore implements ModInitializer {
 	public static final String MOD_VERSION = "@MODVERSION@";
 	public static final String WEB_URL = "https://files.modmuss50.me/";
 
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+	public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 	public static File configDir;
 
 	public static boolean LOADED = false;
@@ -67,16 +69,8 @@ public class RebornCore implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		new Configuration(RebornCoreConfig.class, "reborncore");
-
-		configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "teamreborn");
-		if (!configDir.exists()) {
-			configDir.mkdir();
-		}
-
-		//ConfigRegistryFactory.saveAll();
-		PowerSystem.selectedFile = (new File(configDir, "reborncore/selected_energy.json"));
-		PowerSystem.readFile();
+		new Configuration(RebornCoreConfig.class, MOD_ID);
+		PowerSystem.init();
 		CalenderUtils.loadCalender(); //Done early as some features need this
 
 		ToolManager.INSTANCE.customToolHandlerList.add(new GenericWrenchHelper(new Identifier("ic2:wrench"), true));
@@ -94,13 +88,13 @@ public class RebornCore implements ModInitializer {
 		ModSounds.setup();
 		BlockWrenchEventHandler.setup();
 
-		/**
-		 * This is a generic multiblock tick handler. If you are using this code on your
-		 * own, you will need to register this with the Forge TickRegistry on both the
-		 * client AND server sides. Note that different types of ticks run on different
-		 * parts of the system. CLIENT ticks only run on the client, at the start/end of
-		 * each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
-		 * ticks run only on the server, and only when worlds are loaded.
+		/*
+		  This is a generic multiblock tick handler. If you are using this code on your
+		  own, you will need to register this with the Forge TickRegistry on both the
+		  client AND server sides. Note that different types of ticks run on different
+		  parts of the system. CLIENT ticks only run on the client, at the start/end of
+		  each game loop. SERVER and WORLD ticks only run on the server. WORLDLOAD
+		  ticks run only on the server, and only when worlds are loaded.
 		 */
 		WorldTickCallback.EVENT.register(MultiblockRegistry::tickStart);
 
@@ -113,6 +107,11 @@ public class RebornCore implements ModInitializer {
 		RebornCoreCommands.setup();
 
 		RebornCoreTags.WATER_EXPLOSION_ITEM.toString();
+		
+		/* register UnloadHandler */
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+			if (blockEntity instanceof UnloadHandler) ((UnloadHandler) blockEntity).onUnload();
+		});
 
 		LOGGER.info("Reborn core is done for now, now to let other mods have their turn...");
 		LOADED = true;

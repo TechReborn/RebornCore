@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,19 @@
 
 package reborncore.common.util;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.util.math.BlockPos;
-import reborncore.RebornCore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Torus {
-
-	public static Map<Integer, Integer> TORUS_SIZE_MAP = new HashMap<>();
+	private static final ExecutorService GEN_EXECUTOR = Executors.newSingleThreadExecutor();
+	private static Int2IntMap torusSizeCache;
 
 	public static List<BlockPos> generate(BlockPos orgin, int radius) {
 		List<BlockPos> posLists = new ArrayList<>();
@@ -52,25 +53,45 @@ public class Torus {
 	}
 
 	public static void genSizeMap(int maxRadius) {
-		if (!TORUS_SIZE_MAP.isEmpty()) {
+		if (torusSizeCache != null) {
 			//Lets not do this again
 			return;
 		}
-		long start = System.currentTimeMillis();
-		IntStream.range(0, maxRadius + 10).parallel().forEach(radius -> { //10 is added as the control computer has a base of around 6 less
-			int size = 0;
-			for (int x = -radius; x < radius; x++) {
-				for (int y = -radius; y < radius; y++) {
-					for (int z = -radius; z < radius; z++) {
-						if (Math.pow(radius / 2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)) {
-							size++;
+		//10 is added as the control computer has a base of around 6 less
+		final int sizeToCompute = maxRadius + 10;
+
+		torusSizeCache = new Int2IntOpenHashMap(sizeToCompute);
+
+		for (int i = 0; i < sizeToCompute; i++) {
+			final int radius = i;
+			GEN_EXECUTOR.submit(() -> {
+				int size = 0;
+				for (int x = -radius; x < radius; x++) {
+					for (int y = -radius; y < radius; y++) {
+						for (int z = -radius; z < radius; z++) {
+							if (Math.pow(radius / 2 - Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2) + Math.pow(z, 2) < Math.pow(radius * 0.05, 2)) {
+								size++;
+							}
 						}
 					}
 				}
-			}
-			TORUS_SIZE_MAP.put(radius, size);
-		});
-		RebornCore.LOGGER.info("Loaded torus size map in " + (System.currentTimeMillis() - start) + "ms");
+				torusSizeCache.put(radius, size);
+			});
+		}
+
+		// Finish running the tasks, and then shutdown the ExecutorService. This call does not stall the main thread
+		GEN_EXECUTOR.shutdown();
 	}
 
+	public static Int2IntMap getTorusSizeCache() {
+		if (!GEN_EXECUTOR.isShutdown()) {
+			try {
+				GEN_EXECUTOR.awaitTermination(1, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Reborn core failed to initialize the torus cache", e);
+			}
+		}
+
+		return torusSizeCache;
+	}
 }

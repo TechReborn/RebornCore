@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -35,6 +36,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.BlockRotation;
@@ -106,9 +108,8 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 	public void writeMultiblock(MultiblockWriter writer) {}
 
 	public void syncWithAll() {
-		if (!world.isClient) {
-			NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
-		}
+		if (world == null || world.isClient) { return; }
+		NetworkManager.sendToTracking(ClientBoundPackets.createCustomDescriptionPacket(this), this);
 	}
 
 	public void onLoad() {
@@ -140,10 +141,10 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public void tick() {
-		if(ticktime == 0){
+		if (ticktime == 0) {
 			onLoad();
 		}
-		ticktime ++;
+		ticktime++;
 		@Nullable
 		RecipeCrafter crafter = null;
 		if (getOptionalCrafter().isPresent()) {
@@ -158,18 +159,18 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 				}
 			}
 		}
-		if (!world.isClient) {
-			if (crafter != null && isActive(RedstoneConfiguration.RECIPE_PROCESSING)) {
-				crafter.updateEntity();
-			}
-			if (slotConfiguration != null && isActive(RedstoneConfiguration.ITEM_IO)) {
-				slotConfiguration.update(this);
-			}
-			if (fluidConfiguration != null && isActive(RedstoneConfiguration.FLUID_IO)) {
-				fluidConfiguration.update(this);
-			}
+		if (world == null || world.isClient) {
+			return;
 		}
-
+		if (crafter != null && isActive(RedstoneConfiguration.RECIPE_PROCESSING)) {
+			crafter.updateEntity();
+		}
+		if (slotConfiguration != null && isActive(RedstoneConfiguration.ITEM_IO)) {
+			slotConfiguration.update(this);
+		}
+		if (fluidConfiguration != null && isActive(RedstoneConfiguration.FLUID_IO)) {
+			fluidConfiguration.update(this);
+		}
 	}
 
 	public void resetUpgrades() {
@@ -190,7 +191,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 		if (block instanceof BlockMachineBase) {
 			return ((BlockMachineBase) block).getFacing(world.getBlockState(pos));
 		}
-		return Direction.DOWN;
+		return Direction.NORTH;
 	}
 
 	public void setFacing(Direction enumFacing) {
@@ -474,7 +475,7 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public boolean canInsert(int index, ItemStack stack, @Nullable Direction direction) {
-		if(direction == null){
+		if(direction == null || slotConfiguration == null){
 			return false;
 		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
@@ -491,6 +492,9 @@ public class MachineBaseBlockEntity extends BlockEntity implements Tickable, IUp
 
 	@Override
 	public boolean canExtract(int index, ItemStack stack, Direction direction) {
+		if (slotConfiguration == null) {
+			return false;
+		}
 		SlotConfiguration.SlotConfigHolder slotConfigHolder = slotConfiguration.getSlotDetails(index);
 		SlotConfiguration.SlotConfig slotConfig = slotConfigHolder.getSideDetail(direction);
 		return slotConfig.getSlotIO().ioConfig.isExtact();

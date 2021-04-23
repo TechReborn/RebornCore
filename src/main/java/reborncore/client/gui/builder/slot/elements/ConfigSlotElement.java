@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import reborncore.client.gui.builder.GuiBase;
 import reborncore.client.gui.builder.slot.SlotConfigGui;
 import reborncore.client.gui.slots.BaseSlot;
@@ -74,14 +74,14 @@ public class ConfigSlotElement extends ElementBase {
 		}));
 
 		if (inputEnabled) {
-			elements.add(new CheckBoxElement(new LiteralText("Auto Input"), 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+			elements.add(new CheckBoxElement(new TranslatableText("reborncore.gui.slotconfig.autoinput"), 0xFFFFFFFF, x - 26, y + 42, "input", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 					checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoInput()).addPressAction((element, gui12, provider, mouseX, mouseY) -> {
 				popupElement.updateCheckBox((CheckBoxElement) element, "input", gui12);
 				return true;
 			}));
 		}
 
-		elements.add(new CheckBoxElement(new LiteralText("Auto Output"), 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+		elements.add(new CheckBoxElement(new TranslatableText("reborncore.gui.slotconfig.autooutput"), 0xFFFFFFFF, x - 26, y + 57, "output", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 				checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).autoOutput()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 			popupElement.updateCheckBox((CheckBoxElement) element, "output", gui13);
 			return true;
@@ -90,7 +90,7 @@ public class ConfigSlotElement extends ElementBase {
 		if (gui.getMachine() instanceof SlotConfiguration.SlotFilter) {
 			SlotConfiguration.SlotFilter slotFilter = (SlotConfiguration.SlotFilter) gui.getMachine();
 			if (Arrays.stream(slotFilter.getInputSlots()).anyMatch(value -> value == slotId)) {
-				elements.add(new CheckBoxElement(new LiteralText("Filter Input"), 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
+				elements.add(new CheckBoxElement(new TranslatableText("reborncore.gui.slotconfig.filter_input"), 0xFFFFFFFF, x - 26, y + 72, "filter", slotId, Sprite.LIGHT_CHECK_BOX, gui.getMachine(),
 						checkBoxElement -> checkBoxElement.machineBase.getSlotConfiguration().getSlotDetails(checkBoxElement.slotID).filter()).addPressAction((element, gui13, provider, mouseX, mouseY) -> {
 					popupElement.updateCheckBox((CheckBoxElement) element, "filter", gui13);
 					return true;
@@ -111,7 +111,7 @@ public class ConfigSlotElement extends ElementBase {
 		int yPos = y + 1 + gui.getGuiTop();
 
 		RenderSystem.enableDepthTest();
-		RenderSystem.pushMatrix();
+		matrixStack.push();
 		RenderSystem.enableBlend();
 		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 		ItemRenderer renderItem = MinecraftClient.getInstance().getItemRenderer();
@@ -119,7 +119,7 @@ public class ConfigSlotElement extends ElementBase {
 		renderItem.renderGuiItemOverlay(gui.getTextRenderer(), stack, xPos, yPos, null);
 		RenderSystem.disableDepthTest();
 		RenderSystem.disableLighting();
-		RenderSystem.popMatrix();
+		matrixStack.pop();
 		if (isHovering) {
 			drawSprite(matrixStack, gui, type.getButtonHoverOverlay(), x, y);
 		}

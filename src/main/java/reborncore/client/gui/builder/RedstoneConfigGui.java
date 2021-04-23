@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import net.minecraft.text.TranslatableText;
 import reborncore.client.RenderUtil;
 import reborncore.client.gui.guibuilder.GuiBuilder;
 import reborncore.common.blockentity.RedstoneConfiguration;
+import reborncore.common.network.IdentifiedPacket;
 import reborncore.common.network.NetworkManager;
 import reborncore.common.network.ServerBoundPackets;
 
@@ -84,7 +85,7 @@ public class RedstoneConfigGui {
 					ns = 0;
 				}
 				RedstoneConfiguration.State nextState = RedstoneConfiguration.State.values()[ns];
-				Packet<?> packet = ServerBoundPackets.createPacketSetRedstoneSate(guiBase.getMachine().getPos(), element, nextState);
+				IdentifiedPacket packet = ServerBoundPackets.createPacketSetRedstoneSate(guiBase.getMachine().getPos(), element, nextState);
 				NetworkManager.sendToServer(packet);
 				return true;
 			}

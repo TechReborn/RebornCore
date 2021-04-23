@@ -1,7 +1,7 @@
 /*
- * This file is part of TechReborn, licensed under the MIT License (MIT).
+ * This file is part of RebornCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2020 TechReborn
+ * Copyright (c) 2021 TeamReborn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,7 @@ import net.minecraft.world.dimension.DimensionType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import reborncore.common.network.ClientBoundPackets;
+import reborncore.common.network.NetworkManager;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -166,10 +167,8 @@ public class ChunkLoaderManager extends PersistentState {
 		syncToClient(serverPlayerEntity, Collections.emptyList());
 	}
 
-	public void syncToClient(ServerPlayerEntity serverPlayerEntity, List<LoadedChunk> chunks){
-		serverPlayerEntity.networkHandler.sendPacket(
-			ClientBoundPackets.createPacketSyncLoadedChunks(chunks)
-		);
+	public void syncToClient(ServerPlayerEntity serverPlayerEntity, List<LoadedChunk> chunks) {
+		NetworkManager.sendToPlayer(ClientBoundPackets.createPacketSyncLoadedChunks(chunks), serverPlayerEntity);
 	}
 
 	public static class LoadedChunk {
@@ -186,7 +185,7 @@ public class ChunkLoaderManager extends PersistentState {
 					CHUNK_POS_CODEC.fieldOf("chunk").forGetter(LoadedChunk::getChunk),
 					Identifier.CODEC.fieldOf("world").forGetter(LoadedChunk::getWorld),
 					Codec.STRING.fieldOf("player").forGetter(LoadedChunk::getPlayer),
-					BlockPos.field_25064.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
+					BlockPos.CODEC.fieldOf("chunkLoader").forGetter(LoadedChunk::getChunkLoader)
 				)
 				.apply(instance, LoadedChunk::new));
 
