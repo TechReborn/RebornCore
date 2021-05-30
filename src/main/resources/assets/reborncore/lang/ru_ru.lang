@@ -1,0 +1,32 @@
+reborncore.message.active=Активно
+reborncore.message.inactive=Неактивно
+
+item.reborncore.manual.name=Руководство по Team Reborn
+
+reborncore.tooltip.energy.maxEnergy=Макс. энергия
+reborncore.tooltip.energy.inputRate=Скорость ввода
+reborncore.tooltip.energy.outputRate=Скорость вывода
+reborncore.tooltip.energy.tier=Уровень
+reborncore.tooltip.energy.change=Изменить энергию
+
+reborncore.gui.heat=Нагрев
+reborncore.gui.missingmultiblock=Неполный мультиблок
+
+reborncore.gui.tooltip.config_slots=Настроить слоты
+reborncore.gui.tooltip.config_fluids=Настроить жидкости
+reborncore.gui.tooltip.hologram=Переключить многоблочную голограмму
+reborncore.gui.tooltip.lock_items=Заблокировать предметы
+reborncore.gui.tooltip.power_charged=Заряженный
+reborncore.gui.tooltip.power_click=Нажмите, чтобы изменить отображаемую единицу
+reborncore.gui.tooltip.power_moreinfo=для большей информации
+reborncore.gui.tooltip.dsu_fullness=Полный
+reborncore.gui.tooltip.tank_amount=%sмВ/%sмВ
+reborncore.gui.tooltip.tank_empty=Пустой резервуар
+reborncore.gui.tooltip.tank_fullness=Полный
+reborncore.gui.tooltip.unlock_items=Разблокировать предметы
+reborncore.gui.tooltip.upgrades=Обновления машин
+
+reborncore.gui.slotconfigtip.slot=Нажмите на слот для настройки.
+reborncore.gui.slotconfigtip.side=Оранжевая сторона означает вывод, синяя сторона означает ввод.
+reborncore.gui.slotconfigtip.side=Ctrl+C, чтобы скопировать конфигурацию слота, Ctrl+V, чтобы вставить конфигурацию слота.
+
