@@ -26,10 +26,12 @@ package reborncore.common.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.PacketByteBuf;
+import org.apache.commons.io.serialization.ValidatingObjectInputStream;
+import reborncore.RebornCore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 
@@ -46,23 +48,25 @@ public class ExtendedPacketBuffer extends PacketByteBuf {
 		return ObjectBufferUtils.readObject(this);
 	}
 
-	public void writeBigInt(BigInteger bigInteger){
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	@Deprecated // Remove in 1.17
+	public void writeBigInt(BigInteger bigInteger) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			ObjectOutputStream outputStream = new ObjectOutputStream(baos);
 			outputStream.writeObject(bigInteger);
 			writeByteArray(baos.toByteArray());
-		} catch (Exception e){
-			throw new RuntimeException("Failed to write big int");
+		} catch (IOException e) {
+			RebornCore.LOGGER.error(e);
 		}
 	}
 
+	@Deprecated // Remove in 1.17
 	public BigInteger readBigInt(){
-		try {
-			ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(readByteArray()));
+		try (ValidatingObjectInputStream inputStream = new ValidatingObjectInputStream(new ByteArrayInputStream(readByteArray()))) {
+			inputStream.accept(BigInteger.class);
 			return (BigInteger) inputStream.readObject();
-		} catch (Exception e){
-			throw new RuntimeException("Failed to read big int");
+		} catch (IOException | ClassNotFoundException e) {
+			RebornCore.LOGGER.error(e);
+			return BigInteger.ZERO;
 		}
 	}
 }
