@@ -59,6 +59,8 @@ import reborncore.common.util.ItemHandlerUtils;
 import reborncore.common.util.Tank;
 import reborncore.common.util.WrenchUtils;
 
+import org.jetbrains.annotations.Nullable;
+
 public abstract class BlockMachineBase extends BaseBlockEntityProvider implements InventoryProvider {
 
 	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -116,9 +118,11 @@ public abstract class BlockMachineBase extends BaseBlockEntityProvider implement
 
 	// BaseBlockEntityProvider
 	@Override
-	public void onPlaced(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+	public void onPlaced(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
 		super.onPlaced(worldIn, pos, state, placer, stack);
-		setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
+		if(placer != null) {
+			setFacing(placer.getHorizontalFacing().getOpposite(), worldIn, pos);
+		}
 
 		BlockEntity blockEntity = worldIn.getBlockEntity(pos);
 		if (blockEntity instanceof MachineBaseBlockEntity) {
