@@ -2,3 +2,5 @@
 
 # RebornCore
 Reborn core is a library mod used by a large range of other mods.
+
+Development of RebornCore has moved into the ![TechReborn](https://github.com/TechReborn/TechReborn) git repository.
